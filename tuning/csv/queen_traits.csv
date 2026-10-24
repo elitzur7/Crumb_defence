@@ -1,0 +1,8 @@
+trait,takeMod
+fast,-10
+flying,-15
+slow,0
+slower,5
+slowest,10
+vulnerable,5
+veryVulnerable,10

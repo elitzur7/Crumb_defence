@@ -1,0 +1,783 @@
+{
+  "_about": "Crumb Defense tuning - the SOURCE OF TRUTH for the numbers below. Edit, then rebuild (see README.md in this folder). Not loaded at runtime; the build bundles it.",
+  "_units": {
+    "rangeTiles": "radius from the tower centre in map tiles (1 tile = 40 px)",
+    "rate": "actions per second (null = always on)",
+    "cardUpgrades": "steps to card levels L2..L10, in order. power / rate / any other key: fraction (+0.10 = +10%); range: tiles (+0.2 tiles)",
+    "battleUpgrades": "in-battle levels 2-6 (five upgrades; drop the same card on the tower): multipliers",
+    "speed": "px per second",
+    "queenTake": "a queen takes 50 + the sum of her trait modifiers (queenTraitMods) from the treat"
+  },
+  "shop": {
+    "_about": "v0.6.2 items 12/13. unlockPrice: coins to unlock a locked tower in the Shop (tiered by base power, approved by Yair). packNewTowerChance: chance that a card pack holds ONE new (locked) tower card (L1) as one of its cards.",
+    "unlockPrice": {"sound":100,"pheromone":100,"lava":100,"lizard":200,"gate":200,"zapper":200,"laser":400,"tractor":400},
+    "unlockPriceDefault": 200,
+    "packNewTowerChance": 0.1
+  },
+  "queenTraitMods": {"fast":-10,"flying":-15,"slow":0,"slower":5,"slowest":10,"vulnerable":5,"veryVulnerable":10},
+  "antSizes": {"small":0.7,"regular":1,"large":1.12,"queen":2.1},
+  "towers": {
+    "slingshot": {
+      "power": 6,
+      "rate": 1.1,
+      "rangeTiles": 1.5,
+      "params": {"projSpeed":380},
+      "battleUpgrades": [{"power":1.4},{"rate":1.3,"range":1.1},{"power":1.2},{"rate":1.15},{"range":1.1,"power":1.15}],
+      "cardUpgrades": [
+        {"range":0.2},
+        {"power":0.1},
+        {"range":0.2},
+        {"rate":0.1},
+        {"power":0.1},
+        {"power":0.12},
+        {"rate":0.1},
+        {"range":0.2},
+        {"range":0.2,"power":0.1}
+      ]
+    },
+    "spray": {
+      "power": 6,
+      "rate": 0.42,
+      "rangeTiles": 1.5,
+      "params": {"cloudTime":2.6,"cloudRadius":42},
+      "battleUpgrades": [
+        {"power":1.35,"cloudRadius":1.2},
+        {"rate":1.3,"power":1.15},
+        {"cloudRadius":1.15,"range":1.1},
+        {"power":1.25},
+        {"rate":1.2}
+      ],
+      "cardUpgrades": [
+        {"power":0.1},
+        {"rate":0.08},
+        {"range":0.2},
+        {"power":0.12},
+        {"range":0.15},
+        {"rate":0.1},
+        {"power":0.1},
+        {"range":0.2},
+        {"power":0.1,"rate":0.1}
+      ]
+    },
+    "sound": {
+      "power": 4,
+      "rate": 0.75,
+      "rangeTiles": 1.5,
+      "params": {"ignoreArmor":true,"stagger":0.18},
+      "battleUpgrades": [{"power":1.4},{"range":1.15,"rate":1.2},{"stagger":1.3},{"power":1.2},{"rate":1.15,"stagger":1.25}],
+      "cardUpgrades": [
+        {"rate":0.1},
+        {"range":0.2},
+        {"power":0.1},
+        {"power":0.1},
+        {"range":0.2},
+        {"rate":0.08},
+        {"range":0.15},
+        {"power":0.12},
+        {"rate":0.1,"range":0.2}
+      ]
+    },
+    "ball": {
+      "power": 16,
+      "rate": 0.16,
+      "rangeTiles": null,
+      "params": {"ballRadius":13,"rollSpeed":230,"maxBalls":1},
+      "battleUpgrades": [{"power":1.4,"ballRadius":1.2},{"rate":1.3,"power":1.15},{"ballRadius":1.1},{"power":1.25},{"rate":1.2}],
+      "cardUpgrades": [
+        {"power":0.1},
+        {"rate":0.1},
+        {"ballRadius":0.1},
+        {"power":0.12},
+        {"rate":0.08},
+        {"power":0.1},
+        {"ballRadius":0.1},
+        {"rate":0.1},
+        {"power":0.1,"rate":0.1}
+      ]
+    },
+    "fan": {
+      "power": 50,
+      "rate": 0.36,
+      "rangeTiles": 1.5,
+      "params": {},
+      "battleUpgrades": [{"power":1.3},{"rate":1.25,"range":1.1},{"power":1.15},{"range":1.1},{"rate":1.15}],
+      "cardUpgrades": [
+        {"range":0.2},
+        {"rate":0.1},
+        {"power":0.1},
+        {"range":0.2},
+        {"range":0.15},
+        {"power":0.1},
+        {"rate":0.1},
+        {"power":0.12},
+        {"range":0.2,"rate":0.1}
+      ]
+    },
+    "pheromone": {
+      "power": 2.5,
+      "rate": null,
+      "rangeTiles": 1,
+      "params": {"ignoreArmor":true,"slow":0.35,"charmTime":1.6},
+      "battleUpgrades": [{"power":1.5},{"charmTime":1.4,"slow":1.25},{"power":1.2},{"charmTime":1.2},{"slow":1.15}],
+      "cardUpgrades": [
+        {"power":0.12},
+        {"slow":0.1},
+        {"charmTime":0.1},
+        {"power":0.1},
+        {"slow":0.08},
+        {"power":0.1},
+        {"charmTime":0.1},
+        {"charmTime":0.12},
+        {"power":0.1,"slow":0.08}
+      ]
+    },
+    "lizard": {
+      "power": 38,
+      "rate": 0.42,
+      "rangeTiles": 1.5,
+      "params": {"chewTime":1.4},
+      "battleUpgrades": [{"power":1.4},{"chewTime":0.6,"range":1.1},{"rate":1.2},{"power":1.2},{"chewTime":0.75}],
+      "cardUpgrades": [
+        {"power":0.12},
+        {"rate":0.08},
+        {"range":0.2},
+        {"power":0.1},
+        {"range":0.2},
+        {"rate":0.1},
+        {"power":0.1},
+        {"power":0.12},
+        {"range":0.2,"power":0.1}
+      ]
+    },
+    "laser": {
+      "power": 5,
+      "rate": 3.2,
+      "rangeTiles": 2.5,
+      "params": {"heatPerHit":0.12,"heatMax":1},
+      "battleUpgrades": [{"power":1.35},{"rate":1.15},{"range":1.1},{"power":1.15,"heatMax":1.5},{"rate":1.2,"heatMax":1.3}],
+      "cardUpgrades": [
+        {"rate":0.08},
+        {"power":0.1},
+        {"range":0.2},
+        {"rate":0.1},
+        {"power":0.1},
+        {"range":0.2},
+        {"power":0.12},
+        {"rate":0.1},
+        {"power":0.1,"rate":0.1}
+      ]
+    },
+    "zapper": {
+      "power": 15,
+      "rate": 1.5,
+      "rangeTiles": 2,
+      "params": {"chain":2,"chainRange":75,"chainFalloff":0.6},
+      "battleUpgrades": [{"power":1.35},{"chain":1.5,"range":1.1},{"rate":1.2},{"power":1.2},{"rate":1.15,"chain":1.34}],
+      "cardUpgrades": [
+        {"range":0.2},
+        {"power":0.1},
+        {"rate":0.1},
+        {"range":0.2},
+        {"power":0.12},
+        {"rate":0.08},
+        {"power":0.1},
+        {"range":0.2},
+        {"power":0.1,"range":0.15}
+      ]
+    },
+    "glue": {
+      "power": 0.55,
+      "rate": null,
+      "rangeTiles": 1,
+      "params": {"stickTime":0.5},
+      "battleUpgrades": [{"power":1.15},{"stickTime":2},{"stickTime":1.25},{"power":1.1},{"stickTime":1.2}],
+      "cardUpgrades": [
+        {"stickTime":0.12},
+        {"power":0.08},
+        {"stickTime":0.15},
+        {"power":0.06},
+        {"power":0.08},
+        {"stickTime":0.1},
+        {"stickTime":0.15},
+        {"power":0.08},
+        {"stickTime":0.12,"power":0.05}
+      ]
+    },
+    "gate": {
+      "power": 4.5,
+      "rate": 2.85,
+      "rangeTiles": 1,
+      "params": {"ignoreArmor":true},
+      "battleUpgrades": [{"power":1.4},{"rate":1.3},{"rate":1.15},{"power":1.25},{"power":1.1,"rate":1.1}],
+      "cardUpgrades": [
+        {"rate":0.1},
+        {"power":0.1},
+        {"power":0.12},
+        {"rate":0.08},
+        {"rate":0.08},
+        {"power":0.1},
+        {"power":0.08},
+        {"rate":0.1},
+        {"power":0.1,"rate":0.06}
+      ]
+    },
+    "lava": {
+      "power": 6,
+      "rate": null,
+      "rangeTiles": 1,
+      "params": {"ignoreArmor":true,"slow":0.2},
+      "battleUpgrades": [{"power":1.4},{"slow":1.25,"power":1.1},{"power":1.2},{"slow":1.15},{"power":1.15}],
+      "cardUpgrades": [
+        {"power":0.1},
+        {"slow":0.08},
+        {"power":0.1},
+        {"slow":0.1},
+        {"power":0.08},
+        {"power":0.12},
+        {"slow":0.08},
+        {"power":0.1},
+        {"slow":0.1,"power":0.1}
+      ]
+    },
+    "tractor": {
+      "power": null,
+      "rate": 0.13,
+      "rangeTiles": null,
+      "params": {"liftSize":1},
+      "battleUpgrades": [{"rate":1.12},{"rate":1.1},{"rate":1.12},{"liftSize":1,"rateIfMaxLift":1.15},{"rate":1.1}],
+      "cardUpgrades": [
+        {"rate":0.05},
+        {"liftSize":1},
+        {"rate":0.06},
+        {"rate":0.05},
+        {"rate":0.07},
+        {"rate":0.05},
+        {"liftSize":1},
+        {"rate":0.06},
+        {"rate":0.07}
+      ]
+    }
+  },
+  "ants": {
+    "small": {"hp":5,"speed":58,"armor":0,"steal":1,"weight":1.2,"size":"small"},
+    "worker": {"hp":10,"speed":40,"armor":0,"steal":1,"weight":1,"size":"regular"},
+    "big": {"hp":40,"speed":27,"armor":2,"steal":2,"weight":0.5,"size":"large"},
+    "gasmask": {"hp":16,"speed":38,"armor":1,"steal":1,"weight":1,"size":"regular","gasImmune":true},
+    "armored": {"hp":30,"speed":30,"armor":6,"steal":2,"weight":0.6,"size":"regular"},
+    "flyer": {"hp":10,"speed":62,"armor":0,"steal":1,"weight":1.3,"size":"regular","flying":true},
+    "sprinter": {"hp":20,"speed":52,"armor":4,"steal":1,"weight":0.8,"size":"regular","lateGame":true},
+    "heavy": {"hp":60,"speed":24,"armor":6,"steal":2,"weight":0.35,"size":"large","lateGame":true},
+    "queen": {
+      "hp": 1100,
+      "speed": 13,
+      "armor": 4,
+      "weight": 0,
+      "size": "queen",
+      "slowResist": 0.5,
+      "boss": true,
+      "spawn": {"type":"small","every":5,"count":1},
+      "queenTraits": ["slow"]
+    },
+    "queen2": {
+      "hp": 1500,
+      "speed": 19,
+      "armor": 3,
+      "weight": 0,
+      "size": "queen",
+      "slowResist": 0.4,
+      "boss": true,
+      "spawn": {"type":"flyer","every":6,"count":1},
+      "queenTraits": ["fast"]
+    }
+  },
+  "worlds": [
+    {"id":1,"name":"Cookie Kitchen","treat":"cookie","queen":"queen","levels":10,"unlock":null},
+    {
+      "id": 2,
+      "name": "Cake Castle",
+      "treat": "cake",
+      "queen": "queen2",
+      "levels": 10,
+      "unlock": {"allLevelsWonInWorld":1,"minStarsInWorld":20}
+    }
+  ],
+  "levels": [
+    {
+      "world": 1,
+      "name": "First Crumbs",
+      "map": "zigzag",
+      "waveCount": 4,
+      "hpMul": 1,
+      "base": 8.1,
+      "growth": 1.44,
+      "interval": 1.1,
+      "mix": [{"type":"worker","w":3},{"type":"small","w":2,"from":2}]
+    },
+    {
+      "world": 1,
+      "name": "Hungry Morning",
+      "map": "zigzag",
+      "waveCount": 4,
+      "hpMul": 1.3,
+      "base": 7,
+      "growth": 1.8,
+      "interval": 1,
+      "mix": [{"type":"worker","w":3},{"type":"small","w":2},{"type":"big","w":1,"from":3}]
+    },
+    {
+      "world": 1,
+      "name": "Gas Masks On",
+      "map": "hook",
+      "waveCount": 5,
+      "hpMul": 2.4,
+      "base": 7.8,
+      "growth": 1.75,
+      "interval": 1,
+      "mix": [{"type":"worker","w":3},{"type":"small","w":2},{"type":"big","w":1},{"type":"gasmask","w":2,"from":2}]
+    },
+    {
+      "world": 1,
+      "name": "Wings!",
+      "map": "fork",
+      "waveCount": 6,
+      "hpMul": 4.4,
+      "base": 7.2,
+      "growth": 1.8,
+      "interval": 0.95,
+      "mix": [
+        {"type":"worker","w":3},
+        {"type":"small","w":2},
+        {"type":"gasmask","w":1},
+        {"type":"big","w":1},
+        {"type":"flyer","w":2,"from":3}
+      ]
+    },
+    {
+      "world": 1,
+      "name": "Shiny Knights",
+      "map": "spiral",
+      "waveCount": 6,
+      "hpMul": 3,
+      "base": 8.8,
+      "growth": 1.96,
+      "interval": 0.95,
+      "mix": [
+        {"type":"worker","w":3},
+        {"type":"small","w":2},
+        {"type":"big","w":1},
+        {"type":"gasmask","w":1},
+        {"type":"armored","w":2,"from":2}
+      ],
+      "special": {"6":[{"type":"big","count":2,"interval":1.6}]}
+    },
+    {
+      "world": 1,
+      "name": "Sky Picnic",
+      "map": "twin",
+      "waveCount": 7,
+      "hpMul": 3.4,
+      "base": 9.5,
+      "growth": 2,
+      "interval": 0.9,
+      "mix": [
+        {"type":"worker","w":2},
+        {"type":"small","w":3},
+        {"type":"flyer","w":3},
+        {"type":"armored","w":1},
+        {"type":"gasmask","w":1}
+      ]
+    },
+    {
+      "world": 1,
+      "name": "Heavy Traffic",
+      "map": "snake",
+      "waveCount": 8,
+      "hpMul": 2,
+      "base": 9.4,
+      "growth": 2.07,
+      "interval": 0.9,
+      "mix": [
+        {"type":"worker","w":2},
+        {"type":"small","w":2},
+        {"type":"big","w":2},
+        {"type":"armored","w":2},
+        {"type":"gasmask","w":1}
+      ]
+    },
+    {
+      "world": 1,
+      "name": "Masked Ball",
+      "map": "fork",
+      "waveCount": 8,
+      "hpMul": 3.1,
+      "base": 11,
+      "growth": 2.2,
+      "interval": 0.85,
+      "mix": [
+        {"type":"worker","w":2},
+        {"type":"small","w":2},
+        {"type":"gasmask","w":3},
+        {"type":"armored","w":1},
+        {"type":"flyer","w":2}
+      ]
+    },
+    {
+      "world": 1,
+      "name": "The Swarm",
+      "map": "twin",
+      "waveCount": 9,
+      "hpMul": 3.2,
+      "base": 11.4,
+      "growth": 2.28,
+      "interval": 0.75,
+      "mix": [
+        {"type":"small","w":4},
+        {"type":"worker","w":2},
+        {"type":"flyer","w":2},
+        {"type":"sprinter","w":1,"from":2},
+        {"type":"big","w":1}
+      ]
+    },
+    {
+      "world": 1,
+      "name": "Her Majesty",
+      "map": "cross",
+      "waveCount": 9,
+      "hpMul": 2.1,
+      "base": 12,
+      "growth": 2.4,
+      "interval": 0.8,
+      "mix": [{"type":"worker","w":2},{"type":"small","w":2},{"type":"heavy","w":2},{"type":"flyer","w":2}],
+      "special": {"9":[{"type":"queen","count":1,"interval":1,"delay":4}]}
+    },
+    {
+      "world": 2,
+      "name": "Cake Gate",
+      "map": "frosting",
+      "waveCount": 6,
+      "hpMul": 3,
+      "base": 10,
+      "growth": 1.8,
+      "interval": 1,
+      "mix": [{"type":"worker","w":3},{"type":"small","w":2},{"type":"gasmask","w":2,"from":2}]
+    },
+    {
+      "world": 2,
+      "name": "Sugar Steps",
+      "map": "staircase",
+      "waveCount": 6,
+      "hpMul": 3.2,
+      "base": 9,
+      "growth": 2,
+      "interval": 0.95,
+      "mix": [{"type":"worker","w":3},{"type":"small","w":2},{"type":"big","w":1},{"type":"armored","w":1,"from":3}]
+    },
+    {
+      "world": 2,
+      "name": "Layer Cake",
+      "map": "layers",
+      "waveCount": 6,
+      "hpMul": 3.4,
+      "base": 10,
+      "growth": 2,
+      "interval": 0.95,
+      "mix": [{"type":"worker","w":3},{"type":"small","w":2},{"type":"flyer","w":2,"from":2},{"type":"gasmask","w":1}]
+    },
+    {
+      "world": 2,
+      "name": "Candle Light",
+      "map": "candles",
+      "waveCount": 6,
+      "hpMul": 3.6,
+      "base": 10,
+      "growth": 2.1,
+      "interval": 0.9,
+      "mix": [
+        {"type":"worker","w":2},
+        {"type":"small","w":2},
+        {"type":"armored","w":2},
+        {"type":"sprinter","w":1,"from":3},
+        {"type":"big","w":1}
+      ]
+    },
+    {
+      "world": 2,
+      "name": "Tea Party",
+      "map": "teaparty",
+      "waveCount": 7,
+      "hpMul": 3.6,
+      "base": 10.5,
+      "growth": 2.1,
+      "interval": 0.9,
+      "mix": [
+        {"type":"worker","w":2},
+        {"type":"small","w":3},
+        {"type":"flyer","w":2},
+        {"type":"gasmask","w":2},
+        {"type":"big","w":1}
+      ]
+    },
+    {
+      "world": 2,
+      "name": "Frosting Rush",
+      "map": "frosting",
+      "waveCount": 7,
+      "hpMul": 3.8,
+      "base": 11,
+      "growth": 2.2,
+      "interval": 0.85,
+      "mix": [
+        {"type":"small","w":3},
+        {"type":"worker","w":2},
+        {"type":"sprinter","w":2},
+        {"type":"armored","w":1},
+        {"type":"flyer","w":1}
+      ]
+    },
+    {
+      "world": 2,
+      "name": "Heavy Icing",
+      "map": "snake",
+      "waveCount": 8,
+      "hpMul": 3.4,
+      "base": 11,
+      "growth": 2.2,
+      "interval": 0.9,
+      "mix": [
+        {"type":"worker","w":2},
+        {"type":"big","w":2},
+        {"type":"heavy","w":1,"from":3},
+        {"type":"armored","w":2},
+        {"type":"small","w":2}
+      ]
+    },
+    {
+      "world": 2,
+      "name": "Sprinkle Storm",
+      "map": "layers",
+      "waveCount": 8,
+      "hpMul": 3.8,
+      "base": 11.5,
+      "growth": 2.3,
+      "interval": 0.85,
+      "mix": [
+        {"type":"small","w":3},
+        {"type":"flyer","w":3},
+        {"type":"worker","w":2},
+        {"type":"gasmask","w":2},
+        {"type":"sprinter","w":1}
+      ]
+    },
+    {
+      "world": 2,
+      "name": "Cherry on Top",
+      "map": "candles",
+      "waveCount": 9,
+      "hpMul": 4,
+      "base": 12,
+      "growth": 2.4,
+      "interval": 0.8,
+      "mix": [
+        {"type":"worker","w":2},
+        {"type":"small","w":3},
+        {"type":"heavy","w":1},
+        {"type":"sprinter","w":2},
+        {"type":"flyer","w":2}
+      ]
+    },
+    {
+      "world": 2,
+      "name": "The Swift Queen",
+      "map": "cross",
+      "waveCount": 9,
+      "hpMul": 2.6,
+      "base": 12,
+      "growth": 2.4,
+      "interval": 0.8,
+      "mix": [{"type":"worker","w":2},{"type":"small","w":2},{"type":"sprinter","w":2},{"type":"flyer","w":2}],
+      "special": {"9":[{"type":"queen2","count":1,"interval":1,"delay":4}]}
+    }
+  ],
+  "maps": {
+    "zigzag": {
+      "name": "Breakfast Counter",
+      "theme": 0,
+      "path": [[1,-0.6],[1,2],[8,2],[8,5],[1,5],[1,8],[8,8],[8,10]],
+      "props": [{"k":"sugar","c":5,"r":10},{"k":"mug","c":9,"r":6}]
+    },
+    "hook": {
+      "name": "Baking Table",
+      "theme": 1,
+      "path": [[8,-0.6],[8,1],[2,1],[2,4],[7,4],[7,7],[2,7],[2,10],[6,10]],
+      "props": [{"k":"jam","c":0,"r":11},{"k":"plant","c":9,"r":9}]
+    },
+    "spiral": {
+      "name": "Midnight Snack",
+      "theme": 2,
+      "path": [[-0.6,1],[8,1],[8,10],[1,10],[1,4],[5,4],[5,7]],
+      "props": [{"k":"mug","c":3,"r":7},{"k":"spoon","c":9,"r":11}]
+    },
+    "fork": {
+      "name": "Sugar Bowl Split",
+      "theme": 3,
+      "grid": [
+        "....N.....",
+        "....#.....",
+        ".#######..",
+        ".#.....#..",
+        ".#.B...#.P",
+        ".#...M.#..",
+        ".#.....#..",
+        ".#######..",
+        "....#.....",
+        "....####..",
+        ".J.....#..",
+        ".......C.."
+      ]
+    },
+    "twin": {
+      "name": "Two Front Doors",
+      "theme": 0,
+      "grid": [
+        ".N......N.",
+        ".#......#.",
+        ".###..###.",
+        "...#..#...",
+        "...#.B#...",
+        "...####...",
+        "....#..M..",
+        "....#.....",
+        ".####...P.",
+        ".#........",
+        ".######...",
+        "J.....C..."
+      ]
+    },
+    "snake": {
+      "name": "Cutting Board",
+      "theme": 1,
+      "grid": [
+        ".N........",
+        ".#..####..",
+        ".#..#..#..",
+        ".#..#..#.P",
+        ".####..#..",
+        ".......#..",
+        ".M.#####..",
+        "...#....J.",
+        "...#.####.",
+        ".B.#.#..#.",
+        "...###..#.",
+        "........C."
+      ]
+    },
+    "cross": {
+      "name": "Midnight Crossing",
+      "theme": 2,
+      "grid": [
+        "...N......",
+        "...#......",
+        "...#....M.",
+        ".##+####..",
+        ".#.#...#..",
+        ".#.#.B.#..",
+        ".#.#####..",
+        ".#.......S",
+        ".#..####..",
+        ".#..#..#..",
+        ".####..#..",
+        "P......C.."
+      ]
+    },
+    "frosting": {
+      "name": "Frosting Swirl",
+      "theme": 3,
+      "grid": [
+        "N.........",
+        "#######...",
+        "......#...",
+        ".####.#.M.",
+        ".#..#.#...",
+        ".#..#.#...",
+        ".#..###...",
+        ".#........",
+        ".######...",
+        "......#.B.",
+        ".P....###.",
+        "........C."
+      ]
+    },
+    "layers": {
+      "name": "Layer Cake",
+      "theme": 1,
+      "grid": [
+        "N........N",
+        "#........#",
+        "###....###",
+        "..#....#..",
+        "..#.M..#..",
+        "..######..",
+        ".....#....",
+        ".B...#..J.",
+        ".#####....",
+        ".#........",
+        ".#######..",
+        ".......C.."
+      ]
+    },
+    "candles": {
+      "name": "Birthday Candles",
+      "theme": 2,
+      "grid": [
+        ".N........",
+        ".#........",
+        ".#.####...",
+        ".#.#..#.M.",
+        ".#.#..#...",
+        ".###..#...",
+        "......#...",
+        ".S..###...",
+        "....#.....",
+        ".####..P..",
+        ".#........",
+        ".######C.."
+      ]
+    },
+    "teaparty": {
+      "name": "Tea Party",
+      "theme": 3,
+      "grid": [
+        "....N.....",
+        "....#.....",
+        "..#####...",
+        "..#...#...",
+        "..#.M.#...",
+        "..#...#...",
+        "..#####...",
+        "....#.....",
+        ".J..#.....",
+        "....#####.",
+        "........#.",
+        "........C."
+      ]
+    },
+    "staircase": {
+      "name": "Sugar Staircase",
+      "theme": 0,
+      "grid": [
+        "N.........",
+        "##........",
+        ".##.....M.",
+        "..##......",
+        "...##.....",
+        "....##....",
+        ".....##...",
+        "......##..",
+        ".B.....##.",
+        "........#.",
+        "...J....#.",
+        "........C."
+      ]
+    }
+  }
+}

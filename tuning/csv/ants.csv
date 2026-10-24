@@ -1,0 +1,11 @@
+id,hp,speed,armor,steal,weight,size,gasImmune,flying,lateGame,slowResist,boss,spawn,queenTraits,_queenTake
+small,5,58,0,1,1.2,small,,,,,,,,
+worker,10,40,0,1,1,regular,,,,,,,,
+big,40,27,2,2,0.5,large,,,,,,,,
+gasmask,16,38,1,1,1,regular,true,,,,,,,
+armored,30,30,6,2,0.6,regular,,,,,,,,
+flyer,10,62,0,1,1.3,regular,,true,,,,,,
+sprinter,20,52,4,1,0.8,regular,,,true,,,,,
+heavy,60,24,6,2,0.35,large,,,true,,,,,
+queen,1100,13,4,,0,queen,,,,0.5,true,"{""type"":""small"",""every"":5,""count"":1}","[""slow""]",50
+queen2,1500,19,3,,0,queen,,,,0.4,true,"{""type"":""flyer"",""every"":6,""count"":1}","[""fast""]",40

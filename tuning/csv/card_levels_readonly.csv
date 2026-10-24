@@ -1,0 +1,131 @@
+_tower,_cardLevel,_power,_rate,_rangeTiles,_changes
+slingshot,1,6,1.1,1.5,base
+slingshot,2,6,1.1,1.7,range +0.2 tiles
+slingshot,3,6.6,1.1,1.7,power +10%
+slingshot,4,6.6,1.1,1.9,range +0.2 tiles
+slingshot,5,6.6,1.21,1.9,rate +10%
+slingshot,6,7.26,1.21,1.9,power +10%
+slingshot,7,8.1312,1.21,1.9,power +12%
+slingshot,8,8.1312,1.331,1.9,rate +10%
+slingshot,9,8.1312,1.331,2.1,range +0.2 tiles
+slingshot,10,8.9443,1.331,2.3,range +0.2 tiles & power +10%
+spray,1,6,0.42,1.5,base
+spray,2,6.6,0.42,1.5,power +10%
+spray,3,6.6,0.4536,1.5,rate +8%
+spray,4,6.6,0.4536,1.7,range +0.2 tiles
+spray,5,7.392,0.4536,1.7,power +12%
+spray,6,7.392,0.4536,1.85,range +0.15 tiles
+spray,7,7.392,0.499,1.85,rate +10%
+spray,8,8.1312,0.499,1.85,power +10%
+spray,9,8.1312,0.499,2.05,range +0.2 tiles
+spray,10,8.9443,0.5489,2.05,power +10% & rate +10%
+sound,1,4,0.75,1.5,base
+sound,2,4,0.825,1.5,rate +10%
+sound,3,4,0.825,1.7,range +0.2 tiles
+sound,4,4.4,0.825,1.7,power +10%
+sound,5,4.84,0.825,1.7,power +10%
+sound,6,4.84,0.825,1.9,range +0.2 tiles
+sound,7,4.84,0.891,1.9,rate +8%
+sound,8,4.84,0.891,2.05,range +0.15 tiles
+sound,9,5.4208,0.891,2.05,power +12%
+sound,10,5.4208,0.9801,2.25,rate +10% & range +0.2 tiles
+ball,1,16,0.16,null,base
+ball,2,17.6,0.16,null,power +10%
+ball,3,17.6,0.176,null,rate +10%
+ball,4,17.6,0.176,null,ballRadius +10%
+ball,5,19.712,0.176,null,power +12%
+ball,6,19.712,0.1901,null,rate +8%
+ball,7,21.6832,0.1901,null,power +10%
+ball,8,21.6832,0.1901,null,ballRadius +10%
+ball,9,21.6832,0.2091,null,rate +10%
+ball,10,23.8515,0.23,null,power +10% & rate +10%
+fan,1,50,0.36,1.5,base
+fan,2,50,0.36,1.7,range +0.2 tiles
+fan,3,50,0.396,1.7,rate +10%
+fan,4,55,0.396,1.7,power +10%
+fan,5,55,0.396,1.9,range +0.2 tiles
+fan,6,55,0.396,2.05,range +0.15 tiles
+fan,7,60.5,0.396,2.05,power +10%
+fan,8,60.5,0.4356,2.05,rate +10%
+fan,9,67.76,0.4356,2.05,power +12%
+fan,10,67.76,0.4792,2.25,range +0.2 tiles & rate +10%
+pheromone,1,2.5,null,1,base
+pheromone,2,2.8,null,1,power +12%
+pheromone,3,2.8,null,1,slow +10%
+pheromone,4,2.8,null,1,charmTime +10%
+pheromone,5,3.08,null,1,power +10%
+pheromone,6,3.08,null,1,slow +8%
+pheromone,7,3.388,null,1,power +10%
+pheromone,8,3.388,null,1,charmTime +10%
+pheromone,9,3.388,null,1,charmTime +12%
+pheromone,10,3.7268,null,1,power +10% & slow +8%
+lizard,1,38,0.42,1.5,base
+lizard,2,42.56,0.42,1.5,power +12%
+lizard,3,42.56,0.4536,1.5,rate +8%
+lizard,4,42.56,0.4536,1.7,range +0.2 tiles
+lizard,5,46.816,0.4536,1.7,power +10%
+lizard,6,46.816,0.4536,1.9,range +0.2 tiles
+lizard,7,46.816,0.499,1.9,rate +10%
+lizard,8,51.4976,0.499,1.9,power +10%
+lizard,9,57.6773,0.499,1.9,power +12%
+lizard,10,63.445,0.499,2.1,range +0.2 tiles & power +10%
+laser,1,5,3.2,2.5,base
+laser,2,5,3.456,2.5,rate +8%
+laser,3,5.5,3.456,2.5,power +10%
+laser,4,5.5,3.456,2.7,range +0.2 tiles
+laser,5,5.5,3.8016,2.7,rate +10%
+laser,6,6.05,3.8016,2.7,power +10%
+laser,7,6.05,3.8016,2.9,range +0.2 tiles
+laser,8,6.776,3.8016,2.9,power +12%
+laser,9,6.776,4.1818,2.9,rate +10%
+laser,10,7.4536,4.6,2.9,power +10% & rate +10%
+zapper,1,15,1.5,2,base
+zapper,2,15,1.5,2.2,range +0.2 tiles
+zapper,3,16.5,1.5,2.2,power +10%
+zapper,4,16.5,1.65,2.2,rate +10%
+zapper,5,16.5,1.65,2.4,range +0.2 tiles
+zapper,6,18.48,1.65,2.4,power +12%
+zapper,7,18.48,1.782,2.4,rate +8%
+zapper,8,20.328,1.782,2.4,power +10%
+zapper,9,20.328,1.782,2.6,range +0.2 tiles
+zapper,10,22.3608,1.782,2.75,power +10% & range +0.15 tiles
+glue,1,0.55,null,1,base
+glue,2,0.55,null,1,stickTime +12%
+glue,3,0.594,null,1,power +8%
+glue,4,0.594,null,1,stickTime +15%
+glue,5,0.6296,null,1,power +6%
+glue,6,0.68,null,1,power +8%
+glue,7,0.68,null,1,stickTime +10%
+glue,8,0.68,null,1,stickTime +15%
+glue,9,0.7344,null,1,power +8%
+glue,10,0.7711,null,1,stickTime +12% & power +5%
+gate,1,4.5,2.85,1,base
+gate,2,4.5,3.135,1,rate +10%
+gate,3,4.95,3.135,1,power +10%
+gate,4,5.544,3.135,1,power +12%
+gate,5,5.544,3.3858,1,rate +8%
+gate,6,5.544,3.6567,1,rate +8%
+gate,7,6.0984,3.6567,1,power +10%
+gate,8,6.5863,3.6567,1,power +8%
+gate,9,6.5863,4.0224,1,rate +10%
+gate,10,7.2449,4.2637,1,power +10% & rate +6%
+lava,1,6,null,1,base
+lava,2,6.6,null,1,power +10%
+lava,3,6.6,null,1,slow +8%
+lava,4,7.26,null,1,power +10%
+lava,5,7.26,null,1,slow +10%
+lava,6,7.8408,null,1,power +8%
+lava,7,8.7817,null,1,power +12%
+lava,8,8.7817,null,1,slow +8%
+lava,9,9.6599,null,1,power +10%
+lava,10,10.6259,null,1,slow +10% & power +10%
+tractor,1,null,0.13,null,base
+tractor,2,null,0.1365,null,rate +5%
+tractor,3,null,0.1365,null,liftSize +1 size
+tractor,4,null,0.1447,null,rate +6%
+tractor,5,null,0.1519,null,rate +5%
+tractor,6,null,0.1625,null,rate +7%
+tractor,7,null,0.1706,null,rate +5%
+tractor,8,null,0.1706,null,liftSize +1 size
+tractor,9,null,0.1808,null,rate +6%
+tractor,10,null,0.1935,null,rate +7%

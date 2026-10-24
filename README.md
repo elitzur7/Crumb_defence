@@ -12,6 +12,7 @@ Crumb Defense is a cute, offline ant tower-defense game. Ants march from their n
 ├── TOWER-SPEC.md      Tower spec
 ├── README.md          This file
 ├── .gitignore
+├── tuning/            Balance numbers (tuning.json, CSV export, converters)
 └── game/              Capacitor + JS canvas game
     ├── src/           Game logic (config, sim, rendering, meta)
     ├── tests/         Unit and regression tests
