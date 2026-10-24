@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+android/build/
+android/app/build/
+.gradle/
+**/android/build/
+**/android/app/build/
+**/.gradle/
+
+# Release signing material (kept outside this repo)
+*.jks
+*.keystore
+*.p12
+keystore.properties
+
+# Local machine config and environment secrets
+local.properties
+.env*

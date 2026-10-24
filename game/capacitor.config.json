@@ -1,0 +1,7 @@
+{
+  "appId": "com.yair.crumbdefense",
+  "appName": "Crumb Defense",
+  "webDir": "www",
+  "server": { "androidScheme": "https" },
+  "android": { "allowMixedContent": false, "webContentsDebuggingEnabled": false }
+}
