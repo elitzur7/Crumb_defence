@@ -10,7 +10,7 @@ const src = (f) => readFileSync(new URL(`../src/${f}`, import.meta.url), 'utf8')
 const HP = [1, 1.56, 3, 6.6, 2.803, 4.321, 2.225, 3.72, 4.8, 2.373, 3.054, 3.387, 2.875, 3.6, 5.304, 4.213, 2.38, 3.557, 4.065, 1.6];
 
 test('version is >= v0.7.3 (versionCode 17+; the current release is asserted in v074.test.js)', () => {
-  assert.match(C.VERSION, /^0\.7\.[3-9]$/);
+  assert.match(C.VERSION, /^0\.7\.[3-9](\.\d+)?$/);
   assert.ok(+/versionCode (\d+)/.exec(readFileSync(new URL('../android/app/build.gradle', import.meta.url), 'utf8'))[1] >= 17);
   assert.equal(JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version, C.VERSION);
 });

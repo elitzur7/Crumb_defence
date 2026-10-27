@@ -2222,7 +2222,7 @@ var LIFT_MAX = 3, SIZE_RANK = { small: 1, regular: 2, large: 3 }, LIFT_NAMES = [
   stickTime: "Stick",
   liftSize: "Lifts"
 }, SLOW_CAP = 0.85, ALL_CARDS = Object.keys(TOWERS), STARTER_CARDS = ["slingshot", "spray", "glue", "fan", "ball"];
-var AIR_COUNTERS = ["laser", "zapper"], VERSION = "0.7.4", ANT_SIZES = { ...tuning_default.antSizes }, ANT_TEXT = {
+var AIR_COUNTERS = ["laser", "zapper"], VERSION = "0.7.4.1", ANT_SIZES = { ...tuning_default.antSizes }, ANT_TEXT = {
   small: { name: "Scout Ant", desc: "Tiny, fast, comes in swarms." },
   worker: { name: "Worker Ant", desc: "The regular. Hard hat included." },
   big: { name: "Big Ant", desc: "Slow, chunky, a bit of armor." },

@@ -3,7 +3,7 @@
 import puppeteer from 'puppeteer-core';
 import fs from 'node:fs';
 import { serve } from './serve.mjs';
-const OUT = '/workspace/ant-td/qa/v0.7.4/qa-v073-suite'; fs.mkdirSync(OUT, { recursive: true });
+const OUT = '/workspace/ant-td/qa/v0.7.4.1/qa-v073-suite'; fs.mkdirSync(OUT, { recursive: true });
 await serve(8891, 'www-test'); await serve(8892, 'www');
 const browser = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: true, args: ['--no-sandbox'] });
 let fails = 0; const R = [];
@@ -30,7 +30,7 @@ async function open(w = 393, h = 852, dpr = 2.75, reduced = false) {
   return { page, G, btns, btn, tap, drawn, errors };
 }
 const DECK = ['slingshot', 'spray', 'glue', 'fan', 'ball'];
-const VER = 'v0.7.4';
+const VER = 'v0.7.4.1';
 
 // ---------- 1. safe-area inset: frame-loop re-read, orientationchange, visualViewport ----------
 {

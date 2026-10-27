@@ -147,7 +147,7 @@ export const AIR_COUNTERS = ['laser', 'zapper'];
 //   queen  = unchanged (Yair: her size is "relatively good").
 // Armored = regular size + armor/helmet only. Late-game exceptions (item 14d/e): Heavy Knight = LARGE armored,
 // Sprint Knight = FAST armored (regular body, sports shoes + jersey). Max 5 ant types per battle (item 15, see LEVELS).
-export const VERSION = '0.7.4'; // v0.7: shown on the map screen (keep in step with package.json + android versionName)
+export const VERSION = '0.7.4.1'; // v0.7: shown on the map screen (keep in step with package.json + android versionName)
 export const ANT_SIZES = { ...TUNING.antSizes };
 const ANT_TEXT = {
   small: { name: 'Scout Ant', desc: 'Tiny, fast, comes in swarms.' },

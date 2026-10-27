@@ -16,10 +16,10 @@ const DECK = ['slingshot', 'laser', 'zapper'];
 const mk = (o = {}) => { const b = new Battle({ levelIndex: 0, deck: DECK, seed: 1, ...o }); b.nextWaveAt = 1e9; b.crumbs = 999; return b; };
 const still = (a) => { a.speed = 0; return a; };
 
-test('v0.7.4 version + versionCode 18', () => {
-  assert.equal(C.VERSION, '0.7.4');
-  assert.match(readFileSync(new URL('../android/app/build.gradle', import.meta.url), 'utf8'), /versionCode 18[\s\S]*versionName "0\.7\.4"/);
-  assert.equal(JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version, '0.7.4');
+test('v0.7.4 version + versionCode (>= 18; the hotfix v0.7.4.1 is asserted in v0741.test.js)', () => {
+  assert.match(C.VERSION, /^0\.7\.4(\.\d+)?$/);
+  assert.ok(+/versionCode (\d+)/.exec(readFileSync(new URL('../android/app/build.gradle', import.meta.url), 'utf8'))[1] >= 18);
+  assert.equal(JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version, C.VERSION);
 });
 
 // ---------------- M-1 ----------------
