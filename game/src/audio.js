@@ -22,10 +22,14 @@ function noise(dur, vol = 0.4, hp = 800) {
   const s = ac.createBufferSource(); s.buffer = buf; const f = ac.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = hp;
   const g = ac.createGain(); g.gain.value = vol; s.connect(f); f.connect(g); g.connect(master); s.start();
 }
+let speedK = 1;
+export function setAudioSpeed(k) { speedK = k; }
+const FAST_THROTTLED = new Set(['laser', 'zap', 'pop', 'pulse']); // v0.7.4 M0: at 4x these repeat the most; throttled to 120 ms (everything else stays 60 ms)
+export const throttleMs = (name, speed) => (speed >= 4 && FAST_THROTTLED.has(name) ? 120 : 60);
 export function sfx(name) {
   if (!ac || muted) return;
   const now = performance.now();
-  if (last[name] && now - last[name] < 60) return; // throttle
+  if (last[name] && now - last[name] < throttleMs(name, speedK)) return; // throttle
   last[name] = now;
   switch (name) {
     case 'pop': tone(520 + Math.random() * 200, 0.12, 'sine', 0.35, 1.8); break;

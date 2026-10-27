@@ -29,6 +29,10 @@ export const BATTLE = {
   // v0.7.2 C13 cookie guard (fly swatter): free, automatic, fixed on the cookie. One swat every `interval` s (the timer waits while nothing is in range)
   // of `damage` (armour applies, min 1) at an ant within `range` px of the cookie; carrier nearest the cookie first, else nearest ant; hits flyers.
   swatter: { on: true, damage: 4, interval: 4, range: 72, first: 4, air: true },
+  // v0.7.4 M2 'rescue the crumb' (FLAG, default OFF = the 40% above comes back automatically, exactly as in v0.7.3). With on: true a killed carrier
+  // returns `auto` of its piece at once and leaves a piece worth (tap - auto) x the stolen food on the trail for `window` s of WALL time
+  // (any game speed); a tap within `radius` (design px) collects it. Pieces closer than `mergeRadius` merge. Ship `on: false` until the human tap check.
+  rescue: { on: false, auto: 0.2, tap: 0.6, window: 3, radius: 30, mergeRadius: 28 },
   carrierSpeedMul: 0.85,    // carriers walk a bit slower on the way home
   startCrumbs: 0,           // crumbs are battle-only and always start from this value (spec: 0)
   // Card cost: cost of the Nth card played this battle (N starts at 0) = firstCardCost + N * cardCostStep
@@ -143,7 +147,7 @@ export const AIR_COUNTERS = ['laser', 'zapper'];
 //   queen  = unchanged (Yair: her size is "relatively good").
 // Armored = regular size + armor/helmet only. Late-game exceptions (item 14d/e): Heavy Knight = LARGE armored,
 // Sprint Knight = FAST armored (regular body, sports shoes + jersey). Max 5 ant types per battle (item 15, see LEVELS).
-export const VERSION = '0.7.3'; // v0.7: shown on the map screen (keep in step with package.json + android versionName)
+export const VERSION = '0.7.4'; // v0.7: shown on the map screen (keep in step with package.json + android versionName)
 export const ANT_SIZES = { ...TUNING.antSizes };
 const ANT_TEXT = {
   small: { name: 'Scout Ant', desc: 'Tiny, fast, comes in swarms.' },
@@ -288,6 +292,10 @@ export const CALENDAR = {
 // ---------------- UI timing ----------------
 export const UI = {
   queenCheerHold: 4.2,         // v0.6.2 item 14: on a queen-level win the result panel + buttons wait this long ('Way to go' + fireworks)
+  swatPivot: { dx: 46, dy: 17, oldDx: 35, oldDy: 21 }, // v0.7.4 P: the swatter's pivot beside the cookie (was 35, 21): the slap head lands 10-14 px farther from the cookie centre
+  carrierLane: 5,              // v0.7.4 P: lateral offset (design px) of an ant walking home with food
+  rescueSweepRadius: 24,       // v0.7.4 M2: a finger drag collects crumbs within this distance of its path
+  speedMaxAtStart: 2,          // v0.7.4 M0: a battle starts at 1x or 2x at most (a session's 4x becomes 2x); the speed is never saved
   toastTime: 0.9,              // seconds for small in-battle notices ("Need 10 crumbs")
   menuToastTime: 1.3,
   mergeAnimTime: 1.5,

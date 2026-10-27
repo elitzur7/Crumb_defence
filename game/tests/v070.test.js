@@ -37,9 +37,9 @@ test('Must 4: D-T6 in-battle power multipliers -> cumulative x2..x6 (Laser 1.70/
   const g = src('game.js'); assert.ok(/dmg/.test(g) && /upgradeGain/.test(g), 'upgrade display shows the gain');
 });
 
-test('Must 5 (replaced in v0.7.3 by the C17 table): hpMul per level', () => {
+test('Must 5 (replaced in v0.7.3 by the C17 table; L10 2.373 and L17 2.38 since v0.7.4 M-1): hpMul per level', () => {
   const h = (n) => C.LEVELS[n - 1].hpMul;
-  const want = [1, 1.56, 3, 6.6, 2.803, 4.321, 2.225, 3.72, 4.8, 2.3, 3.054, 3.387, 2.875, 3.6, 5.304, 4.213, 2.39, 3.557, 4.065, 1.6]; // C17 (crumb-design paste-mix-v073.txt)
+  const want = [1, 1.56, 3, 6.6, 2.803, 4.321, 2.225, 3.72, 4.8, 2.373, 3.054, 3.387, 2.875, 3.6, 5.304, 4.213, 2.38, 3.557, 4.065, 1.6]; // C17 (crumb-design paste-mix-v073.txt)
   want.forEach((v, i) => assert.equal(h(i + 1), v, `L${i + 1}`));
 });
 
@@ -108,7 +108,7 @@ test('Must 6: pack reveal for ALL packs (paid + free), skippable, no toast / NEW
   assert.ok(!/@capacitor\/haptics/.test(readFileSync(new URL('../package.json', import.meta.url), 'utf8')), 'no haptics dependency');
 });
 
-test('version label in game (0.7.3)', () => { assert.equal(C.VERSION, '0.7.3'); assert.ok(/'v' \+ C\.VERSION/.test(src('game.js'))); });
+test('version label in game (0.7.4)', () => { assert.equal(C.VERSION, '0.7.4'); assert.ok(/'v' \+ C\.VERSION/.test(src('game.js'))); });
 
 test('Should D-P4: per-world card-level cap in battle (W1 L4, W2 L6); the prep screen says so', () => {
   assert.equal(TJ.worlds[0].cardLevelCap, 4); assert.equal(TJ.worlds[1].cardLevelCap, 6);

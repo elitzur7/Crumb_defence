@@ -1,13 +1,15 @@
 // Crumb Defense - app shell: screens, input, rendering of battle & menus.
 import * as C from './config.js';
-import { Battle, levelAntTypes, towerStat, upgradeDiff, formatStat, statLabel, cardUpgradeDiff, upgradeGain, worldCardLevelCap } from './sim.js';
+import { Battle, TARGET_MODES, hasTargetModes, levelAntTypes, towerStat, upgradeDiff, formatStat, statLabel, cardUpgradeDiff, upgradeGain, worldCardLevelCap } from './sim.js';
 import * as Cal from './calendar.js';
 import * as M from './meta.js';
 import * as A from './art.js';
-import { initAudio, sfx, setMuted } from './audio.js';
+import { initAudio, sfx, setMuted, setAudioSpeed } from './audio.js';
+import { STEP, advanceFrame, newClock, nextSpeed, startSpeed } from './loop.js';
 import { smartBotStep } from './bot.js';
 import { addFloatText } from './fx.js';
 import * as Treat from './treat.js';
+import { previewModel, waveGroups, stripRect, isTank, isFlyer, STRIP_H } from './preview.js';
 
 const W = 400, H = 720, MAP_Y = 68, MAP_W = C.GRID_COLS * C.TILE, MAP_H = C.GRID_ROWS * C.TILE, TRAY_Y = MAP_Y + MAP_H + 4;
 const BG = '#fbe9dc';
@@ -41,7 +43,7 @@ function maybeShowCalendar() {
   calAutoDay = d; openCalendar();
 }
 function openCalendar() { S.cal = { t: 0, result: null }; sfx('tap'); }
-function setPaused(v) { S.paused = v; if (S.battle) S.battle.paused = v; if (v) { S.sel = null; S.drag = null; S.info = null; S.mode = null; } }
+function setPaused(v) { S.paused = v; if (S.battle) S.battle.paused = v; if (v) { S.sel = null; S.drag = null; S.info = null; S.mode = null; if (S.toast && S.toast.hint) S.toast = null; } }
 
 // ---------------- layout / resize ----------------
 // v0.7.2 C16: the meta screens (map, cards, card detail, shop) sit above a fixed bottom tab bar (Map / Cards / Shop). The bar is 56 dp tall plus the
@@ -121,6 +123,8 @@ canvas.addEventListener('pointerdown', (e) => {
 canvas.addEventListener('pointermove', (e) => {
   if (!down) return; const p = toLogical(e);
   if (Math.hypot(p.x - down.x, p.y - down.y) > 8) down.moved = true;
+  if (S.screen === 'battle' && S.battle && !S.drag) { sweepPieces(S.battle, down.lx ?? down.x, down.ly ?? down.y, p.x, p.y); }
+  down.lx = p.x; down.ly = p.y;
   if (S.drag) { S.drag.x = p.x; S.drag.y = p.y; S.drag.moved = S.drag.moved || down.moved; }
   if (down.scroll0 != null && down.moved) S.mapScroll = clampScroll(down.scroll0 + (p.y - down.y));
 });
@@ -141,8 +145,17 @@ document.addEventListener('visibilitychange', () => {
 
 // ---------------- screens ----------------
 // v0.7.3: our own history.back() is async; its popstate must not be treated as the user's Back press (it could close a calendar that go('map') just opened).
-let ownBackUntil = 0;
-function ownBack() { try { ownBackUntil = performance.now() + 1000; history.back(); } catch (e) { ownBackUntil = 0; } }
+// v0.7.4 P2: the swallow window is short (400 ms, the echo normally arrives in a few ms), it is cleared by the echo itself and by a timer, so a REAL Back press
+// is never eaten for a whole second (v0.7.3 kept the flag for 1 s whenever history.back() had no echo to consume it).
+const OWN_BACK_MS = 400;
+let ownBackPending = 0, ownBackAt = 0, ownBackTimer = 0;
+function ownBack() {
+  try {
+    ownBackPending++; ownBackAt = performance.now();
+    clearTimeout(ownBackTimer); ownBackTimer = setTimeout(() => { ownBackPending = 0; }, OWN_BACK_MS);
+    history.back();
+  } catch (e) { ownBackPending = 0; }
+}
 // v0.7.3: the gear panel owns one history entry while it is open (when none exists yet), so Android Back closes the panel instead of exiting the app.
 function openSettings() {
   S.settings = { t: 0 }; S.confirmReset = 0; sfx('tap');
@@ -161,8 +174,8 @@ function go(screen) {
   } catch (e) { /* history unavailable */ }
 }
 window.addEventListener('popstate', () => {
-  if (ownBackUntil && performance.now() < ownBackUntil) { ownBackUntil = 0; return; } // the echo of our own history.back(): not a user Back press
-  ownBackUntil = 0;
+  if (ownBackPending > 0 && performance.now() - ownBackAt < OWN_BACK_MS) { ownBackPending--; if (!ownBackPending) clearTimeout(ownBackTimer); return; } // the echo of our own history.back(): not a user Back press
+  ownBackPending = 0; clearTimeout(ownBackTimer);
   if (S.pack) { closePack('ok'); try { history.pushState({ inner: 1 }, ''); } catch (e) {} return; } // v0.7: back closes the pack reveal
   if (S.dialog) { S.dialog = null; try { history.pushState({ inner: 1 }, ''); } catch (e) {} return; }
   if (S.screen === 'map') { if (S.cal) S.cal = null; else if (S.settings) { S.settings = null; S.confirmReset = 0; S.settingsPushed = false; } return; }
@@ -189,7 +202,7 @@ function startBattle(levelIndex = S.levelIndex, deck = S.prep.deck, bonuses = S.
   S.battle = new Battle({ levelIndex, deck, bonusTypes: bonuses, bonusStock: { ...S.save.bonusStock }, cardLevels: M.cardLevels(S.save), seed,
     onBonusUsed: (type) => { M.consumeBonus(S.save, type); persist(); } }); // deducted immediately: Restart/Quit can't refund it
   S.battleStartStock = { ...S.save.bonusStock };
-  S.fx = []; S.swatQ = []; S.ui = []; S.result = null; setPaused(false); S.speed = S.speed || 1; S.sel = null; S.info = null; S.mode = null; S.queenDown = null;
+  S.fx = []; S.swatQ = []; S.ui = []; S.result = null; setPaused(false); S.speed = startSpeed(S.speed, C.UI.speedMaxAtStart); clock.acc = 0; S.sel = null; S.info = null; S.mode = null; S.queenDown = null; S.modeHint = false; S.battle.rescueScale = S.speed;
   go('battle');
 }
 function finishBattle() {
@@ -233,8 +246,24 @@ function tryPlay(i, c, r) {
   if (msgs[res.why]) toast(msgs[res.why], '#ffd0d0');
   return false;
 }
+// v0.7.4 M2 (flag rescue.on): a tap within `radius` of a dropped crumb collects it. The tap then goes on as usual (an empty tile still gets selected), except while a card
+// or booster is held: that tap only collects (a rescue must never place a tower or drop a bomb by accident). A card DRAG released near a crumb still places the tower (dropCard).
+function tryCollectAt(b, t) {
+  if (!b.cfg.rescue.on || !b.pieces.length) return false;
+  const q = b.pieceAt(t.x, t.y); return !!(q && b.collectPiece(q.id));
+}
+function sweepPieces(b, x0, y0, x1, y1) { // drag-sweep: pieces within 24 px of the finger's path
+  if (!b.cfg.rescue.on || !b.pieces.length || b.result || S.paused) return;
+  for (const q of b.pieces.slice()) {
+    const qx = q.x, qy = q.y + MAP_Y, dx = x1 - x0, dy = y1 - y0, L2 = dx * dx + dy * dy;
+    const k = L2 > 0 ? Math.max(0, Math.min(1, ((qx - x0) * dx + (qy - y0) * dy) / L2)) : 0;
+    if (Math.hypot(qx - (x0 + dx * k), qy - (y0 + dy * k)) <= C.UI.rescueSweepRadius) b.collectPiece(q.id);
+  }
+}
 function mapTap(p) {
   const b = S.battle; const t = tileAt(p); if (!t || b.result || S.paused) return;
+  const got = tryCollectAt(b, t);
+  if (got && S.sel) return;
   if (S.mode) { modeTap(b, t); return; }
   if (S.sel && S.sel.kind === 'card') { tryPlay(S.sel.i, t.c, t.r); return; }
   if (S.sel && S.sel.kind === 'bonus') {
@@ -244,8 +273,22 @@ function mapTap(p) {
   const tw = b.towers.find((q) => q.c === t.c && q.r === t.r);
   // tapping the same tower while its upgrade panel is showing keeps it open (no auto-close); otherwise toggle normally
   if (tw && S.info && S.info.tower === tw && S.info.auto) { S.info.auto = false; S.info.changed = null; return; }
+  // v0.7.4 M1: tapping a Slingshot / Laser / Zapper / Gecko whose panel is already open cycles who it shoots (Weakest -> Carrier -> Front); the panel's chips select directly
+  if (tw && S.info && S.info.tower === tw && !S.info.auto && hasTargetModes(tw.type)) { cycleMode(tw); S.info = { tower: tw, t: 0 }; return; }
   S.info = tw ? { tower: tw, t: 0 } : null;
 }
+// v0.7.4 M1: a one-time tip (per battle, never while paused) the first time a tank (Armoured / Big / Heavy / Queen) steals food, if a tower could change its target
+const HINT_ANTS = new Set(['armored', 'big', 'heavy', 'queen', 'queen2']);
+function maybeModeHint(b, e) {
+  if (S.modeHint || S.paused || !e.ant || !HINT_ANTS.has(e.ant) || !(e.n > 0)) return;
+  if (!b.towers.some((q) => hasTargetModes(q.type))) return;
+  S.modeHint = true; toast('Tip: tap a tower to change who it shoots', '#ffe39a'); S.toast.hint = true;
+}
+const MODE_NAME = { weak: 'Weakest', carrier: 'Carrier', front: 'Front' };
+const MODE_HELP = { weak: 'fewest HP first', carrier: 'ants carrying food first', front: 'closest to the cookie first' };
+function cycleMode(tw) { const m = S.battle.cycleTargetMode(tw); if (m) modeFeedback(tw, m); }
+function modeFeedback(tw, m) { sfx('tap'); addFloatText(S.fx, { key: 'mode' + tw.id, x: tw.x, y: tw.y - 26, n: 1, fmt: () => MODE_NAME[m], col: m === 'weak' ? '#fff' : '#ffe39a', life: 1.0 }); }
+function setMode(tw, m) { if (tw.mode === m) return; if (S.battle.setTargetMode(tw, m)) modeFeedback(tw, m); }
 
 // v0.5 items 11/12: Move (1 diamond) / Swap (free) - started from the tower info panel, finished by tapping the map
 function startMode(kind, tw) {
@@ -269,7 +312,7 @@ function modeTap(b, t) {
 }
 
 // ---------------- FX from sim events ----------------
-function addFx(f) { S.fx.push(f); if (S.fx.length > 300) S.fx.splice(0, 60); }
+function addFx(f) { S.fx.push(f); const cap = S.speed >= 4 ? 220 : 300; if (S.fx.length > cap) S.fx.splice(0, 60); } // v0.7.4 M0: a lower cap at 4x keeps S.fx well under 300 with 54 ants
 function addUi(f) { S.ui.push(f); if (S.ui.length > 60) S.ui.splice(0, 20); }
 const fmtFood = (n) => (Math.abs(n - Math.round(n)) < 0.05 ? String(Math.round(n)) : n.toFixed(1));
 // v0.7.3 C13: swatter visuals run on the BATTLE clock (b.time), so they follow pause and 2x speed. The sim applies the damage when the swing starts; the slap
@@ -279,9 +322,10 @@ const SWAT_HIT = 0.17;
 function swatHitTime(b) { return b.time - (0.5 - b.swatFx) + SWAT_HIT; }
 function killFx(e) {
   if (e.src === 'tractor') { addFloatText(S.fx, { k: 'crumbTxt', key: 'crumb', x: e.x, y: e.y - 14, n: e.crumbs, fmt: (n) => n, life: 0.9 }); return; } // the scoop event animates the throw
-  for (let i = 0; i < 4; i++) addFx({ k: 'crumbBit', x: e.x, y: e.y - 6, vx: (Math.random() - 0.5) * 90, vy: -40 - Math.random() * 60, life: 0.6, max: 0.6 });
+  const fast = S.speed >= 4; // v0.7.4 M0: at 4x fewer cosmetic bits per kill (the S.fx list stays small with 54 ants)
+  for (let i = 0; i < (fast ? 1 : 4); i++) addFx({ k: 'crumbBit', x: e.x, y: e.y - 6, vx: (Math.random() - 0.5) * 90, vy: -40 - Math.random() * 60, life: 0.6, max: 0.6 });
   addFx({ k: 'ko', x: e.x, y: e.y, ant: e.ant, life: 0.9, max: 0.9, face: Math.random() < 0.5 ? 1 : -1 });
-  for (let i = 0; i < 5; i++) addFx({ k: 'puff', x: e.x + (Math.random() - 0.5) * 10, y: e.y + (Math.random() - 0.5) * 6, vx: (Math.random() - 0.5) * 40, vy: -Math.random() * 30, r: 4 + Math.random() * 4, life: 0.5, max: 0.5 });
+  for (let i = 0; i < (fast ? 2 : 5); i++) addFx({ k: 'puff', x: e.x + (Math.random() - 0.5) * 10, y: e.y + (Math.random() - 0.5) * 6, vx: (Math.random() - 0.5) * 40, vy: -Math.random() * 30, r: 4 + Math.random() * 4, life: 0.5, max: 0.5 });
   addFloatText(S.fx, { k: 'crumbTxt', key: 'crumb', x: e.x, y: e.y - 14, n: e.crumbs, fmt: (n) => n, life: 0.9 });
   sfx('pop');
 }
@@ -334,7 +378,20 @@ function consumeEvents() {
       }
       case 'hit': addFx({ k: 'spark', x: e.x, y: e.y - 6, life: 0.15, max: 0.15 }); break;
       case 'gateZap': addFx({ k: 'spark', x: e.x, y: e.y - 14, life: 0.18, max: 0.18, col: '#fff27a' }); break;
-      case 'steal': S.cookieOuch = S.t + C.UI.ouchTime; Treat.onBite(S.treat, S.t, e.n || 1); // v0.4 item 18: animated bite reaction
+      case 'pieceDrop': {
+        if (!S.rescueHintSeen && !S.paused) { S.rescueHintSeen = true; toast('Tap the crumb to bring it home!', '#ffe39a'); S.toast.hint = true; }
+        sfx('tap'); break;
+      }
+      case 'pieceCollect': {
+        const cp = b.path.pts[b.path.pts.length - 1];
+        addFx({ k: 'crumbFly', x0: e.x, y0: e.y, x1: cp.x, y1: cp.y, life: 0.35, max: 0.35 });
+        addFloatText(S.fx, { key: 'rescue' + e.id, x: e.x, y: e.y - 20, n: e.n, fmt: (n) => `+${fmtFood(n)}`, col: '#4fc25a', life: 0.9 });
+        for (let i = 0; i < 4; i++) addFx({ k: 'star', x: e.x, y: e.y, vx: (Math.random() - 0.5) * 120, vy: -30 - Math.random() * 70, life: 0.45, max: 0.45 });
+        sfx('return'); break;
+      }
+      case 'pieceExpire': for (let i = 0; i < 3; i++) addFx({ k: 'puff', x: e.x + (Math.random() - 0.5) * 8, y: e.y, vx: (Math.random() - 0.5) * 30, vy: -Math.random() * 20, r: 3 + Math.random() * 3, life: 0.4, max: 0.4 }); break;
+      case 'steal': maybeModeHint(b, e);
+        S.cookieOuch = S.t + C.UI.ouchTime; Treat.onBite(S.treat, S.t, e.n || 1); // v0.4 item 18: animated bite reaction
         if (e.n) addFloatText(S.fx, { key: 'steal', x: e.x, y: e.y - 20, n: e.n, fmt: (n) => `-${fmtFood(n)}`, col: '#ff7a7a', life: 1 }); sfx('steal'); break;
       case 'foodReturn': addFloatText(S.fx, { key: 'food', x: e.x, y: e.y - 18, n: e.n, fmt: (n) => `+${fmtFood(n)} food back!`, col: '#8fe388', life: 1.1 }); sfx('return'); break;
       case 'place': case 'upgrade': {
@@ -378,23 +435,30 @@ function consumeEvents() {
 }
 
 // ---------------- main loop ----------------
-let lastT = performance.now(), acc = 0, insetClock = 0;
-const STEP = 1 / 60;
+let lastT = performance.now(), insetClock = 0;
+const clock = newClock();
+// v0.7.4 M0: one rendered frame of the battle. `speed` = the NUMBER of fixed 1/60 sub-steps per frame (1/2/4), never a bigger dt. Events are consumed and the
+// swatter queue flushed after EVERY sub-step, so the slap lands within one STEP (1/60 s) of its battle time at any speed (it used to wait for the frame end).
+function battleStep(dt) {
+  const b = S.battle;
+  b.rescueScale = S.speed; // a rescue piece lives its window in WALL time
+  b.update(dt);
+  if (S.autoBot) smartBotStep(b);
+  if (S.speed > 1 || b.result) { consumeEvents(); flushSwat(!!b.result); }
+  return !!b.result;
+}
+function battleFrame(dt) {
+  advanceFrame(clock, dt, S.speed, battleStep, { now: () => performance.now() });
+  consumeEvents(); flushSwat(!!S.battle.result);
+  if (S.battle.result) finishBattle();
+}
 function frame(now) {
   const dt = Math.min(0.1, (now - lastT) / 1000); lastT = now;
   S.t += dt;
   heartbeat(false);
   insetClock += dt; if (insetClock >= 0.5) { insetClock = 0; refreshInset(); } // v0.7.3: re-read the bottom inset ~every 500 ms
-  if (S.screen === 'battle' && S.battle && !S.paused && !S.result && !S.dialog) {
-    acc += dt * S.speed;
-    while (acc >= STEP) {
-      S.battle.update(STEP); acc -= STEP;
-      if (S.autoBot) smartBotStep(S.battle);
-      if (S.battle.result) break;
-    }
-    consumeEvents(); flushSwat(!!S.battle.result);
-    if (S.battle.result) finishBattle();
-  }
+  setAudioSpeed(S.screen === 'battle' ? S.speed : 1);
+  if (S.screen === 'battle' && S.battle && !S.paused && !S.result && !S.dialog) battleFrame(dt);
   render(dt);
   requestAnimationFrame(frame);
 }
@@ -677,7 +741,8 @@ function renderMapScreen() {
   renderUiFx(1 / 60);
 }
 // ---------------- v0.6 item 5: one-time onboarding (dim everything except one button + a pointing finger) ----------------
-function onboardSpot(R, id, onTap, msg) {
+let lastBubble = null; // test hook
+function onboardSpot(R, id, onTap, msg, bub = null) { // bub = { x, y, w }: an explicit bubble box (v0.7.4 P2: the Cards hint sits in the empty right half of the last card row, not over card labels)
   ctx.save();
   // full-screen dim with a bright cut-out: the hole is added to the SAME path (A.rr would beginPath() and wipe the rect)
   ctx.beginPath(); ctx.rect(-2000, -2000, W + 4000, H + 4000);
@@ -692,7 +757,8 @@ function onboardSpot(R, id, onTap, msg) {
   const fx = R.x + R.w / 2 + 18, fy = R.y - 22 - Math.abs(Math.sin(S.t * 4)) * 12;
   drawFinger(fx, fy);
   if (msg) { const my = R.y < 260 ? R.y + R.h + 22 : Math.max(90, R.y - (R.y > 600 ? 148 : 104)); // v0.7.3: a tab-bar spot lifts the bubble 44 px higher, off the bottom map row's stage labels
-    panel(60, my, 280, 40, '#fff6ee', 16); plainFit(msg, 200, my + 20, 256, 15, '#e0607e', 'center', '800'); }
+    if (bub) { panel(bub.x, bub.y, bub.w, 40, '#fff6ee', 16); plainFit(msg, bub.x + bub.w / 2, bub.y + 20, bub.w - 24, 15, '#e0607e', 'center', '800'); lastBubble = { x: bub.x, y: bub.y, w: bub.w, h: 40 }; }
+    else { panel(60, my, 280, 40, '#fff6ee', 16); plainFit(msg, 200, my + 20, 256, 15, '#e0607e', 'center', '800'); lastBubble = { x: 60, y: my, w: 280, h: 40 }; } }
 }
 // a cartoon hand pointing down at (x, y) (the fingertip)
 function drawFinger(x, y) {
@@ -1027,6 +1093,7 @@ function renderBattle(dt) {
     for (let k = 0; k < 2; k++) addFx({ k: 'dust', x: pl.x + (Math.random() - 0.5) * 30, y: pl.y + (Math.random() - 0.5) * 16, life: 0.8, max: 0.8 });
     ctx.save(); ctx.translate(pl.x, pl.y - 30 + Math.sin(t * 6) * 2); ctx.scale(pl.dx > 0.1 ? -1.6 : 1.6, 1.6); A.drawBonusIcon(ctx, 'plane', t); ctx.restore();
   }
+  drawPieces(b);
   renderFx(dt);
   if (t < 0 || b.time < b.freezeUntil) { ctx.fillStyle = 'rgba(190,235,255,0.22)'; ctx.fillRect(0, 0, MAP_W, MAP_H); }
   // ghost while dragging
@@ -1053,6 +1120,7 @@ function renderBattle(dt) {
     if (T.directional) drawAim(tw);
     ctx.beginPath(); ctx.arc(tw.x, tw.y, 21, 0, 7); ctx.lineWidth = 3; ctx.strokeStyle = '#ffe36e'; ctx.stroke();
   }
+  drawWaveStrip(b);
   ctx.restore();
   // map tap region (registered BEFORE the info panel so panel taps never fall through)
   button('map', 0, MAP_Y, MAP_W, MAP_H, mapTap);
@@ -1122,10 +1190,83 @@ function levelHasFlyers(i) { return levelAntTypes(i).some((t) => C.ANTS[t].flyin
 const diffText = (type, d) => `${d.label} ${formatStat(type, d.key, d.from)} \u2192 ${formatStat(type, d.key, d.to)}`;
 // the third stat box: the marble has no range - it shows how far it rolls at this spot / its width
 function rollHere(tw) { return tw.trailDir ? `${tw.trailDir.run} tile${tw.trailDir.run > 1 ? 's' : ''}` : 'no roll'; }
+// v0.7.4 M1: icons for the target modes (chip + tower badge): Weakest = a small ant, Carrier = a crumb, Front = an arrow into the cookie
+function drawModeIcon(m, x, y, k) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(k, k);
+  if (m === 'carrier') A.crumbIcon(ctx, 0, 0, 1.0, true);
+  else if (m === 'front') {
+    ctx.beginPath(); ctx.arc(7, 0, 4.6, 0, 7); ctx.fillStyle = '#e8b878'; ctx.fill(); ctx.lineWidth = 1.6; ctx.strokeStyle = A.CRUMB_OUTLINE; ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(-9, -1.8); ctx.lineTo(-3, -1.8); ctx.lineTo(-3, -5); ctx.lineTo(3, 0); ctx.lineTo(-3, 5); ctx.lineTo(-3, 1.8); ctx.lineTo(-9, 1.8); ctx.closePath();
+    ctx.fillStyle = '#ff6f6f'; ctx.fill(); ctx.lineWidth = 1.5; ctx.strokeStyle = A.CRUMB_OUTLINE; ctx.lineJoin = 'round'; ctx.stroke();
+  } else {
+    ctx.fillStyle = '#7a4a2a'; ctx.strokeStyle = A.CRUMB_OUTLINE; ctx.lineWidth = 1.4;
+    for (const [cx, cy, r] of [[-5, 0, 3.4], [0.5, 0, 2.7], [5.5, 0, 3.2]]) { ctx.beginPath(); ctx.arc(cx, cy, r, 0, 7); ctx.fill(); ctx.stroke(); }
+    ctx.strokeStyle = '#7a4a2a'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(-6, 3); ctx.lineTo(-7, 6); ctx.moveTo(0, 3); ctx.lineTo(0, 6); ctx.moveTo(6, 3); ctx.lineTo(7, 6); ctx.stroke();
+  }
+  ctx.restore();
+}
+// v0.7.4 M3: the wave preview strip (next wave's ants, between waves) / 'Ants left: N' (after the last wave started), in the free band at the top of the map.
+// Display only: no button, taps fall through to the tiles under it. Hidden while a card is held / dragged, a tower panel or the Move/Swap banner is up (they use that area).
+let stripLast = null; // test hook: what was drawn last frame { rect, kind, ... }
+// v0.7.4 M2: a dropped crumb to tap: bouncing crumb, a pulsing ring, and a timer ring that shrinks over its `window` (blinks at 1 s left); reduced motion: no bounce
+function drawPieces(b) {
+  if (!b.pieces.length) return;
+  const rm = reducedMotion();
+  for (const q of b.pieces) {
+    const frac = Math.max(0, q.left / q.total), blink = q.left <= 1 && Math.floor(S.t * 8) % 2 === 0;
+    const bounce = rm ? 0 : Math.abs(Math.sin(S.t * 6 + q.id)) * 5;
+    ctx.save(); ctx.translate(q.x, q.y);
+    ctx.beginPath(); ctx.ellipse(0, 6, 9, 3, 0, 0, 7); ctx.fillStyle = 'rgba(60,40,50,0.25)'; ctx.fill();
+    const pr = 17 + (rm ? 0 : Math.sin(S.t * 5) * 2.5);
+    ctx.beginPath(); ctx.arc(0, -2, pr, 0, 7); ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(255,255,255,0.75)'; ctx.stroke();
+    ctx.beginPath(); ctx.arc(0, -2, 14, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * frac); ctx.lineWidth = 3.4; ctx.lineCap = 'round'; ctx.strokeStyle = blink ? '#ff5a5a' : '#ffd45e'; ctx.stroke();
+    A.crumbIcon(ctx, 0, -4 - bounce, 1.35, true);
+    if (q.bonus >= 0.05) A.text(ctx, '+' + fmtFood(q.bonus), 0, -24 - bounce * 0.5, 10, '#fff7c9');
+    ctx.restore();
+  }
+}
+function drawWaveStrip(b) {
+  stripLast = null;
+  if (S.info || S.mode || S.drag || (S.sel && S.sel.kind === 'card')) return;
+  const m = previewModel(b); if (!m) return;
+  let groups = m.groups, more = m.moreAnts;
+  const widthOf = (gs, mo) => { // measured with the strip's own fonts
+    ctx.font = `bold 11px ${A.FONT}`;
+    return 12 + gs.reduce((w, g) => w + 18 + 2 + ctx.measureText('x' + g.count).width + 6, 0) + (mo ? ctx.measureText('+' + mo).width + 4 : 0);
+  };
+  let label = null, w;
+  if (m.kind === 'left') { label = `Ants left: ${m.left}`; ctx.font = `bold 12px ${A.FONT}`; w = ctx.measureText(label).width + 22; }
+  else w = widthOf(groups, more);
+  let rect = stripRect(b, w);
+  if (rect && m.kind === 'next') while (rect.w < w - 0.5 && groups.length > 1) { // too narrow here: fewer types, the rest become +n
+    const g = groups[groups.length - 1]; groups = groups.slice(0, -1); more += g.count; w = widthOf(groups, more); rect = stripRect(b, w);
+  }
+  if (!rect) return;
+  stripLast = { rect, kind: m.kind, n: m.n, groups, more, left: m.left };
+  ctx.save(); ctx.translate(rect.x, rect.y);
+  A.rr(ctx, 0, 0, rect.w, STRIP_H, STRIP_H / 2); ctx.fillStyle = 'rgba(255,250,245,0.93)'; ctx.fill(); ctx.lineWidth = 1.8; ctx.strokeStyle = A.INK; ctx.stroke();
+  if (label) A.text(ctx, label, rect.w / 2, STRIP_H / 2 + 0.5, 12, '#c0392b', 'center', null);
+  else {
+    let x = 8;
+    for (const g of groups) {
+      const spr = A.antSprite(g.type, 0, false, pxRatio), k = C.ANTS[g.type].size, cx = x + 9, cy = STRIP_H / 2;
+      ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, 9, 0, 7); ctx.clip();
+      const sw = 44 * k, sh = 40 * k; // the ant's head and shoulders (the sprite is drawn facing right; its origin is the body centre)
+      ctx.drawImage(spr.cv, (spr.ox - 24 * k) * pxRatio, (spr.oy - 28 * k) * pxRatio, sw * pxRatio, sh * pxRatio, cx - 9, cy - 9, 18, 18);
+      ctx.restore();
+      if (isTank(g.type)) { ctx.beginPath(); ctx.arc(cx, cy, 9, 0, 7); ctx.lineWidth = 1.8; ctx.strokeStyle = '#c0392b'; ctx.stroke(); }
+      if (isFlyer(g.type)) { ctx.beginPath(); ctx.ellipse(cx + 7, cy - 8, 5, 2.4, -0.5, 0, 7); ctx.fillStyle = 'rgba(205,235,255,0.95)'; ctx.fill(); ctx.lineWidth = 1; ctx.strokeStyle = A.INK; ctx.stroke(); }
+      A.text(ctx, 'x' + g.count, x + 20, STRIP_H / 2 + 0.5, 11, A.INK, 'left', null);
+      ctx.font = `bold 11px ${A.FONT}`; x += 18 + 2 + ctx.measureText('x' + g.count).width + 6;
+    }
+    if (more) A.text(ctx, '+' + more, x - 2, STRIP_H / 2 + 0.5, 11, '#8a7080', 'left', null);
+  }
+  ctx.restore();
+}
 function renderTowerInfo(b, info) {
   const tw = info.tower; const T = C.TOWERS[tw.type];
   if (info.until && S.t > info.until) { if (info.auto) { S.info = null; return; } info.changed = null; }
-  const H2 = 140, py = tw.y + MAP_Y > 300 ? MAP_Y + 8 : MAP_Y + MAP_H - H2 - 8;
+  const modes = hasTargetModes(tw.type), H2 = modes ? 168 : 140, py = tw.y + MAP_Y > 300 ? MAP_Y + 8 : MAP_Y + MAP_H - H2 - 8;
   S.layoutInfo = { x: 14, y: py, w: 372, h: H2 };
   panel(14, py, 372, H2, '#fffaf5', 14);
   ctx.font = `bold 15px ${A.FONT}`; const tW = Math.min(150, ctx.measureText(T.name).width);
@@ -1150,8 +1291,17 @@ function renderTowerInfo(b, info) {
   if (extra.length) line = 'Upgraded: ' + extra.map((d) => diffText(tw.type, d)).join(', ');
   else if (tw.lvl < b.cfg.maxInBattleLevel) line = (dmgGainText(tw.type, tw.lvl + 1, tw.cardLevel) ? dmgGainText(tw.type, tw.lvl + 1, tw.cardLevel) + '! ' : '') + 'Next (drop same card): ' + upgradeDiff(tw.type, tw.lvl, tw.cardLevel).map((d) => diffText(tw.type, d)).join(', ');
   else line = 'Max level!';
-  plainFit(line, 200, py + 122, 350, 12, extra.length ? '#2f8a36' : INFO_INK, 'center');
+  plainFit(line, 200, py + (modes ? 148 : 122), 350, 12, extra.length ? '#2f8a36' : INFO_INK, 'center');
   button('infoClose', 14, py, 372, H2, () => { S.info = null; }); // registered after 'map' so it is on top (tapping the panel = the player's own close)
+  if (modes) { // v0.7.4 M1: who this tower shoots - three chips under the stat boxes (tap = select)
+    TARGET_MODES.forEach((m, i) => {
+      const x = 22 + i * 120, y = py + 110, w = 114, h = 28, on = tw.mode === m;
+      A.rr(ctx, x, y, w, h, 10); ctx.fillStyle = on ? '#ffd27a' : '#f7efeb'; ctx.fill(); ctx.lineWidth = on ? 2.6 : 1.2; ctx.strokeStyle = on ? A.INK : '#e0cfd4'; ctx.stroke();
+      drawModeIcon(m, x + 17, y + h / 2, 1);
+      plainFit(MODE_NAME[m], x + 32, y + h / 2 + 0.5, w - 38, 12.5, on ? A.INK : INFO_INK, 'left', on ? '700' : '600');
+      button('mode_' + m, x - 2, y - 2, w + 4, h + 4, () => setMode(tw, m));
+    });
+  }
   // Move / Swap (on top of the panel's close area)
   const canMove = (S.save.diamonds || 0) >= C.ECONOMY.diamonds.moveTower;
   drawButton(256, py + 5, 62, 24, '', '#9fd8ff', { r: 10, disabled: !canMove });
@@ -1187,12 +1337,16 @@ function drawTowerObj(tw) {
   if (C.TOWERS[tw.type].place === 'path') ctx.translate(tw.px - tw.x, tw.py - tw.y);
   A.drawTower(ctx, tw.type, S.t + tw.id, tw);
   // level pips
+  if (tw.mode && tw.mode !== 'weak') { // v0.7.4 M1: a 10 px badge on the tower's base shows a non-default target mode (crumb = Carrier, arrow = Front)
+    ctx.beginPath(); ctx.arc(14, 13, 7, 0, 7); ctx.fillStyle = '#fffaf5'; ctx.fill(); ctx.lineWidth = 1.8; ctx.strokeStyle = A.INK; ctx.stroke();
+    drawModeIcon(tw.mode, 14, 13, 0.5);
+  }
   if (tw.lvl > 1) for (let k = 0; k < tw.lvl; k++) A.starShape(ctx, -(tw.lvl - 1) * 3.6 + k * 7.2, 16, 3.6, '#ffd45e', 1.1); // up to 6 pips (v0.6 item 11)
   ctx.restore();
 }
 // v0.7.2 C13: the cookie guard. Leans on the right of the cookie; a swat is wind-up 0.10 s, slap 0.08 s, hold 0.06 s, return 0.26 s (0.5 s).
 function drawGuard(b, ck) {
-  const px = ck.x + 35, py = ck.y + 21, rest = -0.2;
+  const px = ck.x + C.UI.swatPivot.dx, py = ck.y + C.UI.swatPivot.dy, rest = -0.2;
   let ang = rest + Math.sin(S.t * 1.7) * 0.025, flash = 0;
   const age = 0.5 - (b.swatFx || 0);
   if ((b.swatFx || 0) > 0 && b.swatTarget) {
@@ -1218,7 +1372,8 @@ function drawAntObj(a, ghost = false) {
   const spr = A.antSprite(a.type, fr, a.carrying > 0, pxRatio);
   const breathe = still ? 1 + Math.sin(S.t * 5 + a.id) * 0.035 : 1;
   // tiny lateral offset per id so crowds don't stack perfectly
-  const lat = ((a.id * 37) % 9 - 4) * 1.2;
+  let lat = ((a.id * 37) % 9 - 4) * 1.2;
+  if (a.state === 'back') lat = C.UI.carrierLane + lat * 0.4; // v0.7.4 P: returning carriers ride ~5 px to one side of the lane so they separate from inbound ants
   const x = a.x + p.dy * lat, y = a.y - p.dx * lat;
   ctx.save(); ctx.translate(x, y + 4); ctx.scale(face / breathe, breathe);
   if (a.hitFlash > 0.06) ctx.scale(1.08, 0.92); // hit squash
@@ -1237,6 +1392,7 @@ function drawAntObj(a, ghost = false) {
   }
 }
 function renderFx(dt) {
+  if (S.screen === 'battle' && S.speed >= 4) dt *= 2; // v0.7.4 M0: at 4x effects age (and move) twice as fast, so they do not pile up
   const keep = [];
   for (const f of S.fx) {
     f.life -= dt; if (f.life <= 0) continue; keep.push(f);
@@ -1252,6 +1408,7 @@ function renderFx(dt) {
         if (k > 0.82 && !f.landed) { f.landed = true; for (let i = 0; i < 4; i++) addFx({ k: 'puff', x: f.x1 + (Math.random() - 0.5) * 10, y: f.y1, vx: (Math.random() - 0.5) * 40, vy: -Math.random() * 20, r: 3 + Math.random() * 3, life: 0.45, max: 0.45 }); }
         break;
       }
+      case 'crumbFly': { const x = f.x0 + (f.x1 - f.x0) * k, y = f.y0 + (f.y1 - f.y0) * k - Math.sin(k * Math.PI) * 24; ctx.globalAlpha = k > 0.85 ? (1 - k) / 0.15 : 1; A.crumbIcon(ctx, x, y, 1.1 - k * 0.5, true); break; }
       case 'ko': {
         const spr = A.antSprite(f.ant, 0, false, pxRatio);
         ctx.globalAlpha = 1 - k; ctx.translate(f.x, f.y - k * 30); ctx.rotate(Math.PI * k * 0.4 * f.face); ctx.scale(f.face, -1);
@@ -1350,7 +1507,7 @@ function renderHud(b) {
   if (f > 0) { A.rr(ctx, 62, 24, 80 * f, 16, 8); ctx.fillStyle = f >= 0.9 ? '#8fe388' : f >= 0.5 ? '#ffd45e' : '#ff8a8a'; ctx.fill(); }
   A.text(ctx, `${Math.floor(b.foodStored + 1e-6)}`, 102, 33, 13, '#fff');
   const carried = b.ants.reduce((s, a) => s + (a.trips === 0 ? a.carrying : 0), 0); // v0.7.2 C14: 'carried off!' only for ants on their FIRST trip (every ant keeps shuttling, so it would never go away)
-  if (carried) A.text(ctx, `${fmtFood(carried)} carried off!`, 102, 51, 9.5, '#c0392b', 'center', null);
+  if (carried) A.text(ctx, `${fmtFood(carried)} carried off!`, 102, 51, 11, '#c0392b', 'center', null);
   // wave
   A.text(ctx, `Wave ${Math.min(b.nextWave, b.totalWaves)}/${b.totalWaves}`, 184, 26, 15, '#ffb3c1');
   A.text(ctx, `Lv ${b.levelIndex + 1}`, 184, 46, 11, '#a08090', 'center', null);
@@ -1463,10 +1620,21 @@ function renderTray(b) {
     });
   });
   A.text(ctx, `${b.bonusUsesLeft}`, 234, by + 14, 14, '#ffb3c1'); A.text(ctx, 'left', 234, by + 30, 9, '#a08090', 'center', null);
-  drawButton(256, by, 60, bh, S.speed === 1 ? '>' : '>>', '#ffd27a', { r: 12, size: 16 });
-  button('speed', 252, hitY, 68, hitH, () => { S.speed = S.speed === 1 ? 2 : 1; });
+  drawSpeedButton(256, by, 60, bh);
+  button('speed', 252, hitY, 68, hitH, () => { S.speed = nextSpeed(S.speed); sfx('tap'); }); // v0.7.4 M0: 1x -> 2x -> 4x -> 1x, kept for the session only
   drawButton(324, by, 64, bh, 'II', '#d9cfe0', { r: 12, size: 16 });
   button('pause', 320, hitY, 76, hitH, () => { setPaused(true); });
+}
+// v0.7.4 M0: the speed button - 1 / 2 / 3 vector chevrons (8 px wide, 3 px gap) over a 9 px label; colours 1x #ffd27a, 2x #ffb347, 4x #ff8a5c
+const SPEED_COL = { 1: '#ffd27a', 2: '#ffb347', 4: '#ff8a5c' };
+function drawSpeedButton(x, y, w, h) {
+  const sp = S.speed, n = sp === 1 ? 1 : sp === 2 ? 2 : 3, col = SPEED_COL[sp] || SPEED_COL[1];
+  drawButton(x, y, w, h, '', col, { r: 12 });
+  const cw = 8, gap = 3, tw = n * cw + (n - 1) * gap, x0 = x + w / 2 - tw / 2, cy = y + h * 0.4, ch = 12;
+  ctx.save(); ctx.fillStyle = A.INK;
+  for (let i = 0; i < n; i++) { const px = x0 + i * (cw + gap); ctx.beginPath(); ctx.moveTo(px, cy - ch / 2); ctx.lineTo(px + cw, cy); ctx.lineTo(px, cy + ch / 2); ctx.closePath(); ctx.fill(); }
+  ctx.restore();
+  A.text(ctx, sp + 'x', x + w / 2, y + h - 10, 9, A.INK, 'center', null);
 }
 function renderPause() {
   buttons.length = 0; // block every battle control while paused; only resume/restart/quit below
@@ -1663,7 +1831,8 @@ function renderCards() {
   if (S.mergeAnim) renderMergeAnim();
   else if (S.save.onboard && S.save.onboard.cardsHint === 'cards' && S.save.cards.zapper.unlocked) { // v0.7: once, after the free pack
     const k = C.ALL_CARDS.indexOf('zapper'), x = 30 + (k % 4) * 88, y = 80 + Math.floor(k / 4) * 104;
-    onboardSpot({ x, y, w: 76, h: 96, r: 12 }, 'cardzapper', () => { S.save.onboard.cardsHint = 'done'; persist(); openCardView('zapper'); }, 'Your Bug Zapper - it hits flying ants!');
+    onboardSpot({ x, y, w: 76, h: 96, r: 12 }, 'cardzapper', () => { S.save.onboard.cardsHint = 'done'; persist(); openCardView('zapper'); }, 'Your Bug Zapper - it hits flying ants!',
+      { x: 122, y: 80 + Math.floor((C.ALL_CARDS.length - 1) / 4) * 104 + 28, w: 272 }); // right of the last row's lone card (C.ALL_CARDS.length % 4 === 1)
   }
 }
 function openCardView(id) { S.cardView = id; S.cardsSel = id; const c = S.save.cards[id]; if (c.fresh) { c.fresh = false; persist(); } go('card'); }
@@ -2062,6 +2231,10 @@ if (__TEST_HOOKS__) window.__game = {
   // fast-forward; only the last ~0.4 s of events become visible effects (so screenshots are not flooded)
   simulate(seconds, bot = true) { S.swatQ = []; const b = S.battle; const n = Math.round(seconds * 60); for (let i = 0; i < n && !b.result; i++) { b.update(1 / 60); if (bot) smartBotStep(b); if (i < n - 24) b.events = []; } S.fx = []; S.ui = []; S.slotFlip = [0, 0, 0]; consumeEvents(); if (b.result) finishBattle(); },
   setAutoBot(v) { S.autoBot = v; },
+  // v0.7.4 M0: drive the game's OWN frame stepper (same code as the rAF loop, minus rendering): n frames of `dtReal` real seconds at the current S.speed.
+  // Returns the sub-steps taken. clock.acc is exposed so tests can assert the accumulator never grows past the guard.
+  runFrames(n, dtReal = 1 / 60, now = null) { let steps = 0; for (let i = 0; i < n && S.battle && !S.battle.result; i++) { const t0 = S.battle.time; advanceFrame(clock, dtReal, S.speed, battleStep, now ? { now } : {}); consumeEvents(); flushSwat(!!S.battle.result); steps += Math.round((S.battle.time - t0) * 60); if (S.battle.result) finishBattle(); } return steps; },
+  lastBubble: () => lastBubble, ownBack, ownBackState: () => ({ pending: ownBackPending, ms: OWN_BACK_MS }), clock, battleFrame, stripLast: () => stripLast, mapTap, cycleMode, setMode,
   setInset(px) { insetOverride = px; resize(); }, setInsetQuiet(px) { insetOverride = px; }, flushSwat, // v0.7.3: setInsetQuiet changes the probe value WITHOUT a resize (tests that the frame loop re-reads it)
   layout: () => ({ cw, ch, insetB, scale, offX, offY, barK, barH: BAR_H, metaH: META_H, dpr }), tabRect, BAR_H,
   mapPreview(id) { const b = new Battle({ levelIndex: 0, mapId: id, deck: [], bonusTypes: [], seed: 1 }); const src = A.renderMapBackground(b.routes, b.map.theme || 0, MAP_W, MAP_H, 2, b.props); const cv = document.createElement('canvas'); cv.width = src.width; cv.height = src.height; cv.getContext('2d').drawImage(src, 0, 0); return cv.toDataURL('image/png'); },

@@ -175,8 +175,8 @@ test('item 1: +1 coin per 3 s survived on top of the win formula', () => {
 });
 
 // ---------- standing rules ----------
-test('standing rules: the treat never speaks; version 0.7.3 / vc17', () => {
+test('standing rules: the treat never speaks; version 0.7.4 / vc18', () => {
   assert.ok(!/treatBubble|speech/i.test(src('treat.js')));
-  assert.equal(JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version, '0.7.3');
-  assert.match(readFileSync(new URL('../android/app/build.gradle', import.meta.url), 'utf8'), /versionCode 17\b/);
+  assert.equal(JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version, '0.7.4');
+  assert.match(readFileSync(new URL('../android/app/build.gradle', import.meta.url), 'utf8'), /versionCode 18\b/);
 });

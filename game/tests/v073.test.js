@@ -7,17 +7,17 @@ import * as C from '../src/config.js';
 import { Battle } from '../src/sim.js';
 
 const src = (f) => readFileSync(new URL(`../src/${f}`, import.meta.url), 'utf8');
-const HP = [1, 1.56, 3, 6.6, 2.803, 4.321, 2.225, 3.72, 4.8, 2.3, 3.054, 3.387, 2.875, 3.6, 5.304, 4.213, 2.39, 3.557, 4.065, 1.6];
+const HP = [1, 1.56, 3, 6.6, 2.803, 4.321, 2.225, 3.72, 4.8, 2.373, 3.054, 3.387, 2.875, 3.6, 5.304, 4.213, 2.38, 3.557, 4.065, 1.6];
 
-test('v0.7.3 version + versionCode 17', () => {
-  assert.equal(C.VERSION, '0.7.3');
-  assert.match(readFileSync(new URL('../android/app/build.gradle', import.meta.url), 'utf8'), /versionCode 17[\s\S]*versionName "0\.7\.3"/);
-  assert.equal(JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version, '0.7.3');
+test('version is >= v0.7.3 (versionCode 17+; the current release is asserted in v074.test.js)', () => {
+  assert.match(C.VERSION, /^0\.7\.[3-9]$/);
+  assert.ok(+/versionCode (\d+)/.exec(readFileSync(new URL('../android/app/build.gradle', import.meta.url), 'utf8'))[1] >= 17);
+  assert.equal(JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version, C.VERSION);
 });
-test('C17: hpMul table for all 20 levels replaces the v0.7.2 refit (L3 3.0, L17 2.39)', () => {
+test('C17: hpMul table for all 20 levels replaces the v0.7.2 refit (L3 3.0, L17 2.38 since v0.7.4 M-1; L10 2.373)', () => {
   assert.equal(C.LEVELS.length, 20);
   C.LEVELS.forEach((L, i) => assert.equal(L.hpMul, HP[i], `L${i + 1}`));
-  assert.equal(C.LEVELS[2].hpMul, 3); assert.equal(C.LEVELS[16].hpMul, 2.39);
+  assert.equal(C.LEVELS[2].hpMul, 3); assert.equal(C.LEVELS[16].hpMul, 2.38);
 });
 test('C17: mixes - at most 5 types per level, L1 clean, sprinter HP 10, Laser power <= 3', () => {
   C.LEVELS.forEach((L, i) => assert.ok(L.mix.length <= 5, `L${i + 1} mix size`));
@@ -42,6 +42,6 @@ test('item 4: swatter kill event carries the ant ref; the slap is queued on the 
   assert.ok(!/setTimeout\([^)]*swat/i.test(g), 'no wall-clock timers for the slap');
 });
 test('item 5/6/7: calendar-race guard, version label hidden on calendar/settings/hint, gear offset', () => {
-  const g = src('game.js'); assert.match(g, /ownBackUntil/);
+  const g = src('game.js'); assert.match(g, /ownBack(Pending|Until)/); /* v0.7.4 P2: the 1 s ownBackUntil flag became a counter + 400 ms window */
   assert.match(g, /if \(!S\.cal && !S\.settings && !shopHint\) plainText\('v' \+ C\.VERSION, 14, 186/);
 });

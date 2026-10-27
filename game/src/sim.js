@@ -26,6 +26,13 @@ export function starsFor(foodLeft, foodHP = C.BATTLE.foodHP, table = C.STARS) {
   return 0;
 }
 const LOWEST_HP = new Set(['slingshot', 'laser', 'zapper', 'lizard']);
+// v0.7.4 M1: the single-target towers (Slingshot, Laser, Zapper's first zap, Gecko) have a target mode, per tower, default 'weak' (= v0.7.3 behaviour exactly).
+//   weak    fewest HP left (tie -> the ant nearest the cookie)
+//   carrier ants walking home with food first (the one nearest the nest = highest threat); none in range -> weak
+//   front   ants walking in, the one nearest the cookie first (highest threat); carriers only when no walker is in range
+export const TARGET_MODES = ['weak', 'carrier', 'front'];
+export function hasTargetModes(type) { return LOWEST_HP.has(type); }
+export function nextTargetMode(mode) { return TARGET_MODES[(TARGET_MODES.indexOf(mode) + 1) % TARGET_MODES.length]; }
 export function onTile(a, c, r) { return Math.floor(a.x / C.TILE) === c && Math.floor(a.y / C.TILE) === r; }
 // v0.6 item 6: a Tractor lifting `lift` size classes can lift this ant (never a queen, never a flyer in the air)
 export function liftable(a, lift) {
@@ -243,6 +250,7 @@ export class Battle {
   constructor(opts) {
     this.cfg = { ...C.BATTLE, ...(opts.battleCfg || {}) };
     this.cfg.foodReturn = { ...C.BATTLE.foodReturn, ...((opts.battleCfg || {}).foodReturn || {}) };
+    this.cfg.rescue = { ...C.BATTLE.rescue, ...((opts.battleCfg || {}).rescue || {}) }; // v0.7.4 M2 (flag: rescue.on, default off)
     this.levelIndex = opts.levelIndex;
     this.level = C.LEVELS[opts.levelIndex];
     this.mapId = opts.mapId || this.level.map;
@@ -290,6 +298,7 @@ export class Battle {
     this.freezeUntil = -1;
     this.decoy = null; this.planes = null;
     this.events = [];
+    this.pieces = []; this.rescueScale = 1; this.pieceId = 1; // v0.7.4 M2: dropped crumbs; rescueScale = game speed, so a piece lives `window` seconds of WALL time at any speed
     this.stats = { kills: 0, spawned: 0, byType: {}, stolen: 0, returned: 0, lostOnWay: 0 };
     this.result = null;            // 'win' | 'lose'
     this.paused = false;           // while paused, every player action and the clock are blocked
@@ -390,7 +399,13 @@ export class Battle {
     this.addCrumbs(crumbs);
     this.stats.kills++;
     this.stats.byType[ant.type] = (this.stats.byType[ant.type] || 0) + 1;
-    if (ant.carrying > 0) {
+    if (ant.carrying > 0 && this.cfg.rescue && this.cfg.rescue.on) { // v0.7.4 M2: `auto` of the piece comes back at once, the rest (`tap - auto`) stays on the trail as a piece to tap
+      const R = this.cfg.rescue, auto = Math.round(ant.carrying * R.auto * 1000) / 1000, bonus = Math.round(ant.carrying * (R.tap - R.auto) * 1000) / 1000;
+      this.stats.lostOnWay += ant.carrying - auto;
+      if (auto > 0) { this.foodStored = Math.min(this.cfg.foodHP, this.foodStored + auto); this.stats.returned += auto; this.emit({ type: 'foodReturn', x: ant.x, y: ant.y, n: auto, of: ant.carrying }); }
+      if (bonus > 0) this.dropPiece(ant.x, ant.y, bonus);
+      ant.carrying = 0;
+    } else if (ant.carrying > 0) {
       const rt = this.route(ant);
       const back = foodReturned(ant.carrying, ant.d / rt.length, this.cfg.foodReturn);
       this.stats.lostOnWay += ant.carrying - back;
@@ -399,6 +414,36 @@ export class Battle {
     }
     this.emit({ type: 'kill', x: ant.x, y: ant.y, ant: ant.type, crumbs, src: src && src.type, ...(src && src.type === 'swatter' ? { ref: ant } : {}) }); // ref: the view keeps the swatted ant visible until the slap frame (v0.7.3)
     if (src && src.type === 'lizard') src.chew = src.stat('chewTime');
+  }
+  // ----- v0.7.4 M2: rescue the crumb (flag cfg.rescue.on; default off = v0.7.3's automatic 40%) -----
+  dropPiece(x, y, bonus) {
+    const R = this.cfg.rescue;
+    const near = this.pieces.find((q) => Math.hypot(q.x - x, q.y - y) <= R.mergeRadius);
+    if (near) { // piles merge: bonuses add, the timer restarts (= the later of the two), the pile sits between them (weighted)
+      const w = near.bonus + bonus; near.x = (near.x * near.bonus + x * bonus) / w; near.y = (near.y * near.bonus + y * bonus) / w;
+      near.bonus = Math.round(w * 1000) / 1000; near.left = R.window; near.total = R.window; near.n++;
+      this.emit({ type: 'pieceDrop', id: near.id, x: near.x, y: near.y, bonus: near.bonus, merged: true });
+      return near;
+    }
+    const q = { id: this.pieceId++, x, y, bonus, left: R.window, total: R.window, n: 1, born: this.time };
+    this.pieces.push(q); this.emit({ type: 'pieceDrop', id: q.id, x, y, bonus, merged: false });
+    return q;
+  }
+  pieceAt(x, y, radius = this.cfg.rescue.radius) {
+    let best = null, bd = radius;
+    for (const q of this.pieces) { const d = Math.hypot(q.x - x, q.y - y); if (d <= bd) { bd = d; best = q; } }
+    return best;
+  }
+  // tap / sweep: adds the piece's bonus to the cookie (never above foodHP) and removes it. Returns false when there is no such piece (double-collect), or paused / over.
+  collectPiece(id, auto = false) {
+    if (this.result && !auto) return false;
+    if (this.paused && !auto) return false;
+    const i = this.pieces.findIndex((q) => q.id === id); if (i < 0) return false;
+    const q = this.pieces[i]; this.pieces.splice(i, 1);
+    const gain = Math.min(q.bonus, Math.max(0, this.cfg.foodHP - this.foodStored));
+    this.foodStored += gain; this.stats.returned += gain; this.stats.lostOnWay -= gain; this.stats.rescued = (this.stats.rescued || 0) + gain;
+    this.emit({ type: 'pieceCollect', id: q.id, x: q.x, y: q.y, n: q.bonus, gain, auto });
+    return true;
   }
   threat(a) { return a.state === 'go' ? a.d : this.route(a).length * 2 - a.d; }
 
@@ -473,6 +518,9 @@ export class Battle {
     if (this.towers.some((o) => o.c === c && o.r === r)) return false;
     return this.placeRuleOk(tw.type, c, r);
   }
+  // v0.7.4 M1: set / cycle a single-target tower's target mode (instant, free; per tower; not saved)
+  setTargetMode(tw, mode) { if (!hasTargetModes(tw.type) || !TARGET_MODES.includes(mode)) return false; tw.mode = mode; this.emit({ type: 'mode', id: tw.id, x: tw.x, y: tw.y, mode }); return true; }
+  cycleTargetMode(tw) { return hasTargetModes(tw.type) && this.setTargetMode(tw, nextTargetMode(tw.mode)) ? tw.mode : null; }
   moveTower(tw, c, r) {
     if (!this.canMoveTower(tw, c, r)) return false;
     const from = { x: tw.x, y: tw.y };
@@ -500,7 +548,7 @@ export class Battle {
     const x = (c + 0.5) * C.TILE, y = (r + 0.5) * C.TILE;
     const cl = this.cardLevels[type] || 1;
     const tower = { id: NEXT_ID++, type, c, r, x, y, lvl: 1, cardLevel: cl, cd: 0.3, chew: 0, anim: 0, aim: -Math.PI / 2, fireFx: 0, target: null, tick: 0,
-      heat: 0, heatTarget: null, dir: 0, stuckSet: new Set(), charmSet: new Set(), roastSet: new Set(), balls: 0,
+      heat: 0, heatTarget: null, mode: 'weak', dir: 0, stuckSet: new Set(), charmSet: new Set(), roastSet: new Set(), balls: 0,
       stat(key) { return towerStat(this.type, key, this.lvl, this.cardLevel); } };
     this.setupTower(tower);
     this.towers.push(tower);
@@ -790,10 +838,17 @@ export class Battle {
       if (!alive) this.planes = null;
     }
     this.ants = this.ants.filter((a) => !a.dead);
+    if (this.pieces.length) { // v0.7.4 M2: a piece lives `window` s of wall time (dt / speed); it does not age while paused (update returns early)
+      const k = dt / (this.rescueScale || 1);
+      for (const q of this.pieces) q.left -= k;
+      for (const q of this.pieces.filter((q) => q.left <= 0)) this.emit({ type: 'pieceExpire', id: q.id, x: q.x, y: q.y, bonus: q.bonus });
+      this.pieces = this.pieces.filter((q) => q.left > 0);
+    }
 
-    // end conditions: the cookie is gone -> lose
-    if (this.foodStored <= 1e-6) { this.foodStored = Math.max(0, this.foodStored); this.result = 'lose'; this.emit({ type: 'lose' }); }
+    // end conditions: the cookie is gone -> lose (with a rescue piece still alive the loss waits until it expires or is tapped)
+    if (this.foodStored <= 1e-6 && !this.pieces.length) { this.foodStored = Math.max(0, this.foodStored); this.result = 'lose'; this.emit({ type: 'lose' }); }
     else if (this.nextWave >= this.waves.length && this.pending.length === 0 && this.ants.length === 0) {
+      for (const q of this.pieces.slice()) this.collectPiece(q.id, true); // win: pieces left are collected automatically, the stars use the final food
       this.result = 'win'; this.emit({ type: 'win', perfect: this.perfect });
     }
   }
@@ -801,11 +856,17 @@ export class Battle {
   // The Slingshot skips ants its pebbles already in flight will finish (unless nothing else is in range). Tie -> the leader.
   weakestTarget(tw, inRange) {
     let pool = inRange;
-    if (tw.type === 'slingshot' && this.projectiles.length) {
+    if (tw.type === 'slingshot' && this.projectiles.length) { // applies in every mode
       const pend = new Map();
       for (const p of this.projectiles) if (!p.target.dead) pend.set(p.target.id, (pend.get(p.target.id) || 0) + applyArmor(p.dmg, p.target.armor, false));
       const alive = inRange.filter((a) => a.hp - (pend.get(a.id) || 0) > 1e-6);
       if (alive.length) pool = alive;
+    }
+    const mode = tw.mode || 'weak';
+    if (mode === 'carrier' || mode === 'front') { // v0.7.4 M1
+      const maxThreat = (list) => list.reduce((b, a) => (this.threat(a) > this.threat(b) ? a : b));
+      if (mode === 'carrier') { const cs = pool.filter((a) => a.state !== 'go'); if (cs.length) return maxThreat(cs); } // none carrying: falls through to Weakest
+      else { const ws = pool.filter((a) => a.state === 'go'); return maxThreat(ws.length ? ws : pool); }
     }
     return pool.reduce((b, a) => (a.hp < b.hp - 1e-9 || (Math.abs(a.hp - b.hp) <= 1e-9 && this.threat(a) > this.threat(b)) ? a : b));
   }
@@ -838,7 +899,7 @@ export class Battle {
     const steal = Math.min(C.ANTS[a.type].steal, this.foodStored);
     this.foodStored -= steal;               // the cookie loses the piece immediately
     this.stats.stolen += steal;
-    this.emit({ type: 'steal', x: a.x, y: a.y, n: steal });
+    this.emit({ type: 'steal', x: a.x, y: a.y, n: steal, ant: a.type });
     if (this.cfg.carryBack && steal > 0) { a.state = 'back'; a.carrying = steal; a.d = this.route(a).length - 0.01; }
     else { if (!this.cfg.carryBack) this.foodDelivered += steal; a.dead = true; a.escaped = true; }
   }

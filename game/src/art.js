@@ -1,6 +1,7 @@
 // Procedural, soft & cute art. Everything is drawn with canvas paths - no external assets.
 import * as C from './config.js';
 
+export const CRUMB_OUTLINE = '#2e1a12'; // v0.7.4 P: the carried crumb's outline (INK is #523c4b)
 export const INK = '#523c4b';           // warm dark outline (v0.3: a touch softer)
 export const FONT = "'Trebuchet MS','Nunito','Arial Rounded MT Bold','Segoe UI',Roboto,sans-serif";
 
@@ -50,11 +51,11 @@ function eye(ctx, x, y, r, look = 0.5, blink = false) {
 }
 
 // ---------------- crumb icon ----------------
-export function crumbIcon(ctx, x, y, s = 1) {
+export function crumbIcon(ctx, x, y, s = 1, dark = false) { // dark: the crumb an ant carries (v0.7.4 P: a darker, heavier outline so it reads against the ant and the trail)
   ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
   ctx.beginPath(); ctx.moveTo(-7, 3); ctx.quadraticCurveTo(-8, -5, -1, -7); ctx.quadraticCurveTo(7, -7, 7, 0); ctx.quadraticCurveTo(7, 6, 0, 6); ctx.quadraticCurveTo(-6, 7, -7, 3); ctx.closePath();
   const g = ctx.createLinearGradient(0, -7, 0, 7); g.addColorStop(0, '#f6c77d'); g.addColorStop(1, '#d48f45');
-  ctx.fillStyle = g; ctx.fill(); ctx.lineWidth = 1.8; ctx.strokeStyle = INK; ctx.stroke();
+  ctx.fillStyle = g; ctx.fill(); ctx.lineWidth = dark ? 2.3 : 1.8; ctx.strokeStyle = dark ? CRUMB_OUTLINE : INK; ctx.stroke();
   ctx.fillStyle = '#7a4a2a'; for (const [a, b] of [[-3, -2], [2, 1], [-1, 3]]) { ctx.beginPath(); ctx.arc(a, b, 1.1, 0, 7); ctx.fill(); }
   ctx.restore();
 }
@@ -287,7 +288,7 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
     ctx.restore();
   }
   softBlob(ctx, -1, 1.5, 5.2, 4.8, col);
-  if (opt.carrying) crumbIcon(ctx, -10, -11, 1.3);
+  if (opt.carrying) crumbIcon(ctx, -10, -11, 1.3, true);
   // near legs (in front of the body)
   for (let i = 0; i < 3; i++) { const sw = (i % 2 ? 1 : -1) * step * 2.6; leg(ctx, -5 + i * 4.5, legY + 1, -4 + i * 4.5 + sw, footY + 0.5, legCol); if (sprinter) sneaker(ctx, -4 + i * 4.5 + sw, footY + 0.5, false); if (big) blob(ctx, -4 + i * 4.5 + sw, footY + 0.8, 2.2, 1.6, shade(col, -0.3), 1.4); }
   // Sprint Knight jersey: a sporty striped vest with a number on the thorax
@@ -1340,6 +1341,8 @@ export function drawProp(g, kind, x, y) {
 // ---------------- v0.7.2 C13: the cookie guard - a cute fly swatter (code-drawn) ----------------
 // Pivot (0,0) = the bottom of the handle; the swatter points up (-y). ang: rotation in radians (+ = clockwise).
 // Pink frame (#ff9fb6), cream mesh with two dot eyes, wooden handle (#d9a066), INK outline. No slingshot fork, no elastic.
+// v0.7.4 P: where the swatter head's centre is for a pivot / angle / scale (the head is 55 design px up the handle axis)
+export function swatHead(px, py, ang, sc = 0.8) { const L = 55 * sc; return { x: px + L * Math.sin(ang), y: py - L * Math.cos(ang) }; }
 export function drawSwatter(ctx, x, y, ang = 0, sc = 1, flash = 0) {
   ctx.save(); ctx.translate(x, y); ctx.rotate(ang); ctx.scale(sc, sc);
   ctx.lineJoin = 'round'; ctx.lineCap = 'round';
