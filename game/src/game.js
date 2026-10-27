@@ -73,7 +73,7 @@ function resize() {
   canvas.width = Math.round(cw * dpr); canvas.height = Math.round(ch * dpr);
   canvas.style.width = cw + 'px'; canvas.style.height = ch + 'px';
   applyLayout();
-  S.bgCache = {};
+  S.bgCache = {}; S.bdCache = {};
   A.clearTowerCache(); // v0.6.1: tower sprites are baked at the device scale -> rebuild after a DPR / size change
 }
 window.addEventListener('resize', resize);
@@ -89,20 +89,25 @@ let buttons = [], prevButtons = [];
 function button(id, x, y, w, h, onTap, opt = {}) { buttons.push({ id, x, y, w, h, onTap, ...opt }); }
 function hit(list, x, y) { for (let i = list.length - 1; i >= 0; i--) { const b = list[i]; if (x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h) return b; } return null; }
 function drawButton(x, y, w, h, label, col = '#ffb3c1', opt = {}) {
-  const press = opt.pressed ? 2 : 0;
+  const press = opt.pressed ? 3 : 0; // v0.7.5 C18: the body moves 3 px when pressed (was 2)
   ctx.save();
-  if (opt.disabled) ctx.globalAlpha = 0.5;
+  if (opt.disabled) { col = '#d8cfd6'; } // v0.7.5 C18: disabled = a different colour, not transparency
   A.rr(ctx, x, y + 4, w, h, opt.r ?? 14); ctx.fillStyle = A.shade(col, -0.35); ctx.fill();
   A.rr(ctx, x, y + press, w, h, opt.r ?? 14);
   const g = ctx.createLinearGradient(0, y, 0, y + h); g.addColorStop(0, A.shade(col, 0.35)); g.addColorStop(1, col);
   ctx.fillStyle = g; ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = A.INK; ctx.stroke();
   A.rr(ctx, x + 6, y + 4 + press, w - 12, h * 0.32, 8); ctx.fillStyle = 'rgba(255,255,255,0.35)'; ctx.fill();
-  if (label) A.text(ctx, label, x + w / 2, y + h / 2 + press + 1, opt.size || 17);
+  if (label) { if (opt.disabled) A.text(ctx, label, x + w / 2, y + h / 2 + press + 1, opt.size || 17, '#9a8a95', 'center', null); else A.text(ctx, label, x + w / 2, y + h / 2 + press + 1, opt.size || 17); }
   ctx.restore();
 }
 function panel(x, y, w, h, col = '#fff6ee', r = 18) {
   A.rr(ctx, x, y + 4, w, h, r); ctx.fillStyle = 'rgba(74,52,66,0.25)'; ctx.fill();
-  A.rr(ctx, x, y, w, h, r); ctx.fillStyle = col; ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = A.INK; ctx.stroke();
+  A.rr(ctx, x, y, w, h, r); ctx.fillStyle = col; ctx.fill();
+  if (h >= 28) { // v0.7.5 C18: the button vocabulary - an inner bottom lip + a 1.5 px top highlight (no clip(): the lip is inset to stay inside the rounded corners)
+    ctx.fillStyle = 'rgba(120,80,95,0.10)'; A.rr(ctx, x + r * 0.55, y + h - 7, w - r * 1.1, 5.5, 2.7); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.55)'; ctx.fillRect(x + r * 0.5, y + 2, w - r, 1.5);
+  }
+  A.rr(ctx, x, y, w, h, r); ctx.lineWidth = 3; ctx.strokeStyle = A.INK; ctx.stroke(); // v0.7.5 C18: hero outline 3.0 (was 2.5)
 }
 // Notices: in battle a small pill just above the tray (never covers the map centre); elsewhere a compact box.
 function toast(msg, col = '#fff') { const small = S.screen === 'battle'; S.toast = { msg, t: small ? C.UI.toastTime : C.UI.menuToastTime, col, small }; }
@@ -273,8 +278,7 @@ function mapTap(p) {
   const tw = b.towers.find((q) => q.c === t.c && q.r === t.r);
   // tapping the same tower while its upgrade panel is showing keeps it open (no auto-close); otherwise toggle normally
   if (tw && S.info && S.info.tower === tw && S.info.auto) { S.info.auto = false; S.info.changed = null; return; }
-  // v0.7.4 M1: tapping a Slingshot / Laser / Zapper / Gecko whose panel is already open cycles who it shoots (Weakest -> Carrier -> Front); the panel's chips select directly
-  if (tw && S.info && S.info.tower === tw && !S.info.auto && hasTargetModes(tw.type)) { cycleMode(tw); S.info = { tower: tw, t: 0 }; return; }
+  // v0.7.5 (review Q4): the v0.7.4 'tap an open panel to cycle the target mode' gesture is REMOVED (a hidden gesture that fired by accident); the panel's chips select directly
   S.info = tw ? { tower: tw, t: 0 } : null;
 }
 // v0.7.4 M1: a one-time tip (per battle, never while paused) the first time a tank (Armoured / Big / Heavy / Queen) steals food, if a tower could change its target
@@ -282,12 +286,12 @@ const HINT_ANTS = new Set(['armored', 'big', 'heavy', 'queen', 'queen2']);
 function maybeModeHint(b, e) {
   if (S.modeHint || S.paused || !e.ant || !HINT_ANTS.has(e.ant) || !(e.n > 0)) return;
   if (!b.towers.some((q) => hasTargetModes(q.type))) return;
-  S.modeHint = true; toast('Tip: tap a tower to change who it shoots', '#ffe39a'); S.toast.hint = true;
+  S.modeHint = true; toast('Tip: tap a tower, then pick who it shoots', '#ffe39a'); S.toast.hint = true;
 }
 const MODE_NAME = { weak: 'Weakest', carrier: 'Carrier', front: 'Front' };
 const MODE_HELP = { weak: 'fewest HP first', carrier: 'ants carrying food first', front: 'closest to the cookie first' };
-function cycleMode(tw) { const m = S.battle.cycleTargetMode(tw); if (m) modeFeedback(tw, m); }
-function modeFeedback(tw, m) { sfx('tap'); addFloatText(S.fx, { key: 'mode' + tw.id, x: tw.x, y: tw.y - 26, n: 1, fmt: () => MODE_NAME[m], col: m === 'weak' ? '#fff' : '#ffe39a', life: 1.0 }); }
+function modeFeedback(tw, m) { sfx('tap'); tw._modeAt = S.t; // v0.7.5: the active chip / badge pops for 120 ms
+  addFloatText(S.fx, { key: 'mode' + tw.id, x: tw.x, y: tw.y - 26, n: 1, fmt: () => MODE_NAME[m], col: m === 'weak' ? '#fff' : '#ffe39a', life: 1.0 }); }
 function setMode(tw, m) { if (tw.mode === m) return; if (S.battle.setTargetMode(tw, m)) modeFeedback(tw, m); }
 
 // v0.5 items 11/12: Move (1 diamond) / Swap (free) - started from the tower info panel, finished by tapping the map
@@ -324,7 +328,7 @@ function killFx(e) {
   if (e.src === 'tractor') { addFloatText(S.fx, { k: 'crumbTxt', key: 'crumb', x: e.x, y: e.y - 14, n: e.crumbs, fmt: (n) => n, life: 0.9 }); return; } // the scoop event animates the throw
   const fast = S.speed >= 4; // v0.7.4 M0: at 4x fewer cosmetic bits per kill (the S.fx list stays small with 54 ants)
   for (let i = 0; i < (fast ? 1 : 4); i++) addFx({ k: 'crumbBit', x: e.x, y: e.y - 6, vx: (Math.random() - 0.5) * 90, vy: -40 - Math.random() * 60, life: 0.6, max: 0.6 });
-  addFx({ k: 'ko', x: e.x, y: e.y, ant: e.ant, life: 0.9, max: 0.9, face: Math.random() < 0.5 ? 1 : -1 });
+  addFx({ k: 'ko', x: e.x, y: e.y, ant: e.ant, life: 0.2, max: 0.2, face: Math.random() < 0.5 ? 1 : -1 });
   for (let i = 0; i < (fast ? 2 : 5); i++) addFx({ k: 'puff', x: e.x + (Math.random() - 0.5) * 10, y: e.y + (Math.random() - 0.5) * 6, vx: (Math.random() - 0.5) * 40, vy: -Math.random() * 30, r: 4 + Math.random() * 4, life: 0.5, max: 0.5 });
   addFloatText(S.fx, { k: 'crumbTxt', key: 'crumb', x: e.x, y: e.y - 14, n: e.crumbs, fmt: (n) => n, life: 0.9 });
   sfx('pop');
@@ -414,7 +418,10 @@ function consumeEvents() {
           const tw = S.battle.towers.find((q) => q.id === e.id);
           if (tw && !S.autoBot) { const mine = !!(S.info && S.info.tower === tw && !S.info.auto); S.info = { tower: tw, t: 0, changed: e.diff, until: S.t + C.UI.upgradeInfoTime, auto: !mine }; } // B9: auto-closes unless the player had opened it
           sfx('upgrade');
-        } else addFloatText(S.fx, { key: 'placed', x: e.x, y: e.y - 34, n: 1, fmt: () => 'Placed!', col: '#fff', life: 0.9 });
+        } else {
+          addFloatText(S.fx, { key: 'placed', x: e.x, y: e.y - 34, n: 1, fmt: () => 'Placed!', col: '#fff', life: 0.9 });
+          if (!reducedMotion() && S.speed < 4) for (let i = 0; i < 3; i++) addFx({ k: 'puff', x: e.x + (i - 1) * 12, y: e.y + 12, vx: (i - 1) * 26, vy: -8 - Math.random() * 8, r: 3 + Math.random() * 2, life: 0.35 + delay, max: 0.35, wait: delay }); // v0.7.5 juice: 3 dust puffs
+        }
         break;
       }
       case 'stick': addFloatText(S.fx, { key: 'stick', x: e.x, y: e.y - 20, n: 1, fmt: () => 'stuck!', col: '#fff3b0', life: 0.7 }); break;
@@ -593,10 +600,29 @@ function renderSettings() {
   drawButton(x + 24, y + 190, w - 48, 48, 'Close', '#d9cfe0', { size: 17 });
   button('setClose', x + 24, y + 184, w - 48, 64, () => closeSettings());
 }
+// v0.7.5 C18: the backdrop (gradient + faint gingham tablecloth) is baked once into one offscreen canvas per layout (resolution capped at 2x) and blitted with a single
+// drawImage per frame; it is rebuilt only on a resize / DPR / layout change (S.bdCache is cleared in resize()). Only the 14 drifting bubbles are drawn live.
+const CLOTH = { a: 'rgba(236,140,150,0.08)', b: 'rgba(230,130,140,0.05)', tile: 80 };
+function bakeBackdrop() {
+  const k = Math.min(1, 2 / dpr), cv = document.createElement('canvas');
+  cv.width = Math.max(1, Math.round(canvas.width * k)); cv.height = Math.max(1, Math.round(canvas.height * k));
+  const g = cv.getContext('2d'); g.setTransform(dpr * scale * k, 0, 0, dpr * scale * k, offX * dpr * k, offY * dpr * k);
+  const gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, '#fff1e6'); gr.addColorStop(1, '#fbd9cf');
+  g.fillStyle = gr; g.fillRect(-2000, -2000, W + 4000, H + 4000);
+  const x0 = Math.floor((-offX / scale) / CLOTH.tile) * CLOTH.tile, x1 = (cw - offX) / scale, y0 = Math.floor((-offY / scale) / CLOTH.tile) * CLOTH.tile, y1 = (ch - offY) / scale;
+  for (let ty = y0; ty < y1; ty += CLOTH.tile) for (let tx = x0; tx < x1; tx += CLOTH.tile) {
+    g.fillStyle = CLOTH.a; g.fillRect(tx, ty, 40, 40); g.fillRect(tx + 40, ty + 40, 40, 40);
+    g.fillStyle = CLOTH.b; g.fillRect(tx, ty, 80, 40); g.fillRect(tx, ty, 40, 80);
+  }
+  return cv;
+}
 function drawBackdrop() {
+  const key = `${canvas.width}x${canvas.height}|${dpr}|${scale.toFixed(4)}|${offX.toFixed(2)}|${offY.toFixed(2)}`;
+  if (!S.bdCache) S.bdCache = {};
+  let bd = S.bdCache[key];
+  if (!bd) { if (Object.keys(S.bdCache).length >= 3) S.bdCache = {}; bd = S.bdCache[key] = bakeBackdrop(); }
+  ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.drawImage(bd, 0, 0, bd.width, bd.height, 0, 0, canvas.width, canvas.height); ctx.restore();
   ctx.save();
-  const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#fff1e6'); g.addColorStop(1, '#fbd9cf');
-  ctx.fillStyle = g; ctx.fillRect(-2000, -2000, W + 4000, H + 4000);
   ctx.globalAlpha = 0.35; ctx.fillStyle = '#ffffff';
   for (let i = 0; i < 14; i++) { const x = (i * 97) % W, y = (i * 173 + S.t * 6) % (H + 40) - 20; ctx.beginPath(); ctx.arc(x, y, 6 + (i % 3) * 3, 0, 7); ctx.fill(); }
   ctx.restore();
@@ -645,7 +671,9 @@ function drawMapRoad() {
   const pts = mapRoadPoints(); let done = 0; while (done < S.save.levels.length && S.save.levels[done].cleared) done++;
   const path = () => { ctx.beginPath(); pts.forEach((p, k) => (k ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y))); };
   ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-  path(); ctx.lineWidth = 22; ctx.strokeStyle = 'rgba(160,110,85,0.35)'; ctx.stroke();           // soft edge
+  ctx.save(); ctx.translate(0, 4); path(); ctx.lineWidth = 24; ctx.strokeStyle = 'rgba(70,35,50,0.22)'; ctx.stroke(); ctx.restore(); // v0.7.5 C18: cast shadow, INK outline, lip
+  path(); ctx.lineWidth = 22; ctx.strokeStyle = A.INK; ctx.stroke();
+  ctx.save(); ctx.translate(0, 1.5); path(); ctx.lineWidth = 19; ctx.strokeStyle = '#d9a08c'; ctx.stroke(); ctx.restore();
   path(); ctx.lineWidth = 16; ctx.strokeStyle = '#f6dcc0'; ctx.stroke();                         // sandy road
   // travelled part of the road glows a little warmer
   const doneIdx = Math.min(pts.length - 1, done * 24);
@@ -668,7 +696,7 @@ function drawWorldGate(w) {
   if (open) plainText('Open! Beat the queen at the top.', 214, y + 12, 11.5, '#6b5562', 'center', '600');
   else {
     const won = C.LEVELS.filter((L, i) => L.world === prev && S.save.levels[i].cleared).length, total = C.LEVELS.filter((L) => L.world === prev).length;
-    plainFit(`Locked: win all ${total} levels (${won}/${total}) + ${W2.unlock.minStarsInWorld} stars (${M.worldStars(S.save, prev)}/${total * 3})`, 214, y + 12, 262, 11.5, '#a0607e', 'center', '700');
+    plainFit(`Locked: win all ${total} levels (${won}/${total}) + ${W2.unlock.minStarsInWorld} stars (${M.worldStars(S.save, prev)}/${total * 3})`, 214, y + 12, 262, 12, '#a0607e', 'center', '700');
     // padlock
     ctx.save(); ctx.translate(346, y - 22); A.rr(ctx, -8, -3, 16, 13, 3); ctx.fillStyle = '#8c8090'; ctx.fill(); ctx.beginPath(); ctx.arc(0, -4, 5.5, Math.PI, 0); ctx.lineWidth = 3; ctx.strokeStyle = '#8c8090'; ctx.stroke(); ctx.restore();
   }
@@ -716,7 +744,7 @@ function renderMapScreen() {
     A.mapNode(ctx, p.x, p.y - bounce, i, { open, cleared: L.cleared, next: isNext, stars: L.stars, boss }, S.t);
     if (boss) { ctx.save(); ctx.translate(p.x + 24, p.y - 30 - bounce); ctx.scale(0.55, 0.55); A.drawAnt(ctx, C.QUEENS[w].type, 0.2); ctx.restore(); }
     for (let s2 = 0; s2 < 3; s2++) A.starShape(ctx, p.x - 18 + s2 * 18, p.y + 32, 7, s2 < L.stars ? '#ffd45e' : '#e8dde4', 1.6);
-    A.text(ctx, C.LEVELS[i].name, p.x, p.y + 48, 11, '#7a5a6a', 'center', null);
+    A.text(ctx, C.LEVELS[i].name, p.x, p.y + 48, 12, '#7a5a6a', 'center', null);
     const sy = p.y + sc; S.layoutNodes.push({ i, x: p.x, y: sy });
     if (open && sy > MAPVIEW.top + 10 && sy < MAPVIEW.bottom - 10) button('lvl' + i, p.x - 30, sy - 30, 60, 60, () => openPrep(i));
   }
@@ -973,8 +1001,8 @@ function renderPrep() {
     if (sel && stock <= 0) { A.lavaBorder(ctx, x, y, w, h, 14, S.t); }
     else { ctx.lineWidth = sel ? 4.5 : 2.5; ctx.strokeStyle = sel ? '#111111' : A.INK; ctx.stroke(); }
     ctx.save(); ctx.translate(x + w / 2, y + 28); ctx.scale(1.3, 1.3); A.drawBonusIcon(ctx, bt, S.t); ctx.restore();
-    A.text(ctx, C.BONUSES[bt].name, x + w / 2, y + 54, 11, '#fff');
-    A.text(ctx, 'x' + stock, x + w - 12, y + 12, 11, stock ? '#fff' : '#ff9a9a');
+    A.text(ctx, C.BONUSES[bt].name, x + w / 2, y + 54, 12, '#fff');
+    A.text(ctx, 'x' + stock, x + w - 12, y + 12, 12, stock ? '#fff' : '#ff9a9a');
     button('bon' + bt, x, y, w, h, () => {
       const b = S.prep.bonuses; const j = b.indexOf(bt);
       if (j >= 0) b.splice(j, 1); else { b.push(bt); if (b.length > C.BATTLE.bonusTypesToBring) b.shift(); if (stock <= 0) zeroBonusAlert(bt); }
@@ -992,7 +1020,7 @@ function renderPrep() {
   if (warn) {
     const lines = wrapLines(warn, 324, 11.5).slice(0, 3); const hh = 12 + lines.length * 14;
     panel(26, 646 - hh - 2, 348, hh, issues.length ? '#ffd9d0' : '#fff0c2', 12);
-    lines.forEach((l, k) => A.text(ctx, l, 200, 646 - hh + 6 + k * 14 + 5, 11.5, issues.length ? '#c0392b' : '#b0602a', 'center', null));
+    lines.forEach((l, k) => A.text(ctx, l, 200, 646 - hh + 6 + k * 14 + 5, 12, issues.length ? '#c0392b' : '#b0602a', 'center', null));
     ctx.font = `bold 11.5px ${A.FONT}`;
     S.layoutWarn = { box: { x: 26, y: 646 - hh - 2, w: 348, h: hh }, lines: lines.map((l) => ctx.measureText(l).width), maxW: 324 };
   }
@@ -1208,6 +1236,7 @@ function drawModeIcon(m, x, y, k) {
 // v0.7.4 M3: the wave preview strip (next wave's ants, between waves) / 'Ants left: N' (after the last wave started), in the free band at the top of the map.
 // Display only: no button, taps fall through to the tiles under it. Hidden while a card is held / dragged, a tower panel or the Move/Swap banner is up (they use that area).
 let stripLast = null; // test hook: what was drawn last frame { rect, kind, ... }
+let stripNoRoom = false, hudPreviewLast = null, stripX = null, stripAt = 0; // v0.7.5: no free span for the strip this frame -> the HUD shows a compact preview; stripX eases the strip sideways
 // v0.7.4 M2: a dropped crumb to tap: bouncing crumb, a pulsing ring, and a timer ring that shrinks over its `window` (blinks at 1 s left); reduced motion: no bounce
 function drawPieces(b) {
   if (!b.pieces.length) return;
@@ -1226,12 +1255,12 @@ function drawPieces(b) {
   }
 }
 function drawWaveStrip(b) {
-  stripLast = null;
-  if (S.info || S.mode || S.drag || (S.sel && S.sel.kind === 'card')) return;
-  const m = previewModel(b); if (!m) return;
+  stripLast = null; stripNoRoom = false;
+  if (S.info || S.mode || S.drag || (S.sel && S.sel.kind === 'card')) { stripX = null; return; }
+  const m = previewModel(b); if (!m) { stripX = null; return; }
   let groups = m.groups, more = m.moreAnts;
   const widthOf = (gs, mo) => { // measured with the strip's own fonts
-    ctx.font = `bold 11px ${A.FONT}`;
+    ctx.font = `bold 12px ${A.FONT}`;
     return 12 + gs.reduce((w, g) => w + 18 + 2 + ctx.measureText('x' + g.count).width + 6, 0) + (mo ? ctx.measureText('+' + mo).width + 4 : 0);
   };
   let label = null, w;
@@ -1241,38 +1270,58 @@ function drawWaveStrip(b) {
   if (rect && m.kind === 'next') while (rect.w < w - 0.5 && groups.length > 1) { // too narrow here: fewer types, the rest become +n
     const g = groups[groups.length - 1]; groups = groups.slice(0, -1); more += g.count; w = widthOf(groups, more); rect = stripRect(b, w);
   }
-  if (!rect) return;
+  if (!rect) { stripX = null; stripNoRoom = m.kind === 'next'; return; } // v0.7.5: nothing fits (towers / trail / nests / cookie) -> hidden; the HUD shows the compact preview
   stripLast = { rect, kind: m.kind, n: m.n, groups, more, left: m.left };
-  ctx.save(); ctx.translate(rect.x, rect.y);
-  A.rr(ctx, 0, 0, rect.w, STRIP_H, STRIP_H / 2); ctx.fillStyle = 'rgba(255,250,245,0.93)'; ctx.fill(); ctx.lineWidth = 1.8; ctx.strokeStyle = A.INK; ctx.stroke();
+  // v0.7.5 (review finding 1): when the free span moves (a tower was built under it) the strip eases sideways over ~150 ms instead of jumping (reduced motion: snaps)
+  const dtS = Math.min(0.1, Math.max(0, S.t - stripAt)); stripAt = S.t;
+  if (stripX == null || reducedMotion() || Math.abs(stripX - rect.x) < 0.5) stripX = rect.x; else stripX += (rect.x - stripX) * Math.min(1, dtS / 0.15 * 1.0);
+  ctx.save(); ctx.translate(stripX, rect.y);
+  A.rr(ctx, 0, 0, rect.w, STRIP_H, STRIP_H / 2); ctx.fillStyle = 'rgba(255,246,238,0.96)'; ctx.fill();
+  ctx.fillStyle = 'rgba(120,80,95,0.14)'; A.rr(ctx, 7, STRIP_H - 5, rect.w - 14, 2, 1); ctx.fill(); // 2 px bottom lip (v0.7.5 C18)
+  A.rr(ctx, 0, 0, rect.w, STRIP_H, STRIP_H / 2); ctx.lineWidth = 2.5; ctx.strokeStyle = A.INK; ctx.stroke();
   if (label) A.text(ctx, label, rect.w / 2, STRIP_H / 2 + 0.5, 12, '#c0392b', 'center', null);
   else {
     let x = 8;
-    for (const g of groups) {
-      const spr = A.antSprite(g.type, 0, false, pxRatio), k = C.ANTS[g.type].size, cx = x + 9, cy = STRIP_H / 2;
-      ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, 9, 0, 7); ctx.clip();
-      const sw = 44 * k, sh = 40 * k; // the ant's head and shoulders (the sprite is drawn facing right; its origin is the body centre)
-      ctx.drawImage(spr.cv, (spr.ox - 24 * k) * pxRatio, (spr.oy - 28 * k) * pxRatio, sw * pxRatio, sh * pxRatio, cx - 9, cy - 9, 18, 18);
-      ctx.restore();
-      if (isTank(g.type)) { ctx.beginPath(); ctx.arc(cx, cy, 9, 0, 7); ctx.lineWidth = 1.8; ctx.strokeStyle = '#c0392b'; ctx.stroke(); }
-      if (isFlyer(g.type)) { ctx.beginPath(); ctx.ellipse(cx + 7, cy - 8, 5, 2.4, -0.5, 0, 7); ctx.fillStyle = 'rgba(205,235,255,0.95)'; ctx.fill(); ctx.lineWidth = 1; ctx.strokeStyle = A.INK; ctx.stroke(); }
-      A.text(ctx, 'x' + g.count, x + 20, STRIP_H / 2 + 0.5, 11, A.INK, 'left', null);
-      ctx.font = `bold 11px ${A.FONT}`; x += 18 + 2 + ctx.measureText('x' + g.count).width + 6;
-    }
-    if (more) A.text(ctx, '+' + more, x - 2, STRIP_H / 2 + 0.5, 11, '#8a7080', 'left', null);
+    for (const g of groups) { x = drawStripGroup(g, x, STRIP_H / 2, 18, 9); }
+    if (more) A.text(ctx, '+' + more, x - 2, STRIP_H / 2 + 0.5, 12, '#8a7080', 'left', null);
   }
   ctx.restore();
+}
+// one ant icon (head and shoulders in a circle, the tank ring, the flyer wing) + its count; returns the next x. `d` = icon diameter
+function drawStripGroup(g, x, cy, d, rad) {
+  const spr = A.antSprite(g.type, 0, false, pxRatio), k = C.ANTS[g.type].size, cx = x + rad;
+  ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, rad, 0, 7); ctx.clip();
+  const sw = 44 * k, sh = 40 * k; // the ant's head and shoulders (the sprite is drawn facing right; its origin is the body centre)
+  ctx.drawImage(spr.cv, (spr.ox - 24 * k) * pxRatio, (spr.oy - 28 * k) * pxRatio, sw * pxRatio, sh * pxRatio, cx - rad, cy - rad, d, d);
+  ctx.restore();
+  if (isTank(g.type)) { ctx.beginPath(); ctx.arc(cx, cy, rad, 0, 7); ctx.lineWidth = 1.8; ctx.strokeStyle = '#c0392b'; ctx.stroke(); }
+  if (isFlyer(g.type)) { ctx.beginPath(); ctx.ellipse(cx + rad * 0.78, cy - rad * 0.9, rad * 0.55, rad * 0.27, -0.5, 0, 7); ctx.fillStyle = 'rgba(205,235,255,0.95)'; ctx.fill(); ctx.lineWidth = 1; ctx.strokeStyle = A.INK; ctx.stroke(); }
+  A.text(ctx, 'x' + g.count, x + d + 2, cy + 0.5, 12, A.INK, 'left', null);
+  ctx.font = `bold 12px ${A.FONT}`; return x + d + 2 + ctx.measureText('x' + g.count).width + 6;
+}
+// v0.7.5 Should #10: the compact preview in the HUD's 'Lv N' slot (x 148-218, below 'Wave n/m'): shown only while the strip has no room. 16 px icons, as many types as fit 70 px, the rest = +n. Returns true when drawn
+function drawHudPreview(b) {
+  const m = previewModel(b); if (!m || m.kind !== 'next') return false;
+  const gs = m.groups.slice(0, 3); let more = m.moreAnts + m.groups.slice(3).reduce((a, g) => a + g.count, 0);
+  const wOf = (arr, mo) => { ctx.font = `bold 12px ${A.FONT}`; return arr.reduce((t, g) => t + 16 + 2 + ctx.measureText('x' + g.count).width + 5, -5) + (mo ? 5 + ctx.measureText('+' + mo).width : 0); };
+  let use = gs.slice(); while (use.length > 1 && wOf(use, more) > 72) { more += use.pop().count; }
+  const wd = wOf(use, more); let x = 184 - wd / 2;
+  for (const g of use) x = drawStripGroup(g, x, 46, 16, 8) - 1;
+  if (more) A.text(ctx, '+' + more, x - 4, 46.5, 12, '#8a7080', 'left', null);
+  hudPreviewLast = { groups: use, more, w: wd };
+  return true;
 }
 function renderTowerInfo(b, info) {
   const tw = info.tower; const T = C.TOWERS[tw.type];
   if (info.until && S.t > info.until) { if (info.auto) { S.info = null; return; } info.changed = null; }
-  const modes = hasTargetModes(tw.type), H2 = modes ? 168 : 140, py = tw.y + MAP_Y > 300 ? MAP_Y + 8 : MAP_Y + MAP_H - H2 - 8;
+  const modes = hasTargetModes(tw.type), H2 = modes ? 176 : 140, py = tw.y + MAP_Y > 300 ? MAP_Y + 8 : MAP_Y + MAP_H - H2 - 8;
   S.layoutInfo = { x: 14, y: py, w: 372, h: H2 };
   panel(14, py, 372, H2, '#fffaf5', 14);
   ctx.font = `bold 15px ${A.FONT}`; const tW = Math.min(150, ctx.measureText(T.name).width);
   fitText(T.name, 26 + tW / 2, py + 17, 150, 15, '#ff8fab'); // title stays bold
   plainFit(`Lv ${tw.lvl}/${b.cfg.maxInBattleLevel} \u00b7 card L${tw.cardLevel}`, 34 + tW, py + 17, 222 - tW, 12, INFO_SOFT, 'left', '600');
   let desc = T.ability || T.desc;
+  if (modes && tw.mode && C.TARGET_MODE_TEXT[tw.type] && C.TARGET_MODE_TEXT[tw.type][tw.mode]) desc = C.TARGET_MODE_TEXT[tw.type][tw.mode]; // v0.7.5 (review finding 3): the text follows the selected mode
   if (T.directional && !tw.trailDir) desc = tw.type === 'ball' ? 'No trail right next to it - the marble cannot roll here. Move it!' : tw.type === 'tractor' ? 'No trail right next to it - nothing to scoop here. Move it!' : 'No trail right next to it - no wind here. Move it!';
   plainWrap(desc, 346, 12.5).slice(0, 2).forEach((l, i) => plainText(l, 26, py + 38 + i * 16, 12.5, T.directional && !tw.trailDir ? '#c0392b' : INFO_INK));
   const keys = tw.type === 'tractor' ? ['liftSize', 'rate', 'scoop'] : ['power', 'rate', tw.type === 'ball' ? 'roll' : 'range'];
@@ -1281,7 +1330,7 @@ function renderTowerInfo(b, info) {
     const x = 22 + i * 120, y = py + 66, w = 114, h = 38;
     const on = changed.has(k);
     A.rr(ctx, x, y, w, h, 10); ctx.fillStyle = on ? '#e2f8dc' : '#f7efeb'; ctx.fill(); ctx.lineWidth = on ? 2.4 : 1.2; ctx.strokeStyle = on ? '#55b85a' : '#e0cfd4'; ctx.stroke();
-    plainFit(k === 'roll' ? 'Roll here' : k === 'scoop' ? 'Scoop' : statLabel(tw.type, k), x + 8, y + 11, w - 14, 11, INFO_SOFT);
+    plainFit(k === 'roll' ? 'Roll here' : k === 'scoop' ? 'Scoop' : statLabel(tw.type, k), x + 8, y + 11, w - 14, 12, INFO_SOFT);
     const d = (info.changed || []).find((q) => q.key === k);
     const val = k === 'roll' ? rollHere(tw) : k === 'scoop' ? (tw.trailDir ? 'trail tile beside it' : 'no trail') : d ? `${formatStat(tw.type, k, d.from)} \u2192 ${formatStat(tw.type, k, d.to)}` : formatStat(tw.type, k, tw.stat(k));
     plainFit(val, x + w / 2, y + 27, w - 12, 14, on ? '#2f8a36' : INFO_INK, 'center', '600');
@@ -1291,14 +1340,17 @@ function renderTowerInfo(b, info) {
   if (extra.length) line = 'Upgraded: ' + extra.map((d) => diffText(tw.type, d)).join(', ');
   else if (tw.lvl < b.cfg.maxInBattleLevel) line = (dmgGainText(tw.type, tw.lvl + 1, tw.cardLevel) ? dmgGainText(tw.type, tw.lvl + 1, tw.cardLevel) + '! ' : '') + 'Next (drop same card): ' + upgradeDiff(tw.type, tw.lvl, tw.cardLevel).map((d) => diffText(tw.type, d)).join(', ');
   else line = 'Max level!';
-  plainFit(line, 200, py + (modes ? 148 : 122), 350, 12, extra.length ? '#2f8a36' : INFO_INK, 'center');
+  plainFit(line, 200, py + (modes ? 160 : 122), 350, 12, extra.length ? '#2f8a36' : INFO_INK, 'center');
   button('infoClose', 14, py, 372, H2, () => { S.info = null; }); // registered after 'map' so it is on top (tapping the panel = the player's own close)
-  if (modes) { // v0.7.4 M1: who this tower shoots - three chips under the stat boxes (tap = select)
+  if (modes) { // v0.7.4 M1: who this tower shoots - three chips under the stat boxes (tap = select). v0.7.5 C18: 34 px tall, a visible 1.5 px outline when inactive, a 120 ms pop on change
     TARGET_MODES.forEach((m, i) => {
-      const x = 22 + i * 120, y = py + 110, w = 114, h = 28, on = tw.mode === m;
-      A.rr(ctx, x, y, w, h, 10); ctx.fillStyle = on ? '#ffd27a' : '#f7efeb'; ctx.fill(); ctx.lineWidth = on ? 2.6 : 1.2; ctx.strokeStyle = on ? A.INK : '#e0cfd4'; ctx.stroke();
-      drawModeIcon(m, x + 17, y + h / 2, 1);
-      plainFit(MODE_NAME[m], x + 32, y + h / 2 + 0.5, w - 38, 12.5, on ? A.INK : INFO_INK, 'left', on ? '700' : '600');
+      const x = 22 + i * 120, y = py + 108, w = 114, h = 34, on = tw.mode === m;
+      const age = S.t - (tw._modeAt ?? -9), pop = on && age >= 0 && age < 0.12 && !reducedMotion() ? 1 + 0.08 * Math.sin(age / 0.12 * Math.PI) : 1;
+      ctx.save(); if (pop !== 1) { ctx.translate(x + w / 2, y + h / 2); ctx.scale(pop, pop); ctx.translate(-(x + w / 2), -(y + h / 2)); }
+      A.rr(ctx, x, y, w, h, 11); ctx.fillStyle = on ? '#ffd27a' : '#f7efeb'; ctx.fill(); ctx.lineWidth = on ? 2.6 : 1.5; ctx.strokeStyle = on ? A.INK : '#d9c5cc'; ctx.stroke();
+      drawModeIcon(m, x + 18, y + h / 2, 1);
+      plainFit(MODE_NAME[m], x + 34, y + h / 2 + 0.5, w - 40, 13, on ? A.INK : INFO_INK, 'left', on ? '700' : '600');
+      ctx.restore();
       button('mode_' + m, x - 2, y - 2, w + 4, h + 4, () => setMode(tw, m));
     });
   }
@@ -1332,14 +1384,19 @@ function wrapText(s, x, y, maxW, size, col) {
 function drawTowerObj(tw) {
   ctx.save(); ctx.translate(tw.x, tw.y);
   const age = S.battle.time - (tw.born ?? (tw.born = S.battle.time));
-  const pop = age < 0.25 ? 0.6 + age / 0.25 * 0.4 + Math.sin(age / 0.25 * Math.PI) * 0.2 : 1;
-  ctx.scale(pop, pop);
+  if (reducedMotion()) { /* no pop in reduced motion */ }
+  else if (age < 0.22) { // v0.7.5 juice table: placed = squash (1.15, 0.85) -> (0.95, 1.05) -> 1 over 220 ms (was a 250 ms grow-in)
+    const k = age / 0.22, a = k < 0.4 ? k / 0.4 : (k - 0.4) / 0.6, sx = k < 0.4 ? 1.15 + (0.95 - 1.15) * a : 0.95 + 0.05 * a, sy = k < 0.4 ? 0.85 + (1.05 - 0.85) * a : 1.05 - 0.05 * a;
+    ctx.scale(sx, sy);
+  }
   if (C.TOWERS[tw.type].place === 'path') ctx.translate(tw.px - tw.x, tw.py - tw.y);
   A.drawTower(ctx, tw.type, S.t + tw.id, tw);
   // level pips
   if (tw.mode && tw.mode !== 'weak') { // v0.7.4 M1: a 10 px badge on the tower's base shows a non-default target mode (crumb = Carrier, arrow = Front)
-    ctx.beginPath(); ctx.arc(14, 13, 7, 0, 7); ctx.fillStyle = '#fffaf5'; ctx.fill(); ctx.lineWidth = 1.8; ctx.strokeStyle = A.INK; ctx.stroke();
-    drawModeIcon(tw.mode, 14, 13, 0.5);
+    const bage = S.t - (tw._modeAt ?? -9), bp = bage >= 0 && bage < 0.5 && !reducedMotion() ? 1 + 0.35 * Math.sin(Math.min(1, bage / 0.5) * Math.PI) : 1; // 0.5 s pop on a change
+    ctx.save(); ctx.translate(14, 13); ctx.scale(bp, bp);
+    ctx.beginPath(); ctx.arc(0, 0, 8, 0, 7); ctx.fillStyle = '#fffaf5'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = A.INK; ctx.stroke(); // v0.7.5 C18: 12+ px cream disc, INK 2.0
+    drawModeIcon(tw.mode, 0, 0, 0.55); ctx.restore();
   }
   if (tw.lvl > 1) for (let k = 0; k < tw.lvl; k++) A.starShape(ctx, -(tw.lvl - 1) * 3.6 + k * 7.2, 16, 3.6, '#ffd45e', 1.1); // up to 6 pips (v0.6 item 11)
   ctx.restore();
@@ -1376,9 +1433,9 @@ function drawAntObj(a, ghost = false) {
   if (a.state === 'back') lat = C.UI.carrierLane + lat * 0.4; // v0.7.4 P: returning carriers ride ~5 px to one side of the lane so they separate from inbound ants
   const x = a.x + p.dy * lat, y = a.y - p.dx * lat;
   ctx.save(); ctx.translate(x, y + 4); ctx.scale(face / breathe, breathe);
-  if (a.hitFlash > 0.06) ctx.scale(1.08, 0.92); // hit squash
+  if (a.hitFlash > 0 && !reducedMotion()) { const q = Math.min(1, a.hitFlash / 0.12), sq = 0.12 * q * q; ctx.scale(1 + sq, 1 - sq); } // v0.7.5 juice: hit squash (1.12, 0.88) easing out over 120 ms (easeOutQuad)
   ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h);
-  if (a.hitFlash > 0) { ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = 0.5; ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h); }
+  if (a.hitFlash > 0.04) { ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = 0.6; ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h); } // hit flash: white-add 0.6 for the first 80 ms
   ctx.restore();
   if (frozen) { ctx.save(); ctx.globalAlpha = 0.55; A.rr(ctx, x - 17 * a.size, y - 24 * a.size, 34 * a.size, 32 * a.size, 7); ctx.fillStyle = '#d6f3ff'; ctx.fill(); ctx.lineWidth = 1.5; ctx.strokeStyle = '#8fd0f5'; ctx.stroke(); ctx.restore(); }
   if (a.slow > 0.01 && !frozen) { ctx.fillStyle = 'rgba(255,240,160,0.8)'; ctx.beginPath(); ctx.ellipse(x, y + 8, 9 * a.size, 2.5, 0, 0, 7); ctx.fill(); }
@@ -1411,14 +1468,19 @@ function renderFx(dt) {
       case 'crumbFly': { const x = f.x0 + (f.x1 - f.x0) * k, y = f.y0 + (f.y1 - f.y0) * k - Math.sin(k * Math.PI) * 24; ctx.globalAlpha = k > 0.85 ? (1 - k) / 0.15 : 1; A.crumbIcon(ctx, x, y, 1.1 - k * 0.5, true); break; }
       case 'ko': {
         const spr = A.antSprite(f.ant, 0, false, pxRatio);
-        ctx.globalAlpha = 1 - k; ctx.translate(f.x, f.y - k * 30); ctx.rotate(Math.PI * k * 0.4 * f.face); ctx.scale(f.face, -1);
+        // v0.7.5 juice: death = scale 1 -> 1.25 in 80 ms, then -> 0 in 120 ms (reduced motion: a plain fade, no scale / spin)
+        const rmo = reducedMotion(), ds = rmo ? 1 : k < 0.4 ? 1 + 0.25 * (k / 0.4) : 1.25 * (1 - (k - 0.4) / 0.6);
+        ctx.globalAlpha = rmo ? 1 - k : 1 - k * k; ctx.translate(f.x, f.y - (rmo ? 0 : k * 30)); ctx.rotate(rmo ? 0 : Math.PI * k * 0.4 * f.face); ctx.scale(f.face * ds, -ds);
         ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h);
         ctx.scale(1, -1); ctx.beginPath(); ctx.ellipse(0, -18, 8, 2.5, 0, 0, 7); ctx.lineWidth = 2; ctx.strokeStyle = '#ffe36e'; ctx.stroke();
         break;
       }
       case 'puff': f.x += f.vx * dt; f.y += f.vy * dt; ctx.globalAlpha = (1 - k) * 0.8; ctx.beginPath(); ctx.arc(f.x, f.y, f.r * (1 + k), 0, 7); ctx.fillStyle = '#fff'; ctx.fill(); break;
       case 'crumbTxt': ctx.globalAlpha = 1 - k * k; A.crumbIcon(ctx, f.x - 7, f.y - k * 24, 0.7); A.text(ctx, '+' + f.n, f.x + 7, f.y - k * 24, 12, '#ffe3a8'); break;
-      case 'txt': { ctx.globalAlpha = 1 - k * k; const sz = (f.size || 13) * (k < 0.12 ? 0.6 + k / 0.12 * 0.4 + Math.sin(k / 0.12 * Math.PI) * 0.15 : 1); A.text(ctx, f.s, Math.max(60, Math.min(MAP_W - 60, f.x)), f.y - k * 22, sz, f.col); break; }
+      case 'txt': { // v0.7.5 juice: rise 22 px with easeOutCubic; scale 0.6 -> 1.15 -> 1 in the first 120 ms; reduced motion: no rise, no pop
+        const rm = reducedMotion(), pk = Math.min(1, (f.max * k) / 0.12); ctx.globalAlpha = 1 - k * k;
+        const sz = (f.size || 14) * (rm || pk >= 1 ? 1 : pk < 0.6 ? 0.6 + (1.15 - 0.6) * (pk / 0.6) : 1.15 - 0.15 * ((pk - 0.6) / 0.4));
+        A.text(ctx, f.s, Math.max(60, Math.min(MAP_W - 60, f.x)), f.y - (rm ? 0 : 22 * (1 - Math.pow(1 - k, 3))), sz, f.col); break; }
       case 'ring2': ctx.globalAlpha = 1 - k; ctx.beginPath(); ctx.arc(f.x, f.y, 8 + k * 34, 0, 7); ctx.lineWidth = 6 * (1 - k) + 1; ctx.strokeStyle = '#ffe36e'; ctx.stroke(); break;
       case 'pillar': { ctx.globalAlpha = (1 - k) * 0.8; const g = ctx.createLinearGradient(0, f.y - 120, 0, f.y + 10); g.addColorStop(0, 'rgba(255,240,150,0)'); g.addColorStop(1, 'rgba(255,240,150,0.9)'); ctx.fillStyle = g; const w = 26 * (1 - k * 0.5); ctx.fillRect(f.x - w / 2, f.y - 120, w, 130); for (let i = 0; i < 4; i++) A.starShape(ctx, f.x + Math.sin(i * 2.1 + k * 6) * 14, f.y - 20 - ((k * 90 + i * 25) % 100), 3.5, '#fff7b0', 1); break; }
       case 'heart': ctx.globalAlpha = 1 - k; A.heart(ctx, f.x + Math.sin(k * 8) * 3, f.y - k * 18, 3.2, '#ff8fbf'); break;
@@ -1507,10 +1569,11 @@ function renderHud(b) {
   if (f > 0) { A.rr(ctx, 62, 24, 80 * f, 16, 8); ctx.fillStyle = f >= 0.9 ? '#8fe388' : f >= 0.5 ? '#ffd45e' : '#ff8a8a'; ctx.fill(); }
   A.text(ctx, `${Math.floor(b.foodStored + 1e-6)}`, 102, 33, 13, '#fff');
   const carried = b.ants.reduce((s, a) => s + (a.trips === 0 ? a.carrying : 0), 0); // v0.7.2 C14: 'carried off!' only for ants on their FIRST trip (every ant keeps shuttling, so it would never go away)
-  if (carried) A.text(ctx, `${fmtFood(carried)} carried off!`, 102, 51, 11, '#c0392b', 'center', null);
+  if (carried) A.text(ctx, `${fmtFood(carried)} carried off!`, 102, 51, 12, '#c0392b', 'center', null);
   // wave
   A.text(ctx, `Wave ${Math.min(b.nextWave, b.totalWaves)}/${b.totalWaves}`, 184, 26, 15, '#ffb3c1');
-  A.text(ctx, `Lv ${b.levelIndex + 1}`, 184, 46, 11, '#a08090', 'center', null);
+  hudPreviewLast = null;
+  if (!(stripNoRoom && drawHudPreview(b))) A.text(ctx, `Lv ${b.levelIndex + 1}`, 184, 46, 12, '#a08090', 'center', null); // v0.7.5: 12 px caption; with no room for the strip the compact preview takes this slot
   // v0.4 item 10: diamonds in stock, always visible in battle (they buy crumbs and boosters)
   ctx.save(); ctx.translate(252, 33);
   A.rr(ctx, -31, -14, 62, 28, 14); ctx.fillStyle = '#e9f7ff'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = A.INK; ctx.stroke();
@@ -1619,13 +1682,13 @@ function renderTray(b) {
       else { b.useBonus(bt, 0, 0); }
     });
   });
-  A.text(ctx, `${b.bonusUsesLeft}`, 234, by + 14, 14, '#ffb3c1'); A.text(ctx, 'left', 234, by + 30, 9, '#a08090', 'center', null);
+  A.text(ctx, `${b.bonusUsesLeft}`, 234, by + 14, 14, '#ffb3c1'); A.text(ctx, 'left', 234, by + 30, 12, '#a08090', 'center', null);
   drawSpeedButton(256, by, 60, bh);
   button('speed', 252, hitY, 68, hitH, () => { S.speed = nextSpeed(S.speed); sfx('tap'); }); // v0.7.4 M0: 1x -> 2x -> 4x -> 1x, kept for the session only
   drawButton(324, by, 64, bh, 'II', '#d9cfe0', { r: 12, size: 16 });
   button('pause', 320, hitY, 76, hitH, () => { setPaused(true); });
 }
-// v0.7.4 M0: the speed button - 1 / 2 / 3 vector chevrons (8 px wide, 3 px gap) over a 9 px label; colours 1x #ffd27a, 2x #ffb347, 4x #ff8a5c
+// v0.7.4 M0: the speed button - 1 / 2 / 3 vector chevrons (8 px wide, 3 px gap) over a 12 px label; colours 1x #ffd27a, 2x #ffb347, 4x #ff8a5c
 const SPEED_COL = { 1: '#ffd27a', 2: '#ffb347', 4: '#ff8a5c' };
 function drawSpeedButton(x, y, w, h) {
   const sp = S.speed, n = sp === 1 ? 1 : sp === 2 ? 2 : 3, col = SPEED_COL[sp] || SPEED_COL[1];
@@ -1634,7 +1697,7 @@ function drawSpeedButton(x, y, w, h) {
   ctx.save(); ctx.fillStyle = A.INK;
   for (let i = 0; i < n; i++) { const px = x0 + i * (cw + gap); ctx.beginPath(); ctx.moveTo(px, cy - ch / 2); ctx.lineTo(px + cw, cy); ctx.lineTo(px, cy + ch / 2); ctx.closePath(); ctx.fill(); }
   ctx.restore();
-  A.text(ctx, sp + 'x', x + w / 2, y + h - 10, 9, A.INK, 'center', null);
+  A.text(ctx, sp + 'x', x + w / 2, y + h - 11, 12, A.INK, 'center', null); // v0.7.5: 12 px (was 9)
 }
 function renderPause() {
   buttons.length = 0; // block every battle control while paused; only resume/restart/quit below
@@ -1679,7 +1742,7 @@ function renderResult(dt) {
   rows.push([R.win ? 'Time survived' : `Time survived${out.coins >= C.ECONOMY.lossCap ? ` (max ${C.ECONOMY.lossCap})` : ''}`, P.time || 0]);
   const RS = rows.length > 5 ? 14 : 16;
   A.rr(ctx, 70, 316, 260, 14 + rows.length * RS, 10); ctx.fillStyle = '#f6ece8'; ctx.fill();
-  rows.forEach(([l, v], i) => { A.text(ctx, l, 84, 330 + i * RS, 11, '#7a5a6a', 'left', null); A.text(ctx, `+${v}`, 316, 330 + i * RS, 11, '#c9962a', 'right', null); });
+  rows.forEach(([l, v], i) => { A.text(ctx, l, 84, 330 + i * RS, 12, '#7a5a6a', 'left', null); A.text(ctx, `+${v}`, 316, 330 + i * RS, 12, '#c9962a', 'right', null); });
   let yy = 330 + rows.length * RS + 18;
   A.coinIcon(ctx, 150, yy, 1.3); A.text(ctx, `+${out.coins} coins`, 208, yy + 1, 18, '#ffd45e');
   yy += 20; A.text(ctx, `(${R.crumbsLeft} unspent crumbs vanish)`, 200, yy, 10, '#a08090', 'center', null);
@@ -1726,7 +1789,7 @@ function cardInfoPanel(id, x, y, w, h, opt = {}) {
   if (!id) { plainText(opt.hint || 'Tap a card to see its stats.', x + w / 2, y + h / 2, 12.5, '#a08090', 'center', '600'); return; }
   const T = C.TOWERS[id], c = S.save.cards[id], own = c.unlocked, L = Math.max(1, c.level);
   fitText(T.name, x + 12 + Math.min(170, 9 * T.name.length) / 2, y + 16, 170, 14.5, '#ff8fab');
-  plainFit(own ? `Card L${c.level} (used in battle)` : 'Not owned yet', x + w - 12, y + 16, 150, 11.5, INFO_SOFT, 'right', '700');
+  plainFit(own ? `Card L${c.level} (used in battle)` : 'Not owned yet', x + w - 12, y + 16, 150, 12, INFO_SOFT, 'right', '700');
   const cmp = h < 108; // v0.7.2: the Cards / card screens give the panel less height (the tab bar took the bottom) -> a tighter layout
   plainFit(T.desc, x + 12, y + (cmp ? 33 : 37), w - 24, 12, INFO_INK, 'left', '500');
   const next = cardUpgradeDiff(id, L); const nk = new Set(next.map((d) => d.key));
@@ -1936,12 +1999,12 @@ function renderShop() {
   const gift = M.zapperGiftPending(S.save); // v0.6 item 5: the one-time FREE 5-card gift takes the pack's place
   if (gift) {
     A.text(ctx, `FREE pack: ${E.cardPackSize} cards!`, 112, 132, 14, '#e0607e', 'left', null);
-    A.text(ctx, `${E.cardPackSize - 1} random + Zapper`, 112, 152, 11, '#a08090', 'left', null); // v0.7 D-P0
+    A.text(ctx, `${E.cardPackSize - 1} random + Zapper`, 112, 152, 12, '#a08090', 'left', null); // v0.7 D-P0
     drawButton(290, 122, 74, 40, 'FREE', '#9fe0b5', { size: 17 });
   } else {
     A.text(ctx, `Card pack: ${E.cardPackSize} random cards`, 112, 132, 13, '#7a4a5a', 'left', null);
     { const left = Math.max(1, (E.packPity || 0) - (S.save.packsSinceNew || 0)); // v0.6.2 item 13 + v0.7 D-P3 pity
-      plainFit(M.lockedCards(S.save).length ? `level 1, ${Math.round(E.packNewTowerChance * 100)}% NEW tower${E.packPity ? ` (sure in ${left})` : ''}` : 'level 1, of your unlocked towers', 112, 152, 172, 11, '#a08090', 'left', '700'); }
+      plainFit(M.lockedCards(S.save).length ? `level 1, ${Math.round(E.packNewTowerChance * 100)}% NEW tower${E.packPity ? ` (sure in ${left})` : ''}` : 'level 1, of your unlocked towers', 112, 152, 172, 12, '#a08090', 'left', '700'); }
     drawButton(290, 122, 74, 40, `${E.cardPack}c`, '#9fe0b5', { size: 15, disabled: S.save.coins < E.cardPack });
     // v0.7: every pack opens the pack reveal (no toast, no separate NEW CARD reveal; a new tower is the last card)
     button('pack', 290, 122, 74, 40, () => { const got = M.buyPack(S.save); if (got) { persist(); shopBought('pack', 'pack', E.cardPack, 'coin'); openPackReveal(got, { source: 'paid', newTower: got.newTower }); } else toast('Not enough coins'); });
@@ -2234,7 +2297,7 @@ if (__TEST_HOOKS__) window.__game = {
   // v0.7.4 M0: drive the game's OWN frame stepper (same code as the rAF loop, minus rendering): n frames of `dtReal` real seconds at the current S.speed.
   // Returns the sub-steps taken. clock.acc is exposed so tests can assert the accumulator never grows past the guard.
   runFrames(n, dtReal = 1 / 60, now = null) { let steps = 0; for (let i = 0; i < n && S.battle && !S.battle.result; i++) { const t0 = S.battle.time; advanceFrame(clock, dtReal, S.speed, battleStep, now ? { now } : {}); consumeEvents(); flushSwat(!!S.battle.result); steps += Math.round((S.battle.time - t0) * 60); if (S.battle.result) finishBattle(); } return steps; },
-  lastBubble: () => lastBubble, ownBack, ownBackState: () => ({ pending: ownBackPending, ms: OWN_BACK_MS }), clock, battleFrame, stripLast: () => stripLast, mapTap, cycleMode, setMode,
+  lastBubble: () => lastBubble, ownBack, ownBackState: () => ({ pending: ownBackPending, ms: OWN_BACK_MS }), clock, battleFrame, stripLast: () => stripLast, mapTap, setMode, hudPreviewLast: () => hudPreviewLast, backdropKeys: () => Object.keys(S.bdCache || {}),
   setInset(px) { insetOverride = px; resize(); }, setInsetQuiet(px) { insetOverride = px; }, flushSwat, // v0.7.3: setInsetQuiet changes the probe value WITHOUT a resize (tests that the frame loop re-reads it)
   layout: () => ({ cw, ch, insetB, scale, offX, offY, barK, barH: BAR_H, metaH: META_H, dpr }), tabRect, BAR_H,
   mapPreview(id) { const b = new Battle({ levelIndex: 0, mapId: id, deck: [], bonusTypes: [], seed: 1 }); const src = A.renderMapBackground(b.routes, b.map.theme || 0, MAP_W, MAP_H, 2, b.props); const cv = document.createElement('canvas'); cv.width = src.width; cv.height = src.height; cv.getContext('2d').drawImage(src, 0, 0); return cv.toDataURL('image/png'); },

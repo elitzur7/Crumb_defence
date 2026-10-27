@@ -17,7 +17,7 @@ const mk = (o = {}) => { const b = new Battle({ levelIndex: 0, deck: DECK, seed:
 const still = (a) => { a.speed = 0; return a; };
 
 test('v0.7.4 version + versionCode (>= 18; the hotfix v0.7.4.1 is asserted in v0741.test.js)', () => {
-  assert.match(C.VERSION, /^0\.7\.4(\.\d+)?$/);
+  assert.match(C.VERSION, /^0\.7\.[45](\.\d+)?$/); // v0.7.5 keeps this passing
   assert.ok(+/versionCode (\d+)/.exec(readFileSync(new URL('../android/app/build.gradle', import.meta.url), 'utf8'))[1] >= 18);
   assert.equal(JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version, C.VERSION);
 });
@@ -87,10 +87,10 @@ test('M0: audio throttle is 120 ms for laser/zap/pop/pulse at 4x, 60 ms otherwis
   const g = src('game.js');
   assert.match(g, /i < \(fast \? 1 : 4\)/); assert.match(g, /i < \(fast \? 2 : 5\)/); assert.match(g, /S\.speed >= 4\) dt \*= 2/);
 });
-test('M0: the speed button draws 1/2/3 vector chevrons 8 px wide with a 3 px gap, a 9 px label and the plan colours', () => {
+test('M0: the speed button draws 1/2/3 vector chevrons 8 px wide with a 3 px gap, a 12 px label (v0.7.5: was 9) and the plan colours', () => {
   const g = src('game.js');
   assert.match(g, /SPEED_COL = \{ 1: '#ffd27a', 2: '#ffb347', 4: '#ff8a5c' \}/);
-  assert.match(g, /cw = 8, gap = 3/); assert.match(g, /sp \+ 'x', x \+ w \/ 2, y \+ h - 10, 9,/); assert.match(g, /n = sp === 1 \? 1 : sp === 2 \? 2 : 3/);
+  assert.match(g, /cw = 8, gap = 3/); assert.match(g, /sp \+ 'x', x \+ w \/ 2, y \+ h - 11, 12,/); assert.match(g, /n = sp === 1 \? 1 : sp === 2 \? 2 : 3/);
 });
 
 // ---------------- M1: target modes ----------------
@@ -164,10 +164,10 @@ test('M1 #5: the mode survives upgrade and Move / Swap, is per tower, and a new 
   assert.equal(new Battle({ levelIndex: 0, deck: DECK, seed: 1 }).addTower('slingshot', 2, 2).mode, 'weak');
   const meta = readFileSync(new URL('../src/meta.js', import.meta.url), 'utf8'); assert.ok(!/\.mode\b/.test(meta.replace(/\/\/.*$/gm, '')) || true);
 });
-test('M1: the panel has a chip per mode for mode-capable towers only (height 168 vs 140), chips at py + 110, "Next" line at py + 148', () => {
+test('M1: the panel has a chip per mode for mode-capable towers only (v0.7.5: height 176 vs 140, 34 px chips at py + 108, line at py + 160; the tap-to-cycle gesture is gone)', () => {
   const g = src('game.js');
-  assert.match(g, /H2 = modes \? 168 : 140/); assert.match(g, /y = py \+ 110, w = 114, h = 28/); assert.match(g, /py \+ \(modes \? 148 : 122\)/);
-  assert.match(g, /cycleMode\(tw\); S\.info = \{ tower: tw, t: 0 \}/); assert.match(g, /Tip: tap a tower to change who it shoots/);
+  assert.match(g, /H2 = modes \? 176 : 140/); assert.match(g, /y = py \+ 108, w = 114, h = 34/); assert.match(g, /py \+ \(modes \? 160 : 122\)/);
+  assert.ok(!/cycleMode/.test(g), 'review finding 2: no tap-to-cycle'); assert.match(g, /Tip: tap a tower, then pick who it shoots/);
 });
 
 // ---------------- M2: rescue the crumb (flag, default OFF) ----------------
@@ -276,13 +276,13 @@ test('M3 #4: no sim change (the preview only reads the battle)', () => {
 });
 
 // ---------------- P polish + P2 fixes ----------------
-test('P: the swatter slap head lands 10-14 px farther from the cookie centre on both sides; the carried label is 11 px; carriers ride 5 px to the side', () => {
+test('P: the swatter slap head lands 10-14 px farther from the cookie centre on both sides; the carried label is 12 px (v0.7.5: was 11); carriers ride 5 px to the side', () => {
   const o = C.UI.swatPivot, ang = 0.62;
   for (const sg of [-1, 1]) {
     const h0 = A.swatHead(o.oldDx, o.oldDy, sg * ang), h1 = A.swatHead(o.dx, o.dy, sg * ang);
     const d = Math.hypot(h1.x, h1.y) - Math.hypot(h0.x, h0.y); assert.ok(d >= 10 && d <= 14, `side ${sg}: +${d.toFixed(1)} px`);
   }
-  const g = src('game.js'); assert.match(g, /carried off!`, 102, 51, 11,/); assert.equal(C.UI.carrierLane, 5); assert.match(g, /a\.state === 'back'\) lat = C\.UI\.carrierLane/);
+  const g = src('game.js'); assert.match(g, /carried off!`, 102, 51, 12,/); assert.equal(C.UI.carrierLane, 5); assert.match(g, /a\.state === 'back'\) lat = C\.UI\.carrierLane/);
   assert.ok(/CRUMB_OUTLINE = '#2e1a12'/.test(src('art.js')) && /crumbIcon\(ctx, -10, -11, 1\.3, true\)/.test(src('art.js')), 'darker outline on the carried crumb');
 });
 test('P2: ownBack no longer swallows a real Back press for 1 s (400 ms window, cleared by the echo and by a timer); the Cards hint has its own bubble box', () => {

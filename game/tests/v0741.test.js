@@ -13,9 +13,9 @@ const styles = rd('android/app/src/main/res/values/styles.xml');
 const manifest = rd('android/app/src/main/AndroidManifest.xml');
 
 test('v0.7.4.1 version + versionCode 19', () => {
-  assert.equal(C.VERSION, '0.7.4.1');
-  assert.match(rd('android/app/build.gradle'), /versionCode 19\b[\s\S]*versionName "0\.7\.4\.1"/);
-  assert.equal(JSON.parse(rd('package.json')).version, '0.7.4.1');
+  assert.match(C.VERSION, /^0\.7\.(4\.1|5)$/); // v0.7.5: the hotfix's version is superseded; v075.test.js asserts the new one
+  assert.ok(+/versionCode (\d+)/.exec(rd('android/app/build.gradle'))[1] >= 19);
+  assert.equal(JSON.parse(rd('package.json')).version, C.VERSION);
 });
 
 test('MainActivity.onCreate: super.onCreate() runs BEFORE EdgeToEdge.enable(this)', () => {

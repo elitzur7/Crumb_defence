@@ -21,7 +21,7 @@ export function shade(hex, amt) {
 // soft shaded blob with outline
 export function blob(ctx, x, y, rx, ry, color, lw = 2, rot = 0) {
   const g = ctx.createRadialGradient(x - rx * 0.35, y - ry * 0.45, Math.max(1, Math.min(rx, ry) * 0.12), x, y, Math.max(rx, ry) * 1.15);
-  g.addColorStop(0, shade(color, 0.5)); g.addColorStop(0.35, shade(color, 0.18)); g.addColorStop(0.75, color); g.addColorStop(1, shade(color, -0.16));
+  g.addColorStop(0, shade(color, 0.28)); g.addColorStop(0.6, color); g.addColorStop(1, shade(color, -0.2)); // v0.7.5 C18: 3 stops
   ctx.beginPath(); ctx.ellipse(x, y, rx, ry, rot, 0, Math.PI * 2);
   ctx.fillStyle = g; ctx.fill();
   if (lw) { ctx.lineWidth = lw; ctx.strokeStyle = INK; ctx.stroke(); }
@@ -156,7 +156,7 @@ export function mapNode(ctx, x, y, i, st, t = 0) {
   const base = !st.open ? '#cfc6cf' : NODE_COLS[i % NODE_COLS.length];
   const R = st.boss ? 29 : 27, depth = 7;
   ctx.save();
-  shadow(ctx, x, y + 26, 30, 7, 0.22);
+  shadow(ctx, x, y + 26, 30, 7, 0.28);
   if (st.next) { ctx.beginPath(); ctx.ellipse(x, y + 3, R + 7 + Math.sin(t * 4) * 2, R * 0.92 + 6, 0, 0, 7); ctx.fillStyle = 'rgba(255,212,94,0.35)'; ctx.fill(); }
   // side (depth)
   ctx.beginPath(); ctx.ellipse(x, y + depth, R, R * 0.9, 0, 0, Math.PI); ctx.lineTo(x - R, y); ctx.ellipse(x, y, R, R * 0.9, 0, Math.PI, 0, true); ctx.closePath();
@@ -188,7 +188,7 @@ export function starShape(ctx, x, y, r, fill, lw = 2) {
 
 // ---------------- ANTS (chibi, side/3-4 view, facing right) ----------------
 // Warm caramel palette, big heads, glossy eyes, thick clean outlines.
-const ANT_COL = { small: '#f8c27e', worker: '#f2a65f', big: '#e7925a', gasmask: '#eeac78', armored: '#e9a067', flyer: '#f7b083', queen: '#f59b9b', queen2: '#c7a6f5', sprinter: '#f4ad6a', heavy: '#dd8a55' };
+export const ANT_COL = { small: '#fbc98a', worker: '#f0994d', big: '#d97a3f', gasmask: '#f0994d', armored: '#e48a47', flyer: '#f9b878', queen: '#f59b9b', queen2: '#c7a6f5', sprinter: '#f0994d', heavy: '#b95b34' }; // v0.7.5 C18: value ladder small > worker > big > heavy
 const ALW = 2.4; // ant outline width (v0.3: thinner = softer)
 
 function softBlob(ctx, x, y, rx, ry, col, lw = ALW) {
@@ -483,8 +483,8 @@ function pad(ctx, color) { baked(ctx, 'pad' + color, (g) => padPaths(g, color));
 function padPaths(ctx, color) {
   shadow(ctx, 0, 11, 18, 6.5, 0.24);
   // two-tier base: darker skirt + glossy top
-  ctx.beginPath(); ctx.ellipse(0, 8, 16, 8.5, 0, 0, 7); ctx.fillStyle = shade(color, -0.22); ctx.fill(); ctx.lineWidth = 1.9; ctx.strokeStyle = INK; ctx.stroke();
-  blob(ctx, 0, 5.5, 15.5, 8, shade(color, -0.02), 1.9);
+  ctx.beginPath(); ctx.ellipse(0, 8, 16, 8.5, 0, 0, 7); ctx.fillStyle = shade(color, -0.22); ctx.fill(); ctx.lineWidth = 3.0; ctx.strokeStyle = INK; ctx.stroke();
+  blob(ctx, 0, 5.5, 15.5, 8, shade(color, -0.02), 3.0);
   const g = ctx.createRadialGradient(-4, 3, 1, 0, 5, 12); g.addColorStop(0, shade(color, 0.6)); g.addColorStop(1, shade(color, 0.2));
   ctx.beginPath(); ctx.ellipse(0, 4.5, 11, 5, 0, 0, 7); ctx.fillStyle = g; ctx.fill();
   rim(ctx, 0, 5.5, 15.5, 8, 0.75);
@@ -1028,7 +1028,7 @@ function cookieBody(ctx, r, pct) {
   for (const [a, b, s] of [[-12, -8, 3.4], [9, -12, 3], [14, 5, 3.6], [-4, 13, 3.2], [-16, 7, 2.6], [3, -2, 2.4], [-6, -17, 2.2], [18, -6, 2]]) { ctx.beginPath(); ctx.ellipse(a, b, s, s * 0.8, a, 0, 7); ctx.fill(); }
   ctx.restore();
   // outline (approximate, including bites)
-  ctx.beginPath(); ctx.arc(0, 0, r, 0, 7); ctx.lineWidth = 2.6; ctx.strokeStyle = INK;
+  ctx.beginPath(); ctx.arc(0, 0, r, 0, 7); ctx.lineWidth = 3; ctx.strokeStyle = INK;
   ctx.save();
   ctx.beginPath(); ctx.rect(-r - 12, -r - 12, r * 2 + 24, r * 2 + 24);
   for (let k = 0; k < bites; k++) { const a = -0.6 + k * 0.72; ctx.moveTo(Math.cos(a) * r * 0.98 + 9, Math.sin(a) * r * 0.98); ctx.arc(Math.cos(a) * r * 0.98, Math.sin(a) * r * 0.98, 9, 0, Math.PI * 2, true); }
@@ -1036,7 +1036,7 @@ function cookieBody(ctx, r, pct) {
   ctx.beginPath(); ctx.arc(0, 0, r, 0, 7); ctx.stroke(); ctx.restore();
   // bite edges
   ctx.save(); ctx.beginPath(); ctx.arc(0, 0, r + 1, 0, 7); ctx.clip();
-  for (let k = 0; k < bites; k++) { const a = -0.6 + k * 0.72; ctx.beginPath(); ctx.arc(Math.cos(a) * r * 0.98, Math.sin(a) * r * 0.98, 9, 0, 7); ctx.lineWidth = 2.6; ctx.strokeStyle = INK; ctx.stroke(); }
+  for (let k = 0; k < bites; k++) { const a = -0.6 + k * 0.72; ctx.beginPath(); ctx.arc(Math.cos(a) * r * 0.98, Math.sin(a) * r * 0.98, 9, 0, 7); ctx.lineWidth = 3; ctx.strokeStyle = INK; ctx.stroke(); }
   ctx.restore();
 }
 // A second body only to prove the scheme is shared (a future world's cake): same faces, same reactions, different body.
@@ -1050,7 +1050,7 @@ function cakeBody(ctx, r, pct) {
   ctx.beginPath(); ctx.roundRect(-w, -h * 0.55, w * 2, h * 1.35, 6); ctx.fillStyle = g; ctx.fill();
   ctx.fillStyle = '#fff6f0'; ctx.fillRect(-w, h * 0.18, w * 2, 4);
   ctx.beginPath(); ctx.moveTo(-w, -h * 0.5); for (let k = 0; k <= 8; k++) ctx.quadraticCurveTo(-w + (k - 0.5) * w / 4, -h * 0.5 + 8, -w + k * w / 4, -h * 0.5); ctx.lineTo(w, -h * 0.62); ctx.lineTo(-w, -h * 0.62); ctx.fillStyle = '#fffaf2'; ctx.fill();
-  ctx.beginPath(); ctx.roundRect(-w, -h * 0.55, w * 2, h * 1.35, 6); ctx.lineWidth = 2.6; ctx.strokeStyle = INK; ctx.stroke();
+  ctx.beginPath(); ctx.roundRect(-w, -h * 0.55, w * 2, h * 1.35, 6); ctx.lineWidth = 3; ctx.strokeStyle = INK; ctx.stroke();
   ctx.restore();
   ctx.beginPath(); ctx.arc(0, -h * 0.75, 4.5, 0, 7); ctx.fillStyle = '#e8304e'; ctx.fill(); ctx.lineWidth = 1.6; ctx.strokeStyle = INK; ctx.stroke();
 }
@@ -1212,7 +1212,7 @@ export function drawNest(ctx, x, y, t) {
   shadow(ctx, 0, 12, 30, 8, 0.2);
   ctx.beginPath(); ctx.moveTo(-30, 12); ctx.quadraticCurveTo(-24, -14, 0, -16); ctx.quadraticCurveTo(24, -14, 30, 12); ctx.closePath();
   const g = ctx.createLinearGradient(0, -16, 0, 12); g.addColorStop(0, '#d9a77a'); g.addColorStop(1, '#a8754e');
-  ctx.fillStyle = g; ctx.fill(); ctx.lineWidth = 2.4; ctx.strokeStyle = INK; ctx.stroke();
+  ctx.fillStyle = g; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = INK; ctx.stroke();
   ctx.fillStyle = '#c08a5e'; for (const [a, b] of [[-15, 2], [12, -4], [18, 6], [-6, -8]]) { ctx.beginPath(); ctx.arc(a, b, 2, 0, 7); ctx.fill(); }
   ctx.beginPath(); ctx.ellipse(0, 4, 10, 7, 0, 0, 7); ctx.fillStyle = '#3c2630'; ctx.fill(); ctx.lineWidth = 2; ctx.stroke();
   // tiny flag
@@ -1222,11 +1222,11 @@ export function drawNest(ctx, x, y, t) {
 }
 
 // ---------------- MAP BACKGROUND ----------------
-const THEMES = [
-  { name: 'gingham', a: '#fdf1e2', b: '#f8e3cc', check: 'rgba(255,150,160,0.16)', grout: 'rgba(200,160,130,0.18)', trail: '#fff8ec', edge: '#e9c9a6', dot: '#f2c6c6' },
-  { name: 'wood', a: '#f0d7b3', b: '#e9cda5', grain: 'rgba(160,110,70,0.18)', grout: 'rgba(140,95,60,0.3)', trail: '#fffaf0', edge: '#d8b088', dot: '#d9b48c' },
-  { name: 'midnight', a: '#e3e0f6', b: '#d7d2f0', grout: 'rgba(140,130,190,0.3)', trail: '#fffaf2', edge: '#c9c1ec', dot: '#d8cff7', moon: true },
-  { name: 'picnic', a: '#e8f6dc', b: '#d9efc9', check: 'rgba(110,180,120,0.18)', grout: 'rgba(120,170,110,0.2)', trail: '#fffdf2', edge: '#bfdcae', dot: '#cfe8bd' },
+export const THEMES = [
+  { name: 'gingham', a: '#f7d3ca', b: '#f1c7bd', check: 'rgba(222,112,122,0.10)', grout: 'rgba(200,160,130,0.18)', trail: '#fff8ec', edge: '#d9a08c', dot: '#e7a3a3' },
+  { name: 'wood', a: '#ead1a8', b: '#e1c49b', grain: 'rgba(120,80,40,0.16)', grout: 'rgba(120,80,45,0.3)', trail: '#fffaf0', edge: '#c49766', dot: '#c9a074' },
+  { name: 'midnight', a: '#d2cbee', b: '#c7bfe7', grout: 'rgba(120,110,175,0.3)', trail: '#fffaf2', edge: '#a89fd8', dot: '#b9aee6', moon: true },
+  { name: 'picnic', a: '#c9e6b2', b: '#bddca3', check: 'rgba(80,160,100,0.19)', grout: 'rgba(100,150,90,0.2)', trail: '#fffdf2', edge: '#98c283', dot: '#a6d18c' },
 ];
 export function renderMapBackground(routes, theme, w, h, dpr, props = []) {
   if (!Array.isArray(routes)) routes = [routes];
@@ -1241,8 +1241,6 @@ export function renderMapBackground(routes, theme, w, h, dpr, props = []) {
     g.fillStyle = th.check;
     for (let x = 0; x < w; x += 40) g.fillRect(x + 10, 0, 20, h);
     for (let y = 0; y < h; y += 40) g.fillRect(0, y + 10, w, 20);
-    g.strokeStyle = 'rgba(255,255,255,0.35)'; g.lineWidth = 1;
-    for (let x = 0; x < w; x += 8) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, h); g.stroke(); }
   } else if (th.grain) {
     // wooden planks with grain and knots
     for (let x = 0; x < w; x += 80) { g.fillStyle = (x / 80) % 2 ? 'rgba(255,255,255,0.08)' : 'rgba(120,80,40,0.05)'; g.fillRect(x, 0, 80, h); g.fillStyle = 'rgba(110,70,40,0.35)'; g.fillRect(x, 0, 1.5, h); }
@@ -1257,7 +1255,7 @@ export function renderMapBackground(routes, theme, w, h, dpr, props = []) {
   }
   if (th.moon) { const mg = g.createRadialGradient(w * 0.85, -20, 10, w * 0.85, -20, 300); mg.addColorStop(0, 'rgba(255,255,230,0.45)'); mg.addColorStop(1, 'rgba(255,255,230,0)'); g.fillStyle = mg; g.fillRect(0, 0, w, h); }
   // little printed flowers / dots
-  for (let k = 0; k < 22; k++) {
+  for (let k = 0; k < 10; k++) {
     const x = rnd() * w, y = rnd() * h;
     g.globalAlpha = 0.5; g.fillStyle = th.dot;
     for (let p = 0; p < 5; p++) { const a = p * Math.PI * 2 / 5; g.beginPath(); g.arc(x + Math.cos(a) * 3, y + Math.sin(a) * 3, 2.2, 0, 7); g.fill(); }
@@ -1271,11 +1269,11 @@ export function renderMapBackground(routes, theme, w, h, dpr, props = []) {
       g.lineWidth = lw; g.strokeStyle = col; g.lineJoin = 'round'; g.lineCap = 'round'; g.setLineDash(dash || []); g.stroke(); g.setLineDash([]);
     }
   };
-  g.save(); g.translate(0, 4); strokeAll(38, 'rgba(90,50,70,0.16)'); g.restore();
-  strokeAll(36, INK); strokeAll(31.5, th.edge); strokeAll(25, th.trail);
-  strokeAll(28.5, 'rgba(200,150,120,0.35)', [4, 5]);
-  strokeAll(25, th.trail);
-  strokeAll(17, 'rgba(240,215,180,0.35)', [2, 9]);
+  // v0.7.5 C18: cast shadow (falls down), INK outline, lip (darker, 1.5 px lower), edge, body. No dashed stitching.
+  g.save(); g.translate(0, 5); strokeAll(40, 'rgba(70,35,50,0.26)'); g.restore();
+  strokeAll(36, INK);
+  g.save(); g.translate(0, 1.5); strokeAll(32, shade(th.edge, -0.28)); g.restore();
+  strokeAll(30, th.edge); strokeAll(25, th.trail);
   // ant footprints and sprinkled crumbs along the trail
   for (const path of routes) {
     for (let d = 14; d < path.length; d += 15) {
@@ -1297,6 +1295,7 @@ export function renderMapBackground(routes, theme, w, h, dpr, props = []) {
   const vg = g.createRadialGradient(w / 2, h / 2, Math.min(w, h) * 0.45, w / 2, h / 2, Math.max(w, h) * 0.75);
   vg.addColorStop(0, 'rgba(80,40,50,0)'); vg.addColorStop(1, 'rgba(80,40,50,0.18)');
   g.fillStyle = vg; g.fillRect(0, 0, w, h);
+  { const ig = g.createLinearGradient(0, 0, 0, 12); ig.addColorStop(0, 'rgba(70,35,50,0.22)'); ig.addColorStop(1, 'rgba(70,35,50,0)'); g.fillStyle = ig; g.fillRect(0, 0, w, 12); } // v0.7.5 C18: inset top edge (the board sits below the HUD)
   return cv;
 }
 function tuft(g, x, y, s) {

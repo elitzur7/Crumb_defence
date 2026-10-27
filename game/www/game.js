@@ -2222,7 +2222,12 @@ var LIFT_MAX = 3, SIZE_RANK = { small: 1, regular: 2, large: 3 }, LIFT_NAMES = [
   stickTime: "Stick",
   liftSize: "Lifts"
 }, SLOW_CAP = 0.85, ALL_CARDS = Object.keys(TOWERS), STARTER_CARDS = ["slingshot", "spray", "glue", "fan", "ball"];
-var AIR_COUNTERS = ["laser", "zapper"], VERSION = "0.7.4.1", ANT_SIZES = { ...tuning_default.antSizes }, ANT_TEXT = {
+var AIR_COUNTERS = ["laser", "zapper"], TARGET_MODE_TEXT = {
+  slingshot: { carrier: "Single target: ants carrying food first, then the fewest HP left.", front: "Single target: the walking ant closest to the cookie." },
+  lizard: { carrier: "Targets ants carrying food first, then fewest HP left; chews after kills.", front: "Targets the walking ant closest to the cookie; chews after kills." },
+  laser: { carrier: "Aims at ants carrying food first, then fewest HP. Heat: +12% per hit on the same ant.", front: "Aims at the walking ant closest to the cookie. Heat: +12% per hit on the same ant." },
+  zapper: { carrier: "First zap: food carriers first, then fewest HP. Chains to the nearest flyers (60% each jump).", front: "First zap: the flyer closest to the cookie. Chains to the nearest flyers (60% each jump)." }
+}, VERSION = "0.7.5", ANT_SIZES = { ...tuning_default.antSizes }, ANT_TEXT = {
   small: { name: "Scout Ant", desc: "Tiny, fast, comes in swarms." },
   worker: { name: "Worker Ant", desc: "The regular. Hard hat included." },
   big: { name: "Big Ant", desc: "Slow, chunky, a bit of armor." },
@@ -3664,7 +3669,7 @@ function shade(hex, amt) {
 }
 function blob(ctx2, x, y, rx, ry, color, lw = 2, rot = 0) {
   let g = ctx2.createRadialGradient(x - rx * 0.35, y - ry * 0.45, Math.max(1, Math.min(rx, ry) * 0.12), x, y, Math.max(rx, ry) * 1.15);
-  g.addColorStop(0, shade(color, 0.5)), g.addColorStop(0.35, shade(color, 0.18)), g.addColorStop(0.75, color), g.addColorStop(1, shade(color, -0.16)), ctx2.beginPath(), ctx2.ellipse(x, y, rx, ry, rot, 0, Math.PI * 2), ctx2.fillStyle = g, ctx2.fill(), lw && (ctx2.lineWidth = lw, ctx2.strokeStyle = INK, ctx2.stroke());
+  g.addColorStop(0, shade(color, 0.28)), g.addColorStop(0.6, color), g.addColorStop(1, shade(color, -0.2)), ctx2.beginPath(), ctx2.ellipse(x, y, rx, ry, rot, 0, Math.PI * 2), ctx2.fillStyle = g, ctx2.fill(), lw && (ctx2.lineWidth = lw, ctx2.strokeStyle = INK, ctx2.stroke());
 }
 function shadow(ctx2, x, y, rx, ry = rx * 0.35, a = 0.2) {
   ctx2.save(), ctx2.translate(x, y), ctx2.scale(1, ry / Math.max(rx, 0.01));
@@ -3800,7 +3805,7 @@ function nodeOrnament(ctx2, kind, x, y, t) {
 }
 function mapNode(ctx2, x, y, i, st, t = 0) {
   let base = st.open ? NODE_COLS[i % NODE_COLS.length] : "#cfc6cf", R = st.boss ? 29 : 27, depth = 7;
-  if (ctx2.save(), shadow(ctx2, x, y + 26, 30, 7, 0.22), st.next && (ctx2.beginPath(), ctx2.ellipse(x, y + 3, R + 7 + Math.sin(t * 4) * 2, R * 0.92 + 6, 0, 0, 7), ctx2.fillStyle = "rgba(255,212,94,0.35)", ctx2.fill()), ctx2.beginPath(), ctx2.ellipse(x, y + depth, R, R * 0.9, 0, 0, Math.PI), ctx2.lineTo(x - R, y), ctx2.ellipse(x, y, R, R * 0.9, 0, Math.PI, 0, !0), ctx2.closePath(), ctx2.fillStyle = shade(base, -0.3), ctx2.fill(), ctx2.lineWidth = 3, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), st.boss) {
+  if (ctx2.save(), shadow(ctx2, x, y + 26, 30, 7, 0.28), st.next && (ctx2.beginPath(), ctx2.ellipse(x, y + 3, R + 7 + Math.sin(t * 4) * 2, R * 0.92 + 6, 0, 0, 7), ctx2.fillStyle = "rgba(255,212,94,0.35)", ctx2.fill()), ctx2.beginPath(), ctx2.ellipse(x, y + depth, R, R * 0.9, 0, 0, Math.PI), ctx2.lineTo(x - R, y), ctx2.ellipse(x, y, R, R * 0.9, 0, Math.PI, 0, !0), ctx2.closePath(), ctx2.fillStyle = shade(base, -0.3), ctx2.fill(), ctx2.lineWidth = 3, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), st.boss) {
     for (let k = 0; k <= 10; k++) {
       let a = Math.PI + k / 10 * Math.PI, rr2 = k % 2 ? R * 0.82 : R;
       k === 0 ? ctx2.moveTo(x + Math.cos(a) * R, y + Math.sin(a) * R * 0.9) : ctx2.lineTo(x + Math.cos(a) * rr2, y + Math.sin(a) * rr2 * 0.9 - (k % 2 ? 0 : 3));
@@ -3818,7 +3823,7 @@ function starShape(ctx2, x, y, r, fill, lw = 2) {
   }
   ctx2.closePath(), ctx2.fillStyle = fill, ctx2.fill(), ctx2.lineJoin = "round", ctx2.lineWidth = lw, ctx2.strokeStyle = INK, ctx2.stroke();
 }
-var ANT_COL = { small: "#f8c27e", worker: "#f2a65f", big: "#e7925a", gasmask: "#eeac78", armored: "#e9a067", flyer: "#f7b083", queen: "#f59b9b", queen2: "#c7a6f5", sprinter: "#f4ad6a", heavy: "#dd8a55" }, ALW = 2.4;
+var ANT_COL = { small: "#fbc98a", worker: "#f0994d", big: "#d97a3f", gasmask: "#f0994d", armored: "#e48a47", flyer: "#f9b878", queen: "#f59b9b", queen2: "#c7a6f5", sprinter: "#f0994d", heavy: "#b95b34" }, ALW = 2.4;
 function softBlob(ctx2, x, y, rx, ry, col, lw = ALW) {
   blob(ctx2, x, y, rx, ry, col, lw), ctx2.beginPath(), ctx2.ellipse(x - rx * 0.28, y - ry * 0.46, rx * 0.4, ry * 0.22, -0.35, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.5)", ctx2.fill();
 }
@@ -4015,7 +4020,7 @@ function pad(ctx2, color) {
   baked(ctx2, "pad" + color, (g) => padPaths(g, color));
 }
 function padPaths(ctx2, color) {
-  shadow(ctx2, 0, 11, 18, 6.5, 0.24), ctx2.beginPath(), ctx2.ellipse(0, 8, 16, 8.5, 0, 0, 7), ctx2.fillStyle = shade(color, -0.22), ctx2.fill(), ctx2.lineWidth = 1.9, ctx2.strokeStyle = INK, ctx2.stroke(), blob(ctx2, 0, 5.5, 15.5, 8, shade(color, -0.02), 1.9);
+  shadow(ctx2, 0, 11, 18, 6.5, 0.24), ctx2.beginPath(), ctx2.ellipse(0, 8, 16, 8.5, 0, 0, 7), ctx2.fillStyle = shade(color, -0.22), ctx2.fill(), ctx2.lineWidth = 3, ctx2.strokeStyle = INK, ctx2.stroke(), blob(ctx2, 0, 5.5, 15.5, 8, shade(color, -0.02), 3);
   let g = ctx2.createRadialGradient(-4, 3, 1, 0, 5, 12);
   g.addColorStop(0, shade(color, 0.6)), g.addColorStop(1, shade(color, 0.2)), ctx2.beginPath(), ctx2.ellipse(0, 4.5, 11, 5, 0, 0, 7), ctx2.fillStyle = g, ctx2.fill(), rim(ctx2, 0, 5.5, 15.5, 8, 0.75), ctx2.fillStyle = shade(color, -0.35);
   for (let a of [0.35, 1.2, 1.95, 2.8])
@@ -4484,7 +4489,7 @@ function cookieBody(ctx2, r, pct) {
   g.addColorStop(0, "#ffe2a8"), g.addColorStop(0.7, "#f2b866"), g.addColorStop(1, "#d58f3f"), ctx2.beginPath(), ctx2.arc(0, 0, r, 0, 7), ctx2.fillStyle = g, ctx2.fill(), ctx2.fillStyle = "#6b3d2a";
   for (let [a, b, s] of [[-12, -8, 3.4], [9, -12, 3], [14, 5, 3.6], [-4, 13, 3.2], [-16, 7, 2.6], [3, -2, 2.4], [-6, -17, 2.2], [18, -6, 2]])
     ctx2.beginPath(), ctx2.ellipse(a, b, s, s * 0.8, a, 0, 7), ctx2.fill();
-  ctx2.restore(), ctx2.beginPath(), ctx2.arc(0, 0, r, 0, 7), ctx2.lineWidth = 2.6, ctx2.strokeStyle = INK, ctx2.save(), ctx2.beginPath(), ctx2.rect(-r - 12, -r - 12, r * 2 + 24, r * 2 + 24);
+  ctx2.restore(), ctx2.beginPath(), ctx2.arc(0, 0, r, 0, 7), ctx2.lineWidth = 3, ctx2.strokeStyle = INK, ctx2.save(), ctx2.beginPath(), ctx2.rect(-r - 12, -r - 12, r * 2 + 24, r * 2 + 24);
   for (let k = 0; k < bites; k++) {
     let a = -0.6 + k * 0.72;
     ctx2.moveTo(Math.cos(a) * r * 0.98 + 9, Math.sin(a) * r * 0.98), ctx2.arc(Math.cos(a) * r * 0.98, Math.sin(a) * r * 0.98, 9, 0, Math.PI * 2, !0);
@@ -4492,7 +4497,7 @@ function cookieBody(ctx2, r, pct) {
   ctx2.clip("evenodd"), ctx2.beginPath(), ctx2.arc(0, 0, r, 0, 7), ctx2.stroke(), ctx2.restore(), ctx2.save(), ctx2.beginPath(), ctx2.arc(0, 0, r + 1, 0, 7), ctx2.clip();
   for (let k = 0; k < bites; k++) {
     let a = -0.6 + k * 0.72;
-    ctx2.beginPath(), ctx2.arc(Math.cos(a) * r * 0.98, Math.sin(a) * r * 0.98, 9, 0, 7), ctx2.lineWidth = 2.6, ctx2.strokeStyle = INK, ctx2.stroke();
+    ctx2.beginPath(), ctx2.arc(Math.cos(a) * r * 0.98, Math.sin(a) * r * 0.98, 9, 0, 7), ctx2.lineWidth = 3, ctx2.strokeStyle = INK, ctx2.stroke();
   }
   ctx2.restore();
 }
@@ -4502,7 +4507,7 @@ function cakeBody(ctx2, r, pct) {
   let g = ctx2.createLinearGradient(0, -h, 0, h);
   g.addColorStop(0, "#ffd9e6"), g.addColorStop(1, "#f2a7c0"), ctx2.beginPath(), ctx2.roundRect(-w, -h * 0.55, w * 2, h * 1.35, 6), ctx2.fillStyle = g, ctx2.fill(), ctx2.fillStyle = "#fff6f0", ctx2.fillRect(-w, h * 0.18, w * 2, 4), ctx2.beginPath(), ctx2.moveTo(-w, -h * 0.5);
   for (let k = 0; k <= 8; k++) ctx2.quadraticCurveTo(-w + (k - 0.5) * w / 4, -h * 0.5 + 8, -w + k * w / 4, -h * 0.5);
-  ctx2.lineTo(w, -h * 0.62), ctx2.lineTo(-w, -h * 0.62), ctx2.fillStyle = "#fffaf2", ctx2.fill(), ctx2.beginPath(), ctx2.roundRect(-w, -h * 0.55, w * 2, h * 1.35, 6), ctx2.lineWidth = 2.6, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.restore(), ctx2.beginPath(), ctx2.arc(0, -h * 0.75, 4.5, 0, 7), ctx2.fillStyle = "#e8304e", ctx2.fill(), ctx2.lineWidth = 1.6, ctx2.strokeStyle = INK, ctx2.stroke();
+  ctx2.lineTo(w, -h * 0.62), ctx2.lineTo(-w, -h * 0.62), ctx2.fillStyle = "#fffaf2", ctx2.fill(), ctx2.beginPath(), ctx2.roundRect(-w, -h * 0.55, w * 2, h * 1.35, 6), ctx2.lineWidth = 3, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.restore(), ctx2.beginPath(), ctx2.arc(0, -h * 0.75, 4.5, 0, 7), ctx2.fillStyle = "#e8304e", ctx2.fill(), ctx2.lineWidth = 1.6, ctx2.strokeStyle = INK, ctx2.stroke();
 }
 var TREAT_BODIES = { cookie: cookieBody, cake: cakeBody };
 function reactMotion(react, t) {
@@ -4663,16 +4668,16 @@ function drawCookieFace(ctx2, face, t) {
 function drawNest(ctx2, x, y, t) {
   ctx2.save(), ctx2.translate(x, y), shadow(ctx2, 0, 12, 30, 8, 0.2), ctx2.beginPath(), ctx2.moveTo(-30, 12), ctx2.quadraticCurveTo(-24, -14, 0, -16), ctx2.quadraticCurveTo(24, -14, 30, 12), ctx2.closePath();
   let g = ctx2.createLinearGradient(0, -16, 0, 12);
-  g.addColorStop(0, "#d9a77a"), g.addColorStop(1, "#a8754e"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = 2.4, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.fillStyle = "#c08a5e";
+  g.addColorStop(0, "#d9a77a"), g.addColorStop(1, "#a8754e"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = 3, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.fillStyle = "#c08a5e";
   for (let [a, b] of [[-15, 2], [12, -4], [18, 6], [-6, -8]])
     ctx2.beginPath(), ctx2.arc(a, b, 2, 0, 7), ctx2.fill();
   ctx2.beginPath(), ctx2.ellipse(0, 4, 10, 7, 0, 0, 7), ctx2.fillStyle = "#3c2630", ctx2.fill(), ctx2.lineWidth = 2, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(14, -10), ctx2.lineTo(14, -30), ctx2.lineWidth = 2, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(14, -30), ctx2.quadraticCurveTo(22, -28 + Math.sin(t * 4) * 2, 28, -26), ctx2.lineTo(14, -22), ctx2.closePath(), ctx2.fillStyle = "#ff7a8a", ctx2.fill(), ctx2.lineWidth = 1.6, ctx2.stroke(), ctx2.restore();
 }
 var THEMES = [
-  { name: "gingham", a: "#fdf1e2", b: "#f8e3cc", check: "rgba(255,150,160,0.16)", grout: "rgba(200,160,130,0.18)", trail: "#fff8ec", edge: "#e9c9a6", dot: "#f2c6c6" },
-  { name: "wood", a: "#f0d7b3", b: "#e9cda5", grain: "rgba(160,110,70,0.18)", grout: "rgba(140,95,60,0.3)", trail: "#fffaf0", edge: "#d8b088", dot: "#d9b48c" },
-  { name: "midnight", a: "#e3e0f6", b: "#d7d2f0", grout: "rgba(140,130,190,0.3)", trail: "#fffaf2", edge: "#c9c1ec", dot: "#d8cff7", moon: !0 },
-  { name: "picnic", a: "#e8f6dc", b: "#d9efc9", check: "rgba(110,180,120,0.18)", grout: "rgba(120,170,110,0.2)", trail: "#fffdf2", edge: "#bfdcae", dot: "#cfe8bd" }
+  { name: "gingham", a: "#f7d3ca", b: "#f1c7bd", check: "rgba(222,112,122,0.10)", grout: "rgba(200,160,130,0.18)", trail: "#fff8ec", edge: "#d9a08c", dot: "#e7a3a3" },
+  { name: "wood", a: "#ead1a8", b: "#e1c49b", grain: "rgba(120,80,40,0.16)", grout: "rgba(120,80,45,0.3)", trail: "#fffaf0", edge: "#c49766", dot: "#c9a074" },
+  { name: "midnight", a: "#d2cbee", b: "#c7bfe7", grout: "rgba(120,110,175,0.3)", trail: "#fffaf2", edge: "#a89fd8", dot: "#b9aee6", moon: !0 },
+  { name: "picnic", a: "#c9e6b2", b: "#bddca3", check: "rgba(80,160,100,0.19)", grout: "rgba(100,150,90,0.2)", trail: "#fffdf2", edge: "#98c283", dot: "#a6d18c" }
 ];
 function renderMapBackground(routes, theme, w, h, dpr2, props = []) {
   Array.isArray(routes) || (routes = [routes]);
@@ -4685,9 +4690,6 @@ function renderMapBackground(routes, theme, w, h, dpr2, props = []) {
     g.fillStyle = th.check;
     for (let x = 0; x < w; x += 40) g.fillRect(x + 10, 0, 20, h);
     for (let y = 0; y < h; y += 40) g.fillRect(0, y + 10, w, 20);
-    g.strokeStyle = "rgba(255,255,255,0.35)", g.lineWidth = 1;
-    for (let x = 0; x < w; x += 8)
-      g.beginPath(), g.moveTo(x, 0), g.lineTo(x, h), g.stroke();
   } else if (th.grain) {
     for (let x = 0; x < w; x += 80)
       g.fillStyle = x / 80 % 2 ? "rgba(255,255,255,0.08)" : "rgba(120,80,40,0.05)", g.fillRect(x, 0, 80, h), g.fillStyle = "rgba(110,70,40,0.35)", g.fillRect(x, 0, 1.5, h);
@@ -4715,7 +4717,7 @@ function renderMapBackground(routes, theme, w, h, dpr2, props = []) {
     let mg = g.createRadialGradient(w * 0.85, -20, 10, w * 0.85, -20, 300);
     mg.addColorStop(0, "rgba(255,255,230,0.45)"), mg.addColorStop(1, "rgba(255,255,230,0)"), g.fillStyle = mg, g.fillRect(0, 0, w, h);
   }
-  for (let k = 0; k < 22; k++) {
+  for (let k = 0; k < 10; k++) {
     let x = rnd() * w, y = rnd() * h;
     g.globalAlpha = 0.5, g.fillStyle = th.dot;
     for (let p = 0; p < 5; p++) {
@@ -4732,7 +4734,7 @@ function renderMapBackground(routes, theme, w, h, dpr2, props = []) {
       g.lineWidth = lw, g.strokeStyle = col, g.lineJoin = "round", g.lineCap = "round", g.setLineDash(dash || []), g.stroke(), g.setLineDash([]);
     }
   };
-  g.save(), g.translate(0, 4), strokeAll(38, "rgba(90,50,70,0.16)"), g.restore(), strokeAll(36, INK), strokeAll(31.5, th.edge), strokeAll(25, th.trail), strokeAll(28.5, "rgba(200,150,120,0.35)", [4, 5]), strokeAll(25, th.trail), strokeAll(17, "rgba(240,215,180,0.35)", [2, 9]);
+  g.save(), g.translate(0, 5), strokeAll(40, "rgba(70,35,50,0.26)"), g.restore(), strokeAll(36, INK), g.save(), g.translate(0, 1.5), strokeAll(32, shade(th.edge, -0.28)), g.restore(), strokeAll(30, th.edge), strokeAll(25, th.trail);
   for (let path of routes) {
     for (let d = 14; d < path.length; d += 15) {
       let p = path.at(d), side = (Math.floor(d / 15) % 2 ? 1 : -1) * 4;
@@ -4752,7 +4754,12 @@ function renderMapBackground(routes, theme, w, h, dpr2, props = []) {
   }
   for (let pr of props) drawProp(g, pr.k, (pr.c + 0.5) * TILE, (pr.r + 0.5) * TILE);
   let vg = g.createRadialGradient(w / 2, h / 2, Math.min(w, h) * 0.45, w / 2, h / 2, Math.max(w, h) * 0.75);
-  return vg.addColorStop(0, "rgba(80,40,50,0)"), vg.addColorStop(1, "rgba(80,40,50,0.18)"), g.fillStyle = vg, g.fillRect(0, 0, w, h), cv;
+  vg.addColorStop(0, "rgba(80,40,50,0)"), vg.addColorStop(1, "rgba(80,40,50,0.18)"), g.fillStyle = vg, g.fillRect(0, 0, w, h);
+  {
+    let ig = g.createLinearGradient(0, 0, 0, 12);
+    ig.addColorStop(0, "rgba(70,35,50,0.22)"), ig.addColorStop(1, "rgba(70,35,50,0)"), g.fillStyle = ig, g.fillRect(0, 0, w, 12);
+  }
+  return cv;
 }
 function tuft(g, x, y, s) {
   g.save(), g.translate(x, y), g.scale(s, s);
@@ -4991,7 +4998,7 @@ function smartBotStep(b) {
 }
 
 // src/fx.js
-var FLOAT_TEXT = { mergeRadius: 60, maxAlive: 10, perKeyMax: { queen: 1, immune: 2 } };
+var FLOAT_TEXT = { mergeRadius: 60, maxAlive: 8, perKeyMax: { queen: 1, immune: 2 } };
 function addFloatText(list, item, cfg = FLOAT_TEXT) {
   let kind = item.k || "txt", texts = list.filter((f2) => f2.k === kind && f2.life > 0), same = texts.filter((f2) => f2.key === item.key), near = same.find((f2) => Math.hypot(f2.x - item.x, f2.y0 - item.y) <= cfg.mergeRadius && f2.life > f2.max * 0.35);
   if (near)
@@ -5056,6 +5063,7 @@ function blockedSpans(b, y0 = STRIP_Y, h = STRIP_H) {
   let W2 = GRID_COLS * TILE, out = [], y1 = y0 + h, row0 = Math.floor(y0 / TILE), row1 = Math.floor((y1 - 1) / TILE);
   for (let r = row0; r <= row1; r++) for (let c = 0; c < GRID_COLS; c++) b.isPathTile(c, r) && out.push([c * TILE - 6, (c + 1) * TILE + 6, "trail"]);
   for (let n of nestPoints(b)) n.y + 22 > y0 && n.y - 34 < y1 && out.push([n.x - 36, n.x + 36, "nest"]);
+  for (let t of b.towers || []) t.r >= row0 && t.r <= row1 && out.push([t.x - 24, t.x + 24, "tower"]);
   for (let q of cookiePoints(b)) q.y + 34 > y0 && q.y - 34 < y1 && out.push([q.x - 36, q.x + 36, "cookie"]);
   return out.sort((a, c) => a[0] - c[0]).map(([a, c, k]) => [Math.max(0, a), Math.min(W2, c), k]);
 }
@@ -5174,7 +5182,7 @@ function applyLayout() {
   px !== pxRatio && (pxRatio = px, S.bgCache = {}, clearTowerCache());
 }
 function resize() {
-  dpr = Math.min(window.devicePixelRatio || 1, 3), cw = window.innerWidth, ch = window.innerHeight, insetB = readInset(), canvas.width = Math.round(cw * dpr), canvas.height = Math.round(ch * dpr), canvas.style.width = cw + "px", canvas.style.height = ch + "px", applyLayout(), S.bgCache = {}, clearTowerCache();
+  dpr = Math.min(window.devicePixelRatio || 1, 3), cw = window.innerWidth, ch = window.innerHeight, insetB = readInset(), canvas.width = Math.round(cw * dpr), canvas.height = Math.round(ch * dpr), canvas.style.width = cw + "px", canvas.style.height = ch + "px", applyLayout(), S.bgCache = {}, S.bdCache = {}, clearTowerCache();
 }
 window.addEventListener("resize", resize);
 function refreshInset() {
@@ -5197,13 +5205,13 @@ function hit(list, x, y) {
   return null;
 }
 function drawButton(x, y, w, h, label, col = "#ffb3c1", opt = {}) {
-  let press = opt.pressed ? 2 : 0;
-  ctx.save(), opt.disabled && (ctx.globalAlpha = 0.5), rr(ctx, x, y + 4, w, h, opt.r ?? 14), ctx.fillStyle = shade(col, -0.35), ctx.fill(), rr(ctx, x, y + press, w, h, opt.r ?? 14);
+  let press = opt.pressed ? 3 : 0;
+  ctx.save(), opt.disabled && (col = "#d8cfd6"), rr(ctx, x, y + 4, w, h, opt.r ?? 14), ctx.fillStyle = shade(col, -0.35), ctx.fill(), rr(ctx, x, y + press, w, h, opt.r ?? 14);
   let g = ctx.createLinearGradient(0, y, 0, y + h);
-  g.addColorStop(0, shade(col, 0.35)), g.addColorStop(1, col), ctx.fillStyle = g, ctx.fill(), ctx.lineWidth = 2.5, ctx.strokeStyle = INK, ctx.stroke(), rr(ctx, x + 6, y + 4 + press, w - 12, h * 0.32, 8), ctx.fillStyle = "rgba(255,255,255,0.35)", ctx.fill(), label && text(ctx, label, x + w / 2, y + h / 2 + press + 1, opt.size || 17), ctx.restore();
+  g.addColorStop(0, shade(col, 0.35)), g.addColorStop(1, col), ctx.fillStyle = g, ctx.fill(), ctx.lineWidth = 2.5, ctx.strokeStyle = INK, ctx.stroke(), rr(ctx, x + 6, y + 4 + press, w - 12, h * 0.32, 8), ctx.fillStyle = "rgba(255,255,255,0.35)", ctx.fill(), label && (opt.disabled ? text(ctx, label, x + w / 2, y + h / 2 + press + 1, opt.size || 17, "#9a8a95", "center", null) : text(ctx, label, x + w / 2, y + h / 2 + press + 1, opt.size || 17)), ctx.restore();
 }
 function panel(x, y, w, h, col = "#fff6ee", r = 18) {
-  rr(ctx, x, y + 4, w, h, r), ctx.fillStyle = "rgba(74,52,66,0.25)", ctx.fill(), rr(ctx, x, y, w, h, r), ctx.fillStyle = col, ctx.fill(), ctx.lineWidth = 2.5, ctx.strokeStyle = INK, ctx.stroke();
+  rr(ctx, x, y + 4, w, h, r), ctx.fillStyle = "rgba(74,52,66,0.25)", ctx.fill(), rr(ctx, x, y, w, h, r), ctx.fillStyle = col, ctx.fill(), h >= 28 && (ctx.fillStyle = "rgba(120,80,95,0.10)", rr(ctx, x + r * 0.55, y + h - 7, w - r * 1.1, 5.5, 2.7), ctx.fill(), ctx.fillStyle = "rgba(255,255,255,0.55)", ctx.fillRect(x + r * 0.5, y + 2, w - r, 1.5)), rr(ctx, x, y, w, h, r), ctx.lineWidth = 3, ctx.strokeStyle = INK, ctx.stroke();
 }
 function toast(msg, col = "#fff") {
   let small = S.screen === "battle";
@@ -5396,23 +5404,15 @@ function mapTap(p) {
     S.info.auto = !1, S.info.changed = null;
     return;
   }
-  if (tw && S.info && S.info.tower === tw && !S.info.auto && hasTargetModes(tw.type)) {
-    cycleMode(tw), S.info = { tower: tw, t: 0 };
-    return;
-  }
   S.info = tw ? { tower: tw, t: 0 } : null;
 }
 var HINT_ANTS = /* @__PURE__ */ new Set(["armored", "big", "heavy", "queen", "queen2"]);
 function maybeModeHint(b, e) {
-  S.modeHint || S.paused || !e.ant || !HINT_ANTS.has(e.ant) || !(e.n > 0) || b.towers.some((q) => hasTargetModes(q.type)) && (S.modeHint = !0, toast("Tip: tap a tower to change who it shoots", "#ffe39a"), S.toast.hint = !0);
+  S.modeHint || S.paused || !e.ant || !HINT_ANTS.has(e.ant) || !(e.n > 0) || b.towers.some((q) => hasTargetModes(q.type)) && (S.modeHint = !0, toast("Tip: tap a tower, then pick who it shoots", "#ffe39a"), S.toast.hint = !0);
 }
 var MODE_NAME = { weak: "Weakest", carrier: "Carrier", front: "Front" };
-function cycleMode(tw) {
-  let m = S.battle.cycleTargetMode(tw);
-  m && modeFeedback(tw, m);
-}
 function modeFeedback(tw, m) {
-  sfx("tap"), addFloatText(S.fx, { key: "mode" + tw.id, x: tw.x, y: tw.y - 26, n: 1, fmt: () => MODE_NAME[m], col: m === "weak" ? "#fff" : "#ffe39a", life: 1 });
+  sfx("tap"), tw._modeAt = S.t, addFloatText(S.fx, { key: "mode" + tw.id, x: tw.x, y: tw.y - 26, n: 1, fmt: () => MODE_NAME[m], col: m === "weak" ? "#fff" : "#ffe39a", life: 1 });
 }
 function setMode(tw, m) {
   tw.mode !== m && S.battle.setTargetMode(tw, m) && modeFeedback(tw, m);
@@ -5467,7 +5467,7 @@ function killFx(e) {
   }
   let fast = S.speed >= 4;
   for (let i = 0; i < (fast ? 1 : 4); i++) addFx({ k: "crumbBit", x: e.x, y: e.y - 6, vx: (Math.random() - 0.5) * 90, vy: -40 - Math.random() * 60, life: 0.6, max: 0.6 });
-  addFx({ k: "ko", x: e.x, y: e.y, ant: e.ant, life: 0.9, max: 0.9, face: Math.random() < 0.5 ? 1 : -1 });
+  addFx({ k: "ko", x: e.x, y: e.y, ant: e.ant, life: 0.2, max: 0.2, face: Math.random() < 0.5 ? 1 : -1 });
   for (let i = 0; i < (fast ? 2 : 5); i++) addFx({ k: "puff", x: e.x + (Math.random() - 0.5) * 10, y: e.y + (Math.random() - 0.5) * 6, vx: (Math.random() - 0.5) * 40, vy: -Math.random() * 30, r: 4 + Math.random() * 4, life: 0.5, max: 0.5 });
   addFloatText(S.fx, { k: "crumbTxt", key: "crumb", x: e.x, y: e.y - 14, n: e.crumbs, fmt: (n) => n, life: 0.9 }), sfx("pop");
 }
@@ -5581,7 +5581,7 @@ function consumeEvents() {
             S.info = { tower: tw, t: 0, changed: e.diff, until: S.t + UI.upgradeInfoTime, auto: !mine };
           }
           sfx("upgrade");
-        } else addFloatText(S.fx, { key: "placed", x: e.x, y: e.y - 34, n: 1, fmt: () => "Placed!", col: "#fff", life: 0.9 });
+        } else if (addFloatText(S.fx, { key: "placed", x: e.x, y: e.y - 34, n: 1, fmt: () => "Placed!", col: "#fff", life: 0.9 }), !reducedMotion() && S.speed < 4) for (let i = 0; i < 3; i++) addFx({ k: "puff", x: e.x + (i - 1) * 12, y: e.y + 12, vx: (i - 1) * 26, vy: -8 - Math.random() * 8, r: 3 + Math.random() * 2, life: 0.35 + delay, max: 0.35, wait: delay });
         break;
       }
       case "stick":
@@ -5720,10 +5720,24 @@ function renderSettings() {
     S.confirmReset > S.t ? (S.save = newSave(), touch(S.save, now()), persist(), S.confirmReset = 0, S.cardsBlinkUntil = 0, closeSettings(), toast("Progress reset")) : S.confirmReset = S.t + 3;
   }), drawButton(x + 24, y + 190, w - 48, 48, "Close", "#d9cfe0", { size: 17 }), button("setClose", x + 24, y + 184, w - 48, 64, () => closeSettings());
 }
+var CLOTH = { a: "rgba(236,140,150,0.08)", b: "rgba(230,130,140,0.05)", tile: 80 };
+function bakeBackdrop() {
+  let k = Math.min(1, 2 / dpr), cv = document.createElement("canvas");
+  cv.width = Math.max(1, Math.round(canvas.width * k)), cv.height = Math.max(1, Math.round(canvas.height * k));
+  let g = cv.getContext("2d");
+  g.setTransform(dpr * scale * k, 0, 0, dpr * scale * k, offX * dpr * k, offY * dpr * k);
+  let gr = g.createLinearGradient(0, 0, 0, H);
+  gr.addColorStop(0, "#fff1e6"), gr.addColorStop(1, "#fbd9cf"), g.fillStyle = gr, g.fillRect(-2e3, -2e3, W + 4e3, H + 4e3);
+  let x0 = Math.floor(-offX / scale / CLOTH.tile) * CLOTH.tile, x1 = (cw - offX) / scale, y0 = Math.floor(-offY / scale / CLOTH.tile) * CLOTH.tile, y1 = (ch - offY) / scale;
+  for (let ty = y0; ty < y1; ty += CLOTH.tile) for (let tx = x0; tx < x1; tx += CLOTH.tile)
+    g.fillStyle = CLOTH.a, g.fillRect(tx, ty, 40, 40), g.fillRect(tx + 40, ty + 40, 40, 40), g.fillStyle = CLOTH.b, g.fillRect(tx, ty, 80, 40), g.fillRect(tx, ty, 40, 80);
+  return cv;
+}
 function drawBackdrop() {
-  ctx.save();
-  let g = ctx.createLinearGradient(0, 0, 0, H);
-  g.addColorStop(0, "#fff1e6"), g.addColorStop(1, "#fbd9cf"), ctx.fillStyle = g, ctx.fillRect(-2e3, -2e3, W + 4e3, H + 4e3), ctx.globalAlpha = 0.35, ctx.fillStyle = "#ffffff";
+  let key = `${canvas.width}x${canvas.height}|${dpr}|${scale.toFixed(4)}|${offX.toFixed(2)}|${offY.toFixed(2)}`;
+  S.bdCache || (S.bdCache = {});
+  let bd = S.bdCache[key];
+  bd || (Object.keys(S.bdCache).length >= 3 && (S.bdCache = {}), bd = S.bdCache[key] = bakeBackdrop()), ctx.save(), ctx.setTransform(1, 0, 0, 1, 0, 0), ctx.drawImage(bd, 0, 0, bd.width, bd.height, 0, 0, canvas.width, canvas.height), ctx.restore(), ctx.save(), ctx.globalAlpha = 0.35, ctx.fillStyle = "#ffffff";
   for (let i = 0; i < 14; i++) {
     let x = i * 97 % W, y = (i * 173 + S.t * 6) % (H + 40) - 20;
     ctx.beginPath(), ctx.arc(x, y, 6 + i % 3 * 3, 0, 7), ctx.fill();
@@ -5776,7 +5790,7 @@ function drawMapRoad() {
   let path = () => {
     ctx.beginPath(), pts.forEach((p, k) => k ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y));
   };
-  ctx.save(), ctx.lineCap = "round", ctx.lineJoin = "round", path(), ctx.lineWidth = 22, ctx.strokeStyle = "rgba(160,110,85,0.35)", ctx.stroke(), path(), ctx.lineWidth = 16, ctx.strokeStyle = "#f6dcc0", ctx.stroke();
+  ctx.save(), ctx.lineCap = "round", ctx.lineJoin = "round", ctx.save(), ctx.translate(0, 4), path(), ctx.lineWidth = 24, ctx.strokeStyle = "rgba(70,35,50,0.22)", ctx.stroke(), ctx.restore(), path(), ctx.lineWidth = 22, ctx.strokeStyle = INK, ctx.stroke(), ctx.save(), ctx.translate(0, 1.5), path(), ctx.lineWidth = 19, ctx.strokeStyle = "#d9a08c", ctx.stroke(), ctx.restore(), path(), ctx.lineWidth = 16, ctx.strokeStyle = "#f6dcc0", ctx.stroke();
   let doneIdx = Math.min(pts.length - 1, done * 24);
   if (doneIdx > 0) {
     ctx.beginPath();
@@ -5799,7 +5813,7 @@ function drawWorldGate(w) {
   if (panel(40, y - 30, 320, 60, open ? "#fff1f6" : "#efe7ec", 18), ctx.save(), ctx.translate(76, y + 2), ctx.scale(0.62, 0.62), drawTreat(ctx, W2.treat, 0, 0, 1, S.t, { face: open ? "happy" : "content" }), ctx.restore(), text(ctx, `World ${w}: ${W2.name}`, 214, y - 12, 17, open ? "#ff8fab" : "#b9a6b2"), open) plainText("Open! Beat the queen at the top.", 214, y + 12, 11.5, "#6b5562", "center", "600");
   else {
     let won = LEVELS.filter((L, i) => L.world === prev && S.save.levels[i].cleared).length, total = LEVELS.filter((L) => L.world === prev).length;
-    plainFit(`Locked: win all ${total} levels (${won}/${total}) + ${W2.unlock.minStarsInWorld} stars (${worldStars(S.save, prev)}/${total * 3})`, 214, y + 12, 262, 11.5, "#a0607e", "center", "700"), ctx.save(), ctx.translate(346, y - 22), rr(ctx, -8, -3, 16, 13, 3), ctx.fillStyle = "#8c8090", ctx.fill(), ctx.beginPath(), ctx.arc(0, -4, 5.5, Math.PI, 0), ctx.lineWidth = 3, ctx.strokeStyle = "#8c8090", ctx.stroke(), ctx.restore();
+    plainFit(`Locked: win all ${total} levels (${won}/${total}) + ${W2.unlock.minStarsInWorld} stars (${worldStars(S.save, prev)}/${total * 3})`, 214, y + 12, 262, 12, "#a0607e", "center", "700"), ctx.save(), ctx.translate(346, y - 22), rr(ctx, -8, -3, 16, 13, 3), ctx.fillStyle = "#8c8090", ctx.fill(), ctx.beginPath(), ctx.arc(0, -4, 5.5, Math.PI, 0), ctx.lineWidth = 3, ctx.strokeStyle = "#8c8090", ctx.stroke(), ctx.restore();
   }
 }
 function updateCardsBlink() {
@@ -5822,7 +5836,7 @@ function renderMapScreen() {
     let p = nodePos(i), L = S.save.levels[i], open = levelUnlocked(S.save, i), w = worldOf(i), boss = i === WORLD_START[w] + WORLDS.find((x) => x.id === w).levels - 1, isNext = open && !L.cleared, bounce = isNext ? Math.abs(Math.sin(S.t * 3)) * 4 : 0;
     mapNode(ctx, p.x, p.y - bounce, i, { open, cleared: L.cleared, next: isNext, stars: L.stars, boss }, S.t), boss && (ctx.save(), ctx.translate(p.x + 24, p.y - 30 - bounce), ctx.scale(0.55, 0.55), drawAnt(ctx, QUEENS[w].type, 0.2), ctx.restore());
     for (let s2 = 0; s2 < 3; s2++) starShape(ctx, p.x - 18 + s2 * 18, p.y + 32, 7, s2 < L.stars ? "#ffd45e" : "#e8dde4", 1.6);
-    text(ctx, LEVELS[i].name, p.x, p.y + 48, 11, "#7a5a6a", "center", null);
+    text(ctx, LEVELS[i].name, p.x, p.y + 48, 12, "#7a5a6a", "center", null);
     let sy = p.y + sc;
     S.layoutNodes.push({ i, x: p.x, y: sy }), open && sy > MAPVIEW.top + 10 && sy < MAPVIEW.bottom - 10 && button("lvl" + i, p.x - 30, sy - 30, 60, 60, () => openPrep(i));
   }
@@ -5972,7 +5986,7 @@ function renderPrep() {
   let by = 500;
   text(ctx, `Boosters (bring ${BATTLE.bonusTypesToBring}, max ${BATTLE.maxBonusUses} uses)`, 30, by, 14, "#7a5a6a", "left", null), BONUS_TYPES.forEach((bt, k) => {
     let x = 26 + k * 88, y = by + 14, w = 80, h = 74, sel = S.prep.bonuses.includes(bt), stock = S.save.bonusStock[bt] || 0;
-    rr(ctx, x, y, w, h, 14), ctx.fillStyle = sel ? shade(BONUSES[bt].color, 0.2) : "#f3ebee", ctx.fill(), sel && stock <= 0 ? lavaBorder(ctx, x, y, w, h, 14, S.t) : (ctx.lineWidth = sel ? 4.5 : 2.5, ctx.strokeStyle = sel ? "#111111" : INK, ctx.stroke()), ctx.save(), ctx.translate(x + w / 2, y + 28), ctx.scale(1.3, 1.3), drawBonusIcon(ctx, bt, S.t), ctx.restore(), text(ctx, BONUSES[bt].name, x + w / 2, y + 54, 11, "#fff"), text(ctx, "x" + stock, x + w - 12, y + 12, 11, stock ? "#fff" : "#ff9a9a"), button("bon" + bt, x, y, w, h, () => {
+    rr(ctx, x, y, w, h, 14), ctx.fillStyle = sel ? shade(BONUSES[bt].color, 0.2) : "#f3ebee", ctx.fill(), sel && stock <= 0 ? lavaBorder(ctx, x, y, w, h, 14, S.t) : (ctx.lineWidth = sel ? 4.5 : 2.5, ctx.strokeStyle = sel ? "#111111" : INK, ctx.stroke()), ctx.save(), ctx.translate(x + w / 2, y + 28), ctx.scale(1.3, 1.3), drawBonusIcon(ctx, bt, S.t), ctx.restore(), text(ctx, BONUSES[bt].name, x + w / 2, y + 54, 12, "#fff"), text(ctx, "x" + stock, x + w - 12, y + 12, 12, stock ? "#fff" : "#ff9a9a"), button("bon" + bt, x, y, w, h, () => {
       let b = S.prep.bonuses, j = b.indexOf(bt);
       j >= 0 ? b.splice(j, 1) : (b.push(bt), b.length > BATTLE.bonusTypesToBring && b.shift(), stock <= 0 && zeroBonusAlert(bt)), sfx("tap");
     });
@@ -5982,7 +5996,7 @@ function renderPrep() {
   let issues = prepIssues(S.save, S.prep.bonuses);
   if (issues.length && (warn = `You have 0 ${BONUSES[issues[0].bonus].name}s. Buy one during battle for ${ECONOMY.diamonds.boosterPriceStart} diamonds, or in the Shop.`), S.layoutWarn = null, warn) {
     let lines = wrapLines(warn, 324, 11.5).slice(0, 3), hh = 12 + lines.length * 14;
-    panel(26, 646 - hh - 2, 348, hh, issues.length ? "#ffd9d0" : "#fff0c2", 12), lines.forEach((l, k) => text(ctx, l, 200, 646 - hh + 6 + k * 14 + 5, 11.5, issues.length ? "#c0392b" : "#b0602a", "center", null)), ctx.font = `bold 11.5px ${FONT}`, S.layoutWarn = { box: { x: 26, y: 646 - hh - 2, w: 348, h: hh }, lines: lines.map((l) => ctx.measureText(l).width), maxW: 324 };
+    panel(26, 646 - hh - 2, 348, hh, issues.length ? "#ffd9d0" : "#fff0c2", 12), lines.forEach((l, k) => text(ctx, l, 200, 646 - hh + 6 + k * 14 + 5, 12, issues.length ? "#c0392b" : "#b0602a", "center", null)), ctx.font = `bold 11.5px ${FONT}`, S.layoutWarn = { box: { x: 26, y: 646 - hh - 2, w: 348, h: hh }, lines: lines.map((l) => ctx.measureText(l).width), maxW: 324 };
   }
   drawButton(26, 652, 110, 48, "Back", "#d9cfe0"), button("back", 26, 652, 110, 48, () => go("map"));
   let ready = S.prep.deck.length === Math.min(BATTLE.deckSize, unlocked.length);
@@ -6145,7 +6159,7 @@ function drawModeIcon(m, x, y, k) {
   }
   ctx.restore();
 }
-var stripLast = null;
+var stripLast = null, stripNoRoom = !1, hudPreviewLast = null, stripX = null, stripAt = 0;
 function drawPieces(b) {
   if (!b.pieces.length) return;
   let rm = reducedMotion();
@@ -6157,30 +6171,52 @@ function drawPieces(b) {
   }
 }
 function drawWaveStrip(b) {
-  if (stripLast = null, S.info || S.mode || S.drag || S.sel && S.sel.kind === "card") return;
+  if (stripLast = null, stripNoRoom = !1, S.info || S.mode || S.drag || S.sel && S.sel.kind === "card") {
+    stripX = null;
+    return;
+  }
   let m = previewModel(b);
-  if (!m) return;
-  let groups = m.groups, more = m.moreAnts, widthOf = (gs, mo) => (ctx.font = `bold 11px ${FONT}`, 12 + gs.reduce((w2, g) => w2 + 18 + 2 + ctx.measureText("x" + g.count).width + 6, 0) + (mo ? ctx.measureText("+" + mo).width + 4 : 0)), label = null, w;
+  if (!m) {
+    stripX = null;
+    return;
+  }
+  let groups = m.groups, more = m.moreAnts, widthOf = (gs, mo) => (ctx.font = `bold 12px ${FONT}`, 12 + gs.reduce((w2, g) => w2 + 18 + 2 + ctx.measureText("x" + g.count).width + 6, 0) + (mo ? ctx.measureText("+" + mo).width + 4 : 0)), label = null, w;
   m.kind === "left" ? (label = `Ants left: ${m.left}`, ctx.font = `bold 12px ${FONT}`, w = ctx.measureText(label).width + 22) : w = widthOf(groups, more);
   let rect = stripRect(b, w);
   if (rect && m.kind === "next") for (; rect.w < w - 0.5 && groups.length > 1; ) {
     let g = groups[groups.length - 1];
     groups = groups.slice(0, -1), more += g.count, w = widthOf(groups, more), rect = stripRect(b, w);
   }
-  if (rect) {
-    if (stripLast = { rect, kind: m.kind, n: m.n, groups, more, left: m.left }, ctx.save(), ctx.translate(rect.x, rect.y), rr(ctx, 0, 0, rect.w, STRIP_H, STRIP_H / 2), ctx.fillStyle = "rgba(255,250,245,0.93)", ctx.fill(), ctx.lineWidth = 1.8, ctx.strokeStyle = INK, ctx.stroke(), label) text(ctx, label, rect.w / 2, STRIP_H / 2 + 0.5, 12, "#c0392b", "center", null);
-    else {
-      let x = 8;
-      for (let g of groups) {
-        let spr = antSprite(g.type, 0, !1, pxRatio), k = ANTS[g.type].size, cx = x + 9, cy = STRIP_H / 2;
-        ctx.save(), ctx.beginPath(), ctx.arc(cx, cy, 9, 0, 7), ctx.clip();
-        let sw = 44 * k, sh = 40 * k;
-        ctx.drawImage(spr.cv, (spr.ox - 24 * k) * pxRatio, (spr.oy - 28 * k) * pxRatio, sw * pxRatio, sh * pxRatio, cx - 9, cy - 9, 18, 18), ctx.restore(), isTank(g.type) && (ctx.beginPath(), ctx.arc(cx, cy, 9, 0, 7), ctx.lineWidth = 1.8, ctx.strokeStyle = "#c0392b", ctx.stroke()), isFlyer(g.type) && (ctx.beginPath(), ctx.ellipse(cx + 7, cy - 8, 5, 2.4, -0.5, 0, 7), ctx.fillStyle = "rgba(205,235,255,0.95)", ctx.fill(), ctx.lineWidth = 1, ctx.strokeStyle = INK, ctx.stroke()), text(ctx, "x" + g.count, x + 20, STRIP_H / 2 + 0.5, 11, INK, "left", null), ctx.font = `bold 11px ${FONT}`, x += 20 + ctx.measureText("x" + g.count).width + 6;
-      }
-      more && text(ctx, "+" + more, x - 2, STRIP_H / 2 + 0.5, 11, "#8a7080", "left", null);
-    }
-    ctx.restore();
+  if (!rect) {
+    stripX = null, stripNoRoom = m.kind === "next";
+    return;
   }
+  stripLast = { rect, kind: m.kind, n: m.n, groups, more, left: m.left };
+  let dtS = Math.min(0.1, Math.max(0, S.t - stripAt));
+  if (stripAt = S.t, stripX == null || reducedMotion() || Math.abs(stripX - rect.x) < 0.5 ? stripX = rect.x : stripX += (rect.x - stripX) * Math.min(1, dtS / 0.15 * 1), ctx.save(), ctx.translate(stripX, rect.y), rr(ctx, 0, 0, rect.w, STRIP_H, STRIP_H / 2), ctx.fillStyle = "rgba(255,246,238,0.96)", ctx.fill(), ctx.fillStyle = "rgba(120,80,95,0.14)", rr(ctx, 7, STRIP_H - 5, rect.w - 14, 2, 1), ctx.fill(), rr(ctx, 0, 0, rect.w, STRIP_H, STRIP_H / 2), ctx.lineWidth = 2.5, ctx.strokeStyle = INK, ctx.stroke(), label) text(ctx, label, rect.w / 2, STRIP_H / 2 + 0.5, 12, "#c0392b", "center", null);
+  else {
+    let x = 8;
+    for (let g of groups)
+      x = drawStripGroup(g, x, STRIP_H / 2, 18, 9);
+    more && text(ctx, "+" + more, x - 2, STRIP_H / 2 + 0.5, 12, "#8a7080", "left", null);
+  }
+  ctx.restore();
+}
+function drawStripGroup(g, x, cy, d, rad) {
+  let spr = antSprite(g.type, 0, !1, pxRatio), k = ANTS[g.type].size, cx = x + rad;
+  ctx.save(), ctx.beginPath(), ctx.arc(cx, cy, rad, 0, 7), ctx.clip();
+  let sw = 44 * k, sh = 40 * k;
+  return ctx.drawImage(spr.cv, (spr.ox - 24 * k) * pxRatio, (spr.oy - 28 * k) * pxRatio, sw * pxRatio, sh * pxRatio, cx - rad, cy - rad, d, d), ctx.restore(), isTank(g.type) && (ctx.beginPath(), ctx.arc(cx, cy, rad, 0, 7), ctx.lineWidth = 1.8, ctx.strokeStyle = "#c0392b", ctx.stroke()), isFlyer(g.type) && (ctx.beginPath(), ctx.ellipse(cx + rad * 0.78, cy - rad * 0.9, rad * 0.55, rad * 0.27, -0.5, 0, 7), ctx.fillStyle = "rgba(205,235,255,0.95)", ctx.fill(), ctx.lineWidth = 1, ctx.strokeStyle = INK, ctx.stroke()), text(ctx, "x" + g.count, x + d + 2, cy + 0.5, 12, INK, "left", null), ctx.font = `bold 12px ${FONT}`, x + d + 2 + ctx.measureText("x" + g.count).width + 6;
+}
+function drawHudPreview(b) {
+  let m = previewModel(b);
+  if (!m || m.kind !== "next") return !1;
+  let gs = m.groups.slice(0, 3), more = m.moreAnts + m.groups.slice(3).reduce((a, g) => a + g.count, 0), wOf = (arr, mo) => (ctx.font = `bold 12px ${FONT}`, arr.reduce((t, g) => t + 16 + 2 + ctx.measureText("x" + g.count).width + 5, -5) + (mo ? 5 + ctx.measureText("+" + mo).width : 0)), use = gs.slice();
+  for (; use.length > 1 && wOf(use, more) > 72; )
+    more += use.pop().count;
+  let wd = wOf(use, more), x = 184 - wd / 2;
+  for (let g of use) x = drawStripGroup(g, x, 46, 16, 8) - 1;
+  return more && text(ctx, "+" + more, x - 4, 46.5, 12, "#8a7080", "left", null), hudPreviewLast = { groups: use, more, w: wd }, !0;
 }
 function renderTowerInfo(b, info) {
   let tw = info.tower, T = TOWERS[tw.type];
@@ -6191,25 +6227,25 @@ function renderTowerInfo(b, info) {
     }
     info.changed = null;
   }
-  let modes = hasTargetModes(tw.type), H2 = modes ? 168 : 140, py = tw.y + MAP_Y > 300 ? MAP_Y + 8 : MAP_Y + MAP_H - H2 - 8;
+  let modes = hasTargetModes(tw.type), H2 = modes ? 176 : 140, py = tw.y + MAP_Y > 300 ? MAP_Y + 8 : MAP_Y + MAP_H - H2 - 8;
   S.layoutInfo = { x: 14, y: py, w: 372, h: H2 }, panel(14, py, 372, H2, "#fffaf5", 14), ctx.font = `bold 15px ${FONT}`;
   let tW = Math.min(150, ctx.measureText(T.name).width);
   fitText(T.name, 26 + tW / 2, py + 17, 150, 15, "#ff8fab"), plainFit(`Lv ${tw.lvl}/${b.cfg.maxInBattleLevel} \xB7 card L${tw.cardLevel}`, 34 + tW, py + 17, 222 - tW, 12, INFO_SOFT, "left", "600");
   let desc = T.ability || T.desc;
-  T.directional && !tw.trailDir && (desc = tw.type === "ball" ? "No trail right next to it - the marble cannot roll here. Move it!" : tw.type === "tractor" ? "No trail right next to it - nothing to scoop here. Move it!" : "No trail right next to it - no wind here. Move it!"), plainWrap(desc, 346, 12.5).slice(0, 2).forEach((l, i) => plainText(l, 26, py + 38 + i * 16, 12.5, T.directional && !tw.trailDir ? "#c0392b" : INFO_INK));
+  modes && tw.mode && TARGET_MODE_TEXT[tw.type] && TARGET_MODE_TEXT[tw.type][tw.mode] && (desc = TARGET_MODE_TEXT[tw.type][tw.mode]), T.directional && !tw.trailDir && (desc = tw.type === "ball" ? "No trail right next to it - the marble cannot roll here. Move it!" : tw.type === "tractor" ? "No trail right next to it - nothing to scoop here. Move it!" : "No trail right next to it - no wind here. Move it!"), plainWrap(desc, 346, 12.5).slice(0, 2).forEach((l, i) => plainText(l, 26, py + 38 + i * 16, 12.5, T.directional && !tw.trailDir ? "#c0392b" : INFO_INK));
   let keys = tw.type === "tractor" ? ["liftSize", "rate", "scoop"] : ["power", "rate", tw.type === "ball" ? "roll" : "range"], changed = new Set((info.changed || []).map((d) => d.key));
   keys.forEach((k, i) => {
     let x = 22 + i * 120, y = py + 66, w = 114, h = 38, on = changed.has(k);
-    rr(ctx, x, y, w, h, 10), ctx.fillStyle = on ? "#e2f8dc" : "#f7efeb", ctx.fill(), ctx.lineWidth = on ? 2.4 : 1.2, ctx.strokeStyle = on ? "#55b85a" : "#e0cfd4", ctx.stroke(), plainFit(k === "roll" ? "Roll here" : k === "scoop" ? "Scoop" : statLabel(tw.type, k), x + 8, y + 11, w - 14, 11, INFO_SOFT);
+    rr(ctx, x, y, w, h, 10), ctx.fillStyle = on ? "#e2f8dc" : "#f7efeb", ctx.fill(), ctx.lineWidth = on ? 2.4 : 1.2, ctx.strokeStyle = on ? "#55b85a" : "#e0cfd4", ctx.stroke(), plainFit(k === "roll" ? "Roll here" : k === "scoop" ? "Scoop" : statLabel(tw.type, k), x + 8, y + 11, w - 14, 12, INFO_SOFT);
     let d = (info.changed || []).find((q) => q.key === k), val = k === "roll" ? rollHere(tw) : k === "scoop" ? tw.trailDir ? "trail tile beside it" : "no trail" : d ? `${formatStat(tw.type, k, d.from)} \u2192 ${formatStat(tw.type, k, d.to)}` : formatStat(tw.type, k, tw.stat(k));
     plainFit(val, x + w / 2, y + 27, w - 12, 14, on ? "#2f8a36" : INFO_INK, "center", "600");
   });
   let extra = (info.changed || []).filter((d) => !keys.includes(d.key)), line;
-  extra.length ? line = "Upgraded: " + extra.map((d) => diffText(tw.type, d)).join(", ") : tw.lvl < b.cfg.maxInBattleLevel ? line = (dmgGainText(tw.type, tw.lvl + 1, tw.cardLevel) ? dmgGainText(tw.type, tw.lvl + 1, tw.cardLevel) + "! " : "") + "Next (drop same card): " + upgradeDiff(tw.type, tw.lvl, tw.cardLevel).map((d) => diffText(tw.type, d)).join(", ") : line = "Max level!", plainFit(line, 200, py + (modes ? 148 : 122), 350, 12, extra.length ? "#2f8a36" : INFO_INK, "center"), button("infoClose", 14, py, 372, H2, () => {
+  extra.length ? line = "Upgraded: " + extra.map((d) => diffText(tw.type, d)).join(", ") : tw.lvl < b.cfg.maxInBattleLevel ? line = (dmgGainText(tw.type, tw.lvl + 1, tw.cardLevel) ? dmgGainText(tw.type, tw.lvl + 1, tw.cardLevel) + "! " : "") + "Next (drop same card): " + upgradeDiff(tw.type, tw.lvl, tw.cardLevel).map((d) => diffText(tw.type, d)).join(", ") : line = "Max level!", plainFit(line, 200, py + (modes ? 160 : 122), 350, 12, extra.length ? "#2f8a36" : INFO_INK, "center"), button("infoClose", 14, py, 372, H2, () => {
     S.info = null;
   }), modes && TARGET_MODES.forEach((m, i) => {
-    let x = 22 + i * 120, y = py + 110, w = 114, h = 28, on = tw.mode === m;
-    rr(ctx, x, y, w, h, 10), ctx.fillStyle = on ? "#ffd27a" : "#f7efeb", ctx.fill(), ctx.lineWidth = on ? 2.6 : 1.2, ctx.strokeStyle = on ? INK : "#e0cfd4", ctx.stroke(), drawModeIcon(m, x + 17, y + h / 2, 1), plainFit(MODE_NAME[m], x + 32, y + h / 2 + 0.5, w - 38, 12.5, on ? INK : INFO_INK, "left", on ? "700" : "600"), button("mode_" + m, x - 2, y - 2, w + 4, h + 4, () => setMode(tw, m));
+    let x = 22 + i * 120, y = py + 108, w = 114, h = 34, on = tw.mode === m, age = S.t - (tw._modeAt ?? -9), pop = on && age >= 0 && age < 0.12 && !reducedMotion() ? 1 + 0.08 * Math.sin(age / 0.12 * Math.PI) : 1;
+    ctx.save(), pop !== 1 && (ctx.translate(x + w / 2, y + h / 2), ctx.scale(pop, pop), ctx.translate(-(x + w / 2), -(y + h / 2))), rr(ctx, x, y, w, h, 11), ctx.fillStyle = on ? "#ffd27a" : "#f7efeb", ctx.fill(), ctx.lineWidth = on ? 2.6 : 1.5, ctx.strokeStyle = on ? INK : "#d9c5cc", ctx.stroke(), drawModeIcon(m, x + 18, y + h / 2, 1), plainFit(MODE_NAME[m], x + 34, y + h / 2 + 0.5, w - 40, 13, on ? INK : INFO_INK, "left", on ? "700" : "600"), ctx.restore(), button("mode_" + m, x - 2, y - 2, w + 4, h + 4, () => setMode(tw, m));
   });
   let canMove = (S.save.diamonds || 0) >= ECONOMY.diamonds.moveTower;
   drawButton(256, py + 5, 62, 24, "", "#9fd8ff", { r: 10, disabled: !canMove }), text(ctx, "Move", 280, py + 17, 11.5), diamondIcon(ctx, 305, py + 17, 0.55), text(ctx, String(ECONOMY.diamonds.moveTower), 312, py + 17.5, 10), drawButton(322, py + 5, 58, 24, "Swap", "#c9b6f2", { r: 10, size: 11.5, disabled: b.towers.length < 2 }), button("infoMove", 252, py, 68, 40, () => startMode("move", tw)), button("infoSwap", 320, py, 64, 40, () => startMode("swap", tw));
@@ -6227,8 +6263,18 @@ function fitText(str, x, y, maxW, size, col) {
 }
 function drawTowerObj(tw) {
   ctx.save(), ctx.translate(tw.x, tw.y);
-  let age = S.battle.time - (tw.born ?? (tw.born = S.battle.time)), pop = age < 0.25 ? 0.6 + age / 0.25 * 0.4 + Math.sin(age / 0.25 * Math.PI) * 0.2 : 1;
-  if (ctx.scale(pop, pop), TOWERS[tw.type].place === "path" && ctx.translate(tw.px - tw.x, tw.py - tw.y), drawTower(ctx, tw.type, S.t + tw.id, tw), tw.mode && tw.mode !== "weak" && (ctx.beginPath(), ctx.arc(14, 13, 7, 0, 7), ctx.fillStyle = "#fffaf5", ctx.fill(), ctx.lineWidth = 1.8, ctx.strokeStyle = INK, ctx.stroke(), drawModeIcon(tw.mode, 14, 13, 0.5)), tw.lvl > 1) for (let k = 0; k < tw.lvl; k++) starShape(ctx, -(tw.lvl - 1) * 3.6 + k * 7.2, 16, 3.6, "#ffd45e", 1.1);
+  let age = S.battle.time - (tw.born ?? (tw.born = S.battle.time));
+  if (!reducedMotion()) {
+    if (age < 0.22) {
+      let k = age / 0.22, a = k < 0.4 ? k / 0.4 : (k - 0.4) / 0.6, sx = k < 0.4 ? 1.15 + (0.95 - 1.15) * a : 0.95 + 0.05 * a, sy = k < 0.4 ? 0.85 + (1.05 - 0.85) * a : 1.05 - 0.05 * a;
+      ctx.scale(sx, sy);
+    }
+  }
+  if (TOWERS[tw.type].place === "path" && ctx.translate(tw.px - tw.x, tw.py - tw.y), drawTower(ctx, tw.type, S.t + tw.id, tw), tw.mode && tw.mode !== "weak") {
+    let bage = S.t - (tw._modeAt ?? -9), bp = bage >= 0 && bage < 0.5 && !reducedMotion() ? 1 + 0.35 * Math.sin(Math.min(1, bage / 0.5) * Math.PI) : 1;
+    ctx.save(), ctx.translate(14, 13), ctx.scale(bp, bp), ctx.beginPath(), ctx.arc(0, 0, 8, 0, 7), ctx.fillStyle = "#fffaf5", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), drawModeIcon(tw.mode, 0, 0, 0.55), ctx.restore();
+  }
+  if (tw.lvl > 1) for (let k = 0; k < tw.lvl; k++) starShape(ctx, -(tw.lvl - 1) * 3.6 + k * 7.2, 16, 3.6, "#ffd45e", 1.1);
   ctx.restore();
 }
 function drawGuard(b, ck) {
@@ -6255,7 +6301,11 @@ function drawAntObj(a, ghost = !1) {
   let face = a._face ?? 1, speedK2 = a.type === "small" ? 2.2 : a.type === "sprinter" ? 2.4 : a.type === "queen" ? 0.6 : a.type === "big" ? 1 : a.type === "heavy" ? 0.9 : 1.5, still = frozen || a.stunT > 0, fr = still ? 0 : Math.floor((b.time + a.id * 0.37) * speedK2 * ANT_FRAMES) % ANT_FRAMES, spr = antSprite(a.type, fr, a.carrying > 0, pxRatio), breathe = still ? 1 + Math.sin(S.t * 5 + a.id) * 0.035 : 1, lat = (a.id * 37 % 9 - 4) * 1.2;
   a.state === "back" && (lat = UI.carrierLane + lat * 0.4);
   let x = a.x + p.dy * lat, y = a.y - p.dx * lat;
-  if (ctx.save(), ctx.translate(x, y + 4), ctx.scale(face / breathe, breathe), a.hitFlash > 0.06 && ctx.scale(1.08, 0.92), ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h), a.hitFlash > 0 && (ctx.globalCompositeOperation = "lighter", ctx.globalAlpha = 0.5, ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h)), ctx.restore(), frozen && (ctx.save(), ctx.globalAlpha = 0.55, rr(ctx, x - 17 * a.size, y - 24 * a.size, 34 * a.size, 32 * a.size, 7), ctx.fillStyle = "#d6f3ff", ctx.fill(), ctx.lineWidth = 1.5, ctx.strokeStyle = "#8fd0f5", ctx.stroke(), ctx.restore()), a.slow > 0.01 && !frozen && (ctx.fillStyle = "rgba(255,240,160,0.8)", ctx.beginPath(), ctx.ellipse(x, y + 8, 9 * a.size, 2.5, 0, 0, 7), ctx.fill()), a.stunT > 0 && !frozen && stunStars(ctx, x, y - 30 * a.size, S.t + a.id, a.size), a.charmT > 0 && heart(ctx, x + Math.sin(S.t * 4 + a.id) * 4, y - 32 * a.size - Math.abs(Math.sin(S.t * 3)) * 4, 3, "#ff8fbf"), a.hp < a.maxHp && !ghost) {
+  if (ctx.save(), ctx.translate(x, y + 4), ctx.scale(face / breathe, breathe), a.hitFlash > 0 && !reducedMotion()) {
+    let q = Math.min(1, a.hitFlash / 0.12), sq = 0.12 * q * q;
+    ctx.scale(1 + sq, 1 - sq);
+  }
+  if (ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h), a.hitFlash > 0.04 && (ctx.globalCompositeOperation = "lighter", ctx.globalAlpha = 0.6, ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h)), ctx.restore(), frozen && (ctx.save(), ctx.globalAlpha = 0.55, rr(ctx, x - 17 * a.size, y - 24 * a.size, 34 * a.size, 32 * a.size, 7), ctx.fillStyle = "#d6f3ff", ctx.fill(), ctx.lineWidth = 1.5, ctx.strokeStyle = "#8fd0f5", ctx.stroke(), ctx.restore()), a.slow > 0.01 && !frozen && (ctx.fillStyle = "rgba(255,240,160,0.8)", ctx.beginPath(), ctx.ellipse(x, y + 8, 9 * a.size, 2.5, 0, 0, 7), ctx.fill()), a.stunT > 0 && !frozen && stunStars(ctx, x, y - 30 * a.size, S.t + a.id, a.size), a.charmT > 0 && heart(ctx, x + Math.sin(S.t * 4 + a.id) * 4, y - 32 * a.size - Math.abs(Math.sin(S.t * 3)) * 4, 3, "#ff8fbf"), a.hp < a.maxHp && !ghost) {
     let w = a.type === "queen" ? 60 : 22, hy = y - (a.flying ? 44 : 33) * a.size;
     rr(ctx, x - w / 2 - 1, hy - 1, w + 2, 6, 3), ctx.fillStyle = INK, ctx.fill();
     let f = Math.max(0, a.hp / a.maxHp);
@@ -6285,8 +6335,8 @@ function renderFx(dt) {
         break;
       }
       case "ko": {
-        let spr = antSprite(f.ant, 0, !1, pxRatio);
-        ctx.globalAlpha = 1 - k, ctx.translate(f.x, f.y - k * 30), ctx.rotate(Math.PI * k * 0.4 * f.face), ctx.scale(f.face, -1), ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h), ctx.scale(1, -1), ctx.beginPath(), ctx.ellipse(0, -18, 8, 2.5, 0, 0, 7), ctx.lineWidth = 2, ctx.strokeStyle = "#ffe36e", ctx.stroke();
+        let spr = antSprite(f.ant, 0, !1, pxRatio), rmo = reducedMotion(), ds = rmo ? 1 : k < 0.4 ? 1 + 0.25 * (k / 0.4) : 1.25 * (1 - (k - 0.4) / 0.6);
+        ctx.globalAlpha = rmo ? 1 - k : 1 - k * k, ctx.translate(f.x, f.y - (rmo ? 0 : k * 30)), ctx.rotate(rmo ? 0 : Math.PI * k * 0.4 * f.face), ctx.scale(f.face * ds, -ds), ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h), ctx.scale(1, -1), ctx.beginPath(), ctx.ellipse(0, -18, 8, 2.5, 0, 0, 7), ctx.lineWidth = 2, ctx.strokeStyle = "#ffe36e", ctx.stroke();
         break;
       }
       case "puff":
@@ -6296,9 +6346,10 @@ function renderFx(dt) {
         ctx.globalAlpha = 1 - k * k, crumbIcon(ctx, f.x - 7, f.y - k * 24, 0.7), text(ctx, "+" + f.n, f.x + 7, f.y - k * 24, 12, "#ffe3a8");
         break;
       case "txt": {
+        let rm = reducedMotion(), pk = Math.min(1, f.max * k / 0.12);
         ctx.globalAlpha = 1 - k * k;
-        let sz = (f.size || 13) * (k < 0.12 ? 0.6 + k / 0.12 * 0.4 + Math.sin(k / 0.12 * Math.PI) * 0.15 : 1);
-        text(ctx, f.s, Math.max(60, Math.min(MAP_W - 60, f.x)), f.y - k * 22, sz, f.col);
+        let sz = (f.size || 14) * (rm || pk >= 1 ? 1 : pk < 0.6 ? 0.6 + (1.15 - 0.6) * (pk / 0.6) : 1.15 - 0.15 * ((pk - 0.6) / 0.4));
+        text(ctx, f.s, Math.max(60, Math.min(MAP_W - 60, f.x)), f.y - (rm ? 0 : 22 * (1 - Math.pow(1 - k, 3))), sz, f.col);
         break;
       }
       case "ring2":
@@ -6436,7 +6487,7 @@ function renderHud(b) {
   let f = b.foodStored / b.cfg.foodHP;
   rr(ctx, 60, 22, 84, 20, 10), ctx.fillStyle = "#f0e0d8", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), f > 0 && (rr(ctx, 62, 24, 80 * f, 16, 8), ctx.fillStyle = f >= 0.9 ? "#8fe388" : f >= 0.5 ? "#ffd45e" : "#ff8a8a", ctx.fill()), text(ctx, `${Math.floor(b.foodStored + 1e-6)}`, 102, 33, 13, "#fff");
   let carried = b.ants.reduce((s, a) => s + (a.trips === 0 ? a.carrying : 0), 0);
-  carried && text(ctx, `${fmtFood(carried)} carried off!`, 102, 51, 11, "#c0392b", "center", null), text(ctx, `Wave ${Math.min(b.nextWave, b.totalWaves)}/${b.totalWaves}`, 184, 26, 15, "#ffb3c1"), text(ctx, `Lv ${b.levelIndex + 1}`, 184, 46, 11, "#a08090", "center", null), ctx.save(), ctx.translate(252, 33), rr(ctx, -31, -14, 62, 28, 14), ctx.fillStyle = "#e9f7ff", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), diamondIcon(ctx, -15, 0, 0.95), text(ctx, String(S.save.diamonds || 0), 8, 1, 16, "#7fd3ff"), ctx.restore(), S.crumbShake = Math.max(0, S.crumbShake - 1 / 60), S.crumbPulse = Math.max(0, S.crumbPulse - 1 / 60);
+  carried && text(ctx, `${fmtFood(carried)} carried off!`, 102, 51, 12, "#c0392b", "center", null), text(ctx, `Wave ${Math.min(b.nextWave, b.totalWaves)}/${b.totalWaves}`, 184, 26, 15, "#ffb3c1"), hudPreviewLast = null, stripNoRoom && drawHudPreview(b) || text(ctx, `Lv ${b.levelIndex + 1}`, 184, 46, 12, "#a08090", "center", null), ctx.save(), ctx.translate(252, 33), rr(ctx, -31, -14, 62, 28, 14), ctx.fillStyle = "#e9f7ff", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), diamondIcon(ctx, -15, 0, 0.95), text(ctx, String(S.save.diamonds || 0), 8, 1, 16, "#7fd3ff"), ctx.restore(), S.crumbShake = Math.max(0, S.crumbShake - 1 / 60), S.crumbPulse = Math.max(0, S.crumbPulse - 1 / 60);
   let shx = S.crumbShake > 0 ? Math.sin(S.t * 60) * 4 * S.crumbShake / 0.45 : 0, pul = 1 + S.crumbPulse * 0.5;
   ctx.save(), ctx.translate(341 + shx, 33), ctx.scale(pul, pul), rr(ctx, -45, -16, 90, 32, 16), ctx.fillStyle = S.crumbShake > 0 ? "#ffd6d6" : "#fff1d6", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = S.crumbShake > 0 ? "#e0524f" : INK, ctx.stroke(), crumbIcon(ctx, -27, 0, 1.2), text(ctx, String(Math.floor(b.crumbs)), 7, 1, 19, "#ffcf7a"), blob(ctx, 36, -1, 9, 9, "#9fe0ff", 1.8), text(ctx, "+", 36, -1.5, 15, "#ffffff"), ctx.restore(), S.result || button("buyCrumbs", 290, 0, 110, 66, () => openCrumbDialog());
 }
@@ -6535,7 +6586,7 @@ function renderTray(b) {
       }
       BONUSES[bt].needsTarget ? (S.sel = sel ? null : { kind: "bonus", type: bt }, sel || toast("Tap the trail to aim")) : b.useBonus(bt, 0, 0);
     });
-  }), text(ctx, `${b.bonusUsesLeft}`, 234, by + 14, 14, "#ffb3c1"), text(ctx, "left", 234, by + 30, 9, "#a08090", "center", null), drawSpeedButton(256, by, 60, bh), button("speed", 252, hitY, 68, hitH, () => {
+  }), text(ctx, `${b.bonusUsesLeft}`, 234, by + 14, 14, "#ffb3c1"), text(ctx, "left", 234, by + 30, 12, "#a08090", "center", null), drawSpeedButton(256, by, 60, bh), button("speed", 252, hitY, 68, hitH, () => {
     S.speed = nextSpeed(S.speed), sfx("tap");
   }), drawButton(324, by, 64, bh, "II", "#d9cfe0", { r: 12, size: 16 }), button("pause", 320, hitY, 76, hitH, () => {
     setPaused(!0);
@@ -6551,7 +6602,7 @@ function drawSpeedButton(x, y, w, h) {
     let px = x0 + i * (cw2 + gap);
     ctx.beginPath(), ctx.moveTo(px, cy - ch2 / 2), ctx.lineTo(px + cw2, cy), ctx.lineTo(px, cy + ch2 / 2), ctx.closePath(), ctx.fill();
   }
-  ctx.restore(), text(ctx, sp + "x", x + w / 2, y + h - 10, 9, INK, "center", null);
+  ctx.restore(), text(ctx, sp + "x", x + w / 2, y + h - 11, 12, INK, "center", null);
 }
 function renderPause() {
   buttons.length = 0, ctx.fillStyle = "rgba(60,40,55,0.45)", ctx.fillRect(-2e3, -2e3, W + 4e3, H + 4e3), panel(60, 220, 280, 260, "#fff6ee"), text(ctx, "Paused", 200, 256, 28, "#ffb3c1"), drawButton(90, 290, 220, 48, "Resume", "#9fe0b5"), button("resume", 90, 290, 220, 48, () => {
@@ -6591,7 +6642,7 @@ function renderResult(dt) {
   R.win ? (rows.push(["Victory", P.base]), rows.push(["Food left", P.food]), rows.push(["Ants beaten", P.kills]), P.level && rows.push(["Level reward", P.level]), P.firstClear && rows.push(["First clear", P.firstClear])) : rows.push(["Ants beaten", P.kills || 0]), rows.push([R.win ? "Time survived" : `Time survived${out.coins >= ECONOMY.lossCap ? ` (max ${ECONOMY.lossCap})` : ""}`, P.time || 0]);
   let RS = rows.length > 5 ? 14 : 16;
   rr(ctx, 70, 316, 260, 14 + rows.length * RS, 10), ctx.fillStyle = "#f6ece8", ctx.fill(), rows.forEach(([l, v], i) => {
-    text(ctx, l, 84, 330 + i * RS, 11, "#7a5a6a", "left", null), text(ctx, `+${v}`, 316, 330 + i * RS, 11, "#c9962a", "right", null);
+    text(ctx, l, 84, 330 + i * RS, 12, "#7a5a6a", "left", null), text(ctx, `+${v}`, 316, 330 + i * RS, 12, "#c9962a", "right", null);
   });
   let yy = 330 + rows.length * RS + 18;
   if (coinIcon(ctx, 150, yy, 1.3), text(ctx, `+${out.coins} coins`, 208, yy + 1, 18, "#ffd45e"), yy += 20, text(ctx, `(${R.crumbsLeft} unspent crumbs vanish)`, 200, yy, 10, "#a08090", "center", null), yy += 20, R.win || text(ctx, "Win to earn cards and prizes!", 200, yy, 12, "#a08090", "center", null), out.booster && (rr(ctx, 70, yy - 12, 260, 26, 12), ctx.fillStyle = "#ffe9f0", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = "#ff9ab0", ctx.stroke(), ctx.save(), ctx.translate(92, yy + 1), ctx.scale(0.62, 0.62), drawBonusIcon(ctx, out.booster.id, S.t), ctx.restore(), text(ctx, `First clear: +1 ${BONUSES[out.booster.id].name} booster`, 210, yy + 1, 12.5, "#e0607e", "center", null), yy += 30), out.prize && !celebrating) {
@@ -6626,7 +6677,7 @@ function cardInfoPanel(id, x, y, w, h, opt = {}) {
     return;
   }
   let T = TOWERS[id], c = S.save.cards[id], own = c.unlocked, L = Math.max(1, c.level);
-  fitText(T.name, x + 12 + Math.min(170, 9 * T.name.length) / 2, y + 16, 170, 14.5, "#ff8fab"), plainFit(own ? `Card L${c.level} (used in battle)` : "Not owned yet", x + w - 12, y + 16, 150, 11.5, INFO_SOFT, "right", "700");
+  fitText(T.name, x + 12 + Math.min(170, 9 * T.name.length) / 2, y + 16, 170, 14.5, "#ff8fab"), plainFit(own ? `Card L${c.level} (used in battle)` : "Not owned yet", x + w - 12, y + 16, 150, 12, INFO_SOFT, "right", "700");
   let cmp = h < 108;
   plainFit(T.desc, x + 12, y + (cmp ? 33 : 37), w - 24, 12, INFO_INK, "left", "500");
   let next = cardUpgradeDiff(id, L), nk = new Set(next.map((d) => d.key)), keys = cardStatKeys(id), bw = (w - 24 - 12) / 3;
@@ -6803,12 +6854,12 @@ function renderShop() {
     ctx.save(), ctx.translate(58 + k * 14, 146 - k * 3), ctx.rotate(-0.2 + k * 0.2), rr(ctx, -14, -20, 28, 38, 6), ctx.fillStyle = ["#ffb3c1", "#b5d8ff", "#ffd27a"][k], ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), text(ctx, "?", 0, 0, 16), ctx.restore();
   let gift = zapperGiftPending(S.save);
   if (gift)
-    text(ctx, `FREE pack: ${E.cardPackSize} cards!`, 112, 132, 14, "#e0607e", "left", null), text(ctx, `${E.cardPackSize - 1} random + Zapper`, 112, 152, 11, "#a08090", "left", null), drawButton(290, 122, 74, 40, "FREE", "#9fe0b5", { size: 17 });
+    text(ctx, `FREE pack: ${E.cardPackSize} cards!`, 112, 132, 14, "#e0607e", "left", null), text(ctx, `${E.cardPackSize - 1} random + Zapper`, 112, 152, 12, "#a08090", "left", null), drawButton(290, 122, 74, 40, "FREE", "#9fe0b5", { size: 17 });
   else {
     text(ctx, `Card pack: ${E.cardPackSize} random cards`, 112, 132, 13, "#7a4a5a", "left", null);
     {
       let left = Math.max(1, (E.packPity || 0) - (S.save.packsSinceNew || 0));
-      plainFit(lockedCards(S.save).length ? `level 1, ${Math.round(E.packNewTowerChance * 100)}% NEW tower${E.packPity ? ` (sure in ${left})` : ""}` : "level 1, of your unlocked towers", 112, 152, 172, 11, "#a08090", "left", "700");
+      plainFit(lockedCards(S.save).length ? `level 1, ${Math.round(E.packNewTowerChance * 100)}% NEW tower${E.packPity ? ` (sure in ${left})` : ""}` : "level 1, of your unlocked towers", 112, 152, 172, 12, "#a08090", "left", "700");
     }
     drawButton(290, 122, 74, 40, `${E.cardPack}c`, "#9fe0b5", { size: 15, disabled: S.save.coins < E.cardPack }), button("pack", 290, 122, 74, 40, () => {
       let got = buyPack(S.save);

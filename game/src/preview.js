@@ -24,7 +24,7 @@ export function previewModel(b) {
 // alive + not yet spawned
 export function antsLeft(b) { return b.ants.filter((a) => !a.dead).length + b.pending.length; }
 
-// the free horizontal span(s) of the top band of the map (design px, map coordinates), given the tiles / nest / cookie the band must not cover
+// the free horizontal span(s) of the top band of the map (design px, map coordinates), given the tiles / towers / nest / cookie the band must not cover
 export function nestPoints(b) {
   const nests = [];
   for (const rt of b.routes) { const q = rt.pts[0]; if (!nests.some((n) => Math.hypot(n.x - q.x, n.y - q.y) < 5)) nests.push(q); }
@@ -37,6 +37,7 @@ export function blockedSpans(b, y0 = STRIP_Y, h = STRIP_H) {
   const row0 = Math.floor(y0 / C.TILE), row1 = Math.floor((y1 - 1) / C.TILE);
   for (let r = row0; r <= row1; r++) for (let c = 0; c < C.GRID_COLS; c++) if (b.isPathTile(c, r)) out.push([c * C.TILE - 6, (c + 1) * C.TILE + 6, 'trail']);
   for (const n of nestPoints(b)) if (n.y + 22 > y0 && n.y - 34 < y1) out.push([n.x - 36, n.x + 36, 'nest']);   // body +-30, flag 28 px up; 22 px of base + shadow below
+  for (const t of b.towers || []) if (t.r >= row0 && t.r <= row1) out.push([t.x - 24, t.x + 24, 'tower']); // v0.7.5 (review finding 1): the strip never covers a tower built in the top row (the head draws ~16 px above its tile centre)
   for (const q of cookiePoints(b)) if (q.y + 34 > y0 && q.y - 34 < y1) out.push([q.x - 36, q.x + 36, 'cookie']);
   return out.sort((a, c) => a[0] - c[0]).map(([a, c, k]) => [Math.max(0, a), Math.min(W, c), k]);
 }

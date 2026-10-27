@@ -147,7 +147,14 @@ export const AIR_COUNTERS = ['laser', 'zapper'];
 //   queen  = unchanged (Yair: her size is "relatively good").
 // Armored = regular size + armor/helmet only. Late-game exceptions (item 14d/e): Heavy Knight = LARGE armored,
 // Sprint Knight = FAST armored (regular body, sports shoes + jersey). Max 5 ant types per battle (item 15, see LEVELS).
-export const VERSION = '0.7.4.1'; // v0.7: shown on the map screen (keep in step with package.json + android versionName)
+// v0.7.5 (review finding 3): the tower info panel's one-line description follows the selected target mode (text only; the sim's behaviour is in sim.js). 'weak' keeps TOWERS[id].ability.
+export const TARGET_MODE_TEXT = {
+  slingshot: { carrier: 'Single target: ants carrying food first, then the fewest HP left.', front: 'Single target: the walking ant closest to the cookie.' },
+  lizard: { carrier: 'Targets ants carrying food first, then fewest HP left; chews after kills.', front: 'Targets the walking ant closest to the cookie; chews after kills.' },
+  laser: { carrier: 'Aims at ants carrying food first, then fewest HP. Heat: +12% per hit on the same ant.', front: 'Aims at the walking ant closest to the cookie. Heat: +12% per hit on the same ant.' },
+  zapper: { carrier: 'First zap: food carriers first, then fewest HP. Chains to the nearest flyers (60% each jump).', front: 'First zap: the flyer closest to the cookie. Chains to the nearest flyers (60% each jump).' },
+};
+export const VERSION = '0.7.5'; // v0.7: shown on the map screen (keep in step with package.json + android versionName)
 export const ANT_SIZES = { ...TUNING.antSizes };
 const ANT_TEXT = {
   small: { name: 'Scout Ant', desc: 'Tiny, fast, comes in swarms.' },

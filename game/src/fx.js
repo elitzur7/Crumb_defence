@@ -1,5 +1,5 @@
 // Floating-text helper: merges duplicates and caps how many are alive, so texts never pile up.
-export const FLOAT_TEXT = { mergeRadius: 60, maxAlive: 10, perKeyMax: { queen: 1, immune: 2 } };
+export const FLOAT_TEXT = { mergeRadius: 60, maxAlive: 8, perKeyMax: { queen: 1, immune: 2 } };
 
 /**
  * Adds a floating text to `list` (array of fx objects with k === 'txt').

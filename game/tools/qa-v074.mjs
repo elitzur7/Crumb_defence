@@ -3,7 +3,7 @@
 import puppeteer from 'puppeteer-core';
 import fs from 'node:fs';
 import { serve } from './serve.mjs';
-const OUT = '/workspace/ant-td/qa/v0.7.4.1'; fs.mkdirSync(OUT, { recursive: true });
+const OUT = '/workspace/ant-td/qa/v0.7.5/qa-v074-suite'; fs.mkdirSync(OUT + '/maps', { recursive: true });
 await serve(8891, 'www-test'); await serve(8892, 'www');
 const browser = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: true, args: ['--no-sandbox'] });
 let fails = 0; const R = [];
@@ -155,8 +155,11 @@ ok(/E\.DT \? \+E\.DT : 60/.test(fs.readFileSync('/workspace/ant-td/qa/v0.7.4/sim
   const geo = await G(() => { const g = window.__game; return g.buttons().find((b) => b.id === 'infoClose'); });
   ok(geo.y > sl.y + MAP_Y + 20 || geo.y + geo.h < sl.y + MAP_Y - 20, `M1#2 the info panel does not cover the tower (panel y ${Math.round(geo.y)}..${Math.round(geo.y + geo.h)}, tower y ${Math.round(sl.y + MAP_Y)})`);
   await page.screenshot({ path: `${OUT}/target-mode-chips-slingshot-weakest.png` });
-  await tapAt(sl.x, sl.y + MAP_Y); // panel already open: tap the tower cycles
-  ok(await G((id) => window.__game.S.battle.towers.find((t) => t.id === id).mode === 'carrier', sl.id), 'M1 tapping the tower with its panel open cycles Weakest -> Carrier');
+  await tapAt(sl.x, sl.y + MAP_Y); // v0.7.5 (review finding 2): the tap-to-cycle gesture is gone - tapping the tower with its panel open must NOT change the mode
+  ok(await G((id) => window.__game.S.battle.towers.find((t) => t.id === id).mode === 'weak', sl.id), 'M1 (v0.7.5) tapping the open tower does not cycle the mode');
+  await tapAt(sl.x, sl.y + MAP_Y);
+  { const c2 = (await btns()).find((b) => b.id === 'mode_carrier'); if (c2) { await page.touchscreen.tap(c2.sx, c2.sy); await sleep(150); } }
+  ok(await G((id) => window.__game.S.battle.towers.find((t) => t.id === id).mode === 'carrier', sl.id), 'M1 the Carrier chip selects Carrier');
   await sleep(200); await page.screenshot({ path: `${OUT}/target-mode-chips-slingshot-carrier.png` });
   const chip = (await btns()).find((b) => b.id === 'mode_front'); await page.touchscreen.tap(chip.sx, chip.sy); await sleep(150);
   ok(await G((id) => window.__game.S.battle.towers.find((t) => t.id === id).mode === 'front', sl.id), 'M1 the chips select directly (Front)');

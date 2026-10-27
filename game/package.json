@@ -1,12 +1,12 @@
 {
   "name": "crumb-defense",
-  "version": "0.7.4.1",
+  "version": "0.7.5",
   "private": true,
   "description": "Crumb Defense - cute ant tower defense (offline prototype)",
   "type": "module",
   "scripts": {
     "build": "node tools/build.mjs",
-    "test": "node --test tests/logic.test.js tests/regress.test.js tests/v020.test.js tests/v030.test.js tests/v040.test.js tests/v050.test.js tests/v060.test.js tests/v061.test.js tests/v062.test.js tests/v070.test.js tests/v072.test.js tests/v073.test.js tests/v074.test.js tests/v0741.test.js",
+    "test": "node --test tests/logic.test.js tests/regress.test.js tests/v020.test.js tests/v030.test.js tests/v040.test.js tests/v050.test.js tests/v060.test.js tests/v061.test.js tests/v062.test.js tests/v070.test.js tests/v072.test.js tests/v073.test.js tests/v074.test.js tests/v0741.test.js tests/v075.test.js",
     "test:ui": "node tools/regress-ui.mjs",
     "tuning:csv": "node ../tuning/json2csv.mjs",
     "tuning:json": "node ../tuning/csv2json.mjs",
