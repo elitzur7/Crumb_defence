@@ -1336,3 +1336,32 @@ export function drawProp(g, kind, x, y) {
   }
   g.restore();
 }
+
+// ---------------- v0.7.2 C13: the cookie guard - a cute fly swatter (code-drawn) ----------------
+// Pivot (0,0) = the bottom of the handle; the swatter points up (-y). ang: rotation in radians (+ = clockwise).
+// Pink frame (#ff9fb6), cream mesh with two dot eyes, wooden handle (#d9a066), INK outline. No slingshot fork, no elastic.
+export function drawSwatter(ctx, x, y, ang = 0, sc = 1, flash = 0) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(ang); ctx.scale(sc, sc);
+  ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  shadow(ctx, 0, 2, 9, 3, 0.22);
+  // handle
+  rr(ctx, -3.2, -34, 6.4, 34, 3.2); ctx.fillStyle = '#d9a066'; ctx.fill(); ctx.lineWidth = 2.2; ctx.strokeStyle = INK; ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-1, -6); ctx.lineTo(-1, -28); ctx.lineWidth = 1.4; ctx.strokeStyle = 'rgba(255,240,210,0.55)'; ctx.stroke();
+  ctx.beginPath(); ctx.arc(0, -2.5, 1.7, 0, 7); ctx.fillStyle = '#b97f48'; ctx.fill(); // the hanging-hole at the grip end
+  // head: pink frame, cream mesh
+  const hx = -15, hy = -78, hw = 30, hh = 46;
+  rr(ctx, hx, hy, hw, hh, 12); ctx.fillStyle = '#ff9fb6'; ctx.fill(); ctx.lineWidth = 2.6; ctx.strokeStyle = INK; ctx.stroke();
+  rr(ctx, hx + 4, hy + 4, hw - 8, hh - 8, 8); ctx.fillStyle = '#fff6ee'; ctx.fill(); ctx.lineWidth = 1.6; ctx.strokeStyle = INK; ctx.stroke();
+  ctx.save(); rr(ctx, hx + 4, hy + 4, hw - 8, hh - 8, 8); ctx.clip();
+  ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(255,159,182,0.75)';
+  for (let k = 1; k < 4; k++) { ctx.beginPath(); ctx.moveTo(hx + 4 + k * 5.5, hy + 4); ctx.lineTo(hx + 4 + k * 5.5, hy + hh - 4); ctx.stroke(); }
+  for (let k = 1; k < 6; k++) { ctx.beginPath(); ctx.moveTo(hx + 4, hy + 4 + k * 6); ctx.lineTo(hx + hw - 4, hy + 4 + k * 6); ctx.stroke(); }
+  ctx.restore();
+  // two dot eyes (cute)
+  ctx.fillStyle = INK; ctx.beginPath(); ctx.arc(-4.6, hy + 20, 2.3, 0, 7); ctx.arc(4.6, hy + 20, 2.3, 0, 7); ctx.fill();
+  ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(-5.3, hy + 19.2, 0.8, 0, 7); ctx.arc(3.9, hy + 19.2, 0.8, 0, 7); ctx.fill();
+  // cheeks
+  ctx.fillStyle = 'rgba(255,111,145,0.45)'; ctx.beginPath(); ctx.ellipse(-8.6, hy + 25, 2.6, 1.7, 0, 0, 7); ctx.ellipse(8.6, hy + 25, 2.6, 1.7, 0, 0, 7); ctx.fill();
+  if (flash > 0) { rr(ctx, hx, hy, hw, hh, 12); ctx.globalAlpha = flash * 0.7; ctx.fillStyle = '#fff'; ctx.fill(); }
+  ctx.restore();
+}

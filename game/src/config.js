@@ -22,6 +22,13 @@ export const BATTLE = {
   //                     killed at the nest door -> distMin (linear in between).
   //   rounding 'exact' keeps fractions (a worker's 1 crumb -> 0.4), or use 'floor' / 'round'.
   foodReturn: { mode: 'fixed', fixed: 0.4, distMin: 0.1, distMax: 0.8, rounding: 'exact' },
+  // v0.7.2 C14 'shuttle until death': an ant that drops its piece at the nest (lost for good) waits `pause` s and walks back to the cookie
+  // for another piece. It only stops by dying (HP 0). Queens loop too. The level is won when no ant is alive after the last wave,
+  // lost when the cookie is empty (so a level can never be endless).
+  forage: { on: true, pause: 0.3, queenLoop: true },
+  // v0.7.2 C13 cookie guard (fly swatter): free, automatic, fixed on the cookie. One swat every `interval` s (the timer waits while nothing is in range)
+  // of `damage` (armour applies, min 1) at an ant within `range` px of the cookie; carrier nearest the cookie first, else nearest ant; hits flyers.
+  swatter: { on: true, damage: 4, interval: 4, range: 72, first: 4, air: true },
   carrierSpeedMul: 0.85,    // carriers walk a bit slower on the way home
   startCrumbs: 0,           // crumbs are battle-only and always start from this value (spec: 0)
   // Card cost: cost of the Nth card played this battle (N starts at 0) = firstCardCost + N * cardCostStep
@@ -136,7 +143,7 @@ export const AIR_COUNTERS = ['laser', 'zapper'];
 //   queen  = unchanged (Yair: her size is "relatively good").
 // Armored = regular size + armor/helmet only. Late-game exceptions (item 14d/e): Heavy Knight = LARGE armored,
 // Sprint Knight = FAST armored (regular body, sports shoes + jersey). Max 5 ant types per battle (item 15, see LEVELS).
-export const VERSION = '0.7.0'; // v0.7: shown on the map screen (keep in step with package.json + android versionName)
+export const VERSION = '0.7.2'; // v0.7: shown on the map screen (keep in step with package.json + android versionName)
 export const ANT_SIZES = { ...TUNING.antSizes };
 const ANT_TEXT = {
   small: { name: 'Scout Ant', desc: 'Tiny, fast, comes in swarms.' },

@@ -120,7 +120,7 @@ test('distance mode: carriers killed near the cookie return more than near the n
   assert.equal(foodReturned(5, 0.5, { ...R, mode: 'fixed', rounding: 'floor', fixed: 0.3 }), 1);
 });
 test('the battle is lost the moment the cookie is gone', () => {
-  const b = mk(); b.foodStored = 1; b.spawn('worker', b.path.length - 1); b.update(0.05);
+  const b = mk(); b.foodStored = 0.5; b.spawn('worker', b.path.length - 1); b.update(0.05);
   assert.equal(b.result, 'lose');
 });
 
@@ -212,10 +212,10 @@ test('prep: a selected booster with 0 stock is flagged (warning only since v0.3)
   const fixed = M.autoFixBonuses(s, ['bomb', 'plane']); assert.ok(!fixed.includes('bomb') && fixed.length === 2);
 });
 
-test('version 0.7.0 (versionCode 15) everywhere', () => {
-  assert.equal(JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version, '0.7.0');
+test('version 0.7.2 (versionCode 16) everywhere', () => {
+  assert.equal(JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version, '0.7.2');
   const gr = readFileSync(new URL('../android/app/build.gradle', import.meta.url), 'utf8');
-  assert.match(gr, /versionCode 15\b/); assert.match(gr, /versionName "0\.7\.0"/);
+  assert.match(gr, /versionCode 16\b/); assert.match(gr, /versionName "0\.7\.2"/);
 });
 
 // ---------- v0.2.0 audit fixes (B8-B10) ----------

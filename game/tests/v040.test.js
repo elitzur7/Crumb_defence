@@ -213,8 +213,8 @@ test('v0.3 save loads: fields kept, card-blink flags + Roasted Lava card added, 
   assert.equal(s.version, M.SAVE_VERSION);
   M.writeSave(st, s); const again = M.loadSave(st); assert.equal(again.coins, 321); assert.deepEqual(again.cardBlink, s.cardBlink);
 });
-test('versions: package 0.7.0, Android versionCode 15 / versionName 0.7.0', () => {
-  const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')); assert.equal(pkg.version, '0.7.0');
+test('versions: package 0.7.2, Android versionCode 16 / versionName 0.7.2', () => {
+  const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')); assert.equal(pkg.version, '0.7.2');
   const gradle = readFileSync(new URL('../android/app/build.gradle', import.meta.url), 'utf8');
-  assert.match(gradle, /versionCode 15\b/); assert.match(gradle, /versionName "0\.7\.0"/);
+  assert.match(gradle, /versionCode 16\b/); assert.match(gradle, /versionName "0\.7\.2"/);
 });

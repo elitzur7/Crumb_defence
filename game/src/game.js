@@ -44,14 +44,33 @@ function openCalendar() { S.cal = { t: 0, result: null }; sfx('tap'); }
 function setPaused(v) { S.paused = v; if (S.battle) S.battle.paused = v; if (v) { S.sel = null; S.drag = null; S.info = null; S.mode = null; } }
 
 // ---------------- layout / resize ----------------
+// v0.7.2 C16: the meta screens (map, cards, card detail, shop) sit above a fixed bottom tab bar (Map / Cards / Shop). The bar is 56 dp tall plus the
+// bottom safe-area inset (env(safe-area-inset-bottom), read through a hidden probe element). Their design height is 660 instead of 720; every other
+// screen (prep, battle, results, overlays) keeps W x H = 400 x 720 over the full window.
+const META_SCREENS = ['map', 'cards', 'card', 'shop'], BAR_H = 56, META_H = 660;
+let cw = 0, ch = 0, insetB = 0, insetProbe = null, insetOverride = null; // insetOverride: test hook only
+function readInset() {
+  if (insetOverride != null) return insetOverride;
+  try {
+    if (!insetProbe) { insetProbe = document.createElement('div'); insetProbe.style.cssText = 'position:fixed;left:0;bottom:0;width:0;height:0;visibility:hidden;pointer-events:none;padding-bottom:env(safe-area-inset-bottom,0px)'; document.body.appendChild(insetProbe); }
+    const v = parseFloat(getComputedStyle(insetProbe).paddingBottom); return isFinite(v) && v > 0 ? v : 0;
+  } catch (e) { return 0; }
+}
+function isMeta() { return META_SCREENS.includes(S.screen); }
+function applyLayout() {
+  if (isMeta()) {
+    const availH = Math.max(100, ch - (BAR_H + insetB));
+    scale = Math.min(cw / W, availH / META_H); offX = (cw - W * scale) / 2; offY = (availH - META_H * scale) / 2;
+  } else { scale = Math.min(cw / W, ch / H); offX = (cw - W * scale) / 2; offY = (ch - H * scale) / 2; }
+  const px = Math.max(1, Math.round(dpr * scale * 2) / 2);
+  if (px !== pxRatio) { pxRatio = px; S.bgCache = {}; A.clearTowerCache(); } // sprites are baked at the device scale
+}
 function resize() {
   dpr = Math.min(window.devicePixelRatio || 1, 3);
-  const cw = window.innerWidth, ch = window.innerHeight;
+  cw = window.innerWidth; ch = window.innerHeight; insetB = readInset();
   canvas.width = Math.round(cw * dpr); canvas.height = Math.round(ch * dpr);
   canvas.style.width = cw + 'px'; canvas.style.height = ch + 'px';
-  scale = Math.min(cw / W, ch / H);
-  offX = (cw - W * scale) / 2; offY = (ch - H * scale) / 2;
-  pxRatio = Math.max(1, Math.round(dpr * scale * 2) / 2);
+  applyLayout();
   S.bgCache = {};
   A.clearTowerCache(); // v0.6.1: tower sprites are baked at the device scale -> rebuild after a DPR / size change
 }
@@ -117,7 +136,7 @@ document.addEventListener('visibilitychange', () => {
 
 // ---------------- screens ----------------
 function go(screen) {
-  S.screen = screen; S.sel = null; S.info = null; S.drag = null; S.mergeAnim = null; S.toast = null; S.dialog = null; S.cal = null; S.mode = null; S.shopFx = null; sfx('tap');
+  S.screen = screen; S.sel = null; S.info = null; S.drag = null; S.mergeAnim = null; S.toast = null; S.dialog = null; S.cal = null; S.settings = null; S.mode = null; S.shopFx = null; sfx('tap');
   if (screen === 'map') { S.mapScroll = autoMapScroll(); maybeShowCalendar(); }
   // keep one history entry while away from the map so the Android back button maps to in-game "back"
   try {
@@ -129,7 +148,7 @@ function go(screen) {
 window.addEventListener('popstate', () => {
   if (S.pack) { closePack('ok'); try { history.pushState({ inner: 1 }, ''); } catch (e) {} return; } // v0.7: back closes the pack reveal
   if (S.dialog) { S.dialog = null; try { history.pushState({ inner: 1 }, ''); } catch (e) {} return; }
-  if (S.screen === 'map') { if (S.cal) S.cal = null; return; }
+  if (S.screen === 'map') { if (S.cal) S.cal = null; else if (S.settings) S.settings = null; return; }
   const repush = () => { try { history.pushState({ inner: 1 }, ''); } catch (e) {} };
   if (S.screen === 'battle' && !S.result) { setPaused(!S.paused); repush(); return; }
   if (S.screen === 'card') { S.screen = 'cards'; repush(); return; }
@@ -265,10 +284,16 @@ function consumeEvents() {
       case 'pulse': addFx({ k: 'ring', ...e, life: 0.45, max: 0.45, col: '#a58be0' }); sfx('pulse'); break;
       case 'gust': for (let i = 0; i < 6; i++) addFx({ k: 'wisp', x: e.x, y: e.y - 16, a: e.ang + (Math.random() - 0.5) * 0.8, d: 10 + Math.random() * 10, life: 0.5, max: 0.5 }); sfx('gust'); break;
       case 'spray': addFx({ k: 'mist', ...e, life: 0.3, max: 0.3 }); break;
+      case 'swat': { // v0.7.2 C13: the swatter's slap lands 0.18 s into its 0.5 s swing: spark + hit flash on the ant, a soft thwap
+        const wait = reducedMotion() ? 0 : 0.17;
+        addFx({ k: 'spark', x: e.x, y: e.y - 4, life: 0.2 + wait, max: 0.2, wait, col: '#fff7b0' });
+        addFx({ k: 'ring2', x: e.x, y: e.y - 2, life: 0.3 + wait, max: 0.3, wait });
+        setTimeout(() => sfx('swat'), wait * 1000); break;
+      }
       case 'hit': addFx({ k: 'spark', x: e.x, y: e.y - 6, life: 0.15, max: 0.15 }); break;
       case 'gateZap': addFx({ k: 'spark', x: e.x, y: e.y - 14, life: 0.18, max: 0.18, col: '#fff27a' }); break;
       case 'steal': S.cookieOuch = S.t + C.UI.ouchTime; Treat.onBite(S.treat, S.t, e.n || 1); // v0.4 item 18: animated bite reaction
-        if (e.n) addFloatText(S.fx, { key: 'steal', x: e.x, y: e.y - 20, n: e.n, fmt: (n) => `-${n}`, col: '#ff7a7a', life: 1 }); sfx('steal'); break;
+        if (e.n) addFloatText(S.fx, { key: 'steal', x: e.x, y: e.y - 20, n: e.n, fmt: (n) => `-${fmtFood(n)}`, col: '#ff7a7a', life: 1 }); sfx('steal'); break;
       case 'foodReturn': addFloatText(S.fx, { key: 'food', x: e.x, y: e.y - 18, n: e.n, fmt: (n) => `+${fmtFood(n)} food back!`, col: '#8fe388', life: 1.1 }); sfx('return'); break;
       case 'place': case 'upgrade': {
         // purchase feedback: the card flies from its tray slot to the tile, the price flies out of the crumb counter
@@ -335,9 +360,11 @@ function render(dt) {
   prevButtons = buttons; buttons = [];
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.fillStyle = BG; ctx.fillRect(0, 0, canvas.width, canvas.height);
+  applyLayout();
   ctx.setTransform(dpr * scale, 0, 0, dpr * scale, offX * dpr, offY * dpr);
   // soft background pattern
   drawBackdrop();
+  renderTabBar(dt); // v0.7.2 C16: drawn BEFORE the screen so a modal / onboarding dim covers it and its blockers win the taps
   if (S.screen === 'map') renderMapScreen();
   else if (S.screen === 'prep') renderPrep();
   else if (S.screen === 'battle') renderBattle(dt);
@@ -365,10 +392,104 @@ function render(dt) {
     if (S.toast.t <= 0) { S.toast = null; S.layoutToast = null; }
   }
 }
+// ---------------- v0.7.2 C16: bottom tab bar (Map / Cards / Shop) ----------------
+// Screen-space bar (CSS px = dp): BAR_H tall + the bottom safe-area inset (decoration, not tappable). Three equal tabs, each the full BAR_H tall
+// (>= 48 dp at every width >= 144). Shown on the meta screens; slides out for modals; never on prep / battle / results / pack reveal.
+let barK = 0;
+const TAB_COL = ['#d9cfe0', '#b5d8ff', '#ffd27a'], TAB_NAME = ['Map', 'Cards', 'Shop'], TAB_MUTED = '#7a5a6a', BAR_BG = '#fff6ee';
+function activeTab() { return S.screen === 'map' ? 0 : S.screen === 'shop' ? 2 : 1; }
+function barWanted() { return isMeta() && !S.cal && !S.settings && !S.pack && !S.mergeAnim && !(S.reveal.length && S.reveal[0].at <= S.t) && !S.dialog; }
+function tabRect(i) { // logical-coordinate rectangle of tab i (for the onboarding spot and the button hit areas)
+  const tw = cw / 3, top = ch - BAR_H - insetB;
+  return { x: (i * tw + 6 - offX) / scale, y: (top + 6 - offY) / scale, w: (tw - 12) / scale, h: 44 / scale, r: 14 / scale };
+}
+function tabTap(i) {
+  if (i === activeTab()) { if (S.screen === 'map') S.mapScroll = autoMapScroll(); else if (S.screen === 'card') { S.screen = 'cards'; S.mergeAnim = null; } return; } // active tab: silent
+  go(['map', 'cards', 'shop'][i]);
+}
+function drawTabIcon(kind, x, y, active) {
+  const ink = active ? A.INK : TAB_MUTED;
+  ctx.save(); ctx.translate(x, y); ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.lineWidth = active ? 2.5 : 2; ctx.strokeStyle = ink;
+  if (kind === 0) { // map: a curving path with a round pin
+    ctx.beginPath(); ctx.moveTo(-10, 9); ctx.bezierCurveTo(-10, 2, 2, 11, 3, 4); ctx.lineWidth = active ? 3.2 : 2.6; ctx.setLineDash([0.1, 5]); ctx.stroke(); ctx.setLineDash([]);
+    ctx.lineWidth = active ? 2.5 : 2;
+    ctx.beginPath(); ctx.arc(4, -4, 5.2, 0, 7); ctx.fillStyle = active ? '#b9e89a' : '#e6e0e4'; ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.arc(4, -4, 1.6, 0, 7); ctx.fillStyle = ink; ctx.fill();
+    ctx.beginPath(); ctx.moveTo(1.4, 0.2); ctx.lineTo(4, 5.4); ctx.lineTo(6.6, 0.2); ctx.fillStyle = active ? '#b9e89a' : '#e6e0e4'; ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.arc(4, -4, 5.2, 0.9, 2.2); ctx.stroke();
+  } else if (kind === 1) { // cards: two rounded cards, the front one rotated 8 degrees
+    ctx.save(); ctx.translate(-3.5, -0.5); ctx.rotate(-0.14); A.rr(ctx, -6.5, -9, 13, 18, 3); ctx.fillStyle = active ? '#b5d8ff' : '#e6e0e4'; ctx.fill(); ctx.stroke(); ctx.restore();
+    ctx.save(); ctx.translate(3.5, 1); ctx.rotate(0.14); A.rr(ctx, -6.5, -9, 13, 18, 3); ctx.fillStyle = active ? '#ffffff' : '#f6f2f4'; ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.arc(0, 0, 2.2, 0, 7); ctx.fillStyle = active ? '#ff9ec0' : '#cdbcc5'; ctx.fill(); ctx.restore();
+  } else { // shop: a small bag with a handle arc and a star
+    ctx.beginPath(); ctx.arc(0, -4, 5, Math.PI, 0); ctx.stroke();
+    A.rr(ctx, -9, -4, 18, 15, 4); ctx.fillStyle = active ? '#ffb3c1' : '#e6e0e4'; ctx.fill(); ctx.stroke();
+    A.starShape(ctx, 0, 4, 3.6, active ? '#fff27a' : '#f6f2f4', 1.2);
+  }
+  ctx.restore();
+}
+function renderTabBar(dt) {
+  if (!isMeta()) { barK = 0; return; }
+  const want = barWanted(), step = reducedMotion() ? 1 : Math.max(0, dt) / (want ? 0.2 : 0.18);
+  barK = want ? Math.min(1, barK + step) : Math.max(0, barK - step);
+  if (barK <= 0) return;
+  const total = BAR_H + insetB, y0 = ch - total + (1 - barK) * total, tw = cw / 3, act = activeTab();
+  ctx.save(); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const sg = ctx.createLinearGradient(0, y0 - 7, 0, y0); sg.addColorStop(0, 'rgba(74,52,66,0)'); sg.addColorStop(1, 'rgba(74,52,66,0.18)');
+  ctx.fillStyle = sg; ctx.fillRect(0, y0 - 7, cw, 7);
+  ctx.fillStyle = BAR_BG; ctx.fillRect(0, y0, cw, total + 2);
+  ctx.fillStyle = A.INK; ctx.fillRect(0, y0 - 1, cw, 2.5);
+  const blink = cardsBlinkOn(), fresh = C.ALL_CARDS.some((id) => S.save.cards[id].fresh);
+  for (let i = 0; i < 3; i++) {
+    const on = i === act, pressed = !!(down && down.b && down.b.id === 'tab' + i);
+    const x = i * tw + 6, w = tw - 12, lift = on ? 2 : 0, py = y0 + 6 - lift + (pressed ? 2 : 0), ph = 44;
+    const col = i === 1 && blink ? '#fff07a' : TAB_COL[i];
+    if (i === 1 && blink) { A.rr(ctx, x - 3, y0 + 2, w + 6, ph + 8, 17); ctx.fillStyle = 'rgba(255,240,140,0.85)'; ctx.fill(); }
+    if (on || (i === 1 && blink)) {
+      A.rr(ctx, x, py + 3, w, ph, 14); ctx.fillStyle = A.shade(col, -0.35); ctx.fill();
+      A.rr(ctx, x, py, w, ph, 14); ctx.fillStyle = col; ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = A.INK; ctx.stroke();
+    }
+    const bob = i === 1 && blink ? Math.sin(S.t * 8) * 2 : 0;
+    drawTabIcon(i, x + w / 2, py + 15 + bob, on);
+    plainText(TAB_NAME[i], x + w / 2, py + 35, 13, on ? A.INK : TAB_MUTED, 'center', '800');
+    if (i === 1 && fresh) { A.blob(ctx, x + w / 2 + 15, py + 8, 6, 6, '#ff6f91', 1.5); } // v0.5 item 7: a won card waits in Cards (pink dot)
+    if (barK >= 0.5) button('tab' + i, (i * tw - offX) / scale, (y0 - offY) / scale, tw / scale, BAR_H / scale, () => tabTap(i)); // the full 56 dp tab is the hit area
+  }
+  ctx.restore();
+}
+function drawGearIcon(x, y, r) {
+  ctx.save(); ctx.translate(x, y); ctx.lineJoin = 'round'; ctx.lineWidth = 2.2; ctx.strokeStyle = A.INK; ctx.fillStyle = '#c9b8c2';
+  ctx.beginPath();
+  for (let k = 0; k < 16; k++) { const a = k * Math.PI / 8, rr_ = k % 2 ? r * 0.72 : r; ctx.lineTo(Math.cos(a - 0.1) * rr_, Math.sin(a - 0.1) * rr_); ctx.lineTo(Math.cos(a + 0.1) * rr_, Math.sin(a + 0.1) * rr_); }
+  ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.arc(0, 0, r * 0.32, 0, 7); ctx.fillStyle = '#fff6ee'; ctx.fill(); ctx.stroke();
+  ctx.restore();
+}
+// v0.7.2 C16: Snd and Reset left the map's bottom row: a gear at the top right of the map header opens one small panel (Sound switch, Reset behind a two-step confirm).
+function renderSettings() {
+  if (!S.settings) return;
+  button('setBlock', -2000, -2000, W + 4000, H + 4000, () => {});
+  ctx.save(); ctx.fillStyle = 'rgba(40,26,38,0.55)'; ctx.fillRect(-2000, -2000, W + 4000, H + 4000); ctx.restore();
+  button('setBlock2', -2000, -2000, W + 4000, H + 4000, () => { S.settings = null; S.confirmReset = 0; });
+  const x = 70, y = 190, w = 260, h = 262;
+  panel(x, y, w, h, '#fff6ee', 20); button('setPanel', x, y, w, h, () => {});
+  A.text(ctx, 'Settings', 200, y + 28, 22, '#ffb3c1');
+  const muted = S.save.settings && S.save.settings.muted;
+  drawButton(x + 24, y + 54, w - 48, 52, muted ? 'Sound: Off' : 'Sound: On', muted ? '#e6dce2' : '#c9f0c0', { size: 17 });
+  button('setSound', x + 24, y + 48, w - 48, 64, () => { S.save.settings = { ...(S.save.settings || {}), muted: !muted }; setMuted(!muted); persist(); sfx('tap'); });
+  const sure = S.confirmReset > S.t;
+  drawButton(x + 24, y + 122, w - 48, 52, sure ? 'Sure? Tap again' : 'Reset progress', '#ffb3b3', { size: sure ? 16 : 17 });
+  button('setReset', x + 24, y + 116, w - 48, 64, () => {
+    if (S.confirmReset > S.t) { S.save = M.newSave(); Cal.touch(S.save, now()); persist(); S.confirmReset = 0; S.cardsBlinkUntil = 0; S.settings = null; toast('Progress reset'); }
+    else { S.confirmReset = S.t + 3; }
+  });
+  drawButton(x + 24, y + 190, w - 48, 48, 'Close', '#d9cfe0', { size: 17 });
+  button('setClose', x + 24, y + 184, w - 48, 64, () => { S.settings = null; S.confirmReset = 0; });
+}
 function drawBackdrop() {
   ctx.save();
   const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#fff1e6'); g.addColorStop(1, '#fbd9cf');
-  ctx.fillStyle = g; ctx.fillRect(-200, -200, W + 400, H + 400);
+  ctx.fillStyle = g; ctx.fillRect(-2000, -2000, W + 4000, H + 4000);
   ctx.globalAlpha = 0.35; ctx.fillStyle = '#ffffff';
   for (let i = 0; i < 14; i++) { const x = (i * 97) % W, y = (i * 173 + S.t * 6) % (H + 40) - 20; ctx.beginPath(); ctx.arc(x, y, 6 + (i % 3) * 3, 0, 7); ctx.fill(); }
   ctx.restore();
@@ -459,7 +580,7 @@ function renderMapScreen() {
   A.text(ctx, 'Defense', 26, 28 - wob, 36, '#ffb3c1');
   ctx.restore();
   A.drawCookie(ctx, 64, 66, 0.9, S.t, {});
-  ctx.save(); ctx.translate(340, 78); ctx.scale(1.6, 1.6); A.drawAnt(ctx, 'worker', (S.t * 1.2) % 1); ctx.restore();
+  ctx.save(); ctx.translate(336, 86); ctx.scale(1.6, 1.6); A.drawAnt(ctx, 'worker', (S.t * 1.2) % 1); ctx.restore();
   // v0.5 item 9: diamonds to the LEFT of the coins, on the same row
   panel(158, 112, 110, 36, '#fff6ee', 18); A.diamondIcon(ctx, 178, 130, 1.1); A.text(ctx, String(S.save.diamonds || 0), 224, 131, 18, '#7fd3ff');
   panel(276, 112, 116, 36, '#fff6ee', 18); A.coinIcon(ctx, 296, 130, 1.2); A.text(ctx, String(S.save.coins), 344, 131, 18, '#ffd45e');
@@ -500,38 +621,27 @@ function renderMapScreen() {
     ctx.save(); ctx.globalAlpha = a; A.rr(ctx, 128, MAPVIEW.top + 4, 144, 26, 13); ctx.fillStyle = 'rgba(90,64,88,0.85)'; ctx.fill();
     plainText('\u25B2 World 2 - scroll up', 200, MAPVIEW.top + 17.5, 11.5, '#ffffff', 'center', '700'); ctx.restore();
   }
-  // bottom buttons
+  // v0.7.2 C16: the bottom buttons moved into the fixed tab bar (renderTabBar); Snd / Reset live in the settings panel behind the gear
   updateCardsBlink();
-  const blink = cardsBlinkOn();
-  if (blink) { A.rr(ctx, 10, 656, 132, 58, 18); ctx.fillStyle = 'rgba(255,240,140,0.85)'; ctx.fill(); }
-  drawButton(16, 662, 120, 46, 'Cards', blink ? '#fff07a' : '#b5d8ff'); button('cards', 16, 662, 120, 46, () => go('cards'));
-  if (C.ALL_CARDS.some((id) => S.save.cards[id].fresh)) { A.blob(ctx, 128, 664, 9, 9, '#ff6f91', 1.6); A.text(ctx, '+', 128, 663.5, 13); } // v0.5 item 7: a won card waits in Cards
-  drawButton(146, 662, 120, 46, 'Shop', '#ffd27a'); button('shop', 146, 662, 120, 46, () => go('shop'));
-  const muted = S.save.settings && S.save.settings.muted;
-  drawButton(276, 662, 54, 46, muted ? 'Off' : 'Snd', '#c9f0c0', { size: 14 });
-  button('mute', 276, 662, 54, 46, () => { S.save.settings = { ...(S.save.settings || {}), muted: !muted }; setMuted(!muted); persist(); });
-  drawButton(336, 662, 54, 46, S.confirmReset > S.t ? 'Sure?' : 'Reset', '#ffb3b3', { size: 13 });
-  button('reset', 336, 662, 54, 46, () => {
-    if (S.confirmReset > S.t) { S.save = M.newSave(); Cal.touch(S.save, now()); persist(); S.confirmReset = 0; S.cardsBlinkUntil = 0; toast('Progress reset'); }
-    else { S.confirmReset = S.t + 3; }
-  });
+  A.blob(ctx, 370, 26, 19, 19, '#fff6ee', 2.2); drawGearIcon(370, 26, 12); button('gear', 344, 2, 52, 52, () => { S.settings = { t: 0 }; S.confirmReset = 0; sfx('tap'); });
   if (S.cal) renderCalendar();
-  else if (M.zapperGiftPending(S.save) && !S.reveal.length) onboardSpot({ x: 146, y: 662, w: 120, h: 46, r: 14 }, 'shop', () => go('shop'), 'A free pack waits in the Shop!');
-  plainText('v' + C.VERSION, 392, 714, 11, '#a08090', 'right', '600'); // v0.7: version label
+  else if (S.settings) renderSettings();
+  else if (M.zapperGiftPending(S.save) && !S.reveal.length) onboardSpot(tabRect(2), 'shop', () => go('shop'), 'A free pack waits in the Shop!');
+  plainText('v' + C.VERSION, 392, 650, 11, '#a08090', 'right', '600'); // v0.7: version label
   renderUiFx(1 / 60);
 }
 // ---------------- v0.6 item 5: one-time onboarding (dim everything except one button + a pointing finger) ----------------
 function onboardSpot(R, id, onTap, msg) {
   ctx.save();
   // full-screen dim with a bright cut-out: the hole is added to the SAME path (A.rr would beginPath() and wipe the rect)
-  ctx.beginPath(); ctx.rect(-200, -200, W + 400, H + 400);
+  ctx.beginPath(); ctx.rect(-2000, -2000, W + 4000, H + 4000);
   { const x = R.x - 6, y = R.y - 6, w = R.w + 12, h = R.h + 14, r = Math.min((R.r || 14) + 4, w / 2, h / 2);
     ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
   ctx.fillStyle = 'rgba(40,26,38,0.66)'; ctx.fill('evenodd');
   const g = 0.5 + 0.5 * Math.sin(S.t * 5);
   A.rr(ctx, R.x - 6, R.y - 6, R.w + 12, R.h + 14, (R.r || 14) + 4); ctx.lineWidth = 3 + g * 2; ctx.strokeStyle = `rgba(255,227,110,${0.6 + 0.4 * g})`; ctx.stroke();
   ctx.restore();
-  button('onboardBlock', -200, -200, W + 400, H + 400, () => {}); // only the highlighted button works
+  button('onboardBlock', -2000, -2000, W + 4000, H + 4000, () => {}); // only the highlighted button works
   button(id, R.x, R.y, R.w, R.h, onTap);
   const fx = R.x + R.w / 2 + 18, fy = R.y - 22 - Math.abs(Math.sin(S.t * 4)) * 12;
   drawFinger(fx, fy);
@@ -567,8 +677,8 @@ function prizeLabel(p) {
 }
 function renderCalendar() {
   const K = C.CALENDAR; const st = Cal.status(S.save, now()); const CA = S.cal; CA.t += 1 / 60;
-  ctx.fillStyle = 'rgba(60,40,55,0.55)'; ctx.fillRect(-200, -200, W + 400, H + 400);
-  button('calBlock', -200, -200, W + 400, H + 400, () => {});
+  ctx.fillStyle = 'rgba(60,40,55,0.55)'; ctx.fillRect(-2000, -2000, W + 4000, H + 4000);
+  button('calBlock', -2000, -2000, W + 4000, H + 4000, () => {});
   const pop = Math.min(1, CA.t * 5); ctx.save(); ctx.translate(200, 360); ctx.scale(0.85 + 0.15 * pop, 0.85 + 0.15 * pop); ctx.translate(-200, -360);
   panel(18, 62, 364, 600, '#fff6ee');
   A.giftIcon(ctx, 56, 94, 1.1); A.text(ctx, 'Daily Rewards', 214, 92, 26, '#ffb3c1');
@@ -859,6 +969,7 @@ function renderBattle(dt) {
   for (const a of b.ants) if (!a.flying) drawList.push({ y: a.y, f: () => drawAntObj(a) });
   for (const m of b.balls) drawList.push({ y: m.y, f: () => A.marble(ctx, m.x, m.y - m.r * 0.6, m.r, m.rot) });
   drawList.push({ y: p1.y + 10, f: () => A.drawTreat(ctx, treatKind(b), p1.x, p1.y, b.foodStored / b.cfg.foodHP, t, { ouch: S.cookieOuch > S.t, react: Treat.reaction(S.treat, S.t) }) }); // v0.5 item 3: faces only
+  if (b.cfg.swatter && b.cfg.swatter.on) drawList.push({ y: p1.y + 14, f: () => drawGuard(b, p1) }); // v0.7.2 C13: the cookie guard (fly swatter)
   drawList.sort((u, v) => u.y - v.y);
   for (const d of drawList) d.f();
   for (const a of b.ants) if (a.flying) drawAntObj(a);
@@ -1031,6 +1142,21 @@ function drawTowerObj(tw) {
   if (tw.lvl > 1) for (let k = 0; k < tw.lvl; k++) A.starShape(ctx, -(tw.lvl - 1) * 3.6 + k * 7.2, 16, 3.6, '#ffd45e', 1.1); // up to 6 pips (v0.6 item 11)
   ctx.restore();
 }
+// v0.7.2 C13: the cookie guard. Leans on the right of the cookie; a swat is wind-up 0.10 s, slap 0.08 s, hold 0.06 s, return 0.26 s (0.5 s).
+function drawGuard(b, ck) {
+  const px = ck.x + 35, py = ck.y + 21, rest = -0.2;
+  let ang = rest + Math.sin(S.t * 1.7) * 0.025, flash = 0;
+  const age = 0.5 - (b.swatFx || 0);
+  if ((b.swatFx || 0) > 0 && b.swatTarget) {
+    const sg = b.swatTarget.x < px ? -1 : 1, ease = (k) => Math.max(0, Math.min(1, k));
+    if (reducedMotion()) { flash = Math.max(0, 1 - age / 0.15); }
+    else if (age < 0.10) ang = rest + (-sg * 0.4 - rest) * (1 - Math.pow(1 - ease(age / 0.10), 2));
+    else if (age < 0.18) { const k = ease((age - 0.10) / 0.08); ang = -sg * 0.4 + (sg * 0.62 + sg * 0.4) * k * k; flash = k > 0.8 ? 1 : 0; }
+    else if (age < 0.24) ang = sg * 0.62;
+    else { const k = ease((age - 0.24) / 0.26); ang = sg * 0.62 + (rest - sg * 0.62) * (1 - Math.pow(1 - k, 3)); }
+  }
+  A.drawSwatter(ctx, px, py, ang, 0.8, flash);
+}
 function drawAntObj(a) {
   const b = S.battle;
   const frozen = b.time < b.freezeUntil;
@@ -1175,7 +1301,7 @@ function renderHud(b) {
   A.rr(ctx, 60, 22, 84, 20, 10); ctx.fillStyle = '#f0e0d8'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = A.INK; ctx.stroke();
   if (f > 0) { A.rr(ctx, 62, 24, 80 * f, 16, 8); ctx.fillStyle = f >= 0.9 ? '#8fe388' : f >= 0.5 ? '#ffd45e' : '#ff8a8a'; ctx.fill(); }
   A.text(ctx, `${Math.floor(b.foodStored + 1e-6)}`, 102, 33, 13, '#fff');
-  const carried = b.ants.reduce((s, a) => s + a.carrying, 0);
+  const carried = b.ants.reduce((s, a) => s + (a.trips === 0 ? a.carrying : 0), 0); // v0.7.2 C14: 'carried off!' only for ants on their FIRST trip (every ant keeps shuttling, so it would never go away)
   if (carried) A.text(ctx, `${fmtFood(carried)} carried off!`, 102, 51, 9.5, '#c0392b', 'center', null);
   // wave
   A.text(ctx, `Wave ${Math.min(b.nextWave, b.totalWaves)}/${b.totalWaves}`, 184, 26, 15, '#ffb3c1');
@@ -1215,8 +1341,8 @@ function openBoosterDialog(bt) {
 }
 function renderDialog() {
   const D = S.dialog; const have = S.save.diamonds || 0; const afford = have >= D.price;
-  ctx.fillStyle = 'rgba(60,40,55,0.5)'; ctx.fillRect(-200, -200, W + 400, H + 400);
-  button('dlgBlock', -200, -200, W + 400, H + 400, () => {}); // nothing underneath is tappable
+  ctx.fillStyle = 'rgba(60,40,55,0.5)'; ctx.fillRect(-2000, -2000, W + 4000, H + 4000);
+  button('dlgBlock', -2000, -2000, W + 4000, H + 4000, () => {}); // nothing underneath is tappable
   panel(44, 228, 312, 250, '#fff6ee');
   A.text(ctx, D.title, 200, 258, 22, D.kind === 'crumbs' ? '#ffcf7a' : C.BONUSES[D.booster].color);
   ctx.save(); ctx.translate(200, 300);
@@ -1296,7 +1422,7 @@ function renderTray(b) {
 }
 function renderPause() {
   buttons.length = 0; // block every battle control while paused; only resume/restart/quit below
-  ctx.fillStyle = 'rgba(60,40,55,0.45)'; ctx.fillRect(-200, -200, W + 400, H + 400);
+  ctx.fillStyle = 'rgba(60,40,55,0.45)'; ctx.fillRect(-2000, -2000, W + 4000, H + 4000);
   panel(60, 220, 280, 260, '#fff6ee');
   A.text(ctx, 'Paused', 200, 256, 28, '#ffb3c1');
   drawButton(90, 290, 220, 48, 'Resume', '#9fe0b5'); button('resume', 90, 290, 220, 48, () => { setPaused(false); });
@@ -1309,13 +1435,13 @@ function renderResult(dt) {
   // Taps are swallowed meanwhile; the board stays visible under a light dim.
   if (R.hold > 0) {
     R.hold -= dt;
-    ctx.fillStyle = 'rgba(60,40,55,0.22)'; ctx.fillRect(-200, -200, W + 400, H + 400);
-    button('resultBlock', -200, -200, W + 400, H + 400, () => {});
+    ctx.fillStyle = 'rgba(60,40,55,0.22)'; ctx.fillRect(-2000, -2000, W + 4000, H + 4000);
+    button('resultBlock', -2000, -2000, W + 4000, H + 4000, () => {});
     return;
   }
   R.t += dt;
-  ctx.fillStyle = 'rgba(60,40,55,0.5)'; ctx.fillRect(-200, -200, W + 400, H + 400);
-  button('resultBlock', -200, -200, W + 400, H + 400, () => {}); // swallow taps on everything underneath (tray, bonuses, pause)
+  ctx.fillStyle = 'rgba(60,40,55,0.5)'; ctx.fillRect(-2000, -2000, W + 4000, H + 4000);
+  button('resultBlock', -2000, -2000, W + 4000, H + 4000, () => {}); // swallow taps on everything underneath (tray, bonuses, pause)
   const celebrating = R.perfect && R.t < C.UI.perfectAnimTime;
   const pop = Math.min(1, R.t * 4); ctx.save(); ctx.translate(200, 360); ctx.scale(0.7 + pop * 0.3, 0.7 + pop * 0.3); ctx.translate(-200, -360);
   panel(36, 120, 328, 480, '#fff6ee');
@@ -1385,17 +1511,18 @@ function cardInfoPanel(id, x, y, w, h, opt = {}) {
   const T = C.TOWERS[id], c = S.save.cards[id], own = c.unlocked, L = Math.max(1, c.level);
   fitText(T.name, x + 12 + Math.min(170, 9 * T.name.length) / 2, y + 16, 170, 14.5, '#ff8fab');
   plainFit(own ? `Card L${c.level} (used in battle)` : 'Not owned yet', x + w - 12, y + 16, 150, 11.5, INFO_SOFT, 'right', '700');
-  plainFit(T.desc, x + 12, y + 37, w - 24, 12, INFO_INK, 'left', '500');
+  const cmp = h < 108; // v0.7.2: the Cards / card screens give the panel less height (the tab bar took the bottom) -> a tighter layout
+  plainFit(T.desc, x + 12, y + (cmp ? 33 : 37), w - 24, 12, INFO_INK, 'left', '500');
   const next = cardUpgradeDiff(id, L); const nk = new Set(next.map((d) => d.key));
   const keys = cardStatKeys(id), bw = (w - 24 - 12) / 3;
   keys.forEach((k, i) => {
-    const bx = x + 12 + i * (bw + 6), by = y + 50, bh = 38;
+    const bx = x + 12 + i * (bw + 6), by = y + (cmp ? 44 : 50), bh = cmp ? 36 : 38;
     A.rr(ctx, bx, by, bw, bh, 9); ctx.fillStyle = nk.has(k) ? '#eefbe9' : '#f7efeb'; ctx.fill(); ctx.lineWidth = nk.has(k) ? 2 : 1.2; ctx.strokeStyle = nk.has(k) ? '#8fd18f' : '#e0cfd4'; ctx.stroke();
-    plainFit(k === 'scoop' ? 'Scoops' : statLabel(id, k), bx + 7, by + 10, bw - 12, 10.5, INFO_SOFT, 'left', '600');
-    plainFit(k === 'scoop' ? '1 trail tile' : formatStat(id, k, towerStat(id, k, 1, L)), bx + bw / 2, by + 26, bw - 10, 13.5, INFO_INK, 'center', '700');
+    plainFit(k === 'scoop' ? 'Scoops' : statLabel(id, k), bx + 7, by + (cmp ? 9.5 : 10), bw - 12, 10.5, INFO_SOFT, 'left', '600');
+    plainFit(k === 'scoop' ? '1 trail tile' : formatStat(id, k, towerStat(id, k, 1, L)), bx + bw / 2, by + (cmp ? 24.5 : 26), bw - 10, 13.5, INFO_INK, 'center', '700');
   });
   const line = next.length ? `Next card level L${L + 1}: ` + next.map((d) => diffText(id, d)).join(' + ') : 'Top card level (L10)!';
-  plainFit(line, x + w / 2, y + 102, w - 20, 12, next.length ? '#2f8a36' : '#c9962a', 'center', '700');
+  plainFit(line, x + w / 2, y + (cmp ? h - 9 : 102), w - 20, 12, next.length ? '#2f8a36' : '#c9962a', 'center', '700');
   if (h > 118 && !opt.noFoot) plainFit(opt.foot || (own ? 'Merge cards on its own screen to reach the next level.' : `Get it in the Shop (${M.unlockPrice(id)}c) or as a prize.`), x + w / 2, y + h - 13, w - 20, 10.5, '#a08090', 'center', '600');
 }
 // ---------------- v0.6 item 7: real card pictures (art window + name banner + level badge) ----------------
@@ -1463,7 +1590,7 @@ function doMergeAll() {
   S.mergeAnim = { id: top.id, from: top.from, to: top.to, n: 3, t: 0, all: done.length };
 }
 function renderCards() {
-  panel(12, 12, 376, 696, '#fff6ee');
+  panel(12, 12, 376, 636, '#fff6ee');
   A.text(ctx, 'Cards', 200, 36, 26, '#b5d8ff');
   A.coinIcon(ctx, 304, 60, 1); A.text(ctx, String(S.save.coins), 336, 61, 15, '#ffd45e');
   plainText('Tap a card: stats.  Tap again: open.', 28, 60, 11.5, '#7a5a6a', 'left', '600');
@@ -1476,16 +1603,15 @@ function renderCards() {
     button('card' + id, x, y, w, h, () => { if (S.cardsSel === id && c.unlocked) openCardView(id); else S.cardsSel = id; sfx('tap'); });
     if (ready) S.layoutMerge.push(id);
   });
-  cardInfoPanel(S.cardsSel, 24, 498, 352, 140, { hint: 'Tap a card to see its stats.', noFoot: !!(S.cardsSel && S.save.cards[S.cardsSel].unlocked) });
-  if (S.cardsSel && S.save.cards[S.cardsSel].unlocked) {
+  cardInfoPanel(S.cardsSel, 24, 490, 352, 98, { hint: 'Tap a card to see its stats.', noFoot: true });
+  // v0.7.2 C16: Back / Shop are gone (tab bar); Open card + Merge all share one row above the bar
+  const anyReady = M.anyMergeReady(S.save), selOpen = !!(S.cardsSel && S.save.cards[S.cardsSel].unlocked);
+  if (selOpen) {
     const ready = M.mergeReady(S.save, S.cardsSel);
-    drawButton(140, 610, 120, 24, ready ? 'Open card  !' : 'Open card', ready ? '#ff9ec0' : '#d7e8ff', { size: 12, r: 10 });
-    button('open' + S.cardsSel, 136, 606, 128, 32, () => openCardView(S.cardsSel));
+    drawButton(24, 604, 172, 34, ready ? 'Open card  !' : 'Open card', ready ? '#ff9ec0' : '#d7e8ff', { size: 15, r: 12 });
+    button('open' + S.cardsSel, 24, 590, 172, 58, () => openCardView(S.cardsSel));
   }
-  drawButton(26, 652, 110, 48, 'Back', '#d9cfe0'); button('back', 26, 650, 110, 54, () => go('map'));
-  const anyReady = M.anyMergeReady(S.save);
-  drawButton(145, 652, 110, 48, 'Merge all', anyReady ? '#ff9ec0' : '#e6dce2', { size: 16, disabled: !anyReady }); button('mergeAll', 145, 648, 110, 58, doMergeAll);
-  drawButton(264, 652, 110, 48, 'Shop', '#ffd27a'); button('toshop', 264, 650, 110, 54, () => go('shop'));
+  drawButton(204, 604, 172, 34, 'Merge all', anyReady ? '#ff9ec0' : '#e6dce2', { size: 15, r: 12, disabled: !anyReady }); button('mergeAll', 204, 590, 172, 58, doMergeAll);
   if (S.mergeAnim) renderMergeAnim();
   else if (S.save.onboard && S.save.onboard.cardsHint === 'cards' && S.save.cards.zapper.unlocked) { // v0.7: once, after the free pack
     const k = C.ALL_CARDS.indexOf('zapper'), x = 30 + (k % 4) * 88, y = 80 + Math.floor(k / 4) * 104;
@@ -1497,8 +1623,9 @@ function openCardView(id) { S.cardView = id; S.cardsSel = id; const c = S.save.c
 // every level: 3 cards of a level -> 1 card of the next level, at every level.
 function renderCardView() {
   const id = S.cardView; const T = C.TOWERS[id]; const c = S.save.cards[id];
-  panel(12, 12, 376, 696, '#fff6ee');
+  panel(12, 12, 376, 636, '#fff6ee');
   A.text(ctx, T.name, 200, 36, 24, '#b5d8ff');
+  drawButton(22, 18, 66, 28, 'Back', '#d9cfe0', { size: 13, r: 10 }); button('cvBack', 14, 8, 84, 48, () => go('cards')); // v0.7.2: small Back (the tab bar's Cards tab also returns to the list)
   drawCardPic(28, 58, 104, 136, id, { level: c.level, locked: !c.unlocked });
   plainText(c.unlocked ? `In battle: level ${c.level}` : 'Not unlocked yet', 146, 76, 15, INFO_INK, 'left', '800');
   plainText('3 cards of a level \u2192 1 of the next', 146, 102, 12, INFO_SOFT, 'left', '600');
@@ -1523,17 +1650,15 @@ function renderCardView() {
       if (res) { persist(); sfx('upgrade'); S.mergeAnim = { id, from: r.L, to: res.to, n: r.need, t: 0 }; }
     });
   });
-  cardInfoPanel(id, 24, 506, 352, 134, { foot: c.unlocked ? `Battle uses your highest card: level ${c.level}.` : 'Get it in the Shop or as a prize.' });
-  drawButton(26, 652, 110, 48, 'Cards', '#d9cfe0'); button('cvBack', 26, 650, 110, 54, () => go('cards'));
+  cardInfoPanel(id, 24, 497, 352, 97, {});
   const ready = M.mergeReady(S.save, id);
-  drawButton(145, 652, 110, 48, 'Merge all', ready ? '#ff9ec0' : '#e6dce2', { size: 16, disabled: !M.anyMergeReady(S.save) }); button('cvMergeAll', 145, 648, 110, 58, doMergeAll);
-  drawButton(264, 652, 110, 48, 'Shop', '#ffd27a'); button('cvShop', 264, 650, 110, 54, () => go('shop'));
+  drawButton(24, 604, 352, 34, 'Merge all', ready ? '#ff9ec0' : '#e6dce2', { size: 15, r: 12, disabled: !M.anyMergeReady(S.save) }); button('cvMergeAll', 24, 591, 352, 57, doMergeAll);
   if (S.mergeAnim) renderMergeAnim();
 }
 // Merge animation: the 3 merged cards fly into one, flash, it grows and the level badge flips to the new level.
 function renderMergeAnim() {
   const MA = S.mergeAnim; MA.t += 1 / 60; const T = C.UI.mergeAnimTime; const k = MA.t / T;
-  ctx.save(); ctx.fillStyle = `rgba(60,40,55,${Math.min(0.55, k * 3)})`; ctx.fillRect(-200, -200, W + 400, H + 400); ctx.restore();
+  ctx.save(); ctx.fillStyle = `rgba(60,40,55,${Math.min(0.55, k * 3)})`; ctx.fillRect(-2000, -2000, W + 4000, H + 4000); ctx.restore();
   const cx = 200, cy = 330;
   const n = Math.min(6, MA.n || 3);
   if (k < 0.45) {
@@ -1558,7 +1683,7 @@ function renderMergeAnim() {
   }
   ctx.save(); A.rr(ctx, cx - 70, 600, 140, 26, 13); ctx.fillStyle = 'rgba(60,40,55,0.85)'; ctx.fill(); ctx.restore();
   A.text(ctx, 'Tap to continue', cx, 614, 12, '#ffffff', 'center', null);
-  button('mergeSkip', -200, -200, W + 400, H + 400, () => { S.mergeAnim = null; }); // on top: blocks other buttons while playing
+  button('mergeSkip', -2000, -2000, W + 4000, H + 4000, () => { S.mergeAnim = null; }); // on top: blocks other buttons while playing
   if (MA.t >= T + 0.8) S.mergeAnim = null;
 }
 
@@ -1583,7 +1708,7 @@ function countBadge(x, y, n, k) {
 }
 function renderShop() {
   const E = C.ECONOMY.shop;
-  panel(12, 12, 376, 696, '#fff6ee');
+  panel(12, 12, 376, 636, '#fff6ee');
   A.text(ctx, 'Shop', 200, 36, 28, '#ffd27a');
   panel(62, 56, 132, 32, '#e6f5ff', 16); A.diamondIcon(ctx, 84, 72, 1); A.text(ctx, String(S.save.diamonds || 0), 140, 73, 17, '#7fd3ff');
   panel(206, 56, 132, 32, '#fff1d6', 16); A.coinIcon(ctx, 228, 72, 1.1); A.text(ctx, String(S.save.coins), 284, 73, 17, '#ffd45e');
@@ -1640,12 +1765,10 @@ function renderShop() {
     countBadge(x + w - 19, y + 15, S.save.bonusStock[bt] || 0, pk);
     button('bbuy' + bt, x, y, w, h, () => { if (M.buyBonus(S.save, bt)) { persist(); sfx('tap'); shopBought('booster', bt, E.boosterDiamonds, 'diamond'); } else toast(`Need ${E.boosterDiamonds} diamonds`); });
   });
-  cardInfoPanel(S.shopSel, 24, 536, 352, 108, { hint: 'Tap (i) under a card to see its stats.' });
-  drawButton(26, 652, 160, 48, 'Back', '#d9cfe0'); button('back', 26, 650, 160, 54, () => go('map'));
-  drawButton(214, 652, 160, 48, 'Cards', '#b5d8ff'); button('tocards', 214, 650, 160, 54, () => go('cards'));
+  cardInfoPanel(S.shopSel, 24, 534, 352, 108, { hint: 'Tap (i) under a card to see its stats.' });
   if (gift && !S.reveal.length && !S.pack) onboardSpot({ x: 286, y: 118, w: 82, h: 48, r: 14 }, 'gift', claimGift, 'Your free pack - tap it!');
   else if (!S.pack && !S.reveal.length && S.save.onboard && S.save.onboard.cardsHint === 'shop') // v0.7: after the free pack, Cards > Zapper once
-    onboardSpot({ x: 214, y: 652, w: 160, h: 48, r: 14 }, 'tocards', () => { S.save.onboard.cardsHint = 'cards'; persist(); go('cards'); }, 'See your new cards!');
+    onboardSpot(tabRect(1), 'tocards', () => { S.save.onboard.cardsHint = 'cards'; persist(); go('cards'); }, 'See your new cards!');
   renderUiFx(1 / 60);
 }
 function claimGift() {
@@ -1659,7 +1782,7 @@ function claimGift() {
 function queueReveal(id, level, newType, at = S.t) { S.reveal.push({ id, level, newType: !!newType, at, t: 0 }); }
 function renderReveal(dt) {
   const R = S.reveal[0]; R.t += dt; const k = Math.min(1, R.t / 0.45);
-  ctx.save(); ctx.fillStyle = `rgba(50,32,46,${0.72 * k})`; ctx.fillRect(-200, -200, W + 400, H + 400); ctx.restore();
+  ctx.save(); ctx.fillStyle = `rgba(50,32,46,${0.72 * k})`; ctx.fillRect(-2000, -2000, W + 4000, H + 4000); ctx.restore();
   ctx.save(); ctx.translate(200, 330);
   for (let i = 0; i < 14; i++) { const a = i / 14 * Math.PI * 2 + R.t * 0.4; ctx.save(); ctx.rotate(a); ctx.globalAlpha = 0.18 * k; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(230, -22); ctx.lineTo(230, 22); ctx.closePath(); ctx.fillStyle = '#fff3a8'; ctx.fill(); ctx.restore(); }
   const sc = (0.3 + 0.7 * (1 - Math.pow(1 - k, 3))) * 1.9 + Math.sin(R.t * 3) * 0.03;
@@ -1671,7 +1794,7 @@ function renderReveal(dt) {
   A.text(ctx, `${C.TOWERS[R.id].name}  \u00b7  Level ${R.level}`, 200, 152, 18, '#ffffff');
   plainText('Added to your Cards', 200, 548, 13, '#ffe9c0', 'center', '700');
   if (R.t > 0.5) { A.rr(ctx, 130, 588, 140, 30, 15); ctx.fillStyle = 'rgba(255,255,255,0.18)'; ctx.fill(); A.text(ctx, 'Tap to continue', 200, 603, 13, '#ffffff', 'center', null); }
-  button('revealNext', -200, -200, W + 400, H + 400, () => { if (R.t > 0.4) { S.reveal.shift(); sfx('tap'); } });
+  button('revealNext', -2000, -2000, W + 4000, H + 4000, () => { if (R.t > 0.4) { S.reveal.shift(); sfx('tap'); } });
 }
 
 // ---------------- v0.7 (economy plan §2.9.2): PACK REVEAL - free pack and every paid pack ----------------
@@ -1745,7 +1868,7 @@ function renderPack(dt) {
   if (P.newTower) packFire('beat', lastFlipEnd, () => { sfx('win'); haptic('medium'); });
   // dim
   const dimA = P.reduced ? 0.72 * Math.min(1, (t - P.fadeFrom) / PACK.fade) : 0.72 * Math.min(1, t / PACK.dim);
-  ctx.save(); ctx.fillStyle = `rgba(50,32,46,${dimA})`; ctx.fillRect(-200, -200, W + 400, H + 400); ctx.restore();
+  ctx.save(); ctx.fillStyle = `rgba(50,32,46,${dimA})`; ctx.fillRect(-2000, -2000, W + 4000, H + 4000); ctx.restore();
   const inSummary = t >= P.summaryAt;
   // pack (0 - 0.6 s)
   if (!inSummary && t < PACK.burst) {
@@ -1829,7 +1952,7 @@ function renderPack(dt) {
     ctx.restore();
   }
   // input: whole-screen catcher BEHIND the buttons
-  button('packTap', -200, -200, W + 400, H + 400, () => {
+  button('packTap', -2000, -2000, W + 4000, H + 4000, () => {
     if (t < P.summaryAt) skipPack();
     else if (t - P.summaryAt >= PACK.tapHint) closePack('ok');
   });
@@ -1891,6 +2014,7 @@ if (__TEST_HOOKS__) window.__game = {
   // fast-forward; only the last ~0.4 s of events become visible effects (so screenshots are not flooded)
   simulate(seconds, bot = true) { const b = S.battle; const n = Math.round(seconds * 60); for (let i = 0; i < n && !b.result; i++) { b.update(1 / 60); if (bot) smartBotStep(b); if (i < n - 24) b.events = []; } S.fx = []; S.ui = []; S.slotFlip = [0, 0, 0]; consumeEvents(); if (b.result) finishBattle(); },
   setAutoBot(v) { S.autoBot = v; },
+  setInset(px) { insetOverride = px; resize(); }, layout: () => ({ cw, ch, insetB, scale, offX, offY, barK, barH: BAR_H, metaH: META_H, dpr }), tabRect, BAR_H,
   mapPreview(id) { const b = new Battle({ levelIndex: 0, mapId: id, deck: [], bonusTypes: [], seed: 1 }); const src = A.renderMapBackground(b.routes, b.map.theme || 0, MAP_W, MAP_H, 2, b.props); const cv = document.createElement('canvas'); cv.width = src.width; cv.height = src.height; cv.getContext('2d').drawImage(src, 0, 0); return cv.toDataURL('image/png'); },
 };
 heartbeat(true); maybeShowCalendar();

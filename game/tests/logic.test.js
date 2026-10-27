@@ -156,7 +156,7 @@ test('food is 100; ants steal by type and carry it home; killing a carrier retur
 test('carryBack can be turned off in config: food is lost on arrival', () => {
   const b = mk({ battleCfg: { carryBack: false } }); b.nextWaveAt = 1e9;
   b.spawn('worker', b.path.length - 1); b.update(0.1);
-  assert.equal(b.foodStored, 99); assert.equal(b.foodDelivered, 1); assert.equal(b.ants.length, 0);
+  const st = C.ANTS.worker.steal; assert.ok(Math.abs(b.foodStored - (100 - st)) < 1e-9); assert.ok(Math.abs(b.foodDelivered - st) < 1e-9); assert.equal(b.ants.length, 0); // v0.7.2: the worker steals 0.9
 });
 test('stars by % food left: 3 >= 90, 2 >= 50, 1 > 0', () => {
   assert.equal(starsFor(100), 3); assert.equal(starsFor(90), 3); assert.equal(starsFor(89), 2);

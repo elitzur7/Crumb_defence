@@ -4,7 +4,7 @@ A cute, offline ant tower-defense game for Android phones (portrait). Ants march
 
 - Engine: a hand-made HTML5 canvas engine in plain JavaScript (ES modules), bundled with esbuild.
 - Art: all procedural canvas drawing (`src/art.js`). No image, font or audio files, and no third-party assets.
-- Sound: tiny WebAudio synth blips (`src/audio.js`), with a mute toggle on the map screen.
+- Sound: tiny WebAudio synth blips (`src/audio.js`), with a Sound switch in the map's settings panel (gear, top right).
 - Android: Capacitor 8 wrapper (`android/`). It requests **no permissions** (not even INTERNET). The page CSP also sets `connect-src 'none'`.
 - No ads, analytics, network calls or monetization. The save lives in `localStorage` (`crumbdefense.save.v1`).
 
@@ -80,6 +80,12 @@ After any change, run `npm test && npm run sim`. The sim table shows win rates a
 - Tap a placed tower to see its range and info.
 - **Next wave** calls the next wave early for extra crumbs. **Redraw** swaps all 3 cards for crumbs. `>`/`>>` changes game speed.
 - The Android back button pauses or resumes a battle and leaves other screens.
+
+## What's new in v0.7.2
+- **Cookie guard (C13).** A cute code-drawn fly swatter leans on the cookie. It is always there (not a card, not placeable, not upgradable) and swats the best ant within 72 px of the cookie for 4 damage every 4 s (armour applies, flyers too; a carrier nearest the cookie first). Config: `BATTLE.swatter` in `src/config.js`. Swing animation + soft "thwap" sound (`sfx('swat')`).
+- **Shuttle until death (C14).** Ants never "escape" any more: a thief carries the piece to the nest, drops it there (lost for the player), waits 0.3 s, and walks back for more until its HP is 0. The level ends only when every ant is dead (win) or the food is gone (loss). Stars still come from the food left. Config: `BATTLE.forage`. Killing a carrier still returns 0.4 of its piece.
+- **Bottom tab bar (C16).** Map / Cards / Shop sit in a fixed bar at the bottom of the map, cards, card and shop screens (56 dp plus the safe-area inset, hidden in battle and in modals). Sound and Reset moved into a settings panel behind the gear on the map.
+- **Re-tune.** Non-boss ants steal x0.9 and the per-level `hpMul` was re-fitted with the sim harness (see `JOB-v0.7.2.md`).
 
 ## What's new in v0.4.0
 Full report: `../JOB-v0.4.0.md`. Source of truth: `../FEEDBACK-v0.3.0.md` (items 1-20; 4 and 8 dropped) + `../CHANGELOG-next-draft.md`.

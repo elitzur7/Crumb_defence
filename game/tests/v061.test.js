@@ -12,7 +12,7 @@ test('B1: onboarding dim = one even-odd path (full screen + cut-out), no beginPa
   const b = fnBody(src('game.js'), 'onboardSpot');
   const fill = b.indexOf("fill('evenodd')"); assert.ok(fill > 0, 'even-odd fill');
   const before = b.slice(0, fill).replace(/\/\/.*$/gm, ''); // code only
-  assert.ok(/ctx\.rect\(-200, -200, W \+ 400, H \+ 400\)/.test(before), 'full-screen rect');
+  assert.ok(/ctx\.rect\(-2000, -2000, W \+ 4000, H \+ 4000\)/.test(before), 'full-screen rect');
   assert.equal((before.match(/beginPath\(\)/g) || []).length, 1, 'exactly one beginPath before the fill');
   assert.ok(!/A\.rr\(/.test(before), 'A.rr (which calls beginPath) is not used before the fill');
   assert.ok(/arcTo/.test(before), 'rounded cut-out added to the same path');

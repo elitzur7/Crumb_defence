@@ -152,7 +152,7 @@ test('item 14: on a queen win the cheer is drawn above the result panel and the 
   const rr = g.slice(g.indexOf('function renderResult('), g.indexOf('function renderResult(') + 2000);
   const holdAt = rr.indexOf('if (R.hold > 0)'); assert.ok(holdAt > 0 && holdAt < rr.indexOf('panel('), 'no panel while holding');
   assert.ok(rr.slice(holdAt, rr.indexOf('return;', holdAt)).indexOf('drawButton') < 0, 'no buttons while holding');
-  const r = g.slice(g.indexOf('function render(dt)'), g.indexOf('function render(dt)') + 700);
+  const r = g.slice(g.indexOf('function render(dt)'), g.indexOf('function render(dt)') + 1400);
   assert.ok(r.indexOf('renderFireworks(dt)') > r.indexOf("renderBattle(dt)"), 'fireworks above the battle screen and its result panel');
 });
 
@@ -175,8 +175,8 @@ test('item 1: +1 coin per 3 s survived on top of the win formula', () => {
 });
 
 // ---------- standing rules ----------
-test('standing rules: the treat never speaks; version 0.7.0 / vc15', () => {
+test('standing rules: the treat never speaks; version 0.7.2 / vc16', () => {
   assert.ok(!/treatBubble|speech/i.test(src('treat.js')));
-  assert.equal(JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version, '0.7.0');
-  assert.match(readFileSync(new URL('../android/app/build.gradle', import.meta.url), 'utf8'), /versionCode 15\b/);
+  assert.equal(JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version, '0.7.2');
+  assert.match(readFileSync(new URL('../android/app/build.gradle', import.meta.url), 'utf8'), /versionCode 16\b/);
 });

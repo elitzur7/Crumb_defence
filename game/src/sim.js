@@ -368,7 +368,7 @@ export class Battle {
     const hp = Math.round(a.hp * (this.level.hpMul || 1));
     if (ri == null) ri = this.routeCounter++ % this.routes.length;
     const ant = { id: NEXT_ID++, type, ri, hp, maxHp: hp, armor: a.armor, d, speed: a.speed, flying: !!a.flying,
-      gasImmune: !!a.gasImmune, weight: a.weight, size: a.size, state: 'go', carrying: 0, slow: 0, stunT: 0, charmT: 0, charmD: 0,
+      gasImmune: !!a.gasImmune, weight: a.weight, size: a.size, state: 'go', carrying: 0, trips: 0, waitT: 0, slow: 0, stunT: 0, charmT: 0, charmD: 0,
       plantSlow: 0, plantSlowT: 0, spawnT: a.spawn ? a.spawn.every : 0, dead: false, x: 0, y: 0, born: this.time, hitFlash: 0, dir: 1 };
     const p = this.routes[ri].at(d); ant.x = p.x; ant.y = p.y;
     this.ants.push(ant);
@@ -640,6 +640,7 @@ export class Battle {
       let v = a.speed * (1 - slow);
       if (frozen) v = 0;
       if (a.stunT > 0) { a.stunT -= dt; v = 0; }
+      if (a.waitT > 0) { a.waitT -= dt; v = 0; }
       if (a.state === 'back') v *= this.cfg.carrierSpeedMul;
       if (A.spawn && !frozen) { a.spawnT -= dt; if (a.spawnT <= 0) { a.spawnT = A.spawn.every; for (let k = 0; k < A.spawn.count; k++) this.spawn(A.spawn.type, Math.max(0, a.d - 6 - k * 10), a.ri); this.emit({ type: 'queenCall', x: a.x, y: a.y, calls: A.spawn.type }); } }
       const dd = this.decoy && t < this.decoy.until ? this.decoy.ds[a.ri] : null;
@@ -654,12 +655,37 @@ export class Battle {
         if (a.d >= L) this.reachFood(a);
       } else {
         a.d -= v * dt; a.dir = -1;
-        if (a.d <= 0) { this.foodDelivered += a.carrying; this.emit({ type: 'delivered', n: a.carrying }); a.carrying = 0; a.dead = true; a.escaped = true; }
+        if (a.d <= 0) {
+          this.foodDelivered += a.carrying; this.emit({ type: 'delivered', n: a.carrying, first: a.trips === 0 }); a.carrying = 0; a.trips++;
+          const F = this.cfg.forage; // v0.7.2 (C14): shuttle until death - the ant drops the piece at the nest (lost for good), waits a moment and walks back for more
+          if (F && F.on && !(A.boss && F.queenLoop === false)) { a.state = 'go'; a.d = 0; a.dir = 1; a.waitT = F.pause || 0; this.stats.loops = (this.stats.loops || 0) + 1; }
+          else { a.dead = true; a.escaped = true; }
+        }
       }
       const p = rt.at(a.d); a.x = p.x; a.y = p.y;
     }
     if (this.decoy && t >= this.decoy.until) this.decoy = null;
 
+    // v0.7.2 (C13): the cookie guard (fly swatter) - one automatic swat every `interval` s at the best ant within `range` px of the cookie.
+    // Carrier nearest the cookie first (a kill gives food back), else the nearest ant. The timer waits at 0 while nothing is in range.
+    const SW = this.cfg.swatter;
+    if (SW && SW.on) {
+      const ck = this.path.pts[this.path.pts.length - 1];
+      this.swatCd = (this.swatCd == null ? (SW.first ?? SW.interval) : this.swatCd) - dt;
+      this.swatFx = Math.max(0, (this.swatFx || 0) - dt);
+      if (this.swatCd <= 0) {
+        const cand = this.ants.filter((a) => !a.dead && (SW.air !== false || !a.flying) && Math.hypot(a.x - ck.x, a.y - ck.y) <= SW.range);
+        if (cand.length) {
+          const car = cand.filter((a) => a.carrying > 0);
+          const pool = car.length ? car : cand;
+          const tg = pool.reduce((b, a) => (Math.hypot(a.x - ck.x, a.y - ck.y) < Math.hypot(b.x - ck.x, b.y - ck.y) ? a : b));
+          this.damage(tg, SW.damage, { src: { type: 'swatter' } });
+          this.stats.swats = (this.stats.swats || 0) + 1; this.swatFx = 0.5; this.swatTarget = { x: tg.x, y: tg.y };
+          this.emit({ type: 'swat', x: tg.x, y: tg.y });
+          this.swatCd = SW.interval;
+        } else this.swatCd = 0; // ready: waits for an ant
+      }
+    }
     // towers
     for (const tw of this.towers) {
       const T = C.TOWERS[tw.type];
@@ -766,7 +792,7 @@ export class Battle {
     this.ants = this.ants.filter((a) => !a.dead);
 
     // end conditions: the cookie is gone -> lose
-    if (this.foodStored <= 1e-6 || this.foodDelivered >= this.cfg.foodHP) { this.foodStored = Math.max(0, this.foodStored); this.result = 'lose'; this.emit({ type: 'lose' }); }
+    if (this.foodStored <= 1e-6) { this.foodStored = Math.max(0, this.foodStored); this.result = 'lose'; this.emit({ type: 'lose' }); }
     else if (this.nextWave >= this.waves.length && this.pending.length === 0 && this.ants.length === 0) {
       this.result = 'win'; this.emit({ type: 'win', perfect: this.perfect });
     }

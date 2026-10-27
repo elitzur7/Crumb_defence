@@ -805,7 +805,7 @@ var tuning_default = {
       hp: 4,
       speed: 60,
       armor: 0,
-      steal: 1,
+      steal: 0.9,
       weight: 1.2,
       size: "small",
       crumbs: 1
@@ -814,7 +814,7 @@ var tuning_default = {
       hp: 20,
       speed: 40,
       armor: 0,
-      steal: 1,
+      steal: 0.9,
       weight: 1,
       size: "regular",
       crumbs: 1
@@ -823,7 +823,7 @@ var tuning_default = {
       hp: 100,
       speed: 27,
       armor: 2,
-      steal: 2,
+      steal: 1.8,
       weight: 0.5,
       size: "large",
       crumbs: 4
@@ -832,7 +832,7 @@ var tuning_default = {
       hp: 16,
       speed: 40,
       armor: 1,
-      steal: 1,
+      steal: 0.9,
       weight: 1,
       size: "regular",
       gasImmune: !0,
@@ -842,7 +842,7 @@ var tuning_default = {
       hp: 40,
       speed: 30,
       armor: 6,
-      steal: 2,
+      steal: 1.8,
       weight: 0.6,
       size: "regular",
       crumbs: 4
@@ -851,7 +851,7 @@ var tuning_default = {
       hp: 12,
       speed: 62,
       armor: 0,
-      steal: 1,
+      steal: 0.9,
       weight: 1.3,
       size: "regular",
       flying: !0,
@@ -861,7 +861,7 @@ var tuning_default = {
       hp: 10,
       speed: 52,
       armor: 4,
-      steal: 1,
+      steal: 0.9,
       weight: 0.8,
       size: "regular",
       lateGame: !0,
@@ -871,7 +871,7 @@ var tuning_default = {
       hp: 80,
       speed: 24,
       armor: 6,
-      steal: 2,
+      steal: 1.8,
       weight: 0.35,
       size: "large",
       lateGame: !0,
@@ -917,7 +917,7 @@ var tuning_default = {
       hp: 4,
       speed: 60,
       armor: 0,
-      steal: 1,
+      steal: 0.9,
       weight: 1.2,
       size: "small",
       gasImmune: !0,
@@ -927,7 +927,7 @@ var tuning_default = {
       hp: 10,
       speed: 45,
       armor: 4,
-      steal: 1,
+      steal: 0.9,
       weight: 1,
       size: "small",
       crumbs: 1
@@ -936,7 +936,7 @@ var tuning_default = {
       hp: 3,
       speed: 70,
       armor: 0,
-      steal: 1,
+      steal: 0.9,
       weight: 1.5,
       size: "small",
       flying: !0,
@@ -1018,7 +1018,7 @@ var tuning_default = {
       name: "Gas Masks On",
       map: "hook",
       waveCount: 5,
-      hpMul: 2.4,
+      hpMul: 2.64,
       base: 7.8,
       growth: 1.75,
       interval: 1,
@@ -1052,7 +1052,7 @@ var tuning_default = {
       name: "Wings!",
       map: "fork",
       waveCount: 6,
-      hpMul: 4.4,
+      hpMul: 3.52,
       base: 7.2,
       growth: 1.8,
       interval: 0.95,
@@ -1086,7 +1086,7 @@ var tuning_default = {
       name: "Shiny Knights",
       map: "spiral",
       waveCount: 6,
-      hpMul: 2.4,
+      hpMul: 2.52,
       base: 8.8,
       growth: 1.96,
       interval: 0.95,
@@ -1161,7 +1161,7 @@ var tuning_default = {
       name: "Heavy Traffic",
       map: "snake",
       waveCount: 8,
-      hpMul: 2,
+      hpMul: 2.1,
       base: 9.4,
       growth: 2.07,
       interval: 0.9,
@@ -1225,7 +1225,7 @@ var tuning_default = {
       name: "The Swarm",
       map: "twin",
       waveCount: 9,
-      hpMul: 3.2,
+      hpMul: 2.88,
       base: 11.4,
       growth: 2.28,
       interval: 0.75,
@@ -1258,7 +1258,7 @@ var tuning_default = {
       name: "Her Majesty",
       map: "cross",
       waveCount: 9,
-      hpMul: 2,
+      hpMul: 2.25,
       base: 12,
       growth: 2.4,
       interval: 0.8,
@@ -1321,7 +1321,7 @@ var tuning_default = {
       name: "Sugar Steps",
       map: "staircase",
       waveCount: 6,
-      hpMul: 3.2,
+      hpMul: 3,
       base: 9,
       growth: 2,
       interval: 0.95,
@@ -1350,7 +1350,7 @@ var tuning_default = {
       name: "Layer Cake",
       map: "layers",
       waveCount: 6,
-      hpMul: 2.72,
+      hpMul: 2.8,
       base: 10,
       growth: 2,
       interval: 0.95,
@@ -1412,7 +1412,7 @@ var tuning_default = {
       name: "Tea Party",
       map: "teaparty",
       waveCount: 7,
-      hpMul: 3.6,
+      hpMul: 3.24,
       base: 10.5,
       growth: 2.1,
       interval: 0.9,
@@ -1444,7 +1444,7 @@ var tuning_default = {
       name: "Frosting Rush",
       map: "frosting",
       waveCount: 7,
-      hpMul: 3.8,
+      hpMul: 3.9,
       base: 11,
       growth: 2.2,
       interval: 0.85,
@@ -1476,7 +1476,7 @@ var tuning_default = {
       name: "Heavy Icing",
       map: "snake",
       waveCount: 8,
-      hpMul: 2.4,
+      hpMul: 2.35,
       base: 11,
       growth: 2.2,
       interval: 0.9,
@@ -1541,7 +1541,7 @@ var tuning_default = {
       name: "Cherry on Top",
       map: "candles",
       waveCount: 9,
-      hpMul: 4,
+      hpMul: 4.1,
       base: 12,
       growth: 2.4,
       interval: 0.8,
@@ -1573,7 +1573,7 @@ var tuning_default = {
       name: "The Swift Queen",
       map: "cross",
       waveCount: 9,
-      hpMul: 2.6,
+      hpMul: 1.4,
       base: 12,
       growth: 2.4,
       interval: 0.8,
@@ -1931,11 +1931,11 @@ function parseMap(m, cols = 10, rows = 12) {
   (!g || g.length !== rows || g.some((row) => row.length !== cols)) && errors.push(`grid must be ${rows} rows of ${cols} chars`);
   let at = (c, r) => c < 0 || r < 0 || c >= cols || r >= rows ? " " : g[r][c], nests = [], props = [], cookie = null;
   for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
-    let ch = at(c, r);
-    ch === "N" ? nests.push([c, r]) : ch === "C" ? (cookie && errors.push("more than one cookie"), cookie = [c, r]) : PROP_KINDS[ch] ? props.push({ k: PROP_KINDS[ch], c, r }) : ".#+".includes(ch) || errors.push(`unknown char '${ch}' at ${c},${r}`);
+    let ch2 = at(c, r);
+    ch2 === "N" ? nests.push([c, r]) : ch2 === "C" ? (cookie && errors.push("more than one cookie"), cookie = [c, r]) : PROP_KINDS[ch2] ? props.push({ k: PROP_KINDS[ch2], c, r }) : ".#+".includes(ch2) || errors.push(`unknown char '${ch2}' at ${c},${r}`);
   }
   nests.length || errors.push("no nest N"), nests.length > 2 && errors.push("max 2 nests"), cookie || errors.push("no cookie C");
-  let walk = (ch) => ch === "#" || ch === "+" || ch === "C", routes = [];
+  let walk = (ch2) => ch2 === "#" || ch2 === "+" || ch2 === "C", routes = [];
   if (!errors.length) for (let n of nests) {
     let found = [], visit2 = (c, r, dir, seen, acc2) => {
       if (found.length > 8) return;
@@ -1945,10 +1945,10 @@ function parseMap(m, cols = 10, rows = 12) {
       }
       let cand = at(c, r) === "+" && dir != null ? [dir] : [0, 1, 2, 3];
       for (let k of cand) {
-        let nc = c + DIRS[k][0], nr = r + DIRS[k][1], ch = at(nc, nr);
-        if (!walk(ch)) continue;
+        let nc = c + DIRS[k][0], nr = r + DIRS[k][1], ch2 = at(nc, nr);
+        if (!walk(ch2)) continue;
         let key = nc + "," + nr, times = seen.get(key) || 0;
-        times >= (ch === "+" ? 2 : 1) || (seen.set(key, times + 1), acc2.push([nc, nr]), visit2(nc, nr, k, seen, acc2), acc2.pop(), seen.set(key, times));
+        times >= (ch2 === "+" ? 2 : 1) || (seen.set(key, times + 1), acc2.push([nc, nr]), visit2(nc, nr, k, seen, acc2), acc2.pop(), seen.set(key, times));
       }
     };
     visit2(n[0], n[1], null, /* @__PURE__ */ new Map([[n[0] + "," + n[1], 1]]), [n]), found.length || errors.push(`nest at ${n} does not reach the cookie`);
@@ -1980,6 +1980,13 @@ var TILE = 40, GRID_COLS = 10, GRID_ROWS = 12, BATTLE = {
   //                     killed at the nest door -> distMin (linear in between).
   //   rounding 'exact' keeps fractions (a worker's 1 crumb -> 0.4), or use 'floor' / 'round'.
   foodReturn: { mode: "fixed", fixed: 0.4, distMin: 0.1, distMax: 0.8, rounding: "exact" },
+  // v0.7.2 C14 'shuttle until death': an ant that drops its piece at the nest (lost for good) waits `pause` s and walks back to the cookie
+  // for another piece. It only stops by dying (HP 0). Queens loop too. The level is won when no ant is alive after the last wave,
+  // lost when the cookie is empty (so a level can never be endless).
+  forage: { on: !0, pause: 0.3, queenLoop: !0 },
+  // v0.7.2 C13 cookie guard (fly swatter): free, automatic, fixed on the cookie. One swat every `interval` s (the timer waits while nothing is in range)
+  // of `damage` (armour applies, min 1) at an ant within `range` px of the cookie; carrier nearest the cookie first, else nearest ant; hits flyers.
+  swatter: { on: !0, damage: 4, interval: 4, range: 72, first: 4, air: !0 },
   carrierSpeedMul: 0.85,
   // carriers walk a bit slower on the way home
   startCrumbs: 0,
@@ -2201,7 +2208,7 @@ var LIFT_MAX = 3, SIZE_RANK = { small: 1, regular: 2, large: 3 }, LIFT_NAMES = [
   stickTime: "Stick",
   liftSize: "Lifts"
 }, SLOW_CAP = 0.85, ALL_CARDS = Object.keys(TOWERS), STARTER_CARDS = ["slingshot", "spray", "glue", "fan", "ball"];
-var AIR_COUNTERS = ["laser", "zapper"], VERSION = "0.7.0", ANT_SIZES = { ...tuning_default.antSizes }, ANT_TEXT = {
+var AIR_COUNTERS = ["laser", "zapper"], VERSION = "0.7.2", ANT_SIZES = { ...tuning_default.antSizes }, ANT_TEXT = {
   small: { name: "Scout Ant", desc: "Tiny, fast, comes in swarms." },
   worker: { name: "Worker Ant", desc: "The regular. Hard hat included." },
   big: { name: "Big Ant", desc: "Slow, chunky, a bit of armor." },
@@ -2694,6 +2701,8 @@ var NEXT_ID = 1, Battle = class {
       size: a.size,
       state: "go",
       carrying: 0,
+      trips: 0,
+      waitT: 0,
       slow: 0,
       stunT: 0,
       charmT: 0,
@@ -2949,7 +2958,7 @@ var NEXT_ID = 1, Battle = class {
       let rt = this.route(a), L = rt.length;
       a.hitFlash = Math.max(0, a.hitFlash - dt), a.plantSlowT > 0 && (a.plantSlowT -= dt, a.slow = Math.max(a.slow, a.plantSlow));
       let A = ANTS[a.type], slow = a.slow * (1 - (A.slowResist || 0)), v = a.speed * (1 - slow);
-      if (frozen && (v = 0), a.stunT > 0 && (a.stunT -= dt, v = 0), a.state === "back" && (v *= this.cfg.carrierSpeedMul), A.spawn && !frozen && (a.spawnT -= dt, a.spawnT <= 0)) {
+      if (frozen && (v = 0), a.stunT > 0 && (a.stunT -= dt, v = 0), a.waitT > 0 && (a.waitT -= dt, v = 0), a.state === "back" && (v *= this.cfg.carrierSpeedMul), A.spawn && !frozen && (a.spawnT -= dt, a.spawnT <= 0)) {
         a.spawnT = A.spawn.every;
         for (let k = 0; k < A.spawn.count; k++) this.spawn(A.spawn.type, Math.max(0, a.d - 6 - k * 10), a.ri);
         this.emit({ type: "queenCall", x: a.x, y: a.y, calls: A.spawn.type });
@@ -2962,11 +2971,28 @@ var NEXT_ID = 1, Battle = class {
         a.charmT -= dt;
         let diff = a.charmD - a.d;
         Math.abs(diff) > 2 && (a.d += Math.sign(diff) * Math.min(Math.abs(diff), v * dt), a.dir = Math.sign(diff));
-      } else a.state === "go" ? (a.d += v * dt, a.dir = 1, a.d >= L && this.reachFood(a)) : (a.d -= v * dt, a.dir = -1, a.d <= 0 && (this.foodDelivered += a.carrying, this.emit({ type: "delivered", n: a.carrying }), a.carrying = 0, a.dead = !0, a.escaped = !0));
+      } else if (a.state === "go")
+        a.d += v * dt, a.dir = 1, a.d >= L && this.reachFood(a);
+      else if (a.d -= v * dt, a.dir = -1, a.d <= 0) {
+        this.foodDelivered += a.carrying, this.emit({ type: "delivered", n: a.carrying, first: a.trips === 0 }), a.carrying = 0, a.trips++;
+        let F = this.cfg.forage;
+        F && F.on && !(A.boss && F.queenLoop === !1) ? (a.state = "go", a.d = 0, a.dir = 1, a.waitT = F.pause || 0, this.stats.loops = (this.stats.loops || 0) + 1) : (a.dead = !0, a.escaped = !0);
+      }
       let p = rt.at(a.d);
       a.x = p.x, a.y = p.y;
     }
     this.decoy && t >= this.decoy.until && (this.decoy = null);
+    let SW = this.cfg.swatter;
+    if (SW && SW.on) {
+      let ck = this.path.pts[this.path.pts.length - 1];
+      if (this.swatCd = (this.swatCd == null ? SW.first ?? SW.interval : this.swatCd) - dt, this.swatFx = Math.max(0, (this.swatFx || 0) - dt), this.swatCd <= 0) {
+        let cand = this.ants.filter((a) => !a.dead && (SW.air !== !1 || !a.flying) && Math.hypot(a.x - ck.x, a.y - ck.y) <= SW.range);
+        if (cand.length) {
+          let car = cand.filter((a) => a.carrying > 0), tg = (car.length ? car : cand).reduce((b, a) => Math.hypot(a.x - ck.x, a.y - ck.y) < Math.hypot(b.x - ck.x, b.y - ck.y) ? a : b);
+          this.damage(tg, SW.damage, { src: { type: "swatter" } }), this.stats.swats = (this.stats.swats || 0) + 1, this.swatFx = 0.5, this.swatTarget = { x: tg.x, y: tg.y }, this.emit({ type: "swat", x: tg.x, y: tg.y }), this.swatCd = SW.interval;
+        } else this.swatCd = 0;
+      }
+    }
     for (let tw of this.towers) {
       let T = TOWERS[tw.type];
       if (T.place === "path") continue;
@@ -3066,7 +3092,7 @@ var NEXT_ID = 1, Battle = class {
       }
       alive || (this.planes = null);
     }
-    this.ants = this.ants.filter((a) => !a.dead), this.foodStored <= 1e-6 || this.foodDelivered >= this.cfg.foodHP ? (this.foodStored = Math.max(0, this.foodStored), this.result = "lose", this.emit({ type: "lose" })) : this.nextWave >= this.waves.length && this.pending.length === 0 && this.ants.length === 0 && (this.result = "win", this.emit({ type: "win", perfect: this.perfect }));
+    this.ants = this.ants.filter((a) => !a.dead), this.foodStored <= 1e-6 ? (this.foodStored = Math.max(0, this.foodStored), this.result = "lose", this.emit({ type: "lose" })) : this.nextWave >= this.waves.length && this.pending.length === 0 && this.ants.length === 0 && (this.result = "win", this.emit({ type: "win", perfect: this.perfect }));
   }
   // v0.6 item 2: single-target towers (Slingshot, Laser, Zapper's first zap, Gecko) aim at the ant with the FEWEST HP left.
   // The Slingshot skips ants its pebbles already in flight will finish (unless nothing else is in range). Tie -> the leader.
@@ -4672,6 +4698,16 @@ function drawProp(g, kind, x, y) {
   }
   g.restore();
 }
+function drawSwatter(ctx2, x, y, ang = 0, sc = 1, flash = 0) {
+  ctx2.save(), ctx2.translate(x, y), ctx2.rotate(ang), ctx2.scale(sc, sc), ctx2.lineJoin = "round", ctx2.lineCap = "round", shadow(ctx2, 0, 2, 9, 3, 0.22), rr(ctx2, -3.2, -34, 6.4, 34, 3.2), ctx2.fillStyle = "#d9a066", ctx2.fill(), ctx2.lineWidth = 2.2, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(-1, -6), ctx2.lineTo(-1, -28), ctx2.lineWidth = 1.4, ctx2.strokeStyle = "rgba(255,240,210,0.55)", ctx2.stroke(), ctx2.beginPath(), ctx2.arc(0, -2.5, 1.7, 0, 7), ctx2.fillStyle = "#b97f48", ctx2.fill();
+  let hx = -15, hy = -78, hw = 30, hh = 46;
+  rr(ctx2, hx, hy, hw, hh, 12), ctx2.fillStyle = "#ff9fb6", ctx2.fill(), ctx2.lineWidth = 2.6, ctx2.strokeStyle = INK, ctx2.stroke(), rr(ctx2, hx + 4, hy + 4, hw - 8, hh - 8, 8), ctx2.fillStyle = "#fff6ee", ctx2.fill(), ctx2.lineWidth = 1.6, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.save(), rr(ctx2, hx + 4, hy + 4, hw - 8, hh - 8, 8), ctx2.clip(), ctx2.lineWidth = 1, ctx2.strokeStyle = "rgba(255,159,182,0.75)";
+  for (let k = 1; k < 4; k++)
+    ctx2.beginPath(), ctx2.moveTo(hx + 4 + k * 5.5, hy + 4), ctx2.lineTo(hx + 4 + k * 5.5, hy + hh - 4), ctx2.stroke();
+  for (let k = 1; k < 6; k++)
+    ctx2.beginPath(), ctx2.moveTo(hx + 4, hy + 4 + k * 6), ctx2.lineTo(hx + hw - 4, hy + 4 + k * 6), ctx2.stroke();
+  ctx2.restore(), ctx2.fillStyle = INK, ctx2.beginPath(), ctx2.arc(-4.6, hy + 20, 2.3, 0, 7), ctx2.arc(4.6, hy + 20, 2.3, 0, 7), ctx2.fill(), ctx2.fillStyle = "#fff", ctx2.beginPath(), ctx2.arc(-5.3, hy + 19.2, 0.8, 0, 7), ctx2.arc(3.9, hy + 19.2, 0.8, 0, 7), ctx2.fill(), ctx2.fillStyle = "rgba(255,111,145,0.45)", ctx2.beginPath(), ctx2.ellipse(-8.6, hy + 25, 2.6, 1.7, 0, 0, 7), ctx2.ellipse(8.6, hy + 25, 2.6, 1.7, 0, 0, 7), ctx2.fill(), flash > 0 && (rr(ctx2, hx, hy, hw, hh, 12), ctx2.globalAlpha = flash * 0.7, ctx2.fillStyle = "#fff", ctx2.fill()), ctx2.restore();
+}
 
 // src/audio.js
 var ac = null, master = null, muted = !1, last = {};
@@ -4730,6 +4766,10 @@ function sfx(name) {
       case "boom":
         noise(0.5, 0.6, 120), tone(90, 0.4, "sine", 0.6, 0.4);
         break;
+      case "swat":
+        tone(330 + Math.random() * 40, 0.09, "sine", 0.32, 0.55), noise(0.05, 0.1, 1500);
+        break;
+      // v0.7.2: the cookie guard's soft thwap (a lower 'pop')
       case "steal":
         tone(300, 0.15, "square", 0.12, 0.6);
         break;
@@ -4943,10 +4983,31 @@ function openCalendar() {
 function setPaused(v) {
   S.paused = v, S.battle && (S.battle.paused = v), v && (S.sel = null, S.drag = null, S.info = null, S.mode = null);
 }
+var META_SCREENS = ["map", "cards", "card", "shop"], BAR_H = 56, META_H = 660, cw = 0, ch = 0, insetB = 0, insetProbe = null, insetOverride = null;
+function readInset() {
+  if (insetOverride != null) return insetOverride;
+  try {
+    insetProbe || (insetProbe = document.createElement("div"), insetProbe.style.cssText = "position:fixed;left:0;bottom:0;width:0;height:0;visibility:hidden;pointer-events:none;padding-bottom:env(safe-area-inset-bottom,0px)", document.body.appendChild(insetProbe));
+    let v = parseFloat(getComputedStyle(insetProbe).paddingBottom);
+    return isFinite(v) && v > 0 ? v : 0;
+  } catch {
+    return 0;
+  }
+}
+function isMeta() {
+  return META_SCREENS.includes(S.screen);
+}
+function applyLayout() {
+  if (isMeta()) {
+    let availH = Math.max(100, ch - (BAR_H + insetB));
+    scale = Math.min(cw / W, availH / META_H), offX = (cw - W * scale) / 2, offY = (availH - META_H * scale) / 2;
+  } else
+    scale = Math.min(cw / W, ch / H), offX = (cw - W * scale) / 2, offY = (ch - H * scale) / 2;
+  let px = Math.max(1, Math.round(dpr * scale * 2) / 2);
+  px !== pxRatio && (pxRatio = px, S.bgCache = {}, clearTowerCache());
+}
 function resize() {
-  dpr = Math.min(window.devicePixelRatio || 1, 3);
-  let cw = window.innerWidth, ch = window.innerHeight;
-  canvas.width = Math.round(cw * dpr), canvas.height = Math.round(ch * dpr), canvas.style.width = cw + "px", canvas.style.height = ch + "px", scale = Math.min(cw / W, ch / H), offX = (cw - W * scale) / 2, offY = (ch - H * scale) / 2, pxRatio = Math.max(1, Math.round(dpr * scale * 2) / 2), S.bgCache = {}, clearTowerCache();
+  dpr = Math.min(window.devicePixelRatio || 1, 3), cw = window.innerWidth, ch = window.innerHeight, insetB = readInset(), canvas.width = Math.round(cw * dpr), canvas.height = Math.round(ch * dpr), canvas.style.width = cw + "px", canvas.style.height = ch + "px", applyLayout(), S.bgCache = {}, clearTowerCache();
 }
 window.addEventListener("resize", resize);
 resize();
@@ -5013,7 +5074,7 @@ document.addEventListener("visibilitychange", () => {
   document.hidden && S.screen === "battle" && !S.result && setPaused(!0), document.hidden || (heartbeat(!0), maybeShowCalendar());
 });
 function go(screen) {
-  S.screen = screen, S.sel = null, S.info = null, S.drag = null, S.mergeAnim = null, S.toast = null, S.dialog = null, S.cal = null, S.mode = null, S.shopFx = null, sfx("tap"), screen === "map" && (S.mapScroll = autoMapScroll(), maybeShowCalendar());
+  S.screen = screen, S.sel = null, S.info = null, S.drag = null, S.mergeAnim = null, S.toast = null, S.dialog = null, S.cal = null, S.settings = null, S.mode = null, S.shopFx = null, sfx("tap"), screen === "map" && (S.mapScroll = autoMapScroll(), maybeShowCalendar());
   try {
     let inner = history.state && history.state.inner;
     screen !== "map" && !inner ? history.pushState({ inner: 1 }, "") : screen === "map" && inner && history.back();
@@ -5038,7 +5099,7 @@ window.addEventListener("popstate", () => {
     return;
   }
   if (S.screen === "map") {
-    S.cal && (S.cal = null);
+    S.cal ? S.cal = null : S.settings && (S.settings = null);
     return;
   }
   let repush = () => {
@@ -5213,6 +5274,11 @@ function consumeEvents() {
       case "spray":
         addFx({ k: "mist", ...e, life: 0.3, max: 0.3 });
         break;
+      case "swat": {
+        let wait = reducedMotion() ? 0 : 0.17;
+        addFx({ k: "spark", x: e.x, y: e.y - 4, life: 0.2 + wait, max: 0.2, wait, col: "#fff7b0" }), addFx({ k: "ring2", x: e.x, y: e.y - 2, life: 0.3 + wait, max: 0.3, wait }), setTimeout(() => sfx("swat"), wait * 1e3);
+        break;
+      }
       case "hit":
         addFx({ k: "spark", x: e.x, y: e.y - 6, life: 0.15, max: 0.15 });
         break;
@@ -5220,7 +5286,7 @@ function consumeEvents() {
         addFx({ k: "spark", x: e.x, y: e.y - 14, life: 0.18, max: 0.18, col: "#fff27a" });
         break;
       case "steal":
-        S.cookieOuch = S.t + UI.ouchTime, onBite(S.treat, S.t, e.n || 1), e.n && addFloatText(S.fx, { key: "steal", x: e.x, y: e.y - 20, n: e.n, fmt: (n) => `-${n}`, col: "#ff7a7a", life: 1 }), sfx("steal");
+        S.cookieOuch = S.t + UI.ouchTime, onBite(S.treat, S.t, e.n || 1), e.n && addFloatText(S.fx, { key: "steal", x: e.x, y: e.y - 20, n: e.n, fmt: (n) => `-${fmtFood(n)}`, col: "#ff7a7a", life: 1 }), sfx("steal");
         break;
       case "foodReturn":
         addFloatText(S.fx, { key: "food", x: e.x, y: e.y - 18, n: e.n, fmt: (n) => `+${fmtFood(n)} food back!`, col: "#8fe388", life: 1.1 }), sfx("return");
@@ -5303,7 +5369,7 @@ function frame(now2) {
   render(dt), requestAnimationFrame(frame);
 }
 function render(dt) {
-  if (prevButtons = buttons, buttons = [], ctx.setTransform(1, 0, 0, 1, 0, 0), ctx.fillStyle = BG, ctx.fillRect(0, 0, canvas.width, canvas.height), ctx.setTransform(dpr * scale, 0, 0, dpr * scale, offX * dpr, offY * dpr), drawBackdrop(), S.screen === "map" ? renderMapScreen() : S.screen === "prep" ? renderPrep() : S.screen === "battle" ? renderBattle(dt) : S.screen === "cards" ? renderCards() : S.screen === "card" ? renderCardView() : S.screen === "shop" && renderShop(), renderFireworks(dt), S.reveal.length && S.reveal[0].at <= S.t && renderReveal(dt), S.pack && renderPack(dt), S.toast) {
+  if (prevButtons = buttons, buttons = [], ctx.setTransform(1, 0, 0, 1, 0, 0), ctx.fillStyle = BG, ctx.fillRect(0, 0, canvas.width, canvas.height), applyLayout(), ctx.setTransform(dpr * scale, 0, 0, dpr * scale, offX * dpr, offY * dpr), drawBackdrop(), renderTabBar(dt), S.screen === "map" ? renderMapScreen() : S.screen === "prep" ? renderPrep() : S.screen === "battle" ? renderBattle(dt) : S.screen === "cards" ? renderCards() : S.screen === "card" ? renderCardView() : S.screen === "shop" && renderShop(), renderFireworks(dt), S.reveal.length && S.reveal[0].at <= S.t && renderReveal(dt), S.pack && renderPack(dt), S.toast) {
     if (S.toast.t -= dt, ctx.save(), ctx.globalAlpha = Math.min(1, S.toast.t * 5), S.toast.small) {
       ctx.font = `bold 12px ${FONT}`;
       let w = Math.min(300, ctx.measureText(S.toast.msg).width + 26), y = TRAY_Y - 30;
@@ -5316,10 +5382,80 @@ function render(dt) {
     ctx.restore(), S.toast.t <= 0 && (S.toast = null, S.layoutToast = null);
   }
 }
+var barK = 0, TAB_COL = ["#d9cfe0", "#b5d8ff", "#ffd27a"], TAB_NAME = ["Map", "Cards", "Shop"], TAB_MUTED = "#7a5a6a", BAR_BG = "#fff6ee";
+function activeTab() {
+  return S.screen === "map" ? 0 : S.screen === "shop" ? 2 : 1;
+}
+function barWanted() {
+  return isMeta() && !S.cal && !S.settings && !S.pack && !S.mergeAnim && !(S.reveal.length && S.reveal[0].at <= S.t) && !S.dialog;
+}
+function tabRect(i) {
+  let tw = cw / 3, top = ch - BAR_H - insetB;
+  return { x: (i * tw + 6 - offX) / scale, y: (top + 6 - offY) / scale, w: (tw - 12) / scale, h: 44 / scale, r: 14 / scale };
+}
+function tabTap(i) {
+  if (i === activeTab()) {
+    S.screen === "map" ? S.mapScroll = autoMapScroll() : S.screen === "card" && (S.screen = "cards", S.mergeAnim = null);
+    return;
+  }
+  go(["map", "cards", "shop"][i]);
+}
+function drawTabIcon(kind, x, y, active) {
+  let ink = active ? INK : TAB_MUTED;
+  ctx.save(), ctx.translate(x, y), ctx.lineJoin = "round", ctx.lineCap = "round", ctx.lineWidth = active ? 2.5 : 2, ctx.strokeStyle = ink, kind === 0 ? (ctx.beginPath(), ctx.moveTo(-10, 9), ctx.bezierCurveTo(-10, 2, 2, 11, 3, 4), ctx.lineWidth = active ? 3.2 : 2.6, ctx.setLineDash([0.1, 5]), ctx.stroke(), ctx.setLineDash([]), ctx.lineWidth = active ? 2.5 : 2, ctx.beginPath(), ctx.arc(4, -4, 5.2, 0, 7), ctx.fillStyle = active ? "#b9e89a" : "#e6e0e4", ctx.fill(), ctx.stroke(), ctx.beginPath(), ctx.arc(4, -4, 1.6, 0, 7), ctx.fillStyle = ink, ctx.fill(), ctx.beginPath(), ctx.moveTo(1.4, 0.2), ctx.lineTo(4, 5.4), ctx.lineTo(6.6, 0.2), ctx.fillStyle = active ? "#b9e89a" : "#e6e0e4", ctx.fill(), ctx.stroke(), ctx.beginPath(), ctx.arc(4, -4, 5.2, 0.9, 2.2), ctx.stroke()) : kind === 1 ? (ctx.save(), ctx.translate(-3.5, -0.5), ctx.rotate(-0.14), rr(ctx, -6.5, -9, 13, 18, 3), ctx.fillStyle = active ? "#b5d8ff" : "#e6e0e4", ctx.fill(), ctx.stroke(), ctx.restore(), ctx.save(), ctx.translate(3.5, 1), ctx.rotate(0.14), rr(ctx, -6.5, -9, 13, 18, 3), ctx.fillStyle = active ? "#ffffff" : "#f6f2f4", ctx.fill(), ctx.stroke(), ctx.beginPath(), ctx.arc(0, 0, 2.2, 0, 7), ctx.fillStyle = active ? "#ff9ec0" : "#cdbcc5", ctx.fill(), ctx.restore()) : (ctx.beginPath(), ctx.arc(0, -4, 5, Math.PI, 0), ctx.stroke(), rr(ctx, -9, -4, 18, 15, 4), ctx.fillStyle = active ? "#ffb3c1" : "#e6e0e4", ctx.fill(), ctx.stroke(), starShape(ctx, 0, 4, 3.6, active ? "#fff27a" : "#f6f2f4", 1.2)), ctx.restore();
+}
+function renderTabBar(dt) {
+  if (!isMeta()) {
+    barK = 0;
+    return;
+  }
+  let want = barWanted(), step = reducedMotion() ? 1 : Math.max(0, dt) / (want ? 0.2 : 0.18);
+  if (barK = want ? Math.min(1, barK + step) : Math.max(0, barK - step), barK <= 0) return;
+  let total = BAR_H + insetB, y0 = ch - total + (1 - barK) * total, tw = cw / 3, act = activeTab();
+  ctx.save(), ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  let sg = ctx.createLinearGradient(0, y0 - 7, 0, y0);
+  sg.addColorStop(0, "rgba(74,52,66,0)"), sg.addColorStop(1, "rgba(74,52,66,0.18)"), ctx.fillStyle = sg, ctx.fillRect(0, y0 - 7, cw, 7), ctx.fillStyle = BAR_BG, ctx.fillRect(0, y0, cw, total + 2), ctx.fillStyle = INK, ctx.fillRect(0, y0 - 1, cw, 2.5);
+  let blink = cardsBlinkOn(), fresh = ALL_CARDS.some((id) => S.save.cards[id].fresh);
+  for (let i = 0; i < 3; i++) {
+    let on = i === act, pressed = !!(down && down.b && down.b.id === "tab" + i), x = i * tw + 6, w = tw - 12, lift = on ? 2 : 0, py = y0 + 6 - lift + (pressed ? 2 : 0), ph = 44, col = i === 1 && blink ? "#fff07a" : TAB_COL[i];
+    i === 1 && blink && (rr(ctx, x - 3, y0 + 2, w + 6, ph + 8, 17), ctx.fillStyle = "rgba(255,240,140,0.85)", ctx.fill()), (on || i === 1 && blink) && (rr(ctx, x, py + 3, w, ph, 14), ctx.fillStyle = shade(col, -0.35), ctx.fill(), rr(ctx, x, py, w, ph, 14), ctx.fillStyle = col, ctx.fill(), ctx.lineWidth = 2.5, ctx.strokeStyle = INK, ctx.stroke());
+    let bob = i === 1 && blink ? Math.sin(S.t * 8) * 2 : 0;
+    drawTabIcon(i, x + w / 2, py + 15 + bob, on), plainText(TAB_NAME[i], x + w / 2, py + 35, 13, on ? INK : TAB_MUTED, "center", "800"), i === 1 && fresh && blob(ctx, x + w / 2 + 15, py + 8, 6, 6, "#ff6f91", 1.5), barK >= 0.5 && button("tab" + i, (i * tw - offX) / scale, (y0 - offY) / scale, tw / scale, BAR_H / scale, () => tabTap(i));
+  }
+  ctx.restore();
+}
+function drawGearIcon(x, y, r) {
+  ctx.save(), ctx.translate(x, y), ctx.lineJoin = "round", ctx.lineWidth = 2.2, ctx.strokeStyle = INK, ctx.fillStyle = "#c9b8c2", ctx.beginPath();
+  for (let k = 0; k < 16; k++) {
+    let a = k * Math.PI / 8, rr_ = k % 2 ? r * 0.72 : r;
+    ctx.lineTo(Math.cos(a - 0.1) * rr_, Math.sin(a - 0.1) * rr_), ctx.lineTo(Math.cos(a + 0.1) * rr_, Math.sin(a + 0.1) * rr_);
+  }
+  ctx.closePath(), ctx.fill(), ctx.stroke(), ctx.beginPath(), ctx.arc(0, 0, r * 0.32, 0, 7), ctx.fillStyle = "#fff6ee", ctx.fill(), ctx.stroke(), ctx.restore();
+}
+function renderSettings() {
+  if (!S.settings) return;
+  button("setBlock", -2e3, -2e3, W + 4e3, H + 4e3, () => {
+  }), ctx.save(), ctx.fillStyle = "rgba(40,26,38,0.55)", ctx.fillRect(-2e3, -2e3, W + 4e3, H + 4e3), ctx.restore(), button("setBlock2", -2e3, -2e3, W + 4e3, H + 4e3, () => {
+    S.settings = null, S.confirmReset = 0;
+  });
+  let x = 70, y = 190, w = 260, h = 262;
+  panel(x, y, w, h, "#fff6ee", 20), button("setPanel", x, y, w, h, () => {
+  }), text(ctx, "Settings", 200, y + 28, 22, "#ffb3c1");
+  let muted2 = S.save.settings && S.save.settings.muted;
+  drawButton(x + 24, y + 54, w - 48, 52, muted2 ? "Sound: Off" : "Sound: On", muted2 ? "#e6dce2" : "#c9f0c0", { size: 17 }), button("setSound", x + 24, y + 48, w - 48, 64, () => {
+    S.save.settings = { ...S.save.settings || {}, muted: !muted2 }, setMuted(!muted2), persist(), sfx("tap");
+  });
+  let sure = S.confirmReset > S.t;
+  drawButton(x + 24, y + 122, w - 48, 52, sure ? "Sure? Tap again" : "Reset progress", "#ffb3b3", { size: sure ? 16 : 17 }), button("setReset", x + 24, y + 116, w - 48, 64, () => {
+    S.confirmReset > S.t ? (S.save = newSave(), touch(S.save, now()), persist(), S.confirmReset = 0, S.cardsBlinkUntil = 0, S.settings = null, toast("Progress reset")) : S.confirmReset = S.t + 3;
+  }), drawButton(x + 24, y + 190, w - 48, 48, "Close", "#d9cfe0", { size: 17 }), button("setClose", x + 24, y + 184, w - 48, 64, () => {
+    S.settings = null, S.confirmReset = 0;
+  });
+}
 function drawBackdrop() {
   ctx.save();
   let g = ctx.createLinearGradient(0, 0, 0, H);
-  g.addColorStop(0, "#fff1e6"), g.addColorStop(1, "#fbd9cf"), ctx.fillStyle = g, ctx.fillRect(-200, -200, W + 400, H + 400), ctx.globalAlpha = 0.35, ctx.fillStyle = "#ffffff";
+  g.addColorStop(0, "#fff1e6"), g.addColorStop(1, "#fbd9cf"), ctx.fillStyle = g, ctx.fillRect(-2e3, -2e3, W + 4e3, H + 4e3), ctx.globalAlpha = 0.35, ctx.fillStyle = "#ffffff";
   for (let i = 0; i < 14; i++) {
     let x = i * 97 % W, y = (i * 173 + S.t * 6) % (H + 40) - 20;
     ctx.beginPath(), ctx.arc(x, y, 6 + i % 3 * 3, 0, 7), ctx.fill();
@@ -5407,7 +5543,7 @@ function cardsBlinkOn() {
 function renderMapScreen() {
   ctx.save(), ctx.translate(200, 60);
   let wob = Math.sin(S.t * 2) * 2;
-  text(ctx, "Crumb", -22, -8 + wob, 40, "#ffd27a"), text(ctx, "Defense", 26, 28 - wob, 36, "#ffb3c1"), ctx.restore(), drawCookie(ctx, 64, 66, 0.9, S.t, {}), ctx.save(), ctx.translate(340, 78), ctx.scale(1.6, 1.6), drawAnt(ctx, "worker", S.t * 1.2 % 1), ctx.restore(), panel(158, 112, 110, 36, "#fff6ee", 18), diamondIcon(ctx, 178, 130, 1.1), text(ctx, String(S.save.diamonds || 0), 224, 131, 18, "#7fd3ff"), panel(276, 112, 116, 36, "#fff6ee", 18), coinIcon(ctx, 296, 130, 1.2), text(ctx, String(S.save.coins), 344, 131, 18, "#ffd45e");
+  text(ctx, "Crumb", -22, -8 + wob, 40, "#ffd27a"), text(ctx, "Defense", 26, 28 - wob, 36, "#ffb3c1"), ctx.restore(), drawCookie(ctx, 64, 66, 0.9, S.t, {}), ctx.save(), ctx.translate(336, 86), ctx.scale(1.6, 1.6), drawAnt(ctx, "worker", S.t * 1.2 % 1), ctx.restore(), panel(158, 112, 110, 36, "#fff6ee", 18), diamondIcon(ctx, 178, 130, 1.1), text(ctx, String(S.save.diamonds || 0), 224, 131, 18, "#7fd3ff"), panel(276, 112, 116, 36, "#fff6ee", 18), coinIcon(ctx, 296, 130, 1.2), text(ctx, String(S.save.coins), 344, 131, 18, "#ffd45e");
   let claim2 = canClaim(S.save, now());
   claim2 && (rr(ctx, 10, 106, 74, 74, 20), ctx.fillStyle = `rgba(255,212,94,${0.3 + 0.25 * Math.sin(S.t * 5)})`, ctx.fill()), rr(ctx, 14, 110, 66, 66, 16), ctx.fillStyle = claim2 ? "#ffe7a8" : "#fbe3ee", ctx.fill(), ctx.lineWidth = 2.5, ctx.strokeStyle = INK, ctx.stroke(), giftIcon(ctx, 14 + 66 / 2, 136 + (claim2 ? Math.sin(S.t * 5) * 1.5 : 0), 1.05), plainText("Calendar", 14 + 66 / 2, 162, 11, "#5a4652", "center", "700"), claim2 && (blob(ctx, 78, 112, 8, 8, "#ff6f91", 1.6), text(ctx, "!", 78, 110 + 2.5, 12)), button("calendar", 10, 106, 74, 74, () => openCalendar()), S.mapScroll = clampScroll(S.mapScroll || 0);
   let sc = S.mapScroll;
@@ -5426,25 +5562,19 @@ function renderMapScreen() {
     let a = 0.75 + 0.25 * Math.sin(S.t * 4);
     ctx.save(), ctx.globalAlpha = a, rr(ctx, 128, MAPVIEW.top + 4, 144, 26, 13), ctx.fillStyle = "rgba(90,64,88,0.85)", ctx.fill(), plainText("\u25B2 World 2 - scroll up", 200, MAPVIEW.top + 17.5, 11.5, "#ffffff", "center", "700"), ctx.restore();
   }
-  updateCardsBlink();
-  let blink = cardsBlinkOn();
-  blink && (rr(ctx, 10, 656, 132, 58, 18), ctx.fillStyle = "rgba(255,240,140,0.85)", ctx.fill()), drawButton(16, 662, 120, 46, "Cards", blink ? "#fff07a" : "#b5d8ff"), button("cards", 16, 662, 120, 46, () => go("cards")), ALL_CARDS.some((id) => S.save.cards[id].fresh) && (blob(ctx, 128, 664, 9, 9, "#ff6f91", 1.6), text(ctx, "+", 128, 663.5, 13)), drawButton(146, 662, 120, 46, "Shop", "#ffd27a"), button("shop", 146, 662, 120, 46, () => go("shop"));
-  let muted2 = S.save.settings && S.save.settings.muted;
-  drawButton(276, 662, 54, 46, muted2 ? "Off" : "Snd", "#c9f0c0", { size: 14 }), button("mute", 276, 662, 54, 46, () => {
-    S.save.settings = { ...S.save.settings || {}, muted: !muted2 }, setMuted(!muted2), persist();
-  }), drawButton(336, 662, 54, 46, S.confirmReset > S.t ? "Sure?" : "Reset", "#ffb3b3", { size: 13 }), button("reset", 336, 662, 54, 46, () => {
-    S.confirmReset > S.t ? (S.save = newSave(), touch(S.save, now()), persist(), S.confirmReset = 0, S.cardsBlinkUntil = 0, toast("Progress reset")) : S.confirmReset = S.t + 3;
-  }), S.cal ? renderCalendar() : zapperGiftPending(S.save) && !S.reveal.length && onboardSpot({ x: 146, y: 662, w: 120, h: 46, r: 14 }, "shop", () => go("shop"), "A free pack waits in the Shop!"), plainText("v" + VERSION, 392, 714, 11, "#a08090", "right", "600"), renderUiFx(1 / 60);
+  updateCardsBlink(), blob(ctx, 370, 26, 19, 19, "#fff6ee", 2.2), drawGearIcon(370, 26, 12), button("gear", 344, 2, 52, 52, () => {
+    S.settings = { t: 0 }, S.confirmReset = 0, sfx("tap");
+  }), S.cal ? renderCalendar() : S.settings ? renderSettings() : zapperGiftPending(S.save) && !S.reveal.length && onboardSpot(tabRect(2), "shop", () => go("shop"), "A free pack waits in the Shop!"), plainText("v" + VERSION, 392, 650, 11, "#a08090", "right", "600"), renderUiFx(1 / 60);
 }
 function onboardSpot(R, id, onTap, msg) {
-  ctx.save(), ctx.beginPath(), ctx.rect(-200, -200, W + 400, H + 400);
+  ctx.save(), ctx.beginPath(), ctx.rect(-2e3, -2e3, W + 4e3, H + 4e3);
   {
     let x = R.x - 6, y = R.y - 6, w = R.w + 12, h = R.h + 14, r = Math.min((R.r || 14) + 4, w / 2, h / 2);
     ctx.moveTo(x + r, y), ctx.arcTo(x + w, y, x + w, y + h, r), ctx.arcTo(x + w, y + h, x, y + h, r), ctx.arcTo(x, y + h, x, y, r), ctx.arcTo(x, y, x + w, y, r), ctx.closePath();
   }
   ctx.fillStyle = "rgba(40,26,38,0.66)", ctx.fill("evenodd");
   let g = 0.5 + 0.5 * Math.sin(S.t * 5);
-  rr(ctx, R.x - 6, R.y - 6, R.w + 12, R.h + 14, (R.r || 14) + 4), ctx.lineWidth = 3 + g * 2, ctx.strokeStyle = `rgba(255,227,110,${0.6 + 0.4 * g})`, ctx.stroke(), ctx.restore(), button("onboardBlock", -200, -200, W + 400, H + 400, () => {
+  rr(ctx, R.x - 6, R.y - 6, R.w + 12, R.h + 14, (R.r || 14) + 4), ctx.lineWidth = 3 + g * 2, ctx.strokeStyle = `rgba(255,227,110,${0.6 + 0.4 * g})`, ctx.stroke(), ctx.restore(), button("onboardBlock", -2e3, -2e3, W + 4e3, H + 4e3, () => {
   }), button(id, R.x, R.y, R.w, R.h, onTap);
   let fx = R.x + R.w / 2 + 18, fy = R.y - 22 - Math.abs(Math.sin(S.t * 4)) * 12;
   if (drawFinger(fx, fy), msg) {
@@ -5466,7 +5596,7 @@ function prizeLabel(p) {
 }
 function renderCalendar() {
   let K = CALENDAR, st = status(S.save, now()), CA = S.cal;
-  CA.t += 1 / 60, ctx.fillStyle = "rgba(60,40,55,0.55)", ctx.fillRect(-200, -200, W + 400, H + 400), button("calBlock", -200, -200, W + 400, H + 400, () => {
+  CA.t += 1 / 60, ctx.fillStyle = "rgba(60,40,55,0.55)", ctx.fillRect(-2e3, -2e3, W + 4e3, H + 4e3), button("calBlock", -2e3, -2e3, W + 4e3, H + 4e3, () => {
   });
   let pop = Math.min(1, CA.t * 5);
   ctx.save(), ctx.translate(200, 360), ctx.scale(0.85 + 0.15 * pop, 0.85 + 0.15 * pop), ctx.translate(-200, -360), panel(18, 62, 364, 600, "#fff6ee"), giftIcon(ctx, 56, 94, 1.1), text(ctx, "Daily Rewards", 214, 92, 26, "#ffb3c1"), plainText("One prize every day you visit.", 214, 118, 12, "#6b5562", "center");
@@ -5481,7 +5611,7 @@ function renderCalendar() {
     let tier = m >= st.monthLength ? 3 : Math.min(2, k + 1), sc = tier === 3 ? 1.55 : tier === 2 ? 1.12 : 1, mx = Math.min(bx + bw - 34, bx + (m - 0.5) * segW), my = tier === 3 ? 200 : 194;
     ctx.beginPath(), ctx.moveTo(bx + (m - 0.5) * segW, 168), ctx.lineTo(mx, my - 14 * sc), ctx.lineWidth = 2, ctx.strokeStyle = "rgba(82,60,75,0.35)", ctx.stroke(), monthBox(ctx, mx, my, sc, tier, S.t, shown >= m), plainText(`Day ${m}`, mx, my + 24 * sc - (tier === 3 ? 4 : 0), tier === 3 ? 11 : 10, tier === 3 ? "#c27a00" : "#6b5562", "center", "700");
   }), st.resetPending && !CA.result ? plainText("You missed a day - the streak restarts at 1.", 200, 256, 11, "#c0392b", "center", "600") : plainText("Collect every day to keep the streak. Bigger prizes as it grows!", 200, 256, 11, "#6b5562", "center"), plainText("Your 7-day cycle", 36, 276, 13, "#3d2a36", "left", "700"), st.tiles.forEach((tl, i) => {
-    let big = i === 6, row = big ? 2 : Math.floor(i / 3), col = big ? 0 : i % 3, gap = 8, cw = (328 - 2 * gap) / 3, rh = 74, w = big ? 328 : cw, h = big ? 84 : rh, x = 36 + col * (cw + gap), y = 286 + row * (rh + gap), today = tl.state === "today", claimed = tl.state === "claimed", missed = tl.state === "missed", glow = today ? 0.5 + 0.5 * Math.sin(S.t * 5) : 0;
+    let big = i === 6, row = big ? 2 : Math.floor(i / 3), col = big ? 0 : i % 3, gap = 8, cw2 = (328 - 2 * gap) / 3, rh = 74, w = big ? 328 : cw2, h = big ? 84 : rh, x = 36 + col * (cw2 + gap), y = 286 + row * (rh + gap), today = tl.state === "today", claimed = tl.state === "claimed", missed = tl.state === "missed", glow = today ? 0.5 + 0.5 * Math.sin(S.t * 5) : 0;
     if (ctx.save(), today && (rr(ctx, x - 4, y - 4, w + 8, h + 8, 16), ctx.fillStyle = `rgba(255,212,94,${0.35 + glow * 0.4})`, ctx.fill()), rr(ctx, x, y, w, h, 13), big && !claimed && !missed) {
       let g = ctx.createLinearGradient(x, y, x + w, y + h);
       g.addColorStop(0, "#fff1c9"), g.addColorStop(1, "#ffe1ec"), ctx.fillStyle = g;
@@ -5657,7 +5787,7 @@ function renderBattle(dt) {
   for (let tw of b.towers) drawList.push({ y: tw.y + (TOWERS[tw.type].place === "path" ? -12 : 0), f: () => drawTowerObj(tw) });
   for (let a of b.ants) a.flying || drawList.push({ y: a.y, f: () => drawAntObj(a) });
   for (let m of b.balls) drawList.push({ y: m.y, f: () => marble(ctx, m.x, m.y - m.r * 0.6, m.r, m.rot) });
-  drawList.push({ y: p1.y + 10, f: () => drawTreat(ctx, treatKind(b), p1.x, p1.y, b.foodStored / b.cfg.foodHP, t, { ouch: S.cookieOuch > S.t, react: reaction(S.treat, S.t) }) }), drawList.sort((u, v) => u.y - v.y);
+  drawList.push({ y: p1.y + 10, f: () => drawTreat(ctx, treatKind(b), p1.x, p1.y, b.foodStored / b.cfg.foodHP, t, { ouch: S.cookieOuch > S.t, react: reaction(S.treat, S.t) }) }), b.cfg.swatter && b.cfg.swatter.on && drawList.push({ y: p1.y + 14, f: () => drawGuard(b, p1) }), drawList.sort((u, v) => u.y - v.y);
   for (let d of drawList) d.f();
   for (let a of b.ants) a.flying && drawAntObj(a);
   for (let pl of b.planes || [])
@@ -5778,6 +5908,24 @@ function drawTowerObj(tw) {
   let age = S.battle.time - (tw.born ?? (tw.born = S.battle.time)), pop = age < 0.25 ? 0.6 + age / 0.25 * 0.4 + Math.sin(age / 0.25 * Math.PI) * 0.2 : 1;
   if (ctx.scale(pop, pop), TOWERS[tw.type].place === "path" && ctx.translate(tw.px - tw.x, tw.py - tw.y), drawTower(ctx, tw.type, S.t + tw.id, tw), tw.lvl > 1) for (let k = 0; k < tw.lvl; k++) starShape(ctx, -(tw.lvl - 1) * 3.6 + k * 7.2, 16, 3.6, "#ffd45e", 1.1);
   ctx.restore();
+}
+function drawGuard(b, ck) {
+  let px = ck.x + 35, py = ck.y + 21, rest = -0.2, ang = rest + Math.sin(S.t * 1.7) * 0.025, flash = 0, age = 0.5 - (b.swatFx || 0);
+  if ((b.swatFx || 0) > 0 && b.swatTarget) {
+    let sg = b.swatTarget.x < px ? -1 : 1, ease = (k) => Math.max(0, Math.min(1, k));
+    if (reducedMotion())
+      flash = Math.max(0, 1 - age / 0.15);
+    else if (age < 0.1) ang = rest + (-sg * 0.4 - rest) * (1 - Math.pow(1 - ease(age / 0.1), 2));
+    else if (age < 0.18) {
+      let k = ease((age - 0.1) / 0.08);
+      ang = -sg * 0.4 + (sg * 0.62 + sg * 0.4) * k * k, flash = k > 0.8 ? 1 : 0;
+    } else if (age < 0.24) ang = sg * 0.62;
+    else {
+      let k = ease((age - 0.24) / 0.26);
+      ang = sg * 0.62 + (rest - sg * 0.62) * (1 - Math.pow(1 - k, 3));
+    }
+  }
+  drawSwatter(ctx, px, py, ang, 0.8, flash);
 }
 function drawAntObj(a) {
   let b = S.battle, frozen = b.time < b.freezeUntil, p = b.route(a).at(a.d);
@@ -5957,7 +6105,7 @@ function renderHud(b) {
   panel(6, 6, 388, 54, "#fff6ee", 16), drawTreat(ctx, treatKind(b), 30, 33, b.foodStored / b.cfg.foodHP, S.t, { ouch: S.cookieOuch > S.t, react: reaction(S.treat, S.t) });
   let f = b.foodStored / b.cfg.foodHP;
   rr(ctx, 60, 22, 84, 20, 10), ctx.fillStyle = "#f0e0d8", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), f > 0 && (rr(ctx, 62, 24, 80 * f, 16, 8), ctx.fillStyle = f >= 0.9 ? "#8fe388" : f >= 0.5 ? "#ffd45e" : "#ff8a8a", ctx.fill()), text(ctx, `${Math.floor(b.foodStored + 1e-6)}`, 102, 33, 13, "#fff");
-  let carried = b.ants.reduce((s, a) => s + a.carrying, 0);
+  let carried = b.ants.reduce((s, a) => s + (a.trips === 0 ? a.carrying : 0), 0);
   carried && text(ctx, `${fmtFood(carried)} carried off!`, 102, 51, 9.5, "#c0392b", "center", null), text(ctx, `Wave ${Math.min(b.nextWave, b.totalWaves)}/${b.totalWaves}`, 184, 26, 15, "#ffb3c1"), text(ctx, `Lv ${b.levelIndex + 1}`, 184, 46, 11, "#a08090", "center", null), ctx.save(), ctx.translate(252, 33), rr(ctx, -31, -14, 62, 28, 14), ctx.fillStyle = "#e9f7ff", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), diamondIcon(ctx, -15, 0, 0.95), text(ctx, String(S.save.diamonds || 0), 8, 1, 16, "#7fd3ff"), ctx.restore(), S.crumbShake = Math.max(0, S.crumbShake - 1 / 60), S.crumbPulse = Math.max(0, S.crumbPulse - 1 / 60);
   let shx = S.crumbShake > 0 ? Math.sin(S.t * 60) * 4 * S.crumbShake / 0.45 : 0, pul = 1 + S.crumbPulse * 0.5;
   ctx.save(), ctx.translate(341 + shx, 33), ctx.scale(pul, pul), rr(ctx, -45, -16, 90, 32, 16), ctx.fillStyle = S.crumbShake > 0 ? "#ffd6d6" : "#fff1d6", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = S.crumbShake > 0 ? "#e0524f" : INK, ctx.stroke(), crumbIcon(ctx, -27, 0, 1.2), text(ctx, String(Math.floor(b.crumbs)), 7, 1, 19, "#ffcf7a"), blob(ctx, 36, -1, 9, 9, "#9fe0ff", 1.8), text(ctx, "+", 36, -1.5, 15, "#ffffff"), ctx.restore(), S.result || button("buyCrumbs", 290, 0, 110, 66, () => openCrumbDialog());
@@ -5997,7 +6145,7 @@ function openBoosterDialog(bt) {
 }
 function renderDialog() {
   let D = S.dialog, have = S.save.diamonds || 0, afford = have >= D.price;
-  if (ctx.fillStyle = "rgba(60,40,55,0.5)", ctx.fillRect(-200, -200, W + 400, H + 400), button("dlgBlock", -200, -200, W + 400, H + 400, () => {
+  if (ctx.fillStyle = "rgba(60,40,55,0.5)", ctx.fillRect(-2e3, -2e3, W + 4e3, H + 4e3), button("dlgBlock", -2e3, -2e3, W + 4e3, H + 4e3, () => {
   }), panel(44, 228, 312, 250, "#fff6ee"), text(ctx, D.title, 200, 258, 22, D.kind === "crumbs" ? "#ffcf7a" : BONUSES[D.booster].color), ctx.save(), ctx.translate(200, 300), D.kind === "crumbs")
     for (let k = 0; k < 5; k++) crumbIcon(ctx, -28 + k * 14, Math.sin(S.t * 4 + k) * 2, 1.4);
   else
@@ -6064,7 +6212,7 @@ function renderTray(b) {
   });
 }
 function renderPause() {
-  buttons.length = 0, ctx.fillStyle = "rgba(60,40,55,0.45)", ctx.fillRect(-200, -200, W + 400, H + 400), panel(60, 220, 280, 260, "#fff6ee"), text(ctx, "Paused", 200, 256, 28, "#ffb3c1"), drawButton(90, 290, 220, 48, "Resume", "#9fe0b5"), button("resume", 90, 290, 220, 48, () => {
+  buttons.length = 0, ctx.fillStyle = "rgba(60,40,55,0.45)", ctx.fillRect(-2e3, -2e3, W + 4e3, H + 4e3), panel(60, 220, 280, 260, "#fff6ee"), text(ctx, "Paused", 200, 256, 28, "#ffb3c1"), drawButton(90, 290, 220, 48, "Resume", "#9fe0b5"), button("resume", 90, 290, 220, 48, () => {
     setPaused(!1);
   }), drawButton(90, 350, 220, 48, "Restart", "#ffd27a"), button("restart", 90, 350, 220, 48, () => startBattle(S.levelIndex, S.battle.deck, S.battle.bonusTypes)), drawButton(90, 410, 220, 48, "Quit to map", "#ffb3b3"), button("quit", 90, 410, 220, 48, () => {
     S.battle = null, go("map");
@@ -6073,11 +6221,11 @@ function renderPause() {
 function renderResult(dt) {
   let R = S.result, out = R.out;
   if (R.hold > 0) {
-    R.hold -= dt, ctx.fillStyle = "rgba(60,40,55,0.22)", ctx.fillRect(-200, -200, W + 400, H + 400), button("resultBlock", -200, -200, W + 400, H + 400, () => {
+    R.hold -= dt, ctx.fillStyle = "rgba(60,40,55,0.22)", ctx.fillRect(-2e3, -2e3, W + 4e3, H + 4e3), button("resultBlock", -2e3, -2e3, W + 4e3, H + 4e3, () => {
     });
     return;
   }
-  R.t += dt, ctx.fillStyle = "rgba(60,40,55,0.5)", ctx.fillRect(-200, -200, W + 400, H + 400), button("resultBlock", -200, -200, W + 400, H + 400, () => {
+  R.t += dt, ctx.fillStyle = "rgba(60,40,55,0.5)", ctx.fillRect(-2e3, -2e3, W + 4e3, H + 4e3), button("resultBlock", -2e3, -2e3, W + 4e3, H + 4e3, () => {
   });
   let celebrating = R.perfect && R.t < UI.perfectAnimTime, pop = Math.min(1, R.t * 4);
   ctx.save(), ctx.translate(200, 360), ctx.scale(0.7 + pop * 0.3, 0.7 + pop * 0.3), ctx.translate(-200, -360), panel(36, 120, 328, 480, "#fff6ee");
@@ -6136,14 +6284,16 @@ function cardInfoPanel(id, x, y, w, h, opt = {}) {
     return;
   }
   let T = TOWERS[id], c = S.save.cards[id], own = c.unlocked, L = Math.max(1, c.level);
-  fitText(T.name, x + 12 + Math.min(170, 9 * T.name.length) / 2, y + 16, 170, 14.5, "#ff8fab"), plainFit(own ? `Card L${c.level} (used in battle)` : "Not owned yet", x + w - 12, y + 16, 150, 11.5, INFO_SOFT, "right", "700"), plainFit(T.desc, x + 12, y + 37, w - 24, 12, INFO_INK, "left", "500");
+  fitText(T.name, x + 12 + Math.min(170, 9 * T.name.length) / 2, y + 16, 170, 14.5, "#ff8fab"), plainFit(own ? `Card L${c.level} (used in battle)` : "Not owned yet", x + w - 12, y + 16, 150, 11.5, INFO_SOFT, "right", "700");
+  let cmp = h < 108;
+  plainFit(T.desc, x + 12, y + (cmp ? 33 : 37), w - 24, 12, INFO_INK, "left", "500");
   let next = cardUpgradeDiff(id, L), nk = new Set(next.map((d) => d.key)), keys = cardStatKeys(id), bw = (w - 24 - 12) / 3;
   keys.forEach((k, i) => {
-    let bx = x + 12 + i * (bw + 6), by = y + 50;
-    rr(ctx, bx, by, bw, 38, 9), ctx.fillStyle = nk.has(k) ? "#eefbe9" : "#f7efeb", ctx.fill(), ctx.lineWidth = nk.has(k) ? 2 : 1.2, ctx.strokeStyle = nk.has(k) ? "#8fd18f" : "#e0cfd4", ctx.stroke(), plainFit(k === "scoop" ? "Scoops" : statLabel(id, k), bx + 7, by + 10, bw - 12, 10.5, INFO_SOFT, "left", "600"), plainFit(k === "scoop" ? "1 trail tile" : formatStat(id, k, towerStat(id, k, 1, L)), bx + bw / 2, by + 26, bw - 10, 13.5, INFO_INK, "center", "700");
+    let bx = x + 12 + i * (bw + 6), by = y + (cmp ? 44 : 50);
+    rr(ctx, bx, by, bw, cmp ? 36 : 38, 9), ctx.fillStyle = nk.has(k) ? "#eefbe9" : "#f7efeb", ctx.fill(), ctx.lineWidth = nk.has(k) ? 2 : 1.2, ctx.strokeStyle = nk.has(k) ? "#8fd18f" : "#e0cfd4", ctx.stroke(), plainFit(k === "scoop" ? "Scoops" : statLabel(id, k), bx + 7, by + (cmp ? 9.5 : 10), bw - 12, 10.5, INFO_SOFT, "left", "600"), plainFit(k === "scoop" ? "1 trail tile" : formatStat(id, k, towerStat(id, k, 1, L)), bx + bw / 2, by + (cmp ? 24.5 : 26), bw - 10, 13.5, INFO_INK, "center", "700");
   });
   let line = next.length ? `Next card level L${L + 1}: ` + next.map((d) => diffText(id, d)).join(" + ") : "Top card level (L10)!";
-  plainFit(line, x + w / 2, y + 102, w - 20, 12, next.length ? "#2f8a36" : "#c9962a", "center", "700"), h > 118 && !opt.noFoot && plainFit(opt.foot || (own ? "Merge cards on its own screen to reach the next level." : `Get it in the Shop (${unlockPrice(id)}c) or as a prize.`), x + w / 2, y + h - 13, w - 20, 10.5, "#a08090", "center", "600");
+  plainFit(line, x + w / 2, y + (cmp ? h - 9 : 102), w - 20, 12, next.length ? "#2f8a36" : "#c9962a", "center", "700"), h > 118 && !opt.noFoot && plainFit(opt.foot || (own ? "Merge cards on its own screen to reach the next level." : `Get it in the Shop (${unlockPrice(id)}c) or as a prize.`), x + w / 2, y + h - 13, w - 20, 10.5, "#a08090", "center", "600");
 }
 var CARD_BANDS = [[3, "#d9965f", "#f3c79c"], [6, "#9fb2c8", "#e1e9f2"], [9, "#e8b830", "#ffe9a0"], [10, "#ff7fb8", "#ffd6ec"]];
 function cardBand(L) {
@@ -6181,8 +6331,8 @@ function drawCardPic(x, y, w, h, type, opt = {}) {
   if (opt.badge && (blob(ctx, x + w - 11, y + 11, 11, 11, "#ff8fab", 2), text(ctx, opt.badge, x + w - 11, y + 11.5, 12, "#fff")), opt.count != null) {
     let str = `\xD7${opt.count}`;
     ctx.font = `bold 12px ${FONT}`;
-    let cw = Math.max(24, ctx.measureText(str).width + 10);
-    rr(ctx, x + w - cw - 2, y + 3, cw, 18, 9), ctx.fillStyle = opt.count ? "#ffffff" : "#efe6ea", ctx.fill(), ctx.lineWidth = 1.8, ctx.strokeStyle = INK, ctx.stroke(), text(ctx, str, x + w - cw / 2 - 2, y + 12.5, 12, opt.count ? "#ff6f91" : "#b9a6b2");
+    let cw2 = Math.max(24, ctx.measureText(str).width + 10);
+    rr(ctx, x + w - cw2 - 2, y + 3, cw2, 18, 9), ctx.fillStyle = opt.count ? "#ffffff" : "#efe6ea", ctx.fill(), ctx.lineWidth = 1.8, ctx.strokeStyle = INK, ctx.stroke(), text(ctx, str, x + w - cw2 / 2 - 2, y + 12.5, 12, opt.count ? "#ff6f91" : "#b9a6b2");
   }
   if (opt.mergeReady) {
     let p = 1 + Math.sin(S.t * 6) * 0.08;
@@ -6201,18 +6351,18 @@ function doMergeAll() {
   S.mergeAnim = { id: top.id, from: top.from, to: top.to, n: 3, t: 0, all: done.length };
 }
 function renderCards() {
-  if (panel(12, 12, 376, 696, "#fff6ee"), text(ctx, "Cards", 200, 36, 26, "#b5d8ff"), coinIcon(ctx, 304, 60, 1), text(ctx, String(S.save.coins), 336, 61, 15, "#ffd45e"), plainText("Tap a card: stats.  Tap again: open.", 28, 60, 11.5, "#7a5a6a", "left", "600"), S.layoutMerge = [], ALL_CARDS.forEach((id, k) => {
+  panel(12, 12, 376, 636, "#fff6ee"), text(ctx, "Cards", 200, 36, 26, "#b5d8ff"), coinIcon(ctx, 304, 60, 1), text(ctx, String(S.save.coins), 336, 61, 15, "#ffd45e"), plainText("Tap a card: stats.  Tap again: open.", 28, 60, 11.5, "#7a5a6a", "left", "600"), S.layoutMerge = [], ALL_CARDS.forEach((id, k) => {
     let col = k % 4, row = Math.floor(k / 4), x = 30 + col * 88, y = 80 + row * 104, w = 76, h = 96, c = S.save.cards[id], ready = c.unlocked && mergeReady(S.save, id);
     drawCardPic(x, y, w, h, id, { locked: !c.unlocked, lockText: "Shop or prize", level: c.level, selected: S.cardsSel === id, mergeReady: ready, fresh: c.fresh }), button("card" + id, x, y, w, h, () => {
       S.cardsSel === id && c.unlocked ? openCardView(id) : S.cardsSel = id, sfx("tap");
     }), ready && S.layoutMerge.push(id);
-  }), cardInfoPanel(S.cardsSel, 24, 498, 352, 140, { hint: "Tap a card to see its stats.", noFoot: !!(S.cardsSel && S.save.cards[S.cardsSel].unlocked) }), S.cardsSel && S.save.cards[S.cardsSel].unlocked) {
-    let ready = mergeReady(S.save, S.cardsSel);
-    drawButton(140, 610, 120, 24, ready ? "Open card  !" : "Open card", ready ? "#ff9ec0" : "#d7e8ff", { size: 12, r: 10 }), button("open" + S.cardsSel, 136, 606, 128, 32, () => openCardView(S.cardsSel));
-  }
-  drawButton(26, 652, 110, 48, "Back", "#d9cfe0"), button("back", 26, 650, 110, 54, () => go("map"));
+  }), cardInfoPanel(S.cardsSel, 24, 490, 352, 98, { hint: "Tap a card to see its stats.", noFoot: !0 });
   let anyReady = anyMergeReady(S.save);
-  if (drawButton(145, 652, 110, 48, "Merge all", anyReady ? "#ff9ec0" : "#e6dce2", { size: 16, disabled: !anyReady }), button("mergeAll", 145, 648, 110, 58, doMergeAll), drawButton(264, 652, 110, 48, "Shop", "#ffd27a"), button("toshop", 264, 650, 110, 54, () => go("shop")), S.mergeAnim) renderMergeAnim();
+  if (!!(S.cardsSel && S.save.cards[S.cardsSel].unlocked)) {
+    let ready = mergeReady(S.save, S.cardsSel);
+    drawButton(24, 604, 172, 34, ready ? "Open card  !" : "Open card", ready ? "#ff9ec0" : "#d7e8ff", { size: 15, r: 12 }), button("open" + S.cardsSel, 24, 590, 172, 58, () => openCardView(S.cardsSel));
+  }
+  if (drawButton(204, 604, 172, 34, "Merge all", anyReady ? "#ff9ec0" : "#e6dce2", { size: 15, r: 12, disabled: !anyReady }), button("mergeAll", 204, 590, 172, 58, doMergeAll), S.mergeAnim) renderMergeAnim();
   else if (S.save.onboard && S.save.onboard.cardsHint === "cards" && S.save.cards.zapper.unlocked) {
     let k = ALL_CARDS.indexOf("zapper"), x = 30 + k % 4 * 88, y = 80 + Math.floor(k / 4) * 104;
     onboardSpot({ x, y, w: 76, h: 96, r: 12 }, "cardzapper", () => {
@@ -6227,7 +6377,7 @@ function openCardView(id) {
 }
 function renderCardView() {
   let id = S.cardView, T = TOWERS[id], c = S.save.cards[id];
-  panel(12, 12, 376, 696, "#fff6ee"), text(ctx, T.name, 200, 36, 24, "#b5d8ff"), drawCardPic(28, 58, 104, 136, id, { level: c.level, locked: !c.unlocked }), plainText(c.unlocked ? `In battle: level ${c.level}` : "Not unlocked yet", 146, 76, 15, INFO_INK, "left", "800"), plainText("3 cards of a level \u2192 1 of the next", 146, 102, 12, INFO_SOFT, "left", "600"), plainText("Your highest level fights.", 146, 120, 12, INFO_SOFT, "left", "600"), plainText(`Cards held: ${totalCards(c)}`, 146, 138, 12, INFO_SOFT, "left", "600"), coinIcon(ctx, 158, 170, 1), text(ctx, String(S.save.coins), 190, 171, 15, "#ffd45e");
+  panel(12, 12, 376, 636, "#fff6ee"), text(ctx, T.name, 200, 36, 24, "#b5d8ff"), drawButton(22, 18, 66, 28, "Back", "#d9cfe0", { size: 13, r: 10 }), button("cvBack", 14, 8, 84, 48, () => go("cards")), drawCardPic(28, 58, 104, 136, id, { level: c.level, locked: !c.unlocked }), plainText(c.unlocked ? `In battle: level ${c.level}` : "Not unlocked yet", 146, 76, 15, INFO_INK, "left", "800"), plainText("3 cards of a level \u2192 1 of the next", 146, 102, 12, INFO_SOFT, "left", "600"), plainText("Your highest level fights.", 146, 120, 12, INFO_SOFT, "left", "600"), plainText(`Cards held: ${totalCards(c)}`, 146, 138, 12, INFO_SOFT, "left", "600"), coinIcon(ctx, 158, 170, 1), text(ctx, String(S.save.coins), 190, 171, 15, "#ffd45e");
   let rows = mergeRows(S.save, id);
   plainText("Your cards by level", 28, 212, 12, "#3d2a36", "left", "800"), rows.forEach((r, k) => {
     let col = k % 5, row = Math.floor(k / 5), x = 26 + col * 70, y = 224 + row * 138, w = 62, h = 80;
@@ -6248,15 +6398,15 @@ function renderCardView() {
       let res = mergeAt(S.save, id, r.L);
       res && (persist(), sfx("upgrade"), S.mergeAnim = { id, from: r.L, to: res.to, n: r.need, t: 0 });
     });
-  }), cardInfoPanel(id, 24, 506, 352, 134, { foot: c.unlocked ? `Battle uses your highest card: level ${c.level}.` : "Get it in the Shop or as a prize." }), drawButton(26, 652, 110, 48, "Cards", "#d9cfe0"), button("cvBack", 26, 650, 110, 54, () => go("cards"));
+  }), cardInfoPanel(id, 24, 497, 352, 97, {});
   let ready = mergeReady(S.save, id);
-  drawButton(145, 652, 110, 48, "Merge all", ready ? "#ff9ec0" : "#e6dce2", { size: 16, disabled: !anyMergeReady(S.save) }), button("cvMergeAll", 145, 648, 110, 58, doMergeAll), drawButton(264, 652, 110, 48, "Shop", "#ffd27a"), button("cvShop", 264, 650, 110, 54, () => go("shop")), S.mergeAnim && renderMergeAnim();
+  drawButton(24, 604, 352, 34, "Merge all", ready ? "#ff9ec0" : "#e6dce2", { size: 15, r: 12, disabled: !anyMergeReady(S.save) }), button("cvMergeAll", 24, 591, 352, 57, doMergeAll), S.mergeAnim && renderMergeAnim();
 }
 function renderMergeAnim() {
   let MA = S.mergeAnim;
   MA.t += 1 / 60;
   let T = UI.mergeAnimTime, k = MA.t / T;
-  ctx.save(), ctx.fillStyle = `rgba(60,40,55,${Math.min(0.55, k * 3)})`, ctx.fillRect(-200, -200, W + 400, H + 400), ctx.restore();
+  ctx.save(), ctx.fillStyle = `rgba(60,40,55,${Math.min(0.55, k * 3)})`, ctx.fillRect(-2e3, -2e3, W + 4e3, H + 4e3), ctx.restore();
   let cx = 200, cy = 330, n = Math.min(6, MA.n || 3);
   if (k < 0.45)
     for (let i = 0; i < n; i++) {
@@ -6274,7 +6424,7 @@ function renderMergeAnim() {
     let d = MA.to >= 2 ? cardUpgradeDiff(MA.id, MA.to - 1) : [];
     fitText(MA.all > 1 ? `${MA.all} merges done!` : d.length ? `L${MA.to}: ` + d.map((q) => diffText(MA.id, q)).join(" + ") : "", 0, 34, 330, 14, "#ffffff"), ctx.restore();
   }
-  ctx.save(), rr(ctx, cx - 70, 600, 140, 26, 13), ctx.fillStyle = "rgba(60,40,55,0.85)", ctx.fill(), ctx.restore(), text(ctx, "Tap to continue", cx, 614, 12, "#ffffff", "center", null), button("mergeSkip", -200, -200, W + 400, H + 400, () => {
+  ctx.save(), rr(ctx, cx - 70, 600, 140, 26, 13), ctx.fillStyle = "rgba(60,40,55,0.85)", ctx.fill(), ctx.restore(), text(ctx, "Tap to continue", cx, 614, 12, "#ffffff", "center", null), button("mergeSkip", -2e3, -2e3, W + 4e3, H + 4e3, () => {
     S.mergeAnim = null;
   }), MA.t >= T + 0.8 && (S.mergeAnim = null);
 }
@@ -6300,7 +6450,7 @@ function countBadge(x, y, n, k) {
 }
 function renderShop() {
   let E = ECONOMY.shop;
-  panel(12, 12, 376, 696, "#fff6ee"), text(ctx, "Shop", 200, 36, 28, "#ffd27a"), panel(62, 56, 132, 32, "#e6f5ff", 16), diamondIcon(ctx, 84, 72, 1), text(ctx, String(S.save.diamonds || 0), 140, 73, 17, "#7fd3ff"), panel(206, 56, 132, 32, "#fff1d6", 16), coinIcon(ctx, 228, 72, 1.1), text(ctx, String(S.save.coins), 284, 73, 17, "#ffd45e"), plainText("No real money, ever. Diamonds come from Daily Rewards.", 200, 101, 11, "#a08090", "center", "600"), panel(26, 112, 348, 62, "#ffe9f0", 14);
+  panel(12, 12, 376, 636, "#fff6ee"), text(ctx, "Shop", 200, 36, 28, "#ffd27a"), panel(62, 56, 132, 32, "#e6f5ff", 16), diamondIcon(ctx, 84, 72, 1), text(ctx, String(S.save.diamonds || 0), 140, 73, 17, "#7fd3ff"), panel(206, 56, 132, 32, "#fff1d6", 16), coinIcon(ctx, 228, 72, 1.1), text(ctx, String(S.save.coins), 284, 73, 17, "#ffd45e"), plainText("No real money, ever. Diamonds come from Daily Rewards.", 200, 101, 11, "#a08090", "center", "600"), panel(26, 112, 348, 62, "#ffe9f0", 14);
   for (let k = 0; k < 3; k++)
     ctx.save(), ctx.translate(58 + k * 14, 146 - k * 3), ctx.rotate(-0.2 + k * 0.2), rr(ctx, -14, -20, 28, 38, 6), ctx.fillStyle = ["#ffb3c1", "#b5d8ff", "#ffd27a"][k], ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), text(ctx, "?", 0, 0, 16), ctx.restore();
   let gift = zapperGiftPending(S.save);
@@ -6335,7 +6485,7 @@ function renderShop() {
     ctx.save(), ctx.translate(x + w / 2, y + h / 2), ctx.scale(cs, cs), ctx.translate(-(x + w / 2), -(y + h / 2)), rr(ctx, x, y, w, h, 14), ctx.fillStyle = shade(BONUSES[bt].color, 0.2), ctx.fill(), ctx.lineWidth = 2.5, ctx.strokeStyle = INK, ctx.stroke(), ctx.save(), ctx.translate(x + w / 2, y + 22), ctx.scale(1.05, 1.05), drawBonusIcon(ctx, bt, S.t), ctx.restore(), fitText(BONUSES[bt].name, x + w / 2, y + 46, w - 8, 10.5, "#fff"), ctx.restore(), countBadge(x + w - 19, y + 15, S.save.bonusStock[bt] || 0, pk), button("bbuy" + bt, x, y, w, h, () => {
       buyBonus(S.save, bt) ? (persist(), sfx("tap"), shopBought("booster", bt, E.boosterDiamonds, "diamond")) : toast(`Need ${E.boosterDiamonds} diamonds`);
     });
-  }), cardInfoPanel(S.shopSel, 24, 536, 352, 108, { hint: "Tap (i) under a card to see its stats." }), drawButton(26, 652, 160, 48, "Back", "#d9cfe0"), button("back", 26, 650, 160, 54, () => go("map")), drawButton(214, 652, 160, 48, "Cards", "#b5d8ff"), button("tocards", 214, 650, 160, 54, () => go("cards")), gift && !S.reveal.length && !S.pack ? onboardSpot({ x: 286, y: 118, w: 82, h: 48, r: 14 }, "gift", claimGift, "Your free pack - tap it!") : !S.pack && !S.reveal.length && S.save.onboard && S.save.onboard.cardsHint === "shop" && onboardSpot({ x: 214, y: 652, w: 160, h: 48, r: 14 }, "tocards", () => {
+  }), cardInfoPanel(S.shopSel, 24, 534, 352, 108, { hint: "Tap (i) under a card to see its stats." }), gift && !S.reveal.length && !S.pack ? onboardSpot({ x: 286, y: 118, w: 82, h: 48, r: 14 }, "gift", claimGift, "Your free pack - tap it!") : !S.pack && !S.reveal.length && S.save.onboard && S.save.onboard.cardsHint === "shop" && onboardSpot(tabRect(1), "tocards", () => {
     S.save.onboard.cardsHint = "cards", persist(), go("cards");
   }, "See your new cards!"), renderUiFx(1 / 60);
 }
@@ -6350,7 +6500,7 @@ function renderReveal(dt) {
   let R = S.reveal[0];
   R.t += dt;
   let k = Math.min(1, R.t / 0.45);
-  ctx.save(), ctx.fillStyle = `rgba(50,32,46,${0.72 * k})`, ctx.fillRect(-200, -200, W + 400, H + 400), ctx.restore(), ctx.save(), ctx.translate(200, 330);
+  ctx.save(), ctx.fillStyle = `rgba(50,32,46,${0.72 * k})`, ctx.fillRect(-2e3, -2e3, W + 4e3, H + 4e3), ctx.restore(), ctx.save(), ctx.translate(200, 330);
   for (let i = 0; i < 14; i++) {
     let a = i / 14 * Math.PI * 2 + R.t * 0.4;
     ctx.save(), ctx.rotate(a), ctx.globalAlpha = 0.18 * k, ctx.beginPath(), ctx.moveTo(0, 0), ctx.lineTo(230, -22), ctx.lineTo(230, 22), ctx.closePath(), ctx.fillStyle = "#fff3a8", ctx.fill(), ctx.restore();
@@ -6362,7 +6512,7 @@ function renderReveal(dt) {
     starShape(ctx, 200 + Math.cos(a) * 130, 330 + Math.sin(a) * 140, 5 + i % 3, "#ffe36e", 1.2);
   }
   let ts = 34 + Math.max(0, 0.3 - R.t) * 40;
-  text(ctx, "NEW CARD!", 200, 108, ts, "#ffe36e"), text(ctx, `${TOWERS[R.id].name}  \xB7  Level ${R.level}`, 200, 152, 18, "#ffffff"), plainText("Added to your Cards", 200, 548, 13, "#ffe9c0", "center", "700"), R.t > 0.5 && (rr(ctx, 130, 588, 140, 30, 15), ctx.fillStyle = "rgba(255,255,255,0.18)", ctx.fill(), text(ctx, "Tap to continue", 200, 603, 13, "#ffffff", "center", null)), button("revealNext", -200, -200, W + 400, H + 400, () => {
+  text(ctx, "NEW CARD!", 200, 108, ts, "#ffe36e"), text(ctx, `${TOWERS[R.id].name}  \xB7  Level ${R.level}`, 200, 152, 18, "#ffffff"), plainText("Added to your Cards", 200, 548, 13, "#ffe9c0", "center", "700"), R.t > 0.5 && (rr(ctx, 130, 588, 140, 30, 15), ctx.fillStyle = "rgba(255,255,255,0.18)", ctx.fill(), text(ctx, "Tap to continue", 200, 603, 13, "#ffffff", "center", null)), button("revealNext", -2e3, -2e3, W + 4e3, H + 4e3, () => {
     R.t > 0.4 && (S.reveal.shift(), sfx("tap"));
   });
 }
@@ -6473,7 +6623,7 @@ function renderPack(dt) {
     sfx("win");
   });
   let dimA = P.reduced ? 0.72 * Math.min(1, (t - P.fadeFrom) / PACK.fade) : 0.72 * Math.min(1, t / PACK.dim);
-  ctx.save(), ctx.fillStyle = `rgba(50,32,46,${dimA})`, ctx.fillRect(-200, -200, W + 400, H + 400), ctx.restore();
+  ctx.save(), ctx.fillStyle = `rgba(50,32,46,${dimA})`, ctx.fillRect(-2e3, -2e3, W + 4e3, H + 4e3), ctx.restore();
   let inSummary = t >= P.summaryAt;
   if (!inSummary && t < PACK.burst) {
     if (ctx.save(), t < PACK.shake) {
@@ -6531,7 +6681,7 @@ function renderPack(dt) {
     let merge = anyMergeReady(S.save);
     drawButton(32, 470, 160, 48, "OK", "#ffd45e"), drawButton(208, 470, 160, 48, merge ? "Merge now" : "Cards", "#b5d8ff", { size: merge ? 16 : 17 }), t - P.summaryAt >= PACK.tapHint && plainText("Tap anywhere to continue", 200, 545, 12, "#ffe9c0", "center", "700"), ctx.restore();
   }
-  button("packTap", -200, -200, W + 400, H + 400, () => {
+  button("packTap", -2e3, -2e3, W + 4e3, H + 4e3, () => {
     t < P.summaryAt ? skipPack() : t - P.summaryAt >= PACK.tapHint && closePack("ok");
   }), inSummary && (button("packOk", 32, 466, 160, 56, () => closePack("ok")), button("packCards", 208, 466, 160, 56, () => closePack("cards")));
 }

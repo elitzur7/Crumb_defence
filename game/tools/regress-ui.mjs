@@ -460,6 +460,53 @@ for (const [w, h, dpr] of VIEWPORTS) {
   { const all = await G(() => [...window.__allTx]); const bon = all.filter((t) => /bonus/i.test(t)); ok(bon.length === 0, `${vp} W9 no "bonus" text drawn (boosters only) ${bon.slice(0, 5).join(' | ')}`); }
   const allBad = bad(await G(() => [...window.__allTx]));
   ok(allBad.length === 0, `${vp} B8 no NaN/undefined/null text drawn anywhere during the whole run ${allBad.slice(0, 5).join(' | ')}`);
+  // ---------- v0.7.2 C16: bottom tab bar ----------
+  {
+    await G(() => { const g = window.__game; g.S.cal = null; g.S.reveal = []; g.S.pack = null; g.S.dialog = null; g.S.mergeAnim = null; g.S.save.onboard = g.S.save.onboard || {}; g.S.save.onboard.cardsHint = 'done'; g.S.save.onboard.giftDone = true; g.go('map'); }); await sleep(450);
+    const tabs = async () => (await btns()).filter((b) => /^tab[012]$/.test(b.id));
+    for (const insetPx of [0, 24]) {
+      await G((i) => window.__game.setInset(i), insetPx); await sleep(300);
+      for (const scr of ['map', 'cards', 'shop']) {
+        await G((s) => { const g = window.__game; g.S.mergeAnim = null; g.go(s); }, scr); await sleep(420);
+        const t = await tabs(); const L = await G(() => window.__game.layout());
+        ok(t.length === 3, `${vp} C16 inset ${insetPx} ${scr}: exactly 3 tab buttons`);
+        ok(t.every((b) => b.cssH >= 48 && b.cssW >= 48), `${vp} C16 inset ${insetPx} ${scr}: tabs >= 48dp (${t.map((b) => Math.round(b.cssW) + 'x' + Math.round(b.cssH)).join(',')})`);
+        const bottom = Math.max(...t.map((b) => b.sy + b.cssH / 2));
+        ok(Math.abs(bottom - (h - insetPx)) < 1.5, `${vp} C16 inset ${insetPx} ${scr}: the tabs end above the safe area (${bottom.toFixed(1)} vs ${h - insetPx})`);
+        const hits = await Promise.all(t.map((b) => G(([x, y]) => window.__game.hitAt(x, y), [b.sx, b.sy])));
+        ok(hits.join() === 'tab0,tab1,tab2', `${vp} C16 inset ${insetPx} ${scr}: tabs top-most ${hits.join()}`);
+        const bb = (await btns()).filter((b) => !/^tab/.test(b.id) && b.sy + b.cssH / 2 > h - insetPx - 56 && b.id !== 'onboardBlock');
+        ok(bb.length === 0, `${vp} C16 inset ${insetPx} ${scr}: no other button inside the bar (${bb.map((b) => b.id).join(',')})`);
+        const gone = (await btns()).filter((b) => ['cards', 'shop', 'mute', 'reset', 'toshop', 'cvShop', 'tocards', 'back'].includes(b.id));
+        ok(gone.length === 0, `${vp} C16 ${scr}: the old bottom buttons are gone (${gone.map((b) => b.id).join(',')})`);
+        const act = await G(() => window.__game.S.screen); ok(act === scr, `${vp} C16 on ${scr}`);
+        // every real button stays inside the visible canvas area above the bar
+        const off = (await btns()).filter((b) => !/^tab|Block|mergeSkip/.test(b.id) && (b.sy + b.cssH / 2 > h - insetPx - 56 + 2) && b.cssH < 300);
+        ok(off.length === 0, `${vp} C16 ${scr}: no control hidden behind the bar (${off.map((b) => b.id).join(',')})`);
+      }
+    }
+    await G(() => window.__game.setInset(24)); await G(() => window.__game.go('map')); await sleep(300);
+    const t0 = await tabs();
+    await tap(t0[1].sx, t0[1].sy); ok(await G(() => window.__game.S.screen) === 'cards', `${vp} C16 tap Cards tab -> Cards`);
+    await sleep(300); const t1 = await tabs(); await tap(t1[2].sx, t1[2].sy); ok(await G(() => window.__game.S.screen) === 'shop', `${vp} C16 tap Shop tab -> Shop`);
+    await sleep(300); const t2 = await tabs(); await tap(t2[0].sx, t2[0].sy); ok(await G(() => window.__game.S.screen) === 'map', `${vp} C16 tap Map tab -> Map`);
+    await sleep(300); const t3 = await tabs(); await tap(t3[0].sx, t3[0].sy); ok(await G(() => window.__game.S.screen) === 'map', `${vp} C16 tap the active tab: stays`);
+    // card detail: Cards tab = active, tapping it returns to the list
+    await G(() => window.__game.openCardView('slingshot')); await sleep(300);
+    const t4 = await tabs(); await tap(t4[1].sx, t4[1].sy); ok(await G(() => window.__game.S.screen) === 'cards', `${vp} C16 card screen: the active Cards tab returns to the list`);
+    // gear -> settings: bar hides, sound / reset / close work
+    await G(() => window.__game.go('map')); await sleep(300);
+    await tapId('gear'); await sleep(450);
+    ok(await G(() => !!window.__game.S.settings) && (await tabs()).length === 0, `${vp} C16 settings panel open, tab bar hidden`);
+    const sb = await btn('setSound'); ok(sb && sb.cssH >= 44, `${vp} C16 settings Sound >= 44px`);
+    await tapId('setClose'); await sleep(450);
+    ok(await G(() => !window.__game.S.settings) && (await tabs()).length === 3, `${vp} C16 settings closed, tab bar back`);
+    // the bar never shows in battle / prep
+    await G(() => window.__game.startBattle(0, ['slingshot', 'spray', 'glue', 'fan', 'ball'], ['bomb', 'freeze'], 5)); await sleep(300);
+    ok((await tabs()).length === 0, `${vp} C16 no tab bar in battle`);
+    const lay = await G(() => window.__game.layout()); ok(Math.abs(lay.scale - Math.min(w / 400, h / 720)) < 1e-6, `${vp} C16 battle keeps the full-height 400x720 layout`);
+    await G(() => { window.__game.setInset(0); window.__game.go('map'); }); await sleep(200);
+  }
   ok(errors.length === 0, `${vp} no console errors ${errors.join(' | ')}`);
   await page.close();
 }

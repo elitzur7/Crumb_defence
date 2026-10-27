@@ -37,9 +37,10 @@ test('Must 4: D-T6 in-battle power multipliers -> cumulative x2..x6 (Laser 1.70/
   const g = src('game.js'); assert.ok(/dmg/.test(g) && /upgradeGain/.test(g), 'upgrade display shows the gain');
 });
 
-test('Must 5: hpMul L10 2.0, L17 2.4 (or the S1 fallback 2.2), L5 2.4, L8 2.48, L13 2.72, L18 3.04', () => {
+test('Must 5 (re-tuned in v0.7.2 for the shuttle + swatter): hpMul per level', () => {
   const h = (n) => C.LEVELS[n - 1].hpMul;
-  assert.equal(h(10), 2.0); assert.ok([2.4, 2.2].includes(h(17))); assert.equal(h(5), 2.4); assert.equal(h(8), 2.48); assert.equal(h(13), 2.72); assert.equal(h(18), 3.04);
+  const want = [1, 1.3, 2.64, 3.52, 2.52, 3.4, 2.1, 2.48, 2.88, 2.25, 3, 3.0, 2.8, 3.6, 3.24, 3.9, 2.35, 3.04, 4.1, 1.4];
+  want.forEach((v, i) => assert.equal(h(i + 1), v, `L${i + 1}`));
 });
 
 test('Must 8: D-R1 distinct hands, D-R2 >= 2 damage cards in the opening hand, D-R3 first redraw free', () => {
@@ -107,7 +108,7 @@ test('Must 6: pack reveal for ALL packs (paid + free), skippable, no toast / NEW
   assert.ok(!/@capacitor\/haptics/.test(readFileSync(new URL('../package.json', import.meta.url), 'utf8')), 'no haptics dependency');
 });
 
-test('version 0.7.0 label in game', () => { assert.equal(C.VERSION, '0.7.0'); assert.ok(/'v' \+ C\.VERSION/.test(src('game.js'))); });
+test('version label in game (0.7.2)', () => { assert.equal(C.VERSION, '0.7.2'); assert.ok(/'v' \+ C\.VERSION/.test(src('game.js'))); });
 
 test('Should D-P4: per-world card-level cap in battle (W1 L4, W2 L6); the prep screen says so', () => {
   assert.equal(TJ.worlds[0].cardLevelCap, 4); assert.equal(TJ.worlds[1].cardLevelCap, 6);

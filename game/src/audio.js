@@ -35,6 +35,7 @@ export function sfx(name) {
     case 'laser': tone(1600, 0.05, 'sawtooth', 0.06, 0.6); break;
     case 'pulse': tone(110, 0.22, 'sine', 0.5, 0.6); break;
     case 'boom': noise(0.5, 0.6, 120); tone(90, 0.4, 'sine', 0.6, 0.4); break;
+    case 'swat': tone(330 + Math.random() * 40, 0.09, 'sine', 0.32, 0.55); noise(0.05, 0.1, 1500); break; // v0.7.2: the cookie guard's soft thwap (a lower 'pop')
     case 'steal': tone(300, 0.15, 'square', 0.12, 0.6); break;
     case 'return': tone(660, 0.12, 'triangle', 0.3, 1.5); break;
     case 'wave': tone(440, 0.12, 'triangle', 0.3); tone(440, 0.12, 'triangle', 0.3, 1, 0.16); break;
