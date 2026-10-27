@@ -397,7 +397,7 @@ export class Battle {
       if (back > 0) { this.foodStored = Math.min(this.cfg.foodHP, this.foodStored + back); this.stats.returned += back; this.emit({ type: 'foodReturn', x: ant.x, y: ant.y, n: back, of: ant.carrying }); }
       ant.carrying = 0;
     }
-    this.emit({ type: 'kill', x: ant.x, y: ant.y, ant: ant.type, crumbs, src: src && src.type });
+    this.emit({ type: 'kill', x: ant.x, y: ant.y, ant: ant.type, crumbs, src: src && src.type, ...(src && src.type === 'swatter' ? { ref: ant } : {}) }); // ref: the view keeps the swatted ant visible until the slap frame (v0.7.3)
     if (src && src.type === 'lizard') src.chew = src.stat('chewTime');
   }
   threat(a) { return a.state === 'go' ? a.d : this.route(a).length * 2 - a.d; }

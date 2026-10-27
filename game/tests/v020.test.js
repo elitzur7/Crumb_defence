@@ -212,10 +212,10 @@ test('prep: a selected booster with 0 stock is flagged (warning only since v0.3)
   const fixed = M.autoFixBonuses(s, ['bomb', 'plane']); assert.ok(!fixed.includes('bomb') && fixed.length === 2);
 });
 
-test('version 0.7.2 (versionCode 16) everywhere', () => {
-  assert.equal(JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version, '0.7.2');
+test('version 0.7.3 (versionCode 17) everywhere', () => {
+  assert.equal(JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version, '0.7.3');
   const gr = readFileSync(new URL('../android/app/build.gradle', import.meta.url), 'utf8');
-  assert.match(gr, /versionCode 16\b/); assert.match(gr, /versionName "0\.7\.2"/);
+  assert.match(gr, /versionCode 17\b/); assert.match(gr, /versionName "0\.7\.3"/);
 });
 
 // ---------- v0.2.0 audit fixes (B8-B10) ----------

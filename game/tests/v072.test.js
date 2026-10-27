@@ -122,9 +122,9 @@ test('C16: the old bottom buttons are gone from the map / cards / shop code', ()
   for (const id of ["button('cards',", "button('shop',", "button('mute',", "button('reset',", "button('toshop',", "button('cvShop',", "button('back', 26, 650, 160"]) assert.ok(!g.includes(id), id);
   assert.ok(g.includes("button('gear'") && g.includes("button('setSound'") && g.includes("button('setReset'"), 'sound + reset live in the settings panel');
 });
-test('C16: version 0.7.2 / versionCode 16 everywhere', () => {
-  assert.equal(C.VERSION, '0.7.2');
-  assert.equal(JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version, '0.7.2');
+test('C16: version 0.7.3 / versionCode 17 everywhere (updated in v0.7.3)', () => {
+  assert.equal(C.VERSION, '0.7.3');
+  assert.equal(JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version, '0.7.3');
   const gr = readFileSync(new URL('../android/app/build.gradle', import.meta.url), 'utf8');
-  assert.ok(/versionCode 16\b/.test(gr) && /versionName "0\.7\.2"/.test(gr));
+  assert.ok(/versionCode 17\b/.test(gr) && /versionName "0\.7\.3"/.test(gr));
 });

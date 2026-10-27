@@ -81,6 +81,13 @@ After any change, run `npm test && npm run sim`. The sim table shows win rates a
 - **Next wave** calls the next wave early for extra crumbs. **Redraw** swaps all 3 cards for crumbs. `>`/`>>` changes game speed.
 - The Android back button pauses or resumes a battle and leaves other screens.
 
+## What's new in v0.7.3
+- **C17 tuning.** Ant mix and `hpMul` of all 20 levels replaced with Crumb Design's M5 paste (`paste-mix-v073.txt`); bots: CL1 W1 95 / W2 91 / L10 56 / L17 28, CL2 98/98/86/82, CL3 100 (see `../JOB-v0.7.3.md`).
+- **Safe area.** The inset is re-read about every 500 ms and on `orientationchange` / `visualViewport` resize; `MainActivity` enables edge-to-edge; the tab bar sits above the bottom inset. Real-device test is still pending for a human.
+- **Android Back** closes the settings panel (it pushes one history entry). The calendar race (`go('map')` + async `history.back()`) is fixed.
+- **Swatter** slap, sound and kill effects land on the hit frame (0.17 s of battle time, speed- and pause-aware); the swatted ant stays visible until then.
+- **Version label** hidden on Daily Rewards, the settings panel and the free-pack hint, and moved under the Calendar badge. Gear icon nudged away from the mascot; onboarding bubble lifted off the stage label.
+
 ## What's new in v0.7.2
 - **Cookie guard (C13).** A cute code-drawn fly swatter leans on the cookie. It is always there (not a card, not placeable, not upgradable) and swats the best ant within 72 px of the cookie for 4 damage every 4 s (armour applies, flyers too; a carrier nearest the cookie first). Config: `BATTLE.swatter` in `src/config.js`. Swing animation + soft "thwap" sound (`sfx('swat')`).
 - **Shuttle until death (C14).** Ants never "escape" any more: a thief carries the piece to the nest, drops it there (lost for the player), waits 0.3 s, and walks back for more until its HP is 0. The level ends only when every ant is dead (win) or the food is gone (loss). Stars still come from the food left. Config: `BATTLE.forage`. Killing a carrier still returns 0.4 of its piece.

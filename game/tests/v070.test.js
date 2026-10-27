@@ -37,9 +37,9 @@ test('Must 4: D-T6 in-battle power multipliers -> cumulative x2..x6 (Laser 1.70/
   const g = src('game.js'); assert.ok(/dmg/.test(g) && /upgradeGain/.test(g), 'upgrade display shows the gain');
 });
 
-test('Must 5 (re-tuned in v0.7.2 for the shuttle + swatter): hpMul per level', () => {
+test('Must 5 (replaced in v0.7.3 by the C17 table): hpMul per level', () => {
   const h = (n) => C.LEVELS[n - 1].hpMul;
-  const want = [1, 1.3, 2.64, 3.52, 2.52, 3.4, 2.1, 2.48, 2.88, 2.25, 3, 3.0, 2.8, 3.6, 3.24, 3.9, 2.35, 3.04, 4.1, 1.4];
+  const want = [1, 1.56, 3, 6.6, 2.803, 4.321, 2.225, 3.72, 4.8, 2.3, 3.054, 3.387, 2.875, 3.6, 5.304, 4.213, 2.39, 3.557, 4.065, 1.6]; // C17 (crumb-design paste-mix-v073.txt)
   want.forEach((v, i) => assert.equal(h(i + 1), v, `L${i + 1}`));
 });
 
@@ -108,7 +108,7 @@ test('Must 6: pack reveal for ALL packs (paid + free), skippable, no toast / NEW
   assert.ok(!/@capacitor\/haptics/.test(readFileSync(new URL('../package.json', import.meta.url), 'utf8')), 'no haptics dependency');
 });
 
-test('version label in game (0.7.2)', () => { assert.equal(C.VERSION, '0.7.2'); assert.ok(/'v' \+ C\.VERSION/.test(src('game.js'))); });
+test('version label in game (0.7.3)', () => { assert.equal(C.VERSION, '0.7.3'); assert.ok(/'v' \+ C\.VERSION/.test(src('game.js'))); });
 
 test('Should D-P4: per-world card-level cap in battle (W1 L4, W2 L6); the prep screen says so', () => {
   assert.equal(TJ.worlds[0].cardLevelCap, 4); assert.equal(TJ.worlds[1].cardLevelCap, 6);
@@ -121,10 +121,10 @@ test('Should D-P4: per-world card-level cap in battle (W1 L4, W2 L6); the prep s
   assert.ok(/Cards act as L\$\{cap\} max/.test(src('game.js')));
 });
 
-test('Should D-A6: variants wired - small_gasmask from L3, small_fly from L4, small_armed from L5 (<= 5 ant types each)', async () => {
+test('Should D-A6 (updated for the v0.7.3 C17 mixes): variants wired - small_gasmask from L2 (wave 3), small_fly from L3, small_armed from L5 (<= 5 ant types each)', async () => {
   const { levelAntTypes } = await import('../src/sim.js');
   const first = (t) => C.LEVELS.findIndex((L) => L.mix.some((m) => m.type === t)) + 1;
-  assert.equal(first('small_gasmask'), 3); assert.equal(first('small_fly'), 4); assert.equal(first('small_armed'), 5);
+  assert.equal(first('small_gasmask'), 2); assert.equal(first('small_fly'), 3); assert.equal(first('small_armed'), 5);
   for (const i of [2, 3, 4]) assert.ok(levelAntTypes(i).length <= 5, `L${i + 1}`);
-  for (const i of [0, 1]) assert.ok(!levelAntTypes(i).some((t) => t.startsWith('small_')), 'L1-L2 stay tutorial-clean');
+  assert.ok(!levelAntTypes(0).some((t) => t.startsWith('small_')), 'L1 stays tutorial-clean'); // C17: L2 gets small_gasmask from wave 3
 });

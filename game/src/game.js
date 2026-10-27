@@ -19,7 +19,7 @@ const storage = (() => { try { localStorage.setItem('__t', '1'); localStorage.re
 const S = {
   screen: 'map', save: M.loadSave(storage), battle: null, levelIndex: 0, t: 0,
   prep: { deck: [], bonuses: [] }, sel: null, drag: null, info: null, speed: 1, paused: false, result: null,
-  toast: null, fx: [], ui: [], bgCache: {}, cardsSel: null, confirmReset: 0, autoBot: false, shopMsg: null, crumbShake: 0, crumbPulse: 0, slotFlip: [0, 0, 0], mergeAnim: null, prepAlert: null,
+  toast: null, fx: [], swatQ: [], ui: [], bgCache: {}, cardsSel: null, confirmReset: 0, autoBot: false, shopMsg: null, crumbShake: 0, crumbPulse: 0, slotFlip: [0, 0, 0], mergeAnim: null, prepAlert: null,
   dialog: null, cal: null, cookieOuch: 0, clockOffset: 0, treat: Treat.newTreatState(),
   // v0.5: map scroll (item 13), per-card screen (items 6/7), NEW CARD reveals (item 7), Move/Swap mode (items 11/12),
   // fireworks (item 16), shop purchase animation (item 8)
@@ -75,6 +75,11 @@ function resize() {
   A.clearTowerCache(); // v0.6.1: tower sprites are baked at the device scale -> rebuild after a DPR / size change
 }
 window.addEventListener('resize', resize);
+// v0.7.3 (review P1): the safe-area inset can change after the first layout (edge-to-edge applied late, rotation, gesture <-> 3-button navigation, WebView
+// inset updates). Re-read it about every 500 ms (frame loop, refreshInset) and on orientationchange / visualViewport resize, not only on window resize.
+function refreshInset() { if (Math.abs(readInset() - insetB) > 0.5) resize(); }
+window.addEventListener('orientationchange', () => { resize(); setTimeout(resize, 350); }); // the size is sometimes stale right at the event
+if (window.visualViewport && window.visualViewport.addEventListener) window.visualViewport.addEventListener('resize', resize);
 resize();
 
 // ---------------- immediate-mode buttons ----------------
@@ -135,20 +140,32 @@ document.addEventListener('visibilitychange', () => {
 });
 
 // ---------------- screens ----------------
+// v0.7.3: our own history.back() is async; its popstate must not be treated as the user's Back press (it could close a calendar that go('map') just opened).
+let ownBackUntil = 0;
+function ownBack() { try { ownBackUntil = performance.now() + 1000; history.back(); } catch (e) { ownBackUntil = 0; } }
+// v0.7.3: the gear panel owns one history entry while it is open (when none exists yet), so Android Back closes the panel instead of exiting the app.
+function openSettings() {
+  S.settings = { t: 0 }; S.confirmReset = 0; sfx('tap');
+  try { if (!(history.state && history.state.inner)) { history.pushState({ inner: 1 }, ''); S.settingsPushed = true; } } catch (e) { /* history unavailable */ }
+}
+function closeSettings() { S.settings = null; S.confirmReset = 0; if (S.settingsPushed) { S.settingsPushed = false; ownBack(); } }
 function go(screen) {
+  S.settingsPushed = false; // a leave-the-map navigation reuses the gear panel's history entry (it is the screen's 'inner' entry)
   S.screen = screen; S.sel = null; S.info = null; S.drag = null; S.mergeAnim = null; S.toast = null; S.dialog = null; S.cal = null; S.settings = null; S.mode = null; S.shopFx = null; sfx('tap');
   if (screen === 'map') { S.mapScroll = autoMapScroll(); maybeShowCalendar(); }
   // keep one history entry while away from the map so the Android back button maps to in-game "back"
   try {
     const inner = history.state && history.state.inner;
     if (screen !== 'map' && !inner) history.pushState({ inner: 1 }, '');
-    else if (screen === 'map' && inner) history.back();
+    else if (screen === 'map' && inner) ownBack();
   } catch (e) { /* history unavailable */ }
 }
 window.addEventListener('popstate', () => {
+  if (ownBackUntil && performance.now() < ownBackUntil) { ownBackUntil = 0; return; } // the echo of our own history.back(): not a user Back press
+  ownBackUntil = 0;
   if (S.pack) { closePack('ok'); try { history.pushState({ inner: 1 }, ''); } catch (e) {} return; } // v0.7: back closes the pack reveal
   if (S.dialog) { S.dialog = null; try { history.pushState({ inner: 1 }, ''); } catch (e) {} return; }
-  if (S.screen === 'map') { if (S.cal) S.cal = null; else if (S.settings) S.settings = null; return; }
+  if (S.screen === 'map') { if (S.cal) S.cal = null; else if (S.settings) { S.settings = null; S.confirmReset = 0; S.settingsPushed = false; } return; }
   const repush = () => { try { history.pushState({ inner: 1 }, ''); } catch (e) {} };
   if (S.screen === 'battle' && !S.result) { setPaused(!S.paused); repush(); return; }
   if (S.screen === 'card') { S.screen = 'cards'; repush(); return; }
@@ -172,7 +189,7 @@ function startBattle(levelIndex = S.levelIndex, deck = S.prep.deck, bonuses = S.
   S.battle = new Battle({ levelIndex, deck, bonusTypes: bonuses, bonusStock: { ...S.save.bonusStock }, cardLevels: M.cardLevels(S.save), seed,
     onBonusUsed: (type) => { M.consumeBonus(S.save, type); persist(); } }); // deducted immediately: Restart/Quit can't refund it
   S.battleStartStock = { ...S.save.bonusStock };
-  S.fx = []; S.ui = []; S.result = null; setPaused(false); S.speed = S.speed || 1; S.sel = null; S.info = null; S.mode = null; S.queenDown = null;
+  S.fx = []; S.swatQ = []; S.ui = []; S.result = null; setPaused(false); S.speed = S.speed || 1; S.sel = null; S.info = null; S.mode = null; S.queenDown = null;
   go('battle');
 }
 function finishBattle() {
@@ -255,17 +272,44 @@ function modeTap(b, t) {
 function addFx(f) { S.fx.push(f); if (S.fx.length > 300) S.fx.splice(0, 60); }
 function addUi(f) { S.ui.push(f); if (S.ui.length > 60) S.ui.splice(0, 20); }
 const fmtFood = (n) => (Math.abs(n - Math.round(n)) < 0.05 ? String(Math.round(n)) : n.toFixed(1));
+// v0.7.3 C13: swatter visuals run on the BATTLE clock (b.time), so they follow pause and 2x speed. The sim applies the damage when the swing starts; the slap
+// is drawn SWAT_HIT s later. The kill effects (ko, puffs, crumbs, pop), the spark, the ring and the thwap are queued for that frame; until then the
+// dead ant is drawn as a ghost at its spot, so the swatter lands on the ant instead of on empty ground.
+const SWAT_HIT = 0.17;
+function swatHitTime(b) { return b.time - (0.5 - b.swatFx) + SWAT_HIT; }
+function killFx(e) {
+  if (e.src === 'tractor') { addFloatText(S.fx, { k: 'crumbTxt', key: 'crumb', x: e.x, y: e.y - 14, n: e.crumbs, fmt: (n) => n, life: 0.9 }); return; } // the scoop event animates the throw
+  for (let i = 0; i < 4; i++) addFx({ k: 'crumbBit', x: e.x, y: e.y - 6, vx: (Math.random() - 0.5) * 90, vy: -40 - Math.random() * 60, life: 0.6, max: 0.6 });
+  addFx({ k: 'ko', x: e.x, y: e.y, ant: e.ant, life: 0.9, max: 0.9, face: Math.random() < 0.5 ? 1 : -1 });
+  for (let i = 0; i < 5; i++) addFx({ k: 'puff', x: e.x + (Math.random() - 0.5) * 10, y: e.y + (Math.random() - 0.5) * 6, vx: (Math.random() - 0.5) * 40, vy: -Math.random() * 30, r: 4 + Math.random() * 4, life: 0.5, max: 0.5 });
+  addFloatText(S.fx, { k: 'crumbTxt', key: 'crumb', x: e.x, y: e.y - 14, n: e.crumbs, fmt: (n) => n, life: 0.9 });
+  sfx('pop');
+}
+function swatHitFx(e) {
+  addFx({ k: 'spark', x: e.x, y: e.y - 4, life: 0.2, max: 0.2, col: '#fff7b0' });
+  addFx({ k: 'ring2', x: e.x, y: e.y - 2, life: 0.3, max: 0.3 });
+  sfx('swat');
+}
+function flushSwat(force) {
+  if (!S.swatQ.length) return;
+  const b = S.battle, keep = [];
+  for (const q of S.swatQ) {
+    if (!(force || b.time >= q.at)) { keep.push(q); continue; }
+    if (q.kill) killFx(q.kill);
+    if (q.swat) swatHitFx(q.swat);
+  }
+  S.swatQ = keep;
+}
 function consumeEvents() {
   const b = S.battle; const ev = b.events; b.events = [];
   for (const e of ev) {
     switch (e.type) {
       case 'kill':
-        if (e.src === 'tractor') { addFloatText(S.fx, { k: 'crumbTxt', key: 'crumb', x: e.x, y: e.y - 14, n: e.crumbs, fmt: (n) => n, life: 0.9 }); break; } // the scoop event animates the throw
-        for (let i = 0; i < 4; i++) addFx({ k: 'crumbBit', x: e.x, y: e.y - 6, vx: (Math.random() - 0.5) * 90, vy: -40 - Math.random() * 60, life: 0.6, max: 0.6 });
-        addFx({ k: 'ko', x: e.x, y: e.y, ant: e.ant, life: 0.9, max: 0.9, face: Math.random() < 0.5 ? 1 : -1 });
-        for (let i = 0; i < 5; i++) addFx({ k: 'puff', x: e.x + (Math.random() - 0.5) * 10, y: e.y + (Math.random() - 0.5) * 6, vx: (Math.random() - 0.5) * 40, vy: -Math.random() * 30, r: 4 + Math.random() * 4, life: 0.5, max: 0.5 });
-        addFloatText(S.fx, { k: 'crumbTxt', key: 'crumb', x: e.x, y: e.y - 14, n: e.crumbs, fmt: (n) => n, life: 0.9 });
-        sfx('pop'); break;
+        if (e.src === 'swatter' && !reducedMotion() && b.swatFx > 0) { // v0.7.3: a swatter kill shows on the slap frame (ant ghost stays until then)
+          S.swatQ.push({ at: swatHitTime(b), kill: e, ghost: e.ref, x: e.x, y: e.y }); break;
+        }
+        killFx(e); break;
+
       case 'beam': addFx({ k: 'beam', ...e, life: 0.09, max: 0.09 }); sfx('laser'); break;
       case 'zap': addFx({ k: 'zap', ...e, life: 0.14, max: 0.14 }); sfx('zap'); break;
       case 'roast': for (let i = 0; i < 5; i++) addFx({ k: 'ember', x: e.x + (Math.random() - 0.5) * 14, y: e.y - 4, vx: (Math.random() - 0.5) * 20, vy: -30 - Math.random() * 30, life: 0.7, max: 0.7 }); break; // v0.4 item 7
@@ -284,11 +328,9 @@ function consumeEvents() {
       case 'pulse': addFx({ k: 'ring', ...e, life: 0.45, max: 0.45, col: '#a58be0' }); sfx('pulse'); break;
       case 'gust': for (let i = 0; i < 6; i++) addFx({ k: 'wisp', x: e.x, y: e.y - 16, a: e.ang + (Math.random() - 0.5) * 0.8, d: 10 + Math.random() * 10, life: 0.5, max: 0.5 }); sfx('gust'); break;
       case 'spray': addFx({ k: 'mist', ...e, life: 0.3, max: 0.3 }); break;
-      case 'swat': { // v0.7.2 C13: the swatter's slap lands 0.18 s into its 0.5 s swing: spark + hit flash on the ant, a soft thwap
-        const wait = reducedMotion() ? 0 : 0.17;
-        addFx({ k: 'spark', x: e.x, y: e.y - 4, life: 0.2 + wait, max: 0.2, wait, col: '#fff7b0' });
-        addFx({ k: 'ring2', x: e.x, y: e.y - 2, life: 0.3 + wait, max: 0.3, wait });
-        setTimeout(() => sfx('swat'), wait * 1000); break;
+      case 'swat': { // v0.7.2 C13: the swatter's slap lands 0.17 s into its 0.5 s swing: spark + hit flash on the ant, a soft thwap (v0.7.3: queued on the battle clock)
+        if (reducedMotion()) swatHitFx(e); else S.swatQ.push({ at: swatHitTime(b), swat: e });
+        break;
       }
       case 'hit': addFx({ k: 'spark', x: e.x, y: e.y - 6, life: 0.15, max: 0.15 }); break;
       case 'gateZap': addFx({ k: 'spark', x: e.x, y: e.y - 14, life: 0.18, max: 0.18, col: '#fff27a' }); break;
@@ -336,12 +378,13 @@ function consumeEvents() {
 }
 
 // ---------------- main loop ----------------
-let lastT = performance.now(), acc = 0;
+let lastT = performance.now(), acc = 0, insetClock = 0;
 const STEP = 1 / 60;
 function frame(now) {
   const dt = Math.min(0.1, (now - lastT) / 1000); lastT = now;
   S.t += dt;
   heartbeat(false);
+  insetClock += dt; if (insetClock >= 0.5) { insetClock = 0; refreshInset(); } // v0.7.3: re-read the bottom inset ~every 500 ms
   if (S.screen === 'battle' && S.battle && !S.paused && !S.result && !S.dialog) {
     acc += dt * S.speed;
     while (acc >= STEP) {
@@ -349,7 +392,7 @@ function frame(now) {
       if (S.autoBot) smartBotStep(S.battle);
       if (S.battle.result) break;
     }
-    consumeEvents();
+    consumeEvents(); flushSwat(!!S.battle.result);
     if (S.battle.result) finishBattle();
   }
   render(dt);
@@ -470,7 +513,7 @@ function renderSettings() {
   if (!S.settings) return;
   button('setBlock', -2000, -2000, W + 4000, H + 4000, () => {});
   ctx.save(); ctx.fillStyle = 'rgba(40,26,38,0.55)'; ctx.fillRect(-2000, -2000, W + 4000, H + 4000); ctx.restore();
-  button('setBlock2', -2000, -2000, W + 4000, H + 4000, () => { S.settings = null; S.confirmReset = 0; });
+  button('setBlock2', -2000, -2000, W + 4000, H + 4000, () => closeSettings());
   const x = 70, y = 190, w = 260, h = 262;
   panel(x, y, w, h, '#fff6ee', 20); button('setPanel', x, y, w, h, () => {});
   A.text(ctx, 'Settings', 200, y + 28, 22, '#ffb3c1');
@@ -480,11 +523,11 @@ function renderSettings() {
   const sure = S.confirmReset > S.t;
   drawButton(x + 24, y + 122, w - 48, 52, sure ? 'Sure? Tap again' : 'Reset progress', '#ffb3b3', { size: sure ? 16 : 17 });
   button('setReset', x + 24, y + 116, w - 48, 64, () => {
-    if (S.confirmReset > S.t) { S.save = M.newSave(); Cal.touch(S.save, now()); persist(); S.confirmReset = 0; S.cardsBlinkUntil = 0; S.settings = null; toast('Progress reset'); }
+    if (S.confirmReset > S.t) { S.save = M.newSave(); Cal.touch(S.save, now()); persist(); S.confirmReset = 0; S.cardsBlinkUntil = 0; closeSettings(); toast('Progress reset'); }
     else { S.confirmReset = S.t + 3; }
   });
   drawButton(x + 24, y + 190, w - 48, 48, 'Close', '#d9cfe0', { size: 17 });
-  button('setClose', x + 24, y + 184, w - 48, 64, () => { S.settings = null; S.confirmReset = 0; });
+  button('setClose', x + 24, y + 184, w - 48, 64, () => closeSettings());
 }
 function drawBackdrop() {
   ctx.save();
@@ -623,11 +666,14 @@ function renderMapScreen() {
   }
   // v0.7.2 C16: the bottom buttons moved into the fixed tab bar (renderTabBar); Snd / Reset live in the settings panel behind the gear
   updateCardsBlink();
-  A.blob(ctx, 370, 26, 19, 19, '#fff6ee', 2.2); drawGearIcon(370, 26, 12); button('gear', 344, 2, 52, 52, () => { S.settings = { t: 0 }; S.confirmReset = 0; sfx('tap'); });
+  A.blob(ctx, 363, 22, 19, 19, '#fff6ee', 2.2); drawGearIcon(363, 22, 12); button('gear', 337, 0, 52, 52, () => openSettings()); // v0.7.3: 7 px left / 4 px up, clear of the mascot's antennae
+  // v0.7.3: the version label sits in the free corner under the Calendar badge (it used to collide with the bottom-row stage label), and is drawn only
+  // when no modal / onboarding spot covers the map (Daily Rewards, settings, the Shop hint)
+  const shopHint = !S.cal && !S.settings && M.zapperGiftPending(S.save) && !S.reveal.length;
+  if (!S.cal && !S.settings && !shopHint) plainText('v' + C.VERSION, 14, 186, 11, '#a08090', 'left', '600');
   if (S.cal) renderCalendar();
   else if (S.settings) renderSettings();
-  else if (M.zapperGiftPending(S.save) && !S.reveal.length) onboardSpot(tabRect(2), 'shop', () => go('shop'), 'A free pack waits in the Shop!');
-  plainText('v' + C.VERSION, 392, 650, 11, '#a08090', 'right', '600'); // v0.7: version label
+  else if (shopHint) onboardSpot(tabRect(2), 'shop', () => go('shop'), 'A free pack waits in the Shop!');
   renderUiFx(1 / 60);
 }
 // ---------------- v0.6 item 5: one-time onboarding (dim everything except one button + a pointing finger) ----------------
@@ -645,7 +691,8 @@ function onboardSpot(R, id, onTap, msg) {
   button(id, R.x, R.y, R.w, R.h, onTap);
   const fx = R.x + R.w / 2 + 18, fy = R.y - 22 - Math.abs(Math.sin(S.t * 4)) * 12;
   drawFinger(fx, fy);
-  if (msg) { const my = R.y < 260 ? R.y + R.h + 22 : Math.max(90, R.y - 104); panel(60, my, 280, 40, '#fff6ee', 16); plainFit(msg, 200, my + 20, 256, 15, '#e0607e', 'center', '800'); }
+  if (msg) { const my = R.y < 260 ? R.y + R.h + 22 : Math.max(90, R.y - (R.y > 600 ? 148 : 104)); // v0.7.3: a tab-bar spot lifts the bubble 44 px higher, off the bottom map row's stage labels
+    panel(60, my, 280, 40, '#fff6ee', 16); plainFit(msg, 200, my + 20, 256, 15, '#e0607e', 'center', '800'); }
 }
 // a cartoon hand pointing down at (x, y) (the fingertip)
 function drawFinger(x, y) {
@@ -967,6 +1014,7 @@ function renderBattle(dt) {
   const drawList = [];
   for (const tw of b.towers) drawList.push({ y: tw.y + (C.TOWERS[tw.type].place === 'path' ? -12 : 0), f: () => drawTowerObj(tw) });
   for (const a of b.ants) if (!a.flying) drawList.push({ y: a.y, f: () => drawAntObj(a) });
+  for (const q of S.swatQ) if (q.ghost) drawList.push({ y: q.y, f: () => drawAntObj(q.ghost, true) }); // v0.7.3: the swatted ant stays until the slap lands
   for (const m of b.balls) drawList.push({ y: m.y, f: () => A.marble(ctx, m.x, m.y - m.r * 0.6, m.r, m.rot) });
   drawList.push({ y: p1.y + 10, f: () => A.drawTreat(ctx, treatKind(b), p1.x, p1.y, b.foodStored / b.cfg.foodHP, t, { ouch: S.cookieOuch > S.t, react: Treat.reaction(S.treat, S.t) }) }); // v0.5 item 3: faces only
   if (b.cfg.swatter && b.cfg.swatter.on) drawList.push({ y: p1.y + 14, f: () => drawGuard(b, p1) }); // v0.7.2 C13: the cookie guard (fly swatter)
@@ -1157,7 +1205,7 @@ function drawGuard(b, ck) {
   }
   A.drawSwatter(ctx, px, py, ang, 0.8, flash);
 }
-function drawAntObj(a) {
+function drawAntObj(a, ghost = false) {
   const b = S.battle;
   const frozen = b.time < b.freezeUntil;
   const p = b.route(a).at(a.d);
@@ -1181,7 +1229,7 @@ function drawAntObj(a) {
   if (a.slow > 0.01 && !frozen) { ctx.fillStyle = 'rgba(255,240,160,0.8)'; ctx.beginPath(); ctx.ellipse(x, y + 8, 9 * a.size, 2.5, 0, 0, 7); ctx.fill(); }
   if (a.stunT > 0 && !frozen) A.stunStars(ctx, x, y - 30 * a.size, S.t + a.id, a.size);
   if (a.charmT > 0) A.heart(ctx, x + Math.sin(S.t * 4 + a.id) * 4, y - 32 * a.size - Math.abs(Math.sin(S.t * 3)) * 4, 3, '#ff8fbf');
-  if (a.hp < a.maxHp) {
+  if (a.hp < a.maxHp && !ghost) {
     const w = a.type === 'queen' ? 60 : 22, hy = y - (a.flying ? 44 : 33) * a.size;
     A.rr(ctx, x - w / 2 - 1, hy - 1, w + 2, 6, 3); ctx.fillStyle = A.INK; ctx.fill();
     const f = Math.max(0, a.hp / a.maxHp);
@@ -2012,9 +2060,10 @@ if (__TEST_HOOKS__) window.__game = {
   renderOnce: (dt = 1 / 60) => { S.t += dt; render(dt); }, // benchmark hook (test build only)
   setSave(s) { S.save = s; persist(); },
   // fast-forward; only the last ~0.4 s of events become visible effects (so screenshots are not flooded)
-  simulate(seconds, bot = true) { const b = S.battle; const n = Math.round(seconds * 60); for (let i = 0; i < n && !b.result; i++) { b.update(1 / 60); if (bot) smartBotStep(b); if (i < n - 24) b.events = []; } S.fx = []; S.ui = []; S.slotFlip = [0, 0, 0]; consumeEvents(); if (b.result) finishBattle(); },
+  simulate(seconds, bot = true) { S.swatQ = []; const b = S.battle; const n = Math.round(seconds * 60); for (let i = 0; i < n && !b.result; i++) { b.update(1 / 60); if (bot) smartBotStep(b); if (i < n - 24) b.events = []; } S.fx = []; S.ui = []; S.slotFlip = [0, 0, 0]; consumeEvents(); if (b.result) finishBattle(); },
   setAutoBot(v) { S.autoBot = v; },
-  setInset(px) { insetOverride = px; resize(); }, layout: () => ({ cw, ch, insetB, scale, offX, offY, barK, barH: BAR_H, metaH: META_H, dpr }), tabRect, BAR_H,
+  setInset(px) { insetOverride = px; resize(); }, setInsetQuiet(px) { insetOverride = px; }, flushSwat, // v0.7.3: setInsetQuiet changes the probe value WITHOUT a resize (tests that the frame loop re-reads it)
+  layout: () => ({ cw, ch, insetB, scale, offX, offY, barK, barH: BAR_H, metaH: META_H, dpr }), tabRect, BAR_H,
   mapPreview(id) { const b = new Battle({ levelIndex: 0, mapId: id, deck: [], bonusTypes: [], seed: 1 }); const src = A.renderMapBackground(b.routes, b.map.theme || 0, MAP_W, MAP_H, 2, b.props); const cv = document.createElement('canvas'); cv.width = src.width; cv.height = src.height; cv.getContext('2d').drawImage(src, 0, 0); return cv.toDataURL('image/png'); },
 };
 heartbeat(true); maybeShowCalendar();

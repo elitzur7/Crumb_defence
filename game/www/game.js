@@ -979,11 +979,11 @@ var tuning_default = {
       mix: [
         {
           type: "worker",
-          w: 3
+          w: 4
         },
         {
           type: "small",
-          w: 2,
+          w: 3,
           from: 2
         }
       ]
@@ -993,52 +993,18 @@ var tuning_default = {
       name: "Hungry Morning",
       map: "zigzag",
       waveCount: 4,
-      hpMul: 1.3,
+      hpMul: 1.56,
       base: 7,
       growth: 1.8,
       interval: 1,
       mix: [
         {
           type: "worker",
-          w: 3
+          w: 4
         },
         {
           type: "small",
-          w: 2
-        },
-        {
-          type: "big",
-          w: 1,
-          from: 3
-        }
-      ]
-    },
-    {
-      world: 1,
-      name: "Gas Masks On",
-      map: "hook",
-      waveCount: 5,
-      hpMul: 2.64,
-      base: 7.8,
-      growth: 1.75,
-      interval: 1,
-      mix: [
-        {
-          type: "worker",
           w: 3
-        },
-        {
-          type: "small",
-          w: 2
-        },
-        {
-          type: "big",
-          w: 1
-        },
-        {
-          type: "gasmask",
-          w: 2,
-          from: 2
         },
         {
           type: "small_gasmask",
@@ -1049,10 +1015,44 @@ var tuning_default = {
     },
     {
       world: 1,
+      name: "Gas Masks On",
+      map: "hook",
+      waveCount: 5,
+      hpMul: 3,
+      base: 7.8,
+      growth: 1.75,
+      interval: 1,
+      mix: [
+        {
+          type: "worker",
+          w: 3
+        },
+        {
+          type: "small",
+          w: 3
+        },
+        {
+          type: "gasmask",
+          w: 2,
+          from: 2
+        },
+        {
+          type: "small_gasmask",
+          w: 2
+        },
+        {
+          type: "small_fly",
+          w: 1,
+          from: 3
+        }
+      ]
+    },
+    {
+      world: 1,
       name: "Wings!",
       map: "fork",
       waveCount: 6,
-      hpMul: 3.52,
+      hpMul: 6.6,
       base: 7.2,
       growth: 1.8,
       interval: 0.95,
@@ -1066,18 +1066,13 @@ var tuning_default = {
           w: 2
         },
         {
-          type: "big",
-          w: 1
-        },
-        {
           type: "flyer",
           w: 2,
-          from: 3
+          from: 2
         },
         {
           type: "small_fly",
-          w: 1,
-          from: 3
+          w: 3
         }
       ]
     },
@@ -1086,7 +1081,7 @@ var tuning_default = {
       name: "Shiny Knights",
       map: "spiral",
       waveCount: 6,
-      hpMul: 2.52,
+      hpMul: 2.803,
       base: 8.8,
       growth: 1.96,
       interval: 0.95,
@@ -1100,17 +1095,13 @@ var tuning_default = {
           w: 2
         },
         {
-          type: "big",
-          w: 1
-        },
-        {
           type: "armored",
           w: 2,
           from: 2
         },
         {
           type: "small_armed",
-          w: 1,
+          w: 3,
           from: 2
         }
       ],
@@ -1129,7 +1120,7 @@ var tuning_default = {
       name: "Sky Picnic",
       map: "twin",
       waveCount: 7,
-      hpMul: 3.4,
+      hpMul: 4.321,
       base: 9.5,
       growth: 2,
       interval: 0.9,
@@ -1147,8 +1138,8 @@ var tuning_default = {
           w: 3
         },
         {
-          type: "armored",
-          w: 1
+          type: "small_fly",
+          w: 2
         },
         {
           type: "gasmask",
@@ -1161,7 +1152,7 @@ var tuning_default = {
       name: "Heavy Traffic",
       map: "snake",
       waveCount: 8,
-      hpMul: 2.1,
+      hpMul: 2.225,
       base: 9.4,
       growth: 2.07,
       interval: 0.9,
@@ -1176,15 +1167,16 @@ var tuning_default = {
         },
         {
           type: "big",
-          w: 2
+          w: 2,
+          from: 3
         },
         {
           type: "armored",
           w: 2
         },
         {
-          type: "gasmask",
-          w: 1
+          type: "small_armed",
+          w: 2
         }
       ]
     },
@@ -1193,7 +1185,7 @@ var tuning_default = {
       name: "Masked Ball",
       map: "fork",
       waveCount: 8,
-      hpMul: 2.48,
+      hpMul: 3.72,
       base: 11,
       growth: 2.2,
       interval: 0.85,
@@ -1211,12 +1203,13 @@ var tuning_default = {
           w: 3
         },
         {
-          type: "armored",
-          w: 1
+          type: "small_gasmask",
+          w: 3
         },
         {
           type: "flyer",
-          w: 2
+          w: 2,
+          from: 2
         }
       ]
     },
@@ -1225,7 +1218,7 @@ var tuning_default = {
       name: "The Swarm",
       map: "twin",
       waveCount: 9,
-      hpMul: 2.88,
+      hpMul: 4.8,
       base: 11.4,
       growth: 2.28,
       interval: 0.75,
@@ -1239,7 +1232,7 @@ var tuning_default = {
           w: 2
         },
         {
-          type: "flyer",
+          type: "small_fly",
           w: 2
         },
         {
@@ -1248,7 +1241,7 @@ var tuning_default = {
           from: 2
         },
         {
-          type: "big",
+          type: "small_armed",
           w: 1
         }
       ]
@@ -1258,7 +1251,7 @@ var tuning_default = {
       name: "Her Majesty",
       map: "cross",
       waveCount: 9,
-      hpMul: 2.25,
+      hpMul: 2.3,
       base: 12,
       growth: 2.4,
       interval: 0.8,
@@ -1273,7 +1266,8 @@ var tuning_default = {
         },
         {
           type: "heavy",
-          w: 2
+          w: 2,
+          from: 3
         },
         {
           type: "flyer",
@@ -1296,7 +1290,7 @@ var tuning_default = {
       name: "Cake Gate",
       map: "frosting",
       waveCount: 6,
-      hpMul: 3,
+      hpMul: 3.054,
       base: 10,
       growth: 1.8,
       interval: 1,
@@ -1307,7 +1301,12 @@ var tuning_default = {
         },
         {
           type: "small",
-          w: 2
+          w: 3
+        },
+        {
+          type: "small_fly",
+          w: 1,
+          from: 2
         },
         {
           type: "gasmask",
@@ -1321,7 +1320,7 @@ var tuning_default = {
       name: "Sugar Steps",
       map: "staircase",
       waveCount: 6,
-      hpMul: 3,
+      hpMul: 3.387,
       base: 9,
       growth: 2,
       interval: 0.95,
@@ -1335,13 +1334,19 @@ var tuning_default = {
           w: 2
         },
         {
-          type: "big",
-          w: 1
+          type: "small_armed",
+          w: 2,
+          from: 2
         },
         {
           type: "armored",
           w: 1,
           from: 3
+        },
+        {
+          type: "big",
+          w: 1,
+          from: 4
         }
       ]
     },
@@ -1350,7 +1355,7 @@ var tuning_default = {
       name: "Layer Cake",
       map: "layers",
       waveCount: 6,
-      hpMul: 2.8,
+      hpMul: 2.875,
       base: 10,
       growth: 2,
       interval: 0.95,
@@ -1369,8 +1374,13 @@ var tuning_default = {
           from: 2
         },
         {
+          type: "small_gasmask",
+          w: 2
+        },
+        {
           type: "gasmask",
-          w: 1
+          w: 1,
+          from: 3
         }
       ]
     },
@@ -1397,13 +1407,13 @@ var tuning_default = {
           w: 2
         },
         {
+          type: "small_armed",
+          w: 2
+        },
+        {
           type: "sprinter",
           w: 1,
           from: 3
-        },
-        {
-          type: "big",
-          w: 1
         }
       ]
     },
@@ -1412,7 +1422,7 @@ var tuning_default = {
       name: "Tea Party",
       map: "teaparty",
       waveCount: 7,
-      hpMul: 3.24,
+      hpMul: 5.304,
       base: 10.5,
       growth: 2.1,
       interval: 0.9,
@@ -1426,15 +1436,15 @@ var tuning_default = {
           w: 3
         },
         {
+          type: "small_fly",
+          w: 2
+        },
+        {
           type: "flyer",
           w: 2
         },
         {
           type: "gasmask",
-          w: 2
-        },
-        {
-          type: "big",
           w: 1
         }
       ]
@@ -1444,7 +1454,7 @@ var tuning_default = {
       name: "Frosting Rush",
       map: "frosting",
       waveCount: 7,
-      hpMul: 3.9,
+      hpMul: 4.213,
       base: 11,
       growth: 2.2,
       interval: 0.85,
@@ -1459,10 +1469,10 @@ var tuning_default = {
         },
         {
           type: "sprinter",
-          w: 2
+          w: 3
         },
         {
-          type: "armored",
+          type: "small_armed",
           w: 1
         },
         {
@@ -1476,7 +1486,7 @@ var tuning_default = {
       name: "Heavy Icing",
       map: "snake",
       waveCount: 8,
-      hpMul: 2.35,
+      hpMul: 2.39,
       base: 11,
       growth: 2.2,
       interval: 0.9,
@@ -1509,7 +1519,7 @@ var tuning_default = {
       name: "Sprinkle Storm",
       map: "layers",
       waveCount: 8,
-      hpMul: 3.04,
+      hpMul: 3.557,
       base: 11.5,
       growth: 2.3,
       interval: 0.85,
@@ -1520,6 +1530,10 @@ var tuning_default = {
         },
         {
           type: "flyer",
+          w: 2
+        },
+        {
+          type: "small_fly",
           w: 3
         },
         {
@@ -1527,12 +1541,8 @@ var tuning_default = {
           w: 2
         },
         {
-          type: "gasmask",
+          type: "small_gasmask",
           w: 2
-        },
-        {
-          type: "sprinter",
-          w: 1
         }
       ]
     },
@@ -1541,7 +1551,7 @@ var tuning_default = {
       name: "Cherry on Top",
       map: "candles",
       waveCount: 9,
-      hpMul: 4.1,
+      hpMul: 4.065,
       base: 12,
       growth: 2.4,
       interval: 0.8,
@@ -1563,7 +1573,7 @@ var tuning_default = {
           w: 2
         },
         {
-          type: "flyer",
+          type: "small_fly",
           w: 2
         }
       ]
@@ -1573,7 +1583,7 @@ var tuning_default = {
       name: "The Swift Queen",
       map: "cross",
       waveCount: 9,
-      hpMul: 1.4,
+      hpMul: 1.6,
       base: 12,
       growth: 2.4,
       interval: 0.8,
@@ -2208,7 +2218,7 @@ var LIFT_MAX = 3, SIZE_RANK = { small: 1, regular: 2, large: 3 }, LIFT_NAMES = [
   stickTime: "Stick",
   liftSize: "Lifts"
 }, SLOW_CAP = 0.85, ALL_CARDS = Object.keys(TOWERS), STARTER_CARDS = ["slingshot", "spray", "glue", "fan", "ball"];
-var AIR_COUNTERS = ["laser", "zapper"], VERSION = "0.7.2", ANT_SIZES = { ...tuning_default.antSizes }, ANT_TEXT = {
+var AIR_COUNTERS = ["laser", "zapper"], VERSION = "0.7.3", ANT_SIZES = { ...tuning_default.antSizes }, ANT_TEXT = {
   small: { name: "Scout Ant", desc: "Tiny, fast, comes in swarms." },
   worker: { name: "Worker Ant", desc: "The regular. Hard hat included." },
   big: { name: "Big Ant", desc: "Slow, chunky, a bit of armor." },
@@ -2733,7 +2743,7 @@ var NEXT_ID = 1, Battle = class {
       let rt = this.route(ant), back = foodReturned(ant.carrying, ant.d / rt.length, this.cfg.foodReturn);
       this.stats.lostOnWay += ant.carrying - back, back > 0 && (this.foodStored = Math.min(this.cfg.foodHP, this.foodStored + back), this.stats.returned += back, this.emit({ type: "foodReturn", x: ant.x, y: ant.y, n: back, of: ant.carrying })), ant.carrying = 0;
     }
-    this.emit({ type: "kill", x: ant.x, y: ant.y, ant: ant.type, crumbs, src: src && src.type }), src && src.type === "lizard" && (src.chew = src.stat("chewTime"));
+    this.emit({ type: "kill", x: ant.x, y: ant.y, ant: ant.type, crumbs, src: src && src.type, ...src && src.type === "swatter" ? { ref: ant } : {} }), src && src.type === "lizard" && (src.chew = src.stat("chewTime"));
   }
   threat(a) {
     return a.state === "go" ? a.d : this.route(a).length * 2 - a.d;
@@ -4932,6 +4942,7 @@ var W = 400, H = 720, MAP_Y = 68, MAP_W = GRID_COLS * TILE, MAP_H = GRID_ROWS * 
   result: null,
   toast: null,
   fx: [],
+  swatQ: [],
   ui: [],
   bgCache: {},
   cardsSel: null,
@@ -5010,6 +5021,13 @@ function resize() {
   dpr = Math.min(window.devicePixelRatio || 1, 3), cw = window.innerWidth, ch = window.innerHeight, insetB = readInset(), canvas.width = Math.round(cw * dpr), canvas.height = Math.round(ch * dpr), canvas.style.width = cw + "px", canvas.style.height = ch + "px", applyLayout(), S.bgCache = {}, clearTowerCache();
 }
 window.addEventListener("resize", resize);
+function refreshInset() {
+  Math.abs(readInset() - insetB) > 0.5 && resize();
+}
+window.addEventListener("orientationchange", () => {
+  resize(), setTimeout(resize, 350);
+});
+window.visualViewport && window.visualViewport.addEventListener && window.visualViewport.addEventListener("resize", resize);
 resize();
 var buttons = [], prevButtons = [];
 function button(id, x, y, w, h, onTap, opt = {}) {
@@ -5073,16 +5091,38 @@ canvas.addEventListener("pointercancel", () => {
 document.addEventListener("visibilitychange", () => {
   document.hidden && S.screen === "battle" && !S.result && setPaused(!0), document.hidden || (heartbeat(!0), maybeShowCalendar());
 });
+var ownBackUntil = 0;
+function ownBack() {
+  try {
+    ownBackUntil = performance.now() + 1e3, history.back();
+  } catch {
+    ownBackUntil = 0;
+  }
+}
+function openSettings() {
+  S.settings = { t: 0 }, S.confirmReset = 0, sfx("tap");
+  try {
+    history.state && history.state.inner || (history.pushState({ inner: 1 }, ""), S.settingsPushed = !0);
+  } catch {
+  }
+}
+function closeSettings() {
+  S.settings = null, S.confirmReset = 0, S.settingsPushed && (S.settingsPushed = !1, ownBack());
+}
 function go(screen) {
-  S.screen = screen, S.sel = null, S.info = null, S.drag = null, S.mergeAnim = null, S.toast = null, S.dialog = null, S.cal = null, S.settings = null, S.mode = null, S.shopFx = null, sfx("tap"), screen === "map" && (S.mapScroll = autoMapScroll(), maybeShowCalendar());
+  S.settingsPushed = !1, S.screen = screen, S.sel = null, S.info = null, S.drag = null, S.mergeAnim = null, S.toast = null, S.dialog = null, S.cal = null, S.settings = null, S.mode = null, S.shopFx = null, sfx("tap"), screen === "map" && (S.mapScroll = autoMapScroll(), maybeShowCalendar());
   try {
     let inner = history.state && history.state.inner;
-    screen !== "map" && !inner ? history.pushState({ inner: 1 }, "") : screen === "map" && inner && history.back();
+    screen !== "map" && !inner ? history.pushState({ inner: 1 }, "") : screen === "map" && inner && ownBack();
   } catch {
   }
 }
 window.addEventListener("popstate", () => {
-  if (S.pack) {
+  if (ownBackUntil && performance.now() < ownBackUntil) {
+    ownBackUntil = 0;
+    return;
+  }
+  if (ownBackUntil = 0, S.pack) {
     closePack("ok");
     try {
       history.pushState({ inner: 1 }, "");
@@ -5099,7 +5139,7 @@ window.addEventListener("popstate", () => {
     return;
   }
   if (S.screen === "map") {
-    S.cal ? S.cal = null : S.settings && (S.settings = null);
+    S.cal ? S.cal = null : S.settings && (S.settings = null, S.confirmReset = 0, S.settingsPushed = !1);
     return;
   }
   let repush = () => {
@@ -5135,7 +5175,7 @@ function startBattle(levelIndex = S.levelIndex, deck = S.prep.deck, bonuses = S.
     onBonusUsed: (type) => {
       consumeBonus(S.save, type), persist();
     }
-  }), S.battleStartStock = { ...S.save.bonusStock }, S.fx = [], S.ui = [], S.result = null, setPaused(!1), S.speed = S.speed || 1, S.sel = null, S.info = null, S.mode = null, S.queenDown = null, go("battle");
+  }), S.battleStartStock = { ...S.save.bonusStock }, S.fx = [], S.swatQ = [], S.ui = [], S.result = null, setPaused(!1), S.speed = S.speed || 1, S.sel = null, S.info = null, S.mode = null, S.queenDown = null, go("battle");
 }
 function finishBattle() {
   let b = S.battle, out = applyBattleResult(S.save, b.levelIndex, b.result, b.stars, { kills: b.stats.kills, foodLeft: b.foodStored, perfect: b.perfect, time: b.time });
@@ -5225,21 +5265,46 @@ function addFx(f) {
 function addUi(f) {
   S.ui.push(f), S.ui.length > 60 && S.ui.splice(0, 20);
 }
-var fmtFood = (n) => Math.abs(n - Math.round(n)) < 0.05 ? String(Math.round(n)) : n.toFixed(1);
+var fmtFood = (n) => Math.abs(n - Math.round(n)) < 0.05 ? String(Math.round(n)) : n.toFixed(1), SWAT_HIT = 0.17;
+function swatHitTime(b) {
+  return b.time - (0.5 - b.swatFx) + SWAT_HIT;
+}
+function killFx(e) {
+  if (e.src === "tractor") {
+    addFloatText(S.fx, { k: "crumbTxt", key: "crumb", x: e.x, y: e.y - 14, n: e.crumbs, fmt: (n) => n, life: 0.9 });
+    return;
+  }
+  for (let i = 0; i < 4; i++) addFx({ k: "crumbBit", x: e.x, y: e.y - 6, vx: (Math.random() - 0.5) * 90, vy: -40 - Math.random() * 60, life: 0.6, max: 0.6 });
+  addFx({ k: "ko", x: e.x, y: e.y, ant: e.ant, life: 0.9, max: 0.9, face: Math.random() < 0.5 ? 1 : -1 });
+  for (let i = 0; i < 5; i++) addFx({ k: "puff", x: e.x + (Math.random() - 0.5) * 10, y: e.y + (Math.random() - 0.5) * 6, vx: (Math.random() - 0.5) * 40, vy: -Math.random() * 30, r: 4 + Math.random() * 4, life: 0.5, max: 0.5 });
+  addFloatText(S.fx, { k: "crumbTxt", key: "crumb", x: e.x, y: e.y - 14, n: e.crumbs, fmt: (n) => n, life: 0.9 }), sfx("pop");
+}
+function swatHitFx(e) {
+  addFx({ k: "spark", x: e.x, y: e.y - 4, life: 0.2, max: 0.2, col: "#fff7b0" }), addFx({ k: "ring2", x: e.x, y: e.y - 2, life: 0.3, max: 0.3 }), sfx("swat");
+}
+function flushSwat(force) {
+  if (!S.swatQ.length) return;
+  let b = S.battle, keep = [];
+  for (let q of S.swatQ) {
+    if (!(force || b.time >= q.at)) {
+      keep.push(q);
+      continue;
+    }
+    q.kill && killFx(q.kill), q.swat && swatHitFx(q.swat);
+  }
+  S.swatQ = keep;
+}
 function consumeEvents() {
   let b = S.battle, ev = b.events;
   b.events = [];
   for (let e of ev)
     switch (e.type) {
       case "kill":
-        if (e.src === "tractor") {
-          addFloatText(S.fx, { k: "crumbTxt", key: "crumb", x: e.x, y: e.y - 14, n: e.crumbs, fmt: (n) => n, life: 0.9 });
+        if (e.src === "swatter" && !reducedMotion() && b.swatFx > 0) {
+          S.swatQ.push({ at: swatHitTime(b), kill: e, ghost: e.ref, x: e.x, y: e.y });
           break;
         }
-        for (let i = 0; i < 4; i++) addFx({ k: "crumbBit", x: e.x, y: e.y - 6, vx: (Math.random() - 0.5) * 90, vy: -40 - Math.random() * 60, life: 0.6, max: 0.6 });
-        addFx({ k: "ko", x: e.x, y: e.y, ant: e.ant, life: 0.9, max: 0.9, face: Math.random() < 0.5 ? 1 : -1 });
-        for (let i = 0; i < 5; i++) addFx({ k: "puff", x: e.x + (Math.random() - 0.5) * 10, y: e.y + (Math.random() - 0.5) * 6, vx: (Math.random() - 0.5) * 40, vy: -Math.random() * 30, r: 4 + Math.random() * 4, life: 0.5, max: 0.5 });
-        addFloatText(S.fx, { k: "crumbTxt", key: "crumb", x: e.x, y: e.y - 14, n: e.crumbs, fmt: (n) => n, life: 0.9 }), sfx("pop");
+        killFx(e);
         break;
       case "beam":
         addFx({ k: "beam", ...e, life: 0.09, max: 0.09 }), sfx("laser");
@@ -5275,8 +5340,7 @@ function consumeEvents() {
         addFx({ k: "mist", ...e, life: 0.3, max: 0.3 });
         break;
       case "swat": {
-        let wait = reducedMotion() ? 0 : 0.17;
-        addFx({ k: "spark", x: e.x, y: e.y - 4, life: 0.2 + wait, max: 0.2, wait, col: "#fff7b0" }), addFx({ k: "ring2", x: e.x, y: e.y - 2, life: 0.3 + wait, max: 0.3, wait }), setTimeout(() => sfx("swat"), wait * 1e3);
+        reducedMotion() ? swatHitFx(e) : S.swatQ.push({ at: swatHitTime(b), swat: e });
         break;
       }
       case "hit":
@@ -5358,13 +5422,13 @@ function consumeEvents() {
         break;
     }
 }
-var lastT = performance.now(), acc = 0, STEP = 1 / 60;
+var lastT = performance.now(), acc = 0, insetClock = 0, STEP = 1 / 60;
 function frame(now2) {
   let dt = Math.min(0.1, (now2 - lastT) / 1e3);
-  if (lastT = now2, S.t += dt, heartbeat(!1), S.screen === "battle" && S.battle && !S.paused && !S.result && !S.dialog) {
+  if (lastT = now2, S.t += dt, heartbeat(!1), insetClock += dt, insetClock >= 0.5 && (insetClock = 0, refreshInset()), S.screen === "battle" && S.battle && !S.paused && !S.result && !S.dialog) {
     for (acc += dt * S.speed; acc >= STEP && (S.battle.update(STEP), acc -= STEP, S.autoBot && smartBotStep(S.battle), !S.battle.result); )
       ;
-    consumeEvents(), S.battle.result && finishBattle();
+    consumeEvents(), flushSwat(!!S.battle.result), S.battle.result && finishBattle();
   }
   render(dt), requestAnimationFrame(frame);
 }
@@ -5435,9 +5499,7 @@ function drawGearIcon(x, y, r) {
 function renderSettings() {
   if (!S.settings) return;
   button("setBlock", -2e3, -2e3, W + 4e3, H + 4e3, () => {
-  }), ctx.save(), ctx.fillStyle = "rgba(40,26,38,0.55)", ctx.fillRect(-2e3, -2e3, W + 4e3, H + 4e3), ctx.restore(), button("setBlock2", -2e3, -2e3, W + 4e3, H + 4e3, () => {
-    S.settings = null, S.confirmReset = 0;
-  });
+  }), ctx.save(), ctx.fillStyle = "rgba(40,26,38,0.55)", ctx.fillRect(-2e3, -2e3, W + 4e3, H + 4e3), ctx.restore(), button("setBlock2", -2e3, -2e3, W + 4e3, H + 4e3, () => closeSettings());
   let x = 70, y = 190, w = 260, h = 262;
   panel(x, y, w, h, "#fff6ee", 20), button("setPanel", x, y, w, h, () => {
   }), text(ctx, "Settings", 200, y + 28, 22, "#ffb3c1");
@@ -5447,10 +5509,8 @@ function renderSettings() {
   });
   let sure = S.confirmReset > S.t;
   drawButton(x + 24, y + 122, w - 48, 52, sure ? "Sure? Tap again" : "Reset progress", "#ffb3b3", { size: sure ? 16 : 17 }), button("setReset", x + 24, y + 116, w - 48, 64, () => {
-    S.confirmReset > S.t ? (S.save = newSave(), touch(S.save, now()), persist(), S.confirmReset = 0, S.cardsBlinkUntil = 0, S.settings = null, toast("Progress reset")) : S.confirmReset = S.t + 3;
-  }), drawButton(x + 24, y + 190, w - 48, 48, "Close", "#d9cfe0", { size: 17 }), button("setClose", x + 24, y + 184, w - 48, 64, () => {
-    S.settings = null, S.confirmReset = 0;
-  });
+    S.confirmReset > S.t ? (S.save = newSave(), touch(S.save, now()), persist(), S.confirmReset = 0, S.cardsBlinkUntil = 0, closeSettings(), toast("Progress reset")) : S.confirmReset = S.t + 3;
+  }), drawButton(x + 24, y + 190, w - 48, 48, "Close", "#d9cfe0", { size: 17 }), button("setClose", x + 24, y + 184, w - 48, 64, () => closeSettings());
 }
 function drawBackdrop() {
   ctx.save();
@@ -5562,9 +5622,9 @@ function renderMapScreen() {
     let a = 0.75 + 0.25 * Math.sin(S.t * 4);
     ctx.save(), ctx.globalAlpha = a, rr(ctx, 128, MAPVIEW.top + 4, 144, 26, 13), ctx.fillStyle = "rgba(90,64,88,0.85)", ctx.fill(), plainText("\u25B2 World 2 - scroll up", 200, MAPVIEW.top + 17.5, 11.5, "#ffffff", "center", "700"), ctx.restore();
   }
-  updateCardsBlink(), blob(ctx, 370, 26, 19, 19, "#fff6ee", 2.2), drawGearIcon(370, 26, 12), button("gear", 344, 2, 52, 52, () => {
-    S.settings = { t: 0 }, S.confirmReset = 0, sfx("tap");
-  }), S.cal ? renderCalendar() : S.settings ? renderSettings() : zapperGiftPending(S.save) && !S.reveal.length && onboardSpot(tabRect(2), "shop", () => go("shop"), "A free pack waits in the Shop!"), plainText("v" + VERSION, 392, 650, 11, "#a08090", "right", "600"), renderUiFx(1 / 60);
+  updateCardsBlink(), blob(ctx, 363, 22, 19, 19, "#fff6ee", 2.2), drawGearIcon(363, 22, 12), button("gear", 337, 0, 52, 52, () => openSettings());
+  let shopHint = !S.cal && !S.settings && zapperGiftPending(S.save) && !S.reveal.length;
+  !S.cal && !S.settings && !shopHint && plainText("v" + VERSION, 14, 186, 11, "#a08090", "left", "600"), S.cal ? renderCalendar() : S.settings ? renderSettings() : shopHint && onboardSpot(tabRect(2), "shop", () => go("shop"), "A free pack waits in the Shop!"), renderUiFx(1 / 60);
 }
 function onboardSpot(R, id, onTap, msg) {
   ctx.save(), ctx.beginPath(), ctx.rect(-2e3, -2e3, W + 4e3, H + 4e3);
@@ -5578,7 +5638,7 @@ function onboardSpot(R, id, onTap, msg) {
   }), button(id, R.x, R.y, R.w, R.h, onTap);
   let fx = R.x + R.w / 2 + 18, fy = R.y - 22 - Math.abs(Math.sin(S.t * 4)) * 12;
   if (drawFinger(fx, fy), msg) {
-    let my = R.y < 260 ? R.y + R.h + 22 : Math.max(90, R.y - 104);
+    let my = R.y < 260 ? R.y + R.h + 22 : Math.max(90, R.y - (R.y > 600 ? 148 : 104));
     panel(60, my, 280, 40, "#fff6ee", 16), plainFit(msg, 200, my + 20, 256, 15, "#e0607e", "center", "800");
   }
 }
@@ -5786,6 +5846,7 @@ function renderBattle(dt) {
   let drawList = [];
   for (let tw of b.towers) drawList.push({ y: tw.y + (TOWERS[tw.type].place === "path" ? -12 : 0), f: () => drawTowerObj(tw) });
   for (let a of b.ants) a.flying || drawList.push({ y: a.y, f: () => drawAntObj(a) });
+  for (let q of S.swatQ) q.ghost && drawList.push({ y: q.y, f: () => drawAntObj(q.ghost, !0) });
   for (let m of b.balls) drawList.push({ y: m.y, f: () => marble(ctx, m.x, m.y - m.r * 0.6, m.r, m.rot) });
   drawList.push({ y: p1.y + 10, f: () => drawTreat(ctx, treatKind(b), p1.x, p1.y, b.foodStored / b.cfg.foodHP, t, { ouch: S.cookieOuch > S.t, react: reaction(S.treat, S.t) }) }), b.cfg.swatter && b.cfg.swatter.on && drawList.push({ y: p1.y + 14, f: () => drawGuard(b, p1) }), drawList.sort((u, v) => u.y - v.y);
   for (let d of drawList) d.f();
@@ -5927,11 +5988,11 @@ function drawGuard(b, ck) {
   }
   drawSwatter(ctx, px, py, ang, 0.8, flash);
 }
-function drawAntObj(a) {
+function drawAntObj(a, ghost = !1) {
   let b = S.battle, frozen = b.time < b.freezeUntil, p = b.route(a).at(a.d);
   Math.abs(p.dx) > 0.3 && (a._face = p.dx * (a.dir || 1) >= 0 ? 1 : -1);
   let face = a._face ?? 1, speedK = a.type === "small" ? 2.2 : a.type === "sprinter" ? 2.4 : a.type === "queen" ? 0.6 : a.type === "big" ? 1 : a.type === "heavy" ? 0.9 : 1.5, still = frozen || a.stunT > 0, fr = still ? 0 : Math.floor((b.time + a.id * 0.37) * speedK * ANT_FRAMES) % ANT_FRAMES, spr = antSprite(a.type, fr, a.carrying > 0, pxRatio), breathe = still ? 1 + Math.sin(S.t * 5 + a.id) * 0.035 : 1, lat = (a.id * 37 % 9 - 4) * 1.2, x = a.x + p.dy * lat, y = a.y - p.dx * lat;
-  if (ctx.save(), ctx.translate(x, y + 4), ctx.scale(face / breathe, breathe), a.hitFlash > 0.06 && ctx.scale(1.08, 0.92), ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h), a.hitFlash > 0 && (ctx.globalCompositeOperation = "lighter", ctx.globalAlpha = 0.5, ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h)), ctx.restore(), frozen && (ctx.save(), ctx.globalAlpha = 0.55, rr(ctx, x - 17 * a.size, y - 24 * a.size, 34 * a.size, 32 * a.size, 7), ctx.fillStyle = "#d6f3ff", ctx.fill(), ctx.lineWidth = 1.5, ctx.strokeStyle = "#8fd0f5", ctx.stroke(), ctx.restore()), a.slow > 0.01 && !frozen && (ctx.fillStyle = "rgba(255,240,160,0.8)", ctx.beginPath(), ctx.ellipse(x, y + 8, 9 * a.size, 2.5, 0, 0, 7), ctx.fill()), a.stunT > 0 && !frozen && stunStars(ctx, x, y - 30 * a.size, S.t + a.id, a.size), a.charmT > 0 && heart(ctx, x + Math.sin(S.t * 4 + a.id) * 4, y - 32 * a.size - Math.abs(Math.sin(S.t * 3)) * 4, 3, "#ff8fbf"), a.hp < a.maxHp) {
+  if (ctx.save(), ctx.translate(x, y + 4), ctx.scale(face / breathe, breathe), a.hitFlash > 0.06 && ctx.scale(1.08, 0.92), ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h), a.hitFlash > 0 && (ctx.globalCompositeOperation = "lighter", ctx.globalAlpha = 0.5, ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h)), ctx.restore(), frozen && (ctx.save(), ctx.globalAlpha = 0.55, rr(ctx, x - 17 * a.size, y - 24 * a.size, 34 * a.size, 32 * a.size, 7), ctx.fillStyle = "#d6f3ff", ctx.fill(), ctx.lineWidth = 1.5, ctx.strokeStyle = "#8fd0f5", ctx.stroke(), ctx.restore()), a.slow > 0.01 && !frozen && (ctx.fillStyle = "rgba(255,240,160,0.8)", ctx.beginPath(), ctx.ellipse(x, y + 8, 9 * a.size, 2.5, 0, 0, 7), ctx.fill()), a.stunT > 0 && !frozen && stunStars(ctx, x, y - 30 * a.size, S.t + a.id, a.size), a.charmT > 0 && heart(ctx, x + Math.sin(S.t * 4 + a.id) * 4, y - 32 * a.size - Math.abs(Math.sin(S.t * 3)) * 4, 3, "#ff8fbf"), a.hp < a.maxHp && !ghost) {
     let w = a.type === "queen" ? 60 : 22, hy = y - (a.flying ? 44 : 33) * a.size;
     rr(ctx, x - w / 2 - 1, hy - 1, w + 2, 6, 3), ctx.fillStyle = INK, ctx.fill();
     let f = Math.max(0, a.hp / a.maxHp);
