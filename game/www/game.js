@@ -11,89 +11,273 @@ var tuning_default = {
   },
   shop: {
     _about: "v0.6.2 items 12/13. unlockPrice: coins to unlock a locked tower in the Shop (tiered by base power, approved by Yair). packNewTowerChance: chance that a card pack holds ONE new (locked) tower card (L1) as one of its cards.",
-    unlockPrice: { sound: 100, pheromone: 100, lava: 100, lizard: 200, gate: 200, zapper: 200, laser: 400, tractor: 400 },
+    unlockPrice: {
+      sound: 100,
+      pheromone: 100,
+      lava: 100,
+      lizard: 200,
+      gate: 200,
+      zapper: 200,
+      laser: 400,
+      tractor: 400
+    },
     unlockPriceDefault: 200,
     packNewTowerChance: 0.1
   },
-  queenTraitMods: { fast: -10, flying: -15, slow: 0, slower: 5, slowest: 10, vulnerable: 5, veryVulnerable: 10 },
-  antSizes: { small: 0.7, regular: 1, large: 1.12, queen: 2.1 },
+  queenTraitMods: {
+    fast: -10,
+    flying: -15,
+    slow: 0,
+    slower: 5,
+    slowest: 10,
+    vulnerable: 5,
+    veryVulnerable: 10
+  },
+  antSizes: {
+    small: 0.7,
+    regular: 1,
+    large: 1.12,
+    queen: 2.1
+  },
   towers: {
     slingshot: {
       power: 6,
       rate: 1.1,
       rangeTiles: 1.5,
-      params: { projSpeed: 380 },
-      battleUpgrades: [{ power: 1.4 }, { rate: 1.3, range: 1.1 }, { power: 1.2 }, { rate: 1.15 }, { range: 1.1, power: 1.15 }],
+      params: {
+        projSpeed: 380
+      },
+      battleUpgrades: [
+        {
+          power: 2
+        },
+        {
+          rate: 1.3,
+          range: 1.1,
+          power: 1.154
+        },
+        {
+          power: 1.333
+        },
+        {
+          rate: 1.15,
+          power: 1.087
+        },
+        {
+          range: 1.1,
+          power: 1.2
+        }
+      ],
       cardUpgrades: [
-        { range: 0.2 },
-        { power: 0.1 },
-        { range: 0.2 },
-        { rate: 0.1 },
-        { power: 0.1 },
-        { power: 0.12 },
-        { rate: 0.1 },
-        { range: 0.2 },
-        { range: 0.2, power: 0.1 }
+        {
+          range: 0.2
+        },
+        {
+          power: 0.1
+        },
+        {
+          range: 0.2
+        },
+        {
+          rate: 0.1
+        },
+        {
+          power: 0.1
+        },
+        {
+          power: 0.12
+        },
+        {
+          rate: 0.1
+        },
+        {
+          range: 0.2
+        },
+        {
+          range: 0.2,
+          power: 0.1
+        }
       ]
     },
     spray: {
       power: 6,
       rate: 0.42,
       rangeTiles: 1.5,
-      params: { cloudTime: 2.6, cloudRadius: 42 },
+      params: {
+        cloudTime: 2.6,
+        cloudRadius: 42
+      },
       battleUpgrades: [
-        { power: 1.35, cloudRadius: 1.2 },
-        { rate: 1.3, power: 1.15 },
-        { cloudRadius: 1.15, range: 1.1 },
-        { power: 1.25 },
-        { rate: 1.2 }
+        {
+          power: 2,
+          cloudRadius: 1.2
+        },
+        {
+          rate: 1.3,
+          power: 1.154
+        },
+        {
+          cloudRadius: 1.15,
+          range: 1.1,
+          power: 1.333
+        },
+        {
+          power: 1.25
+        },
+        {
+          rate: 1.2
+        }
       ],
       cardUpgrades: [
-        { power: 0.1 },
-        { rate: 0.08 },
-        { range: 0.2 },
-        { power: 0.12 },
-        { range: 0.15 },
-        { rate: 0.1 },
-        { power: 0.1 },
-        { range: 0.2 },
-        { power: 0.1, rate: 0.1 }
+        {
+          power: 0.1
+        },
+        {
+          rate: 0.08
+        },
+        {
+          range: 0.2
+        },
+        {
+          power: 0.12
+        },
+        {
+          range: 0.15
+        },
+        {
+          rate: 0.1
+        },
+        {
+          power: 0.1
+        },
+        {
+          range: 0.2
+        },
+        {
+          power: 0.1,
+          rate: 0.1
+        }
       ]
     },
     sound: {
       power: 4,
       rate: 0.75,
       rangeTiles: 1.5,
-      params: { ignoreArmor: !0, stagger: 0.18 },
-      battleUpgrades: [{ power: 1.4 }, { range: 1.15, rate: 1.2 }, { stagger: 1.3 }, { power: 1.2 }, { rate: 1.15, stagger: 1.25 }],
+      params: {
+        ignoreArmor: !0,
+        stagger: 0.18
+      },
+      battleUpgrades: [
+        {
+          power: 2
+        },
+        {
+          range: 1.15,
+          rate: 1.2,
+          power: 1.25
+        },
+        {
+          stagger: 1.3,
+          power: 1.333
+        },
+        {
+          power: 1.25
+        },
+        {
+          rate: 1.15,
+          stagger: 1.25,
+          power: 1.043
+        }
+      ],
       cardUpgrades: [
-        { rate: 0.1 },
-        { range: 0.2 },
-        { power: 0.1 },
-        { power: 0.1 },
-        { range: 0.2 },
-        { rate: 0.08 },
-        { range: 0.15 },
-        { power: 0.12 },
-        { rate: 0.1, range: 0.2 }
+        {
+          rate: 0.1
+        },
+        {
+          range: 0.2
+        },
+        {
+          power: 0.1
+        },
+        {
+          power: 0.1
+        },
+        {
+          range: 0.2
+        },
+        {
+          rate: 0.08
+        },
+        {
+          range: 0.15
+        },
+        {
+          power: 0.12
+        },
+        {
+          rate: 0.1,
+          range: 0.2
+        }
       ]
     },
     ball: {
       power: 16,
       rate: 0.16,
       rangeTiles: null,
-      params: { ballRadius: 13, rollSpeed: 230, maxBalls: 1 },
-      battleUpgrades: [{ power: 1.4, ballRadius: 1.2 }, { rate: 1.3, power: 1.15 }, { ballRadius: 1.1 }, { power: 1.25 }, { rate: 1.2 }],
+      params: {
+        ballRadius: 13,
+        rollSpeed: 230,
+        maxBalls: 1
+      },
+      battleUpgrades: [
+        {
+          power: 2,
+          ballRadius: 1.2
+        },
+        {
+          rate: 1.3,
+          power: 1.154
+        },
+        {
+          ballRadius: 1.1,
+          power: 1.333
+        },
+        {
+          power: 1.25
+        },
+        {
+          rate: 1.2
+        }
+      ],
       cardUpgrades: [
-        { power: 0.1 },
-        { rate: 0.1 },
-        { ballRadius: 0.1 },
-        { power: 0.12 },
-        { rate: 0.08 },
-        { power: 0.1 },
-        { ballRadius: 0.1 },
-        { rate: 0.1 },
-        { power: 0.1, rate: 0.1 }
+        {
+          power: 0.1
+        },
+        {
+          rate: 0.1
+        },
+        {
+          ballRadius: 0.1
+        },
+        {
+          power: 0.12
+        },
+        {
+          rate: 0.08
+        },
+        {
+          power: 0.1
+        },
+        {
+          ballRadius: 0.1
+        },
+        {
+          rate: 0.1
+        },
+        {
+          power: 0.1,
+          rate: 0.1
+        }
       ]
     },
     fan: {
@@ -101,205 +285,685 @@ var tuning_default = {
       rate: 0.36,
       rangeTiles: 1.5,
       params: {},
-      battleUpgrades: [{ power: 1.3 }, { rate: 1.25, range: 1.1 }, { power: 1.15 }, { range: 1.1 }, { rate: 1.15 }],
+      battleUpgrades: [
+        {
+          power: 1.3
+        },
+        {
+          rate: 1.25,
+          range: 1.1
+        },
+        {
+          power: 1.15
+        },
+        {
+          range: 1.1
+        },
+        {
+          rate: 1.15
+        }
+      ],
       cardUpgrades: [
-        { range: 0.2 },
-        { rate: 0.1 },
-        { power: 0.1 },
-        { range: 0.2 },
-        { range: 0.15 },
-        { power: 0.1 },
-        { rate: 0.1 },
-        { power: 0.12 },
-        { range: 0.2, rate: 0.1 }
+        {
+          range: 0.2
+        },
+        {
+          rate: 0.1
+        },
+        {
+          power: 0.1
+        },
+        {
+          range: 0.2
+        },
+        {
+          range: 0.15
+        },
+        {
+          power: 0.1
+        },
+        {
+          rate: 0.1
+        },
+        {
+          power: 0.12
+        },
+        {
+          range: 0.2,
+          rate: 0.1
+        }
       ]
     },
     pheromone: {
       power: 2.5,
       rate: null,
       rangeTiles: 1,
-      params: { ignoreArmor: !0, slow: 0.35, charmTime: 1.6 },
-      battleUpgrades: [{ power: 1.5 }, { charmTime: 1.4, slow: 1.25 }, { power: 1.2 }, { charmTime: 1.2 }, { slow: 1.15 }],
+      params: {
+        ignoreArmor: !0,
+        slow: 0.35,
+        charmTime: 1.6
+      },
+      battleUpgrades: [
+        {
+          power: 1.5
+        },
+        {
+          charmTime: 1.4,
+          slow: 1.25
+        },
+        {
+          power: 1.2
+        },
+        {
+          charmTime: 1.2
+        },
+        {
+          slow: 1.15
+        }
+      ],
       cardUpgrades: [
-        { power: 0.12 },
-        { slow: 0.1 },
-        { charmTime: 0.1 },
-        { power: 0.1 },
-        { slow: 0.08 },
-        { power: 0.1 },
-        { charmTime: 0.1 },
-        { charmTime: 0.12 },
-        { power: 0.1, slow: 0.08 }
+        {
+          power: 0.12
+        },
+        {
+          slow: 0.1
+        },
+        {
+          charmTime: 0.1
+        },
+        {
+          power: 0.1
+        },
+        {
+          slow: 0.08
+        },
+        {
+          power: 0.1
+        },
+        {
+          charmTime: 0.1
+        },
+        {
+          charmTime: 0.12
+        },
+        {
+          power: 0.1,
+          slow: 0.08
+        }
       ]
     },
     lizard: {
       power: 38,
       rate: 0.42,
       rangeTiles: 1.5,
-      params: { chewTime: 1.4 },
-      battleUpgrades: [{ power: 1.4 }, { chewTime: 0.6, range: 1.1 }, { rate: 1.2 }, { power: 1.2 }, { chewTime: 0.75 }],
+      params: {
+        chewTime: 1.4
+      },
+      battleUpgrades: [
+        {
+          power: 2
+        },
+        {
+          chewTime: 0.6,
+          range: 1.1,
+          power: 1.5
+        },
+        {
+          rate: 1.2,
+          power: 1.111
+        },
+        {
+          power: 1.25
+        },
+        {
+          chewTime: 0.75,
+          power: 1.2
+        }
+      ],
       cardUpgrades: [
-        { power: 0.12 },
-        { rate: 0.08 },
-        { range: 0.2 },
-        { power: 0.1 },
-        { range: 0.2 },
-        { rate: 0.1 },
-        { power: 0.1 },
-        { power: 0.12 },
-        { range: 0.2, power: 0.1 }
+        {
+          power: 0.12
+        },
+        {
+          rate: 0.08
+        },
+        {
+          range: 0.2
+        },
+        {
+          power: 0.1
+        },
+        {
+          range: 0.2
+        },
+        {
+          rate: 0.1
+        },
+        {
+          power: 0.1
+        },
+        {
+          power: 0.12
+        },
+        {
+          range: 0.2,
+          power: 0.1
+        }
       ]
     },
     laser: {
-      power: 5,
+      power: 3,
       rate: 3.2,
       rangeTiles: 2.5,
-      params: { heatPerHit: 0.12, heatMax: 1 },
-      battleUpgrades: [{ power: 1.35 }, { rate: 1.15 }, { range: 1.1 }, { power: 1.15, heatMax: 1.5 }, { rate: 1.2, heatMax: 1.3 }],
+      params: {
+        heatPerHit: 0.1,
+        heatMax: 1
+      },
+      battleUpgrades: [
+        {
+          power: 1.7
+        },
+        {
+          rate: 1.15,
+          power: 1.228
+        },
+        {
+          range: 1.1,
+          power: 1.292
+        },
+        {
+          power: 1.15,
+          heatMax: 1.5
+        },
+        {
+          rate: 1.2,
+          heatMax: 1.3
+        }
+      ],
       cardUpgrades: [
-        { rate: 0.08 },
-        { power: 0.1 },
-        { range: 0.2 },
-        { rate: 0.1 },
-        { power: 0.1 },
-        { range: 0.2 },
-        { power: 0.12 },
-        { rate: 0.1 },
-        { power: 0.1, rate: 0.1 }
+        {
+          rate: 0.08
+        },
+        {
+          power: 0.1
+        },
+        {
+          range: 0.2
+        },
+        {
+          rate: 0.1
+        },
+        {
+          power: 0.1
+        },
+        {
+          range: 0.2
+        },
+        {
+          power: 0.12
+        },
+        {
+          rate: 0.1
+        },
+        {
+          power: 0.1,
+          rate: 0.1
+        }
       ]
     },
     zapper: {
-      power: 15,
+      power: 10,
       rate: 1.5,
       rangeTiles: 2,
-      params: { chain: 2, chainRange: 75, chainFalloff: 0.6 },
-      battleUpgrades: [{ power: 1.35 }, { chain: 1.5, range: 1.1 }, { rate: 1.2 }, { power: 1.2 }, { rate: 1.15, chain: 1.34 }],
+      params: {
+        chain: 2,
+        chainRange: 75,
+        chainFalloff: 0.6
+      },
+      battleUpgrades: [
+        {
+          power: 2
+        },
+        {
+          chain: 1.5,
+          range: 1.1,
+          power: 1.5
+        },
+        {
+          rate: 1.2,
+          power: 1.111
+        },
+        {
+          power: 1.25
+        },
+        {
+          rate: 1.15,
+          chain: 1.34,
+          power: 1.043
+        }
+      ],
       cardUpgrades: [
-        { range: 0.2 },
-        { power: 0.1 },
-        { rate: 0.1 },
-        { range: 0.2 },
-        { power: 0.12 },
-        { rate: 0.08 },
-        { power: 0.1 },
-        { range: 0.2 },
-        { power: 0.1, range: 0.15 }
+        {
+          range: 0.2
+        },
+        {
+          power: 0.1
+        },
+        {
+          rate: 0.1
+        },
+        {
+          range: 0.2
+        },
+        {
+          power: 0.12
+        },
+        {
+          rate: 0.08
+        },
+        {
+          power: 0.1
+        },
+        {
+          range: 0.2
+        },
+        {
+          power: 0.1,
+          range: 0.15
+        }
       ]
     },
     glue: {
       power: 0.55,
       rate: null,
       rangeTiles: 1,
-      params: { stickTime: 0.5 },
-      battleUpgrades: [{ power: 1.15 }, { stickTime: 2 }, { stickTime: 1.25 }, { power: 1.1 }, { stickTime: 1.2 }],
+      params: {
+        stickTime: 0.5
+      },
+      battleUpgrades: [
+        {
+          power: 1.15
+        },
+        {
+          stickTime: 2
+        },
+        {
+          stickTime: 1.25
+        },
+        {
+          power: 1.1
+        },
+        {
+          stickTime: 1.2
+        }
+      ],
       cardUpgrades: [
-        { stickTime: 0.12 },
-        { power: 0.08 },
-        { stickTime: 0.15 },
-        { power: 0.06 },
-        { power: 0.08 },
-        { stickTime: 0.1 },
-        { stickTime: 0.15 },
-        { power: 0.08 },
-        { stickTime: 0.12, power: 0.05 }
+        {
+          stickTime: 0.12
+        },
+        {
+          power: 0.08
+        },
+        {
+          stickTime: 0.15
+        },
+        {
+          power: 0.06
+        },
+        {
+          power: 0.08
+        },
+        {
+          stickTime: 0.1
+        },
+        {
+          stickTime: 0.15
+        },
+        {
+          power: 0.08
+        },
+        {
+          stickTime: 0.12,
+          power: 0.05
+        }
       ]
     },
     gate: {
       power: 4.5,
       rate: 2.85,
       rangeTiles: 1,
-      params: { ignoreArmor: !0 },
-      battleUpgrades: [{ power: 1.4 }, { rate: 1.3 }, { rate: 1.15 }, { power: 1.25 }, { power: 1.1, rate: 1.1 }],
+      params: {
+        ignoreArmor: !0
+      },
+      battleUpgrades: [
+        {
+          power: 2
+        },
+        {
+          rate: 1.3,
+          power: 1.154
+        },
+        {
+          rate: 1.15,
+          power: 1.159
+        },
+        {
+          power: 1.25
+        },
+        {
+          power: 1.1,
+          rate: 1.1
+        }
+      ],
       cardUpgrades: [
-        { rate: 0.1 },
-        { power: 0.1 },
-        { power: 0.12 },
-        { rate: 0.08 },
-        { rate: 0.08 },
-        { power: 0.1 },
-        { power: 0.08 },
-        { rate: 0.1 },
-        { power: 0.1, rate: 0.06 }
+        {
+          rate: 0.1
+        },
+        {
+          power: 0.1
+        },
+        {
+          power: 0.12
+        },
+        {
+          rate: 0.08
+        },
+        {
+          rate: 0.08
+        },
+        {
+          power: 0.1
+        },
+        {
+          power: 0.08
+        },
+        {
+          rate: 0.1
+        },
+        {
+          power: 0.1,
+          rate: 0.06
+        }
       ]
     },
     lava: {
       power: 6,
       rate: null,
       rangeTiles: 1,
-      params: { ignoreArmor: !0, slow: 0.2 },
-      battleUpgrades: [{ power: 1.4 }, { slow: 1.25, power: 1.1 }, { power: 1.2 }, { slow: 1.15 }, { power: 1.15 }],
+      params: {
+        ignoreArmor: !0,
+        slow: 0.2
+      },
+      battleUpgrades: [
+        {
+          power: 2
+        },
+        {
+          slow: 1.25,
+          power: 1.5
+        },
+        {
+          power: 1.333
+        },
+        {
+          slow: 1.15,
+          power: 1.25
+        },
+        {
+          power: 1.2
+        }
+      ],
       cardUpgrades: [
-        { power: 0.1 },
-        { slow: 0.08 },
-        { power: 0.1 },
-        { slow: 0.1 },
-        { power: 0.08 },
-        { power: 0.12 },
-        { slow: 0.08 },
-        { power: 0.1 },
-        { slow: 0.1, power: 0.1 }
+        {
+          power: 0.1
+        },
+        {
+          slow: 0.08
+        },
+        {
+          power: 0.1
+        },
+        {
+          slow: 0.1
+        },
+        {
+          power: 0.08
+        },
+        {
+          power: 0.12
+        },
+        {
+          slow: 0.08
+        },
+        {
+          power: 0.1
+        },
+        {
+          slow: 0.1,
+          power: 0.1
+        }
       ]
     },
     tractor: {
       power: null,
       rate: 0.13,
       rangeTiles: null,
-      params: { liftSize: 1 },
-      battleUpgrades: [{ rate: 1.12 }, { rate: 1.1 }, { rate: 1.12 }, { liftSize: 1, rateIfMaxLift: 1.15 }, { rate: 1.1 }],
+      params: {
+        liftSize: 1
+      },
+      battleUpgrades: [
+        {
+          rate: 1.12
+        },
+        {
+          rate: 1.1
+        },
+        {
+          rate: 1.12
+        },
+        {
+          liftSize: 1,
+          rateIfMaxLift: 1.15
+        },
+        {
+          rate: 1.1
+        }
+      ],
       cardUpgrades: [
-        { rate: 0.05 },
-        { liftSize: 1 },
-        { rate: 0.06 },
-        { rate: 0.05 },
-        { rate: 0.07 },
-        { rate: 0.05 },
-        { liftSize: 1 },
-        { rate: 0.06 },
-        { rate: 0.07 }
+        {
+          rate: 0.05
+        },
+        {
+          liftSize: 1
+        },
+        {
+          rate: 0.06
+        },
+        {
+          rate: 0.05
+        },
+        {
+          rate: 0.07
+        },
+        {
+          rate: 0.05
+        },
+        {
+          liftSize: 1
+        },
+        {
+          rate: 0.06
+        },
+        {
+          rate: 0.07
+        }
       ]
     }
   },
   ants: {
-    small: { hp: 5, speed: 58, armor: 0, steal: 1, weight: 1.2, size: "small" },
-    worker: { hp: 10, speed: 40, armor: 0, steal: 1, weight: 1, size: "regular" },
-    big: { hp: 40, speed: 27, armor: 2, steal: 2, weight: 0.5, size: "large" },
-    gasmask: { hp: 16, speed: 38, armor: 1, steal: 1, weight: 1, size: "regular", gasImmune: !0 },
-    armored: { hp: 30, speed: 30, armor: 6, steal: 2, weight: 0.6, size: "regular" },
-    flyer: { hp: 10, speed: 62, armor: 0, steal: 1, weight: 1.3, size: "regular", flying: !0 },
-    sprinter: { hp: 20, speed: 52, armor: 4, steal: 1, weight: 0.8, size: "regular", lateGame: !0 },
-    heavy: { hp: 60, speed: 24, armor: 6, steal: 2, weight: 0.35, size: "large", lateGame: !0 },
-    queen: {
-      hp: 1100,
-      speed: 13,
+    small: {
+      hp: 4,
+      speed: 60,
+      armor: 0,
+      steal: 1,
+      weight: 1.2,
+      size: "small",
+      crumbs: 1
+    },
+    worker: {
+      hp: 20,
+      speed: 40,
+      armor: 0,
+      steal: 1,
+      weight: 1,
+      size: "regular",
+      crumbs: 1
+    },
+    big: {
+      hp: 100,
+      speed: 27,
+      armor: 2,
+      steal: 2,
+      weight: 0.5,
+      size: "large",
+      crumbs: 4
+    },
+    gasmask: {
+      hp: 16,
+      speed: 40,
+      armor: 1,
+      steal: 1,
+      weight: 1,
+      size: "regular",
+      gasImmune: !0,
+      crumbs: 2
+    },
+    armored: {
+      hp: 40,
+      speed: 30,
+      armor: 6,
+      steal: 2,
+      weight: 0.6,
+      size: "regular",
+      crumbs: 4
+    },
+    flyer: {
+      hp: 12,
+      speed: 62,
+      armor: 0,
+      steal: 1,
+      weight: 1.3,
+      size: "regular",
+      flying: !0,
+      crumbs: 2
+    },
+    sprinter: {
+      hp: 10,
+      speed: 52,
       armor: 4,
+      steal: 1,
+      weight: 0.8,
+      size: "regular",
+      lateGame: !0,
+      crumbs: 3
+    },
+    heavy: {
+      hp: 80,
+      speed: 24,
+      armor: 6,
+      steal: 2,
+      weight: 0.35,
+      size: "large",
+      lateGame: !0,
+      crumbs: 8
+    },
+    queen: {
+      hp: 1200,
+      speed: 13,
+      armor: 6,
       weight: 0,
       size: "queen",
       slowResist: 0.5,
       boss: !0,
-      spawn: { type: "small", every: 5, count: 1 },
-      queenTraits: ["slow"]
+      spawn: {
+        type: "small",
+        every: 5,
+        count: 1
+      },
+      queenTraits: [
+        "slow"
+      ],
+      crumbs: 93
     },
     queen2: {
-      hp: 1500,
+      hp: 2e3,
       speed: 19,
-      armor: 3,
+      armor: 5,
       weight: 0,
       size: "queen",
       slowResist: 0.4,
       boss: !0,
-      spawn: { type: "flyer", every: 6, count: 1 },
-      queenTraits: ["fast"]
+      spawn: {
+        type: "flyer",
+        every: 6,
+        count: 1
+      },
+      queenTraits: [
+        "fast"
+      ],
+      crumbs: 141
+    },
+    small_gasmask: {
+      hp: 4,
+      speed: 60,
+      armor: 0,
+      steal: 1,
+      weight: 1.2,
+      size: "small",
+      gasImmune: !0,
+      crumbs: 1
+    },
+    small_armed: {
+      hp: 10,
+      speed: 45,
+      armor: 4,
+      steal: 1,
+      weight: 1,
+      size: "small",
+      crumbs: 1
+    },
+    small_fly: {
+      hp: 3,
+      speed: 70,
+      armor: 0,
+      steal: 1,
+      weight: 1.5,
+      size: "small",
+      flying: !0,
+      crumbs: 1
     }
   },
   worlds: [
-    { id: 1, name: "Cookie Kitchen", treat: "cookie", queen: "queen", levels: 10, unlock: null },
+    {
+      id: 1,
+      name: "Cookie Kitchen",
+      treat: "cookie",
+      queen: "queen",
+      levels: 10,
+      unlock: null,
+      cardLevelCap: 4
+    },
     {
       id: 2,
       name: "Cake Castle",
       treat: "cake",
       queen: "queen2",
       levels: 10,
-      unlock: { allLevelsWonInWorld: 1, minStarsInWorld: 20 }
+      unlock: {
+        allLevelsWonInWorld: 1,
+        minStarsInWorld: 18
+      },
+      cardLevelCap: 6
     }
   ],
   levels: [
@@ -312,7 +976,17 @@ var tuning_default = {
       base: 8.1,
       growth: 1.44,
       interval: 1.1,
-      mix: [{ type: "worker", w: 3 }, { type: "small", w: 2, from: 2 }]
+      mix: [
+        {
+          type: "worker",
+          w: 3
+        },
+        {
+          type: "small",
+          w: 2,
+          from: 2
+        }
+      ]
     },
     {
       world: 1,
@@ -323,7 +997,21 @@ var tuning_default = {
       base: 7,
       growth: 1.8,
       interval: 1,
-      mix: [{ type: "worker", w: 3 }, { type: "small", w: 2 }, { type: "big", w: 1, from: 3 }]
+      mix: [
+        {
+          type: "worker",
+          w: 3
+        },
+        {
+          type: "small",
+          w: 2
+        },
+        {
+          type: "big",
+          w: 1,
+          from: 3
+        }
+      ]
     },
     {
       world: 1,
@@ -334,7 +1022,30 @@ var tuning_default = {
       base: 7.8,
       growth: 1.75,
       interval: 1,
-      mix: [{ type: "worker", w: 3 }, { type: "small", w: 2 }, { type: "big", w: 1 }, { type: "gasmask", w: 2, from: 2 }]
+      mix: [
+        {
+          type: "worker",
+          w: 3
+        },
+        {
+          type: "small",
+          w: 2
+        },
+        {
+          type: "big",
+          w: 1
+        },
+        {
+          type: "gasmask",
+          w: 2,
+          from: 2
+        },
+        {
+          type: "small_gasmask",
+          w: 1,
+          from: 3
+        }
+      ]
     },
     {
       world: 1,
@@ -346,11 +1057,28 @@ var tuning_default = {
       growth: 1.8,
       interval: 0.95,
       mix: [
-        { type: "worker", w: 3 },
-        { type: "small", w: 2 },
-        { type: "gasmask", w: 1 },
-        { type: "big", w: 1 },
-        { type: "flyer", w: 2, from: 3 }
+        {
+          type: "worker",
+          w: 3
+        },
+        {
+          type: "small",
+          w: 2
+        },
+        {
+          type: "big",
+          w: 1
+        },
+        {
+          type: "flyer",
+          w: 2,
+          from: 3
+        },
+        {
+          type: "small_fly",
+          w: 1,
+          from: 3
+        }
       ]
     },
     {
@@ -358,18 +1086,43 @@ var tuning_default = {
       name: "Shiny Knights",
       map: "spiral",
       waveCount: 6,
-      hpMul: 3,
+      hpMul: 2.4,
       base: 8.8,
       growth: 1.96,
       interval: 0.95,
       mix: [
-        { type: "worker", w: 3 },
-        { type: "small", w: 2 },
-        { type: "big", w: 1 },
-        { type: "gasmask", w: 1 },
-        { type: "armored", w: 2, from: 2 }
+        {
+          type: "worker",
+          w: 3
+        },
+        {
+          type: "small",
+          w: 2
+        },
+        {
+          type: "big",
+          w: 1
+        },
+        {
+          type: "armored",
+          w: 2,
+          from: 2
+        },
+        {
+          type: "small_armed",
+          w: 1,
+          from: 2
+        }
       ],
-      special: { "6": [{ type: "big", count: 2, interval: 1.6 }] }
+      special: {
+        "6": [
+          {
+            type: "big",
+            count: 2,
+            interval: 1.6
+          }
+        ]
+      }
     },
     {
       world: 1,
@@ -381,11 +1134,26 @@ var tuning_default = {
       growth: 2,
       interval: 0.9,
       mix: [
-        { type: "worker", w: 2 },
-        { type: "small", w: 3 },
-        { type: "flyer", w: 3 },
-        { type: "armored", w: 1 },
-        { type: "gasmask", w: 1 }
+        {
+          type: "worker",
+          w: 2
+        },
+        {
+          type: "small",
+          w: 3
+        },
+        {
+          type: "flyer",
+          w: 3
+        },
+        {
+          type: "armored",
+          w: 1
+        },
+        {
+          type: "gasmask",
+          w: 1
+        }
       ]
     },
     {
@@ -398,11 +1166,26 @@ var tuning_default = {
       growth: 2.07,
       interval: 0.9,
       mix: [
-        { type: "worker", w: 2 },
-        { type: "small", w: 2 },
-        { type: "big", w: 2 },
-        { type: "armored", w: 2 },
-        { type: "gasmask", w: 1 }
+        {
+          type: "worker",
+          w: 2
+        },
+        {
+          type: "small",
+          w: 2
+        },
+        {
+          type: "big",
+          w: 2
+        },
+        {
+          type: "armored",
+          w: 2
+        },
+        {
+          type: "gasmask",
+          w: 1
+        }
       ]
     },
     {
@@ -410,16 +1193,31 @@ var tuning_default = {
       name: "Masked Ball",
       map: "fork",
       waveCount: 8,
-      hpMul: 3.1,
+      hpMul: 2.48,
       base: 11,
       growth: 2.2,
       interval: 0.85,
       mix: [
-        { type: "worker", w: 2 },
-        { type: "small", w: 2 },
-        { type: "gasmask", w: 3 },
-        { type: "armored", w: 1 },
-        { type: "flyer", w: 2 }
+        {
+          type: "worker",
+          w: 2
+        },
+        {
+          type: "small",
+          w: 2
+        },
+        {
+          type: "gasmask",
+          w: 3
+        },
+        {
+          type: "armored",
+          w: 1
+        },
+        {
+          type: "flyer",
+          w: 2
+        }
       ]
     },
     {
@@ -432,11 +1230,27 @@ var tuning_default = {
       growth: 2.28,
       interval: 0.75,
       mix: [
-        { type: "small", w: 4 },
-        { type: "worker", w: 2 },
-        { type: "flyer", w: 2 },
-        { type: "sprinter", w: 1, from: 2 },
-        { type: "big", w: 1 }
+        {
+          type: "small",
+          w: 4
+        },
+        {
+          type: "worker",
+          w: 2
+        },
+        {
+          type: "flyer",
+          w: 2
+        },
+        {
+          type: "sprinter",
+          w: 1,
+          from: 2
+        },
+        {
+          type: "big",
+          w: 1
+        }
       ]
     },
     {
@@ -444,12 +1258,38 @@ var tuning_default = {
       name: "Her Majesty",
       map: "cross",
       waveCount: 9,
-      hpMul: 2.1,
+      hpMul: 2,
       base: 12,
       growth: 2.4,
       interval: 0.8,
-      mix: [{ type: "worker", w: 2 }, { type: "small", w: 2 }, { type: "heavy", w: 2 }, { type: "flyer", w: 2 }],
-      special: { "9": [{ type: "queen", count: 1, interval: 1, delay: 4 }] }
+      mix: [
+        {
+          type: "worker",
+          w: 2
+        },
+        {
+          type: "small",
+          w: 2
+        },
+        {
+          type: "heavy",
+          w: 2
+        },
+        {
+          type: "flyer",
+          w: 2
+        }
+      ],
+      special: {
+        "9": [
+          {
+            type: "queen",
+            count: 1,
+            interval: 1,
+            delay: 4
+          }
+        ]
+      }
     },
     {
       world: 2,
@@ -460,7 +1300,21 @@ var tuning_default = {
       base: 10,
       growth: 1.8,
       interval: 1,
-      mix: [{ type: "worker", w: 3 }, { type: "small", w: 2 }, { type: "gasmask", w: 2, from: 2 }]
+      mix: [
+        {
+          type: "worker",
+          w: 3
+        },
+        {
+          type: "small",
+          w: 2
+        },
+        {
+          type: "gasmask",
+          w: 2,
+          from: 2
+        }
+      ]
     },
     {
       world: 2,
@@ -471,18 +1325,54 @@ var tuning_default = {
       base: 9,
       growth: 2,
       interval: 0.95,
-      mix: [{ type: "worker", w: 3 }, { type: "small", w: 2 }, { type: "big", w: 1 }, { type: "armored", w: 1, from: 3 }]
+      mix: [
+        {
+          type: "worker",
+          w: 3
+        },
+        {
+          type: "small",
+          w: 2
+        },
+        {
+          type: "big",
+          w: 1
+        },
+        {
+          type: "armored",
+          w: 1,
+          from: 3
+        }
+      ]
     },
     {
       world: 2,
       name: "Layer Cake",
       map: "layers",
       waveCount: 6,
-      hpMul: 3.4,
+      hpMul: 2.72,
       base: 10,
       growth: 2,
       interval: 0.95,
-      mix: [{ type: "worker", w: 3 }, { type: "small", w: 2 }, { type: "flyer", w: 2, from: 2 }, { type: "gasmask", w: 1 }]
+      mix: [
+        {
+          type: "worker",
+          w: 3
+        },
+        {
+          type: "small",
+          w: 2
+        },
+        {
+          type: "flyer",
+          w: 2,
+          from: 2
+        },
+        {
+          type: "gasmask",
+          w: 1
+        }
+      ]
     },
     {
       world: 2,
@@ -494,11 +1384,27 @@ var tuning_default = {
       growth: 2.1,
       interval: 0.9,
       mix: [
-        { type: "worker", w: 2 },
-        { type: "small", w: 2 },
-        { type: "armored", w: 2 },
-        { type: "sprinter", w: 1, from: 3 },
-        { type: "big", w: 1 }
+        {
+          type: "worker",
+          w: 2
+        },
+        {
+          type: "small",
+          w: 2
+        },
+        {
+          type: "armored",
+          w: 2
+        },
+        {
+          type: "sprinter",
+          w: 1,
+          from: 3
+        },
+        {
+          type: "big",
+          w: 1
+        }
       ]
     },
     {
@@ -511,11 +1417,26 @@ var tuning_default = {
       growth: 2.1,
       interval: 0.9,
       mix: [
-        { type: "worker", w: 2 },
-        { type: "small", w: 3 },
-        { type: "flyer", w: 2 },
-        { type: "gasmask", w: 2 },
-        { type: "big", w: 1 }
+        {
+          type: "worker",
+          w: 2
+        },
+        {
+          type: "small",
+          w: 3
+        },
+        {
+          type: "flyer",
+          w: 2
+        },
+        {
+          type: "gasmask",
+          w: 2
+        },
+        {
+          type: "big",
+          w: 1
+        }
       ]
     },
     {
@@ -528,11 +1449,26 @@ var tuning_default = {
       growth: 2.2,
       interval: 0.85,
       mix: [
-        { type: "small", w: 3 },
-        { type: "worker", w: 2 },
-        { type: "sprinter", w: 2 },
-        { type: "armored", w: 1 },
-        { type: "flyer", w: 1 }
+        {
+          type: "small",
+          w: 3
+        },
+        {
+          type: "worker",
+          w: 2
+        },
+        {
+          type: "sprinter",
+          w: 2
+        },
+        {
+          type: "armored",
+          w: 1
+        },
+        {
+          type: "flyer",
+          w: 1
+        }
       ]
     },
     {
@@ -540,16 +1476,32 @@ var tuning_default = {
       name: "Heavy Icing",
       map: "snake",
       waveCount: 8,
-      hpMul: 3.4,
+      hpMul: 2.4,
       base: 11,
       growth: 2.2,
       interval: 0.9,
       mix: [
-        { type: "worker", w: 2 },
-        { type: "big", w: 2 },
-        { type: "heavy", w: 1, from: 3 },
-        { type: "armored", w: 2 },
-        { type: "small", w: 2 }
+        {
+          type: "worker",
+          w: 2
+        },
+        {
+          type: "big",
+          w: 2
+        },
+        {
+          type: "heavy",
+          w: 1,
+          from: 3
+        },
+        {
+          type: "armored",
+          w: 2
+        },
+        {
+          type: "small",
+          w: 2
+        }
       ]
     },
     {
@@ -557,16 +1509,31 @@ var tuning_default = {
       name: "Sprinkle Storm",
       map: "layers",
       waveCount: 8,
-      hpMul: 3.8,
+      hpMul: 3.04,
       base: 11.5,
       growth: 2.3,
       interval: 0.85,
       mix: [
-        { type: "small", w: 3 },
-        { type: "flyer", w: 3 },
-        { type: "worker", w: 2 },
-        { type: "gasmask", w: 2 },
-        { type: "sprinter", w: 1 }
+        {
+          type: "small",
+          w: 3
+        },
+        {
+          type: "flyer",
+          w: 3
+        },
+        {
+          type: "worker",
+          w: 2
+        },
+        {
+          type: "gasmask",
+          w: 2
+        },
+        {
+          type: "sprinter",
+          w: 1
+        }
       ]
     },
     {
@@ -579,11 +1546,26 @@ var tuning_default = {
       growth: 2.4,
       interval: 0.8,
       mix: [
-        { type: "worker", w: 2 },
-        { type: "small", w: 3 },
-        { type: "heavy", w: 1 },
-        { type: "sprinter", w: 2 },
-        { type: "flyer", w: 2 }
+        {
+          type: "worker",
+          w: 2
+        },
+        {
+          type: "small",
+          w: 3
+        },
+        {
+          type: "heavy",
+          w: 1
+        },
+        {
+          type: "sprinter",
+          w: 2
+        },
+        {
+          type: "flyer",
+          w: 2
+        }
       ]
     },
     {
@@ -595,28 +1577,186 @@ var tuning_default = {
       base: 12,
       growth: 2.4,
       interval: 0.8,
-      mix: [{ type: "worker", w: 2 }, { type: "small", w: 2 }, { type: "sprinter", w: 2 }, { type: "flyer", w: 2 }],
-      special: { "9": [{ type: "queen2", count: 1, interval: 1, delay: 4 }] }
+      mix: [
+        {
+          type: "worker",
+          w: 2
+        },
+        {
+          type: "small",
+          w: 2
+        },
+        {
+          type: "sprinter",
+          w: 2
+        },
+        {
+          type: "flyer",
+          w: 2
+        }
+      ],
+      special: {
+        "9": [
+          {
+            type: "queen2",
+            count: 1,
+            interval: 1,
+            delay: 4
+          }
+        ]
+      }
     }
   ],
   maps: {
     zigzag: {
       name: "Breakfast Counter",
       theme: 0,
-      path: [[1, -0.6], [1, 2], [8, 2], [8, 5], [1, 5], [1, 8], [8, 8], [8, 10]],
-      props: [{ k: "sugar", c: 5, r: 10 }, { k: "mug", c: 9, r: 6 }]
+      path: [
+        [
+          1,
+          -0.6
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          8,
+          2
+        ],
+        [
+          8,
+          5
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          1,
+          8
+        ],
+        [
+          8,
+          8
+        ],
+        [
+          8,
+          10
+        ]
+      ],
+      props: [
+        {
+          k: "sugar",
+          c: 5,
+          r: 10
+        },
+        {
+          k: "mug",
+          c: 9,
+          r: 6
+        }
+      ]
     },
     hook: {
       name: "Baking Table",
       theme: 1,
-      path: [[8, -0.6], [8, 1], [2, 1], [2, 4], [7, 4], [7, 7], [2, 7], [2, 10], [6, 10]],
-      props: [{ k: "jam", c: 0, r: 11 }, { k: "plant", c: 9, r: 9 }]
+      path: [
+        [
+          8,
+          -0.6
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          7,
+          7
+        ],
+        [
+          2,
+          7
+        ],
+        [
+          2,
+          10
+        ],
+        [
+          6,
+          10
+        ]
+      ],
+      props: [
+        {
+          k: "jam",
+          c: 0,
+          r: 11
+        },
+        {
+          k: "plant",
+          c: 9,
+          r: 9
+        }
+      ]
     },
     spiral: {
       name: "Midnight Snack",
       theme: 2,
-      path: [[-0.6, 1], [8, 1], [8, 10], [1, 10], [1, 4], [5, 4], [5, 7]],
-      props: [{ k: "mug", c: 3, r: 7 }, { k: "spoon", c: 9, r: 11 }]
+      path: [
+        [
+          -0.6,
+          1
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          10
+        ],
+        [
+          1,
+          10
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          5,
+          7
+        ]
+      ],
+      props: [
+        {
+          k: "mug",
+          c: 3,
+          r: 7
+        },
+        {
+          k: "spoon",
+          c: 9,
+          r: 11
+        }
+      ]
     },
     fork: {
       name: "Sugar Bowl Split",
@@ -856,6 +1996,11 @@ var TILE = 40, GRID_COLS = 10, GRID_ROWS = 12, BATTLE = {
   visiblePicks: 3,
   guaranteeDamageOpening: !0,
   // opening hand always holds >=1 ground damage tower (so the free card can earn crumbs)
+  // v0.7 D-R1..R3 (economy plan): a hand never shows the same card twice; the opening hand holds >= openingDamageCards damage
+  // cards (when the deck has that many); the first `freeRedraws` redraws of every battle cost 0 (then 3, 6, 9 ...).
+  distinctHand: !0,
+  openingDamageCards: 2,
+  freeRedraws: 1,
   deckSize: 5,
   maxInBattleLevel: 6,
   // v0.6 item 11: duplicate card dropped on same tower upgrades it, up to this level (5 upgrades, see TOWERS[x].upgrades)
@@ -1056,7 +2201,7 @@ var LIFT_MAX = 3, SIZE_RANK = { small: 1, regular: 2, large: 3 }, LIFT_NAMES = [
   stickTime: "Stick",
   liftSize: "Lifts"
 }, SLOW_CAP = 0.85, ALL_CARDS = Object.keys(TOWERS), STARTER_CARDS = ["slingshot", "spray", "glue", "fan", "ball"];
-var AIR_COUNTERS = ["laser", "zapper"], ANT_SIZES = { ...tuning_default.antSizes }, ANT_TEXT = {
+var AIR_COUNTERS = ["laser", "zapper"], VERSION = "0.7.0", ANT_SIZES = { ...tuning_default.antSizes }, ANT_TEXT = {
   small: { name: "Scout Ant", desc: "Tiny, fast, comes in swarms." },
   worker: { name: "Worker Ant", desc: "The regular. Hard hat included." },
   big: { name: "Big Ant", desc: "Slow, chunky, a bit of armor." },
@@ -1066,6 +2211,10 @@ var AIR_COUNTERS = ["laser", "zapper"], ANT_SIZES = { ...tuning_default.antSizes
   sprinter: { name: "Sprint Knight", desc: "Armored AND fast - sneakers on. Late stages only." },
   heavy: { name: "Heavy Knight", desc: "A big ant in full armor. Late stages only." },
   queen: { name: "Ant Queen", desc: "BOSS. Marches in and calls her scouts. Takes HALF the cookie." },
+  // v0.7 (Yair ANT-STATS-v0.6.3): small variants - same tiny body as the Scout, with a gas mask / armour / wings
+  small_gasmask: { name: "Masked Scout", desc: "A tiny scout with a gas mask - spray does nothing." },
+  small_armed: { name: "Armored Scout", desc: "A tiny scout in armour. Slower, shrugs off weak hits." },
+  small_fly: { name: "Flying Scout", desc: "A tiny flying scout. Laser or zapper!" },
   queen2: { name: "Swift Queen", desc: "BOSS of world 2. Fast, calls flying ants. Takes 40 of the cake." }
 }, QUEEN_TRAITS = { ...tuning_default.queenTraitMods };
 function queenTake(traits = [], T = QUEEN_TRAITS) {
@@ -1125,6 +2274,8 @@ var BONUSES = {
     // v0.6 item 4: coins for one level-1 card of a tower you own (there are no "copies" any more)
     cardPack: 40,
     // coins for 5 random level-1 cards of towers you own
+    packPity: 10,
+    // v0.7 D-P3: while a tower is locked, every 10th paid pack without a new tower holds one
     cardPackSize: 5,
     // v0.4 item 10: boosters are bought with DIAMONDS at a FIXED price (all 4 boosters): 15 in the Shop, 20 in battle.
     boosterDiamonds: 15,
@@ -1243,6 +2394,16 @@ function liftable(a, lift) {
 function canHit(targets, flying) {
   return targets === "both" || targets === "air" == !!flying;
 }
+function worldCardLevelCap(levelIndex) {
+  let L = LEVELS[levelIndex], w = L && WORLDS.find((x) => x.id === L.world);
+  return w && w.cardLevelCap || null;
+}
+var DAMAGE_UPGRADE_TOWERS = ["slingshot", "spray", "sound", "ball", "lizard", "laser", "zapper", "gate", "lava"];
+function upgradeGain(type, lvl, cardLevel = 1) {
+  if (!DAMAGE_UPGRADE_TOWERS.includes(type)) return 0;
+  let dps = (L) => towerStat(type, "power", L, cardLevel) * (towerStat(type, "rate", L, cardLevel) || 1) * (type === "laser" ? 1 + (towerStat(type, "heatMax", L, cardLevel) || 0) : 1), base = dps(1);
+  return base > 0 ? dps(lvl) / base : 0;
+}
 function isDamageCard(id) {
   let T = TOWERS[id];
   return T.kind === "tower" && id !== "fan" && T.targets !== "air" && !T.nearTrail;
@@ -1342,7 +2503,21 @@ var Path = class {
   isPathTile(c, r) {
     return this.tiles.has(c + "," + r);
   }
-}, SPACING = { small: 0.45, worker: 1, big: 1.6, gasmask: 1, armored: 1.5, flyer: 0.8, sprinter: 0.9, heavy: 1.7, queen: 1, queen2: 1 };
+}, SPACING = {
+  small: 0.45,
+  worker: 1,
+  big: 1.6,
+  gasmask: 1,
+  armored: 1.5,
+  flyer: 0.8,
+  sprinter: 0.9,
+  heavy: 1.7,
+  queen: 1,
+  queen2: 1,
+  small_gasmask: 0.45,
+  small_armed: 0.6,
+  small_fly: 0.5
+};
 function generateWaves(levelIndex, levels = LEVELS) {
   let L = levels[levelIndex];
   if (L.waves) return L.waves.map((groups) => expandGroups(groups, L.interval || 1));
@@ -1356,7 +2531,7 @@ function generateWaves(levelIndex, levels = LEVELS) {
           type = m.type;
           break;
         }
-      let reps = type === "small" ? 2 : 1;
+      let reps = type === "small" || type === "small_gasmask" || type === "small_fly" ? 2 : 1;
       for (let j = 0; j < reps; j++)
         list.push({ t, type }), t += L.interval * SPACING[type] * (j < reps - 1 ? 0.5 : 1);
     }
@@ -1416,12 +2591,43 @@ var NEXT_ID = 1, Battle = class {
       ends.some((e) => Math.hypot(e.x - x, Math.max(e.y, 20) - y) < (e.k ? 36 : 30)) && this.blocked.add(c + "," + r);
     }
     for (let p of this.props) this.blocked.add(p.c + "," + p.r);
-    this.rng = mulberry32(opts.seed ?? 12345), this.deck = opts.deck.slice(0, this.cfg.deckSize), this.cardLevels = opts.cardLevels || {}, this.bonusTypes = (opts.bonusTypes || []).slice(0, this.cfg.bonusTypesToBring), this.bonusStock = { ...opts.bonusStock || {} }, this.bonusUsesLeft = this.cfg.maxBonusUses, this.dia = { crumbs: 0, boosters: 0, per: {} }, this.waves = generateWaves(opts.levelIndex), this.time = 0, this.crumbs = this.cfg.startCrumbs, this.crumbsEarned = 0, this.cardsPlayed = 0, this.rerolls = 0, this.foodStored = this.cfg.foodHP, this.foodDelivered = 0, this.ants = [], this.towers = [], this.projectiles = [], this.clouds = [], this.balls = [], this.pending = [], this.nextWave = 0, this.nextWaveAt = this.cfg.firstWaveDelay, this.routeCounter = 0, this.freezeUntil = -1, this.decoy = null, this.planes = null, this.events = [], this.stats = { kills: 0, spawned: 0, byType: {}, stolen: 0, returned: 0, lostOnWay: 0 }, this.result = null, this.paused = !1, this.onBonusUsed = opts.onBonusUsed || null, this.picks = [];
-    for (let i = 0; i < this.cfg.visiblePicks; i++) this.picks.push(this.draw());
-    if (this.cfg.guaranteeDamageOpening) {
+    if (this.rng = mulberry32(opts.seed ?? 12345), this.deck = opts.deck.slice(0, this.cfg.deckSize), this.cardLevelCap = opts.noCardLevelCap ? null : worldCardLevelCap(opts.levelIndex || 0), this.cardLevels = { ...opts.cardLevels || {} }, this.cardLevelCap) for (let k of Object.keys(this.cardLevels)) this.cardLevels[k] = Math.min(this.cardLevels[k], this.cardLevelCap);
+    this.bonusTypes = (opts.bonusTypes || []).slice(0, this.cfg.bonusTypesToBring), this.bonusStock = { ...opts.bonusStock || {} }, this.bonusUsesLeft = this.cfg.maxBonusUses, this.dia = { crumbs: 0, boosters: 0, per: {} }, this.waves = generateWaves(opts.levelIndex), this.time = 0, this.crumbs = this.cfg.startCrumbs, this.crumbsEarned = 0, this.cardsPlayed = 0, this.rerolls = 0, this.foodStored = this.cfg.foodHP, this.foodDelivered = 0, this.ants = [], this.towers = [], this.projectiles = [], this.clouds = [], this.balls = [], this.pending = [], this.nextWave = 0, this.nextWaveAt = this.cfg.firstWaveDelay, this.routeCounter = 0, this.freezeUntil = -1, this.decoy = null, this.planes = null, this.events = [], this.stats = { kills: 0, spawned: 0, byType: {}, stolen: 0, returned: 0, lostOnWay: 0 }, this.result = null, this.paused = !1, this.onBonusUsed = opts.onBonusUsed || null, this.picks = [], this.dealHand();
+  }
+  // v0.7 D-R1/D-R2: a full hand (start of battle and every redraw). Distinct cards when the deck allows it; while no card has been
+  // played yet, the hand holds >= openingDamageCards damage cards (when the deck has that many): draw those first, then the rest.
+  dealHand() {
+    let n = this.cfg.visiblePicks, hand = [];
+    if (this.cfg.distinctHand) {
+      let ids = [...new Set(this.deck)], take = (pool) => {
+        let id = pool[Math.floor(this.rng() * pool.length) % pool.length];
+        hand.push(id), ids.splice(ids.indexOf(id), 1);
+      };
+      if (this.cardsPlayed === 0 && this.cfg.openingDamageCards)
+        for (let k = 0; k < this.cfg.openingDamageCards && hand.length < n; k++) {
+          let dmg = ids.filter(isDamageCard);
+          if (!dmg.length) break;
+          take(dmg);
+        }
+      for (; hand.length < n && ids.length; ) take(ids);
+      for (; hand.length < n; ) hand.push(this.draw());
+      for (let i = hand.length - 1; i > 0; i--) {
+        let j = Math.floor(this.rng() * (i + 1));
+        [hand[i], hand[j]] = [hand[j], hand[i]];
+      }
+    } else
+      for (let i = 0; i < n; i++) hand.push(this.draw());
+    if (this.cfg.guaranteeDamageOpening && this.cardsPlayed === 0) {
       let dmg = this.deck.filter(isDamageCard);
-      dmg.length && !this.picks.some(isDamageCard) && (this.picks[0] = dmg[Math.floor(this.rng() * dmg.length)]);
+      dmg.length && !hand.some(isDamageCard) && (hand[0] = dmg[Math.floor(this.rng() * dmg.length)]);
     }
+    this.picks = hand;
+  }
+  // v0.7 D-R1: the card that replaces a played one differs from the two still in the hand (when the deck allows it)
+  drawReplacement(pickIndex) {
+    if (!this.cfg.distinctHand) return this.draw();
+    let others = this.picks.filter((_, i) => i !== pickIndex), pool = [...new Set(this.deck)].filter((id) => !others.includes(id));
+    return pool.length ? pool[Math.floor(this.rng() * pool.length) % pool.length] : this.draw();
   }
   draw() {
     return this.deck[Math.floor(this.rng() * this.deck.length)];
@@ -1553,18 +2759,17 @@ var NEXT_ID = 1, Battle = class {
     let card = this.picks[pickIndex], cost = this.nextCardCost;
     this.crumbs -= cost, this.cardsPlayed++;
     let tower, diff = null;
-    return chk.upgrade ? (tower = chk.tower, diff = upgradeDiff(tower.type, tower.lvl, tower.cardLevel), tower.lvl++, TOWERS[tower.type].directional && this.computeRun(tower), this.emit({ type: "upgrade", x: tower.x, y: tower.y, lvl: tower.lvl, card, pick: pickIndex, cost, id: tower.id, diff })) : (tower = this.addTower(card, c, r), this.emit({ type: "place", x: tower.x, y: tower.y, card, pick: pickIndex, cost, id: tower.id })), this.picks[pickIndex] = this.draw(), { ok: !0, upgrade: chk.upgrade, tower, cost, diff };
+    return chk.upgrade ? (tower = chk.tower, diff = upgradeDiff(tower.type, tower.lvl, tower.cardLevel), tower.lvl++, TOWERS[tower.type].directional && this.computeRun(tower), this.emit({ type: "upgrade", x: tower.x, y: tower.y, lvl: tower.lvl, card, pick: pickIndex, cost, id: tower.id, diff })) : (tower = this.addTower(card, c, r), this.emit({ type: "place", x: tower.x, y: tower.y, card, pick: pickIndex, cost, id: tower.id })), this.picks[pickIndex] = this.drawReplacement(pickIndex), { ok: !0, upgrade: chk.upgrade, tower, cost, diff };
   }
-  // v0.5 item 17: 3, 6, 9, 12 ... crumbs (rerollCost + rerolls * rerollStep), reset at the start of every battle
+  // v0.5 item 17: 3, 6, 9, 12 ... crumbs (rerollCost + rerolls * rerollStep), reset at the start of every battle.
+  // v0.7 D-R3: the first `freeRedraws` redraws of a battle are free, then 3, 6, 9 ...
   get rerollPrice() {
-    return this.cfg.rerollCost + this.rerolls * (this.cfg.rerollStep || 0);
+    let f = this.cfg.freeRedraws || 0;
+    return this.rerolls < f ? 0 : this.cfg.rerollCost + (this.rerolls - f) * (this.cfg.rerollStep || 0);
   }
   reroll() {
     let price = this.rerollPrice;
-    if (this.crumbs < price || this.result || this.paused) return !1;
-    this.crumbs -= price, this.rerolls++;
-    for (let i = 0; i < this.picks.length; i++) this.picks[i] = this.draw();
-    return !0;
+    return this.crumbs < price || this.result || this.paused ? !1 : (this.crumbs -= price, this.rerolls++, this.dealHand(), !0);
   }
   // ----- v0.5 items 11/12: move a placed tower (1 diamond, charged by the game) / swap two placed towers (free) -----
   // placement rule of a tower type on a cell, ignoring which towers stand where
@@ -1953,10 +3158,11 @@ function newSave() {
     lastBonuses: BONUS_TYPES.slice(0, 2),
     calendar: newCalendarState(),
     cardBlink: newCardBlinkState(),
-    onboard: newOnboardState()
+    onboard: newOnboardState(),
+    packsSinceNew: 0
   };
 }
-var SAVE_VERSION = 4;
+var SAVE_VERSION = 5;
 function newOnboardState() {
   return { zapperGift: "none", grantedOnLoad: !1 };
 }
@@ -2083,13 +3289,19 @@ function buyCard(save, id) {
   let price = ECONOMY.shop.cardL1;
   return !save.cards[id].unlocked || save.coins < price ? !1 : (save.coins -= price, addCards(save, id, 1, 1), !0);
 }
+function cheapestLockedTier(save, E = ECONOMY.shop) {
+  let locked = lockedCards(save);
+  if (!locked.length) return [];
+  let min = Math.min(...locked.map((id) => unlockPrice(id, E)));
+  return locked.filter((id) => unlockPrice(id, E) === min);
+}
 function buyPack(save, rng = Math.random, E = ECONOMY.shop) {
   let price = E.cardPack;
   if (save.coins < price) return null;
-  let pool = ALL_CARDS.filter((id) => save.cards[id].unlocked), locked = lockedCards(save);
+  let pool = ALL_CARDS.filter((id) => save.cards[id].unlocked), tier = cheapestLockedTier(save, E);
   save.coins -= price;
-  let got = [], newTower = null;
-  locked.length && rng() < (E.packNewTowerChance || 0) && (newTower = locked[Math.floor(rng() * locked.length) % locked.length]);
+  let got = [], newTower = null, since = save.packsSinceNew || 0, pity = E.packPity && since >= E.packPity - 1;
+  tier.length && (rng() < (E.packNewTowerChance || 0) || pity) && (newTower = tier[Math.floor(rng() * tier.length) % tier.length]), tier.length && (save.packsSinceNew = newTower ? 0 : since + 1);
   let n = E.cardPackSize - (newTower ? 1 : 0);
   for (let i = 0; i < n; i++) {
     let id = pool[Math.floor(rng() * pool.length) % pool.length];
@@ -2100,15 +3312,23 @@ function buyPack(save, rng = Math.random, E = ECONOMY.shop) {
 function zapperGiftPending(save) {
   return !!(save.onboard && save.onboard.zapperGift === "pending");
 }
+function isDamageId(id) {
+  let T = TOWERS[id];
+  return !!T && T.kind === "tower" && id !== "fan" && T.targets !== "air" && !T.nearTrail;
+}
 function claimZapperGift(save, rng = Math.random) {
   if (!zapperGiftPending(save)) return null;
-  let pool = ALL_CARDS.filter((id) => save.cards[id].unlocked && id !== "zapper"), got = [];
-  for (let i = 0; i < ECONOMY.shop.cardPackSize - 1; i++) {
-    let id = pool[Math.floor(rng() * pool.length) % pool.length];
-    addCards(save, id, 1, 1), got.push(id);
+  let pool = ALL_CARDS.filter((id) => save.cards[id].unlocked && id !== "zapper"), dmg = pool.filter(isDamageId), n = ECONOMY.shop.cardPackSize - 1, ids = [];
+  for (let i = 0; i < n; i++) ids.push(pool[Math.floor(rng() * pool.length) % pool.length]);
+  if (dmg.length && !ids.some(isDamageId)) {
+    let k = Math.floor(rng() * n) % n;
+    ids[k] = dmg[Math.floor(rng() * dmg.length) % dmg.length];
   }
-  let z = addCards(save, "zapper", 1, 1);
-  return got.push("zapper"), save.cards.zapper.fresh = !0, save.onboard.zapperGift = "done", { got, zapper: z };
+  let got = [];
+  for (let id of ids)
+    addCards(save, id, 1, 1), got.push(id);
+  let zapperOwned = !!save.cards.zapper.unlocked, z = addCards(save, "zapper", 1, 1);
+  return got.push("zapper"), save.cards.zapper.fresh = !0, save.onboard.zapperGift = "done", { got, zapper: z, zapperOwned };
 }
 function buyBonus(save, type) {
   let price = ECONOMY.shop.boosterDiamonds;
@@ -2241,7 +3461,7 @@ function loadSave(storage2) {
       }
       typeof c.copies == "number" && c.copies > 0 && (c.inv[1] = (c.inv[1] || 0) + c.copies, c.seen.includes(1) || (c.seen.push(1), c.seen.sort((a, b) => a - b), c.fresh = !0)), delete c.copies, syncCard(c);
     }
-    (!s.onboard || typeof s.onboard != "object") && (s.onboard = newOnboardState(), s.levels[ZAPPER_STAGE] && s.levels[ZAPPER_STAGE].cleared && (s.onboard.zapperGift = "done", s.cards.zapper.unlocked || (addCards(s, "zapper", 1, 1), s.cards.zapper.fresh = !0, s.onboard.grantedOnLoad = !0)));
+    (!s.onboard || typeof s.onboard != "object") && (s.onboard = newOnboardState(), s.levels[ZAPPER_STAGE] && s.levels[ZAPPER_STAGE].cleared && (s.onboard.zapperGift = "done")), (s.version || 1) < 5 && s.levels[ZAPPER_STAGE] && s.levels[ZAPPER_STAGE].cleared && s.onboard.zapperGift === "done" && !s.onboard.legacyPack && (s.onboard.zapperGift = "pending", s.onboard.legacyPack = !0, s.onboard.grantedOnLoad = !1), typeof s.packsSinceNew != "number" && (s.packsSinceNew = 0);
     for (let b of BONUS_TYPES) s.bonusStock[b] == null && (s.bonusStock[b] = 0);
     for (; s.levels.length < LEVELS.length; ) s.levels.push({ stars: 0, cleared: !1 });
     typeof s.diamonds != "number" && (s.diamonds = ECONOMY.diamonds.start), s.calendar || (s.calendar = newCalendarState()), (!s.cardBlink || typeof s.cardBlink != "object") && (s.cardBlink = newCardBlinkState());
@@ -2505,8 +3725,11 @@ function leg(ctx2, x0, y0, x1, y1, col) {
 function sneaker(ctx2, x, y, far) {
   ctx2.beginPath(), ctx2.ellipse(x + 1, y + 0.6, 2.8, 1.7, 0, 0, 7), ctx2.fillStyle = far ? "#e6e6ee" : "#ffffff", ctx2.fill(), ctx2.lineWidth = 1.3, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(x - 0.8, y + 0.4), ctx2.lineTo(x + 2.4, y + 0.1), ctx2.lineWidth = 1.1, ctx2.strokeStyle = "#ff5a6e", ctx2.stroke();
 }
+var ANT_LOOK = { small_gasmask: "gasmask", small_armed: "armored", small_fly: "flyer" };
 function drawAnt(ctx2, type, phase = 0, opt = {}) {
-  let S2 = ANTS[type].size, col = ANT_COL[type], legCol = shade(col, -0.18), farCol = shade(col, -0.32), P = phase * Math.PI * 2, step = Math.sin(P), hop = Math.abs(Math.sin(P)), flying = type === "flyer", queen = type === "queen" || type === "queen2", swiftQueen = type === "queen2", big = type === "big" || type === "heavy", shell = type === "armored" || type === "heavy" || type === "sprinter", sprinter = type === "sprinter", heavy = type === "heavy";
+  let S2 = ANTS[type].size;
+  type = ANT_LOOK[type] || type;
+  let col = ANT_COL[type], legCol = shade(col, -0.18), farCol = shade(col, -0.32), P = phase * Math.PI * 2, step = Math.sin(P), hop = Math.abs(Math.sin(P)), flying = type === "flyer", queen = type === "queen" || type === "queen2", swiftQueen = type === "queen2", big = type === "big" || type === "heavy", shell = type === "armored" || type === "heavy" || type === "sprinter", sprinter = type === "sprinter", heavy = type === "heavy";
   ctx2.save(), ctx2.scale(S2, S2), ctx2.lineJoin = "round", ctx2.lineCap = "round", flying ? shadow(ctx2, 0, 21, 10, 3, 0.13) : shadow(ctx2, 0, 10.5, 15 - hop * 2, 4, 0.2);
   let lift = flying ? 9 + Math.sin(P * 2) * 2 : big ? hop * 1.8 : hop * 3.2;
   if (big && !flying && (ctx2.translate(0, 10), ctx2.rotate(Math.sin(P) * 0.06), ctx2.translate(0, -10), hop < 0.18)) {
@@ -3534,6 +4757,13 @@ function sfx(name) {
       case "gust":
         noise(0.3, 0.12, 2e3);
         break;
+      case "packShake":
+        noise(0.15, 0.14, 2e3);
+        break;
+      // v0.7 pack reveal: the pack rocks
+      case "cardFlip":
+        tone(900, 0.05, "sine", 0.22, 1.3);
+        break;
     }
 }
 
@@ -3576,10 +4806,15 @@ function bestTile(b, card) {
   return best;
 }
 function smartBotStep(b) {
-  if (b.result || b.crumbs < b.nextCardCost) return null;
+  if (b.result) return null;
+  if (b.cardsPlayed === 0 && b.rerollPrice === 0 && !b.botRedrawn) {
+    let top = b.deck.find(isDamageCard);
+    b.botRedrawn = !0, top && !b.picks.includes(top) && b.reroll();
+  }
+  if (b.crumbs < b.nextCardCost) return null;
   let bestMove = null, bestScore = -1 / 0;
   if (b.picks.forEach((card2, i) => {
-    let same = b.towers.filter((t) => t.type === card2), upg = same.filter((t) => t.lvl < b.cfg.maxInBattleLevel).sort((a, z) => a.lvl - z.lvl)[0], v = VALUE[card2] || 1, airNeed = AIR_COUNTERS.includes(card2) && b.towers.filter((t) => AIR_COUNTERS.includes(t.type)).length < 2 && levelAntTypes(b.levelIndex).includes("flyer") ? 1.5 : 0;
+    let same = b.towers.filter((t) => t.type === card2), upg = same.filter((t) => t.lvl < b.cfg.maxInBattleLevel).sort((a, z) => a.lvl - z.lvl)[0], v = VALUE[card2] || 1, airNeed = AIR_COUNTERS.includes(card2) && b.towers.filter((t) => AIR_COUNTERS.includes(t.type)).length < 2 && levelAntTypes(b.levelIndex).some((t) => ANTS[t].flying) ? 1.5 : 0;
     if (!(!b.towers.some((t) => isDamageCard(t.type)) && b.picks.some(isDamageCard) && !isDamageCard(card2))) {
       if (same.length < 2 || !upg) {
         let t = bestTile(b, card2);
@@ -3678,6 +4913,7 @@ var W = 400, H = 720, MAP_Y = 68, MAP_W = GRID_COLS * TILE, MAP_H = GRID_ROWS * 
   mapScroll: 0,
   cardView: null,
   reveal: [],
+  pack: null,
   mode: null,
   fireworks: { rockets: [], parts: [], queue: [] },
   shopFx: null,
@@ -3748,7 +4984,7 @@ function toLogical(e) {
 canvas.addEventListener("pointerdown", (e) => {
   initAudio(), e.preventDefault();
   let p = toLogical(e), b = hit(prevButtons, p.x, p.y);
-  down = { x: p.x, y: p.y, b, moved: !1 }, S.screen === "map" && !S.cal && !S.reveal.length && p.y >= MAPVIEW.top && p.y <= MAPVIEW.bottom && (down.scroll0 = S.mapScroll), b && b.onDown && b.onDown(p);
+  down = { x: p.x, y: p.y, b, moved: !1 }, S.screen === "map" && !S.cal && !S.reveal.length && !S.pack && p.y >= MAPVIEW.top && p.y <= MAPVIEW.bottom && (down.scroll0 = S.mapScroll), b && b.onDown && b.onDown(p);
 });
 canvas.addEventListener("pointermove", (e) => {
   if (!down) return;
@@ -3785,6 +5021,14 @@ function go(screen) {
   }
 }
 window.addEventListener("popstate", () => {
+  if (S.pack) {
+    closePack("ok");
+    try {
+      history.pushState({ inner: 1 }, "");
+    } catch {
+    }
+    return;
+  }
   if (S.dialog) {
     S.dialog = null;
     try {
@@ -3994,7 +5238,7 @@ function consumeEvents() {
           addFx({ k: "star", x: e.x, y: e.y, vx: Math.cos(a) * 75, vy: Math.sin(a) * 75 - 25, life: 0.7 + delay, max: 0.7, wait: delay });
         }
         if (addFx({ k: "pop", x: e.x, y: e.y, life: 0.35 + delay, max: 0.35, wait: delay }), addFx({ k: "ring2", x: e.x, y: e.y, life: 0.5 + delay, max: 0.5, wait: delay }), e.type === "upgrade") {
-          addFx({ k: "pillar", x: e.x, y: e.y, life: 0.9 + delay, max: 0.9, wait: delay }), addFx({ k: "txt", x: e.x, y: e.y - 34, s: `Level ${e.lvl}!`, col: "#ffe36e", life: 1.4 + delay, max: 1.4, wait: delay, size: 17 }), (e.diff || []).forEach((d, k) => addFx({ k: "txt", x: e.x, y: e.y - 52 - k * 16, s: `${d.label} ${formatStat(e.card, d.key, d.from)} \u2192 ${formatStat(e.card, d.key, d.to)}`, col: "#a8ffb0", life: 2 + delay, max: 2, wait: delay, size: 12 }));
+          addFx({ k: "pillar", x: e.x, y: e.y, life: 0.9 + delay, max: 0.9, wait: delay }), addFx({ k: "txt", x: e.x, y: e.y - 34, s: `Level ${e.lvl}!${dmgGainText(e.card, e.lvl, S.battle.cardLevels[e.card] || 1) ? "  " + dmgGainText(e.card, e.lvl, S.battle.cardLevels[e.card] || 1) : ""}`, col: "#ffe36e", life: 1.4 + delay, max: 1.4, wait: delay, size: 17 }), (e.diff || []).forEach((d, k) => addFx({ k: "txt", x: e.x, y: e.y - 52 - k * 16, s: `${d.label} ${formatStat(e.card, d.key, d.from)} \u2192 ${formatStat(e.card, d.key, d.to)}`, col: "#a8ffb0", life: 2 + delay, max: 2, wait: delay, size: 12 }));
           let tw = S.battle.towers.find((q) => q.id === e.id);
           if (tw && !S.autoBot) {
             let mine = !!(S.info && S.info.tower === tw && !S.info.auto);
@@ -4059,7 +5303,7 @@ function frame(now2) {
   render(dt), requestAnimationFrame(frame);
 }
 function render(dt) {
-  if (prevButtons = buttons, buttons = [], ctx.setTransform(1, 0, 0, 1, 0, 0), ctx.fillStyle = BG, ctx.fillRect(0, 0, canvas.width, canvas.height), ctx.setTransform(dpr * scale, 0, 0, dpr * scale, offX * dpr, offY * dpr), drawBackdrop(), S.screen === "map" ? renderMapScreen() : S.screen === "prep" ? renderPrep() : S.screen === "battle" ? renderBattle(dt) : S.screen === "cards" ? renderCards() : S.screen === "card" ? renderCardView() : S.screen === "shop" && renderShop(), renderFireworks(dt), S.reveal.length && S.reveal[0].at <= S.t && renderReveal(dt), S.toast) {
+  if (prevButtons = buttons, buttons = [], ctx.setTransform(1, 0, 0, 1, 0, 0), ctx.fillStyle = BG, ctx.fillRect(0, 0, canvas.width, canvas.height), ctx.setTransform(dpr * scale, 0, 0, dpr * scale, offX * dpr, offY * dpr), drawBackdrop(), S.screen === "map" ? renderMapScreen() : S.screen === "prep" ? renderPrep() : S.screen === "battle" ? renderBattle(dt) : S.screen === "cards" ? renderCards() : S.screen === "card" ? renderCardView() : S.screen === "shop" && renderShop(), renderFireworks(dt), S.reveal.length && S.reveal[0].at <= S.t && renderReveal(dt), S.pack && renderPack(dt), S.toast) {
     if (S.toast.t -= dt, ctx.save(), ctx.globalAlpha = Math.min(1, S.toast.t * 5), S.toast.small) {
       ctx.font = `bold 12px ${FONT}`;
       let w = Math.min(300, ctx.measureText(S.toast.msg).width + 26), y = TRAY_Y - 30;
@@ -4190,7 +5434,7 @@ function renderMapScreen() {
     S.save.settings = { ...S.save.settings || {}, muted: !muted2 }, setMuted(!muted2), persist();
   }), drawButton(336, 662, 54, 46, S.confirmReset > S.t ? "Sure?" : "Reset", "#ffb3b3", { size: 13 }), button("reset", 336, 662, 54, 46, () => {
     S.confirmReset > S.t ? (S.save = newSave(), touch(S.save, now()), persist(), S.confirmReset = 0, S.cardsBlinkUntil = 0, toast("Progress reset")) : S.confirmReset = S.t + 3;
-  }), S.cal ? renderCalendar() : zapperGiftPending(S.save) && !S.reveal.length && onboardSpot({ x: 146, y: 662, w: 120, h: 46, r: 14 }, "shop", () => go("shop"), "A free gift waits in the Shop!"), renderUiFx(1 / 60);
+  }), S.cal ? renderCalendar() : zapperGiftPending(S.save) && !S.reveal.length && onboardSpot({ x: 146, y: 662, w: 120, h: 46, r: 14 }, "shop", () => go("shop"), "A free pack waits in the Shop!"), plainText("v" + VERSION, 392, 714, 11, "#a08090", "right", "600"), renderUiFx(1 / 60);
 }
 function onboardSpot(R, id, onTap, msg) {
   ctx.save(), ctx.beginPath(), ctx.rect(-200, -200, W + 400, H + 400);
@@ -4307,14 +5551,19 @@ function renderPrep() {
   let i = S.levelIndex, L = LEVELS[i];
   panel(12, 12, 376, 696, "#fff6ee"), text(ctx, `Level ${i + 1}`, 200, 40, 26, "#ffb3c1"), text(ctx, `${L.name}  -  ${MAPS[L.map].name}`, 200, 66, 13, "#7a5a6a", "center", null);
   let ants = levelAntTypes(i);
-  text(ctx, "Incoming ants", 30, 92, 14, "#7a5a6a", "left", null), text(ctx, `${L.waveCount} waves`, 370, 92, 14, "#7a5a6a", "right", null), S.layoutPrepAnts = [];
+  text(ctx, "Incoming ants", 30, 92, 14, "#7a5a6a", "left", null), text(ctx, `${L.waveCount} waves`, 370, 92, 14, "#7a5a6a", "right", null), levelHasFlyers(i) && (rr(ctx, 152, 82, 132, 20, 10), ctx.fillStyle = "#d7ecff", ctx.fill(), ctx.lineWidth = 1.6, ctx.strokeStyle = "#5a9fe0", ctx.stroke(), plainText("Flyers in this level", 218, 92.5, 11, "#2f6fae", "center", "800")), S.layoutPrepAnts = [];
   let n = ants.length, slot = Math.min(76, 340 / n), x0 = 200 - slot * (n - 1) / 2;
   ants.forEach((t, k) => {
     let x = x0 + k * slot, sz = ANTS[t].size, sc = Math.min(1.15, (slot - 6) / (40 * sz), 30 / (34 * sz));
     antIcon(t, x, 136, sc), S.layoutPrepAnts.push({ type: t, x: x - 20 * sz * sc, y: 136 - 34 * sz * sc, w: 40 * sz * sc, h: 46 * sz * sc }), fitText(ANTS[t].name.replace(" Ant", ""), x, 160, slot - 4, 10, "#7a5a6a");
   });
   let unlocked = unlockedCards(S.save);
-  text(ctx, `Your deck (${S.prep.deck.length}/${BATTLE.deckSize}) - tap to pick`, 30, 182, 14, "#7a5a6a", "left", null), ALL_CARDS.forEach((id, k) => {
+  text(ctx, `Your deck (${S.prep.deck.length}/${BATTLE.deckSize}) - tap to pick`, 30, 182, 14, "#7a5a6a", "left", null);
+  {
+    let cap = worldCardLevelCap(i);
+    cap && unlocked.some((id) => S.save.cards[id].level > cap) && plainText(`Cards act as L${cap} max`, 370, 182, 10, "#b0506a", "right", "800");
+  }
+  ALL_CARDS.forEach((id, k) => {
     let col = k % 5, row = Math.floor(k / 5), x = 22 + col * 72, y = 196 + row * 98, w = 66, h = 90, isU = unlocked.includes(id), di = S.prep.deck.indexOf(id);
     drawCardPic(x, y, w, h, id, { locked: !isU, lockText: "Shop or prize", selected: di >= 0, selCol: "#111111", badge: di >= 0 ? String(di + 1) : null, tag: !0, level: isU ? S.save.cards[id].level : 0, dim: isU && di < 0 && S.prep.deck.length >= BATTLE.deckSize }), isU && button("deck" + id, x, y, w, h, () => {
       let d = S.prep.deck, j = d.indexOf(id);
@@ -4330,7 +5579,7 @@ function renderPrep() {
     });
   });
   let warn = null;
-  ants.includes("flyer") && !S.prep.deck.some((d) => AIR_COUNTERS.includes(d)) ? warn = "Flying ants ahead! Only Laser, Bug Zapper or the Crop Duster can hit them." : ants.includes("gasmask") && S.prep.deck.includes("spray") && S.prep.deck.filter((d) => d !== "spray" && TOWERS[d].kind === "tower" && d !== "fan").length < 2 && (warn = "Gas-mask ants ignore Bug Spray - bring other damage too.");
+  levelHasFlyers(i) && !S.prep.deck.some((d) => AIR_COUNTERS.includes(d)) ? warn = "Flying ants ahead! Only Laser, Bug Zapper or the Crop Duster can hit them." : ants.includes("gasmask") && S.prep.deck.includes("spray") && S.prep.deck.filter((d) => d !== "spray" && TOWERS[d].kind === "tower" && d !== "fan").length < 2 && (warn = "Gas-mask ants ignore Bug Spray - bring other damage too.");
   let issues = prepIssues(S.save, S.prep.bonuses);
   if (issues.length && (warn = `You have 0 ${BONUSES[issues[0].bonus].name}s. Buy one during battle for ${ECONOMY.diamonds.boosterPriceStart} diamonds, or in the Shop.`), S.layoutWarn = null, warn) {
     let lines = wrapLines(warn, 324, 11.5).slice(0, 3), hh = 12 + lines.length * 14;
@@ -4471,6 +5720,15 @@ function plainWrap(str, maxW, size, weight = "500") {
   }
   return line && out.push(line), out;
 }
+function dmgGainText(type, lvl, cardLevel) {
+  let g = upgradeGain(type, lvl, cardLevel);
+  if (!(g > 1.01)) return "";
+  let r = Math.round(g * 10) / 10;
+  return `x${Number.isInteger(r) ? r : r.toFixed(1)} dmg`;
+}
+function levelHasFlyers(i) {
+  return levelAntTypes(i).some((t) => ANTS[t].flying || ANTS[t].spawn && ANTS[t].spawn.type && ANTS[ANTS[t].spawn.type] && ANTS[ANTS[t].spawn.type].flying);
+}
 var diffText = (type, d) => `${d.label} ${formatStat(type, d.key, d.from)} \u2192 ${formatStat(type, d.key, d.to)}`;
 function rollHere(tw) {
   return tw.trailDir ? `${tw.trailDir.run} tile${tw.trailDir.run > 1 ? "s" : ""}` : "no roll";
@@ -4498,7 +5756,7 @@ function renderTowerInfo(b, info) {
     plainFit(val, x + w / 2, y + 27, w - 12, 14, on ? "#2f8a36" : INFO_INK, "center", "600");
   });
   let extra = (info.changed || []).filter((d) => !keys.includes(d.key)), line;
-  extra.length ? line = "Upgraded: " + extra.map((d) => diffText(tw.type, d)).join(", ") : tw.lvl < b.cfg.maxInBattleLevel ? line = "Next (drop same card): " + upgradeDiff(tw.type, tw.lvl, tw.cardLevel).map((d) => diffText(tw.type, d)).join(", ") : line = "Max level!", plainFit(line, 200, py + 122, 350, 12, extra.length ? "#2f8a36" : INFO_INK, "center"), button("infoClose", 14, py, 372, H2, () => {
+  extra.length ? line = "Upgraded: " + extra.map((d) => diffText(tw.type, d)).join(", ") : tw.lvl < b.cfg.maxInBattleLevel ? line = (dmgGainText(tw.type, tw.lvl + 1, tw.cardLevel) ? dmgGainText(tw.type, tw.lvl + 1, tw.cardLevel) + "! " : "") + "Next (drop same card): " + upgradeDiff(tw.type, tw.lvl, tw.cardLevel).map((d) => diffText(tw.type, d)).join(", ") : line = "Max level!", plainFit(line, 200, py + 122, 350, 12, extra.length ? "#2f8a36" : INFO_INK, "center"), button("infoClose", 14, py, 372, H2, () => {
     S.info = null;
   });
   let canMove = (S.save.diamonds || 0) >= ECONOMY.diamonds.moveTower;
@@ -4778,7 +6036,7 @@ function renderTray(b) {
     b.callWaveEarly() > 0 && sfx("return");
   });
   let rc = b.rerollPrice, ry = y0 + L.rerollY;
-  drawButton(wx, ry, ww, L.rerollH, "", "#c9b6f2", { disabled: b.crumbs < rc }), text(ctx, "Redraw", wx + 30, ry + 18, 13), crumbIcon(ctx, wx + 66, ry + 18, 0.65), text(ctx, String(rc), wx + 80, ry + 18, 12), button("reroll", wx - 4, y0 + L.rerollY - 2, ww + 8, L.rowY - L.rerollY, () => {
+  drawButton(wx, ry, ww, L.rerollH, "", "#c9b6f2", { disabled: b.crumbs < rc }), rc === 0 ? (text(ctx, "Redraw", wx + 30, ry + 18, 13), text(ctx, "FREE", wx + 76, ry + 18, 12, "#2f8a3a")) : (text(ctx, "Redraw", wx + 30, ry + 18, 13), crumbIcon(ctx, wx + 66, ry + 18, 0.65), text(ctx, String(rc), wx + 80, ry + 18, 12)), button("reroll", wx - 4, y0 + L.rerollY - 2, ww + 8, L.rowY - L.rerollY, () => {
     b.reroll() ? (sfx("tap"), rc > 0 && (addUi({ k: "costFly", n: rc, x0: 340, y0: 34, x1: 300, y1: 96, life: 1, max: 1 }), S.crumbPulse = 0.35)) : needCrumbs(rc);
   });
   let by = y0 + L.rowY, bh = L.rowH, hitY = y0 + L.rowY - 2, hitH = H - hitY;
@@ -4954,7 +6212,13 @@ function renderCards() {
   }
   drawButton(26, 652, 110, 48, "Back", "#d9cfe0"), button("back", 26, 650, 110, 54, () => go("map"));
   let anyReady = anyMergeReady(S.save);
-  drawButton(145, 652, 110, 48, "Merge all", anyReady ? "#ff9ec0" : "#e6dce2", { size: 16, disabled: !anyReady }), button("mergeAll", 145, 648, 110, 58, doMergeAll), drawButton(264, 652, 110, 48, "Shop", "#ffd27a"), button("toshop", 264, 650, 110, 54, () => go("shop")), S.mergeAnim && renderMergeAnim();
+  if (drawButton(145, 652, 110, 48, "Merge all", anyReady ? "#ff9ec0" : "#e6dce2", { size: 16, disabled: !anyReady }), button("mergeAll", 145, 648, 110, 58, doMergeAll), drawButton(264, 652, 110, 48, "Shop", "#ffd27a"), button("toshop", 264, 650, 110, 54, () => go("shop")), S.mergeAnim) renderMergeAnim();
+  else if (S.save.onboard && S.save.onboard.cardsHint === "cards" && S.save.cards.zapper.unlocked) {
+    let k = ALL_CARDS.indexOf("zapper"), x = 30 + k % 4 * 88, y = 80 + Math.floor(k / 4) * 104;
+    onboardSpot({ x, y, w: 76, h: 96, r: 12 }, "cardzapper", () => {
+      S.save.onboard.cardsHint = "done", persist(), openCardView("zapper");
+    }, "Your Bug Zapper - it hits flying ants!");
+  }
 }
 function openCardView(id) {
   S.cardView = id, S.cardsSel = id;
@@ -5040,10 +6304,20 @@ function renderShop() {
   for (let k = 0; k < 3; k++)
     ctx.save(), ctx.translate(58 + k * 14, 146 - k * 3), ctx.rotate(-0.2 + k * 0.2), rr(ctx, -14, -20, 28, 38, 6), ctx.fillStyle = ["#ffb3c1", "#b5d8ff", "#ffd27a"][k], ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), text(ctx, "?", 0, 0, 16), ctx.restore();
   let gift = zapperGiftPending(S.save);
-  gift ? (text(ctx, `FREE gift: ${E.cardPackSize} cards!`, 112, 132, 14, "#e0607e", "left", null), text(ctx, `${E.cardPackSize - 1} random + a NEW tower`, 112, 152, 11, "#a08090", "left", null), drawButton(290, 122, 74, 40, "FREE", "#9fe0b5", { size: 17 })) : (text(ctx, `Card pack: ${E.cardPackSize} random cards`, 112, 132, 13, "#7a4a5a", "left", null), text(ctx, lockedCards(S.save).length ? `level 1, ${Math.round(E.packNewTowerChance * 100)}% chance: NEW tower` : "level 1, of your unlocked towers", 112, 152, 11, "#a08090", "left", null), drawButton(290, 122, 74, 40, `${E.cardPack}c`, "#9fe0b5", { size: 15, disabled: S.save.coins < E.cardPack }), button("pack", 290, 122, 74, 40, () => {
-    let got = buyPack(S.save);
-    got ? (persist(), sfx("upgrade"), shopBought("pack", "pack", E.cardPack, "coin"), toast("Got: " + got.map((g) => TOWERS[g].short).join(", ")), got.newTower && queueReveal(got.newTower, 1, !0, S.t + 0.3)) : toast("Not enough coins");
-  })), plainText(`Tap a card to buy: level-1 card ${E.cardL1}c, new tower 100-400c`, 30, 188, 12, "#7a5a6a", "left", "700"), ALL_CARDS.forEach((id, k) => {
+  if (gift)
+    text(ctx, `FREE pack: ${E.cardPackSize} cards!`, 112, 132, 14, "#e0607e", "left", null), text(ctx, `${E.cardPackSize - 1} random + Zapper`, 112, 152, 11, "#a08090", "left", null), drawButton(290, 122, 74, 40, "FREE", "#9fe0b5", { size: 17 });
+  else {
+    text(ctx, `Card pack: ${E.cardPackSize} random cards`, 112, 132, 13, "#7a4a5a", "left", null);
+    {
+      let left = Math.max(1, (E.packPity || 0) - (S.save.packsSinceNew || 0));
+      plainFit(lockedCards(S.save).length ? `level 1, ${Math.round(E.packNewTowerChance * 100)}% NEW tower${E.packPity ? ` (sure in ${left})` : ""}` : "level 1, of your unlocked towers", 112, 152, 172, 11, "#a08090", "left", "700");
+    }
+    drawButton(290, 122, 74, 40, `${E.cardPack}c`, "#9fe0b5", { size: 15, disabled: S.save.coins < E.cardPack }), button("pack", 290, 122, 74, 40, () => {
+      let got = buyPack(S.save);
+      got ? (persist(), shopBought("pack", "pack", E.cardPack, "coin"), openPackReveal(got, { source: "paid", newTower: got.newTower })) : toast("Not enough coins");
+    });
+  }
+  plainText(`Tap a card to buy: level-1 card ${E.cardL1}c, new tower 100-400c`, 30, 188, 12, "#7a5a6a", "left", "700"), ALL_CARDS.forEach((id, k) => {
     let col = k % 5, row = Math.floor(k / 5), x = 24 + col * 71, y = 200 + row * 84, w = 64, h = 62, c = S.save.cards[id], own = c.unlocked, up = unlockPrice(id), pk = shopPulse("card", id), cs = pk == null ? 1 : 1 + SHOP_FX.cardPulse * Math.sin(pk * Math.PI);
     ctx.save(), ctx.translate(x + w / 2, y + h / 2), ctx.scale(cs, cs), ctx.translate(-(x + w / 2), -(y + h / 2)), drawCardPic(x, y, w, h, id, { level: c.level, locked: !own, lockText: `Unlock ${up}c`, selected: S.shopSel === id, selCol: "#5a9fe0" }), ctx.restore(), own && countBadge(x + w - 17, y + 13, totalCards(c), pk), blob(ctx, x + 10, y + h + 10, 8, 8, S.shopSel === id ? "#5a9fe0" : "#d7e8ff", 1.6), text(ctx, "i", x + 10, y + h + 10.5, 11, "#fff"), plainText(own ? `${E.cardL1}c` : `${up}c`, x + w - 4, y + h + 10, 11.5, own ? "#c9962a" : "#e0607e", "right", "800"), button("buy" + id, x, y, w, h, () => {
       S.shopSel = id, own ? buyCard(S.save, id) ? (persist(), sfx("tap"), shopBought("card", id, E.cardL1, "coin")) : toast("Not enough coins") : buyCardUnlock(S.save, id) ? (persist(), sfx("upgrade"), shopBought("card", id, up, "coin"), queueReveal(id, 1, !0, S.t + 0.3)) : toast(`Need ${up} coins`);
@@ -5061,11 +6335,13 @@ function renderShop() {
     ctx.save(), ctx.translate(x + w / 2, y + h / 2), ctx.scale(cs, cs), ctx.translate(-(x + w / 2), -(y + h / 2)), rr(ctx, x, y, w, h, 14), ctx.fillStyle = shade(BONUSES[bt].color, 0.2), ctx.fill(), ctx.lineWidth = 2.5, ctx.strokeStyle = INK, ctx.stroke(), ctx.save(), ctx.translate(x + w / 2, y + 22), ctx.scale(1.05, 1.05), drawBonusIcon(ctx, bt, S.t), ctx.restore(), fitText(BONUSES[bt].name, x + w / 2, y + 46, w - 8, 10.5, "#fff"), ctx.restore(), countBadge(x + w - 19, y + 15, S.save.bonusStock[bt] || 0, pk), button("bbuy" + bt, x, y, w, h, () => {
       buyBonus(S.save, bt) ? (persist(), sfx("tap"), shopBought("booster", bt, E.boosterDiamonds, "diamond")) : toast(`Need ${E.boosterDiamonds} diamonds`);
     });
-  }), cardInfoPanel(S.shopSel, 24, 536, 352, 108, { hint: "Tap (i) under a card to see its stats." }), drawButton(26, 652, 160, 48, "Back", "#d9cfe0"), button("back", 26, 650, 160, 54, () => go("map")), drawButton(214, 652, 160, 48, "Cards", "#b5d8ff"), button("tocards", 214, 650, 160, 54, () => go("cards")), gift && !S.reveal.length && onboardSpot({ x: 286, y: 118, w: 82, h: 48, r: 14 }, "gift", claimGift, "Your free gift - tap it!"), renderUiFx(1 / 60);
+  }), cardInfoPanel(S.shopSel, 24, 536, 352, 108, { hint: "Tap (i) under a card to see its stats." }), drawButton(26, 652, 160, 48, "Back", "#d9cfe0"), button("back", 26, 650, 160, 54, () => go("map")), drawButton(214, 652, 160, 48, "Cards", "#b5d8ff"), button("tocards", 214, 650, 160, 54, () => go("cards")), gift && !S.reveal.length && !S.pack ? onboardSpot({ x: 286, y: 118, w: 82, h: 48, r: 14 }, "gift", claimGift, "Your free pack - tap it!") : !S.pack && !S.reveal.length && S.save.onboard && S.save.onboard.cardsHint === "shop" && onboardSpot({ x: 214, y: 652, w: 160, h: 48, r: 14 }, "tocards", () => {
+    S.save.onboard.cardsHint = "cards", persist(), go("cards");
+  }, "See your new cards!"), renderUiFx(1 / 60);
 }
 function claimGift() {
   let res = claimZapperGift(S.save);
-  res && (persist(), sfx("upgrade"), S.shopFx = { kind: "pack", id: "pack", t0: S.t }, toast("Got: " + res.got.map((g) => TOWERS[g].short).join(", ")), queueReveal("zapper", 1, res.zapper.newType, S.t + 0.3));
+  res && (persist(), S.shopFx = { kind: "pack", id: "pack", t0: S.t }, openPackReveal(res.got, { source: "free", newTower: res.zapper.newType ? "zapper" : null, zapperOwned: res.zapperOwned }));
 }
 function queueReveal(id, level, newType, at = S.t) {
   S.reveal.push({ id, level, newType: !!newType, at, t: 0 });
@@ -5089,6 +6365,186 @@ function renderReveal(dt) {
   text(ctx, "NEW CARD!", 200, 108, ts, "#ffe36e"), text(ctx, `${TOWERS[R.id].name}  \xB7  Level ${R.level}`, 200, 152, 18, "#ffffff"), plainText("Added to your Cards", 200, 548, 13, "#ffe9c0", "center", "700"), R.t > 0.5 && (rr(ctx, 130, 588, 140, 30, 15), ctx.fillStyle = "rgba(255,255,255,0.18)", ctx.fill(), text(ctx, "Tap to continue", 200, 603, 13, "#ffffff", "center", null)), button("revealNext", -200, -200, W + 400, H + 400, () => {
     R.t > 0.4 && (S.reveal.shift(), sfx("tap"));
   });
+}
+var PACK = {
+  dim: 0.15,
+  drop: 0.2,
+  shake: 0.45,
+  burst: 0.6,
+  deal0: 0.6,
+  dealStep: 0.08,
+  dealDur: 0.2,
+  flip0: 1.15,
+  flipStep: 0.15,
+  flipDur: 0.22,
+  pip: 0.15,
+  beat: 0.4,
+  summary: 2,
+  summaryNew: 2.4,
+  fade: 0.15,
+  tapHint: 0.3,
+  cardW: 64,
+  cardH: 86,
+  gap: 8,
+  rowY: 250,
+  packX: 200,
+  packY: 330
+};
+function reducedMotion() {
+  try {
+    return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  } catch {
+    return !1;
+  }
+}
+function packSlotX(i) {
+  return 24 + i * (PACK.cardW + PACK.gap);
+}
+function prerenderCard(draw, w, h) {
+  let k = dpr * scale, pad2 = 6, cv = makeCanvas(Math.ceil((w + pad2 * 2) * k), Math.ceil((h + pad2 * 2) * k)), g = cv.getContext("2d");
+  g.scale(k, k);
+  let keep = ctx;
+  ctx = g;
+  try {
+    draw(pad2, pad2);
+  } finally {
+    ctx = keep;
+  }
+  return { cv, pad: pad2 };
+}
+function drawCardBack(x, y, w, h) {
+  rr(ctx, x, y + 3, w, h, 8), ctx.fillStyle = "rgba(74,52,66,0.25)", ctx.fill(), rr(ctx, x, y, w, h, 8), ctx.fillStyle = "#ff9eb5", ctx.fill(), ctx.lineWidth = 2.4, ctx.strokeStyle = INK, ctx.stroke(), rr(ctx, x + 5, y + 5, w - 10, h - 10, 6), ctx.fillStyle = "#ffd1dc", ctx.fill();
+  for (let i = 0; i < 9; i++) {
+    let cx = x + 12 + i % 3 * ((w - 24) / 2), cy = y + 14 + Math.floor(i / 3) * ((h - 28) / 2);
+    ctx.beginPath(), ctx.arc(cx, cy, 3.2, 0, 7), ctx.fillStyle = "#e8b06a", ctx.fill(), ctx.lineWidth = 1.2, ctx.strokeStyle = INK, ctx.stroke();
+  }
+}
+function openPackReveal(ids, opt = {}) {
+  let counts = {};
+  for (let id of ids) counts[id] = (counts[id] || 0) + 1;
+  let seen = {}, cards = ids.map((id, i) => {
+    let c = S.save.cards[id], before = countAt(c, 1) - counts[id];
+    seen[id] = (seen[id] || 0) + 1;
+    let have = before + seen[id], row = mergeRow(c, 1);
+    return { id, have, need: row.need, ready: !row.maxed && have >= row.need, maxed: row.maxed, isNew: !!(opt.newTower && i === ids.length - 1 && id === opt.newTower) };
+  }), newTower = cards.length && cards[cards.length - 1].isNew, W2 = PACK.cardW, H2 = PACK.cardH, faces = cards.map((cd) => prerenderCard((x, y) => drawCardPic(x, y, W2, H2, cd.id, { level: 1, still: !0 }), W2, H2)), back = prerenderCard((x, y) => drawCardBack(x, y, W2, H2), W2, H2), free = opt.source === "free", P = {
+    cards,
+    faces,
+    back,
+    t: 0,
+    skipped: !1,
+    source: opt.source || "paid",
+    newTower,
+    fired: {},
+    summaryAt: newTower ? PACK.summaryNew : PACK.summary,
+    title: free ? "FREE PACK!" : "CARD PACK",
+    subtitle: free && opt.zapperOwned ? "Zapper card + 4 random" : `${cards.length} cards added to your Cards`,
+    stars: Array.from({ length: 10 }, (_, i) => ({ a: i / 10 * Math.PI * 2 + Math.random() * 0.3, sp: 90 + Math.random() * 60 }))
+  };
+  reducedMotion() && (P.reduced = !0, P.skipped = !0, P.t = P.summaryAt, P.fadeFrom = P.summaryAt), S.pack = P, S.toast = null;
+}
+function skipPack() {
+  let P = S.pack;
+  !P || P.skipped || P.t < PACK.dim || P.t >= P.summaryAt || (P.skipped = !0, P.t = P.summaryAt, sfx(P.newTower ? "win" : "upgrade"));
+}
+function closePack(to) {
+  let P = S.pack;
+  P && (S.pack = null, sfx("tap"), P.source === "free" && (S.save.onboard = S.save.onboard || newOnboardState(), S.save.onboard.cardsHint || (S.save.onboard.cardsHint = "shop", persist())), to === "cards" && (S.save.onboard && S.save.onboard.cardsHint === "shop" && (S.save.onboard.cardsHint = "cards", persist()), go("cards")));
+}
+function packFire(key, at, fn) {
+  let P = S.pack;
+  P.skipped || P.fired[key] || P.t < at || (P.fired[key] = !0, fn());
+}
+var easeOut = (k) => 1 - Math.pow(1 - Math.max(0, Math.min(1, k)), 3);
+function renderPack(dt) {
+  let P = S.pack;
+  P.t += dt;
+  let t = P.t;
+  packFire("drop", 0, () => sfx("tap")), packFire("shake", PACK.drop, () => {
+    sfx("packShake");
+  }), packFire("burst", PACK.shake, () => {
+    sfx("pop");
+  }), P.cards.forEach((cd, i) => {
+    let f0 = PACK.flip0 + i * PACK.flipStep;
+    packFire("flip" + i, f0, () => sfx("cardFlip")), cd.ready && packFire("merge" + i, f0 + PACK.flipDur / 2, () => sfx("upgrade"));
+  });
+  let lastFlipEnd = PACK.flip0 + (P.cards.length - 1) * PACK.flipStep + PACK.flipDur;
+  P.newTower && packFire("beat", lastFlipEnd, () => {
+    sfx("win");
+  });
+  let dimA = P.reduced ? 0.72 * Math.min(1, (t - P.fadeFrom) / PACK.fade) : 0.72 * Math.min(1, t / PACK.dim);
+  ctx.save(), ctx.fillStyle = `rgba(50,32,46,${dimA})`, ctx.fillRect(-200, -200, W + 400, H + 400), ctx.restore();
+  let inSummary = t >= P.summaryAt;
+  if (!inSummary && t < PACK.burst) {
+    if (ctx.save(), t < PACK.shake) {
+      let k = easeOut(t / PACK.drop), sc = 0.6 + 0.4 * k, y = 200 + (PACK.packY - 200) * k, rot = t > PACK.drop ? Math.sin((t - PACK.drop) / (PACK.shake - PACK.drop) * Math.PI * 4) * 4 * Math.PI / 180 : 0;
+      ctx.translate(PACK.packX, y), ctx.rotate(rot), ctx.scale(sc, sc), drawPackArt(0, 1);
+    } else {
+      let k = (t - PACK.shake) / (PACK.burst - PACK.shake);
+      for (let s of [-1, 1])
+        ctx.save(), ctx.globalAlpha = 1 - k, ctx.translate(PACK.packX + s * 60 * k, PACK.packY), ctx.rotate(s * 0.4 * k), ctx.beginPath(), ctx.rect(s < 0 ? -80 : 0, -90, 80, 180), ctx.clip(), drawPackArt(0, 1), ctx.restore();
+    }
+    ctx.restore();
+  }
+  if (!inSummary && t >= PACK.shake && t < PACK.shake + 0.55) {
+    let k = (t - PACK.shake) / 0.55;
+    for (let s of P.stars) starShape(ctx, PACK.packX + Math.cos(s.a) * s.sp * k, PACK.packY + Math.sin(s.a) * s.sp * k, 6 * (1 - k) + 2, "#ffe36e", 1.2);
+  }
+  let W2 = PACK.cardW, H2 = PACK.cardH;
+  if (P.cards.forEach((cd, i) => {
+    let d0 = PACK.deal0 + i * PACK.dealStep;
+    if (!inSummary && t < d0) return;
+    let dk = inSummary ? 1 : easeOut((t - d0) / PACK.dealDur), tx = packSlotX(i), ty = PACK.rowY, x = PACK.packX - W2 / 2 + (tx - (PACK.packX - W2 / 2)) * dk, y = PACK.packY - H2 / 2 + (ty - (PACK.packY - H2 / 2)) * dk, f0 = PACK.flip0 + i * PACK.flipStep, fp = inSummary ? 1 : Math.max(0, Math.min(1, (t - f0) / PACK.flipDur)), sx = Math.abs(Math.cos(fp * Math.PI)), face = fp > 0.5, sc = 1;
+    if (cd.ready && face) {
+      let mk = inSummary ? 1 : (t - f0 - PACK.flipDur / 2) / 0.3;
+      mk < 1 && (sc = 1 + 0.08 * Math.sin(Math.max(0, mk) * Math.PI));
+    }
+    if (cd.isNew && face) {
+      let bk = Math.max(0, Math.min(1, (t - lastFlipEnd) / PACK.beat));
+      sc = inSummary ? 1.15 : bk < 0.5 ? 1 + 0.7 * bk : 1.35 - 0.4 * (bk - 0.5), ctx.save(), ctx.translate(tx + W2 / 2, ty + H2 / 2);
+      for (let r = 0; r < 14; r++)
+        ctx.save(), ctx.rotate(r / 14 * Math.PI * 2 + S.t * 0.4), ctx.globalAlpha = 0.28, ctx.beginPath(), ctx.moveTo(0, 0), ctx.lineTo(70, -8), ctx.lineTo(70, 8), ctx.closePath(), ctx.fillStyle = "#fff3a8", ctx.fill(), ctx.restore();
+      ctx.restore();
+    }
+    let img = face ? P.faces[i] : P.back;
+    if (ctx.save(), ctx.translate(x + W2 / 2, y + H2 / 2), ctx.scale(sx * sc, sc), ctx.drawImage(img.cv, -W2 / 2 - img.pad, -H2 / 2 - img.pad, W2 + img.pad * 2, H2 + img.pad * 2), ctx.restore(), !face) return;
+    let cx = tx + W2 / 2, ny = ty + H2 + 12;
+    fitText(TOWERS[cd.id].short || TOWERS[cd.id].name, cx, ny, W2, 11, "#ffffff");
+    let pk = inSummary ? 1 : Math.max(0, Math.min(1, (t - f0 - PACK.flipDur / 2) / PACK.pip));
+    if (cd.maxed) plainText("MAX", cx, ny + 18, 11, "#ffe36e", "center", "800");
+    else {
+      let filled = Math.min(cd.need, cd.have);
+      for (let p = 0; p < cd.need; p++) {
+        let px = cx - 14 + p * 14, py = ny + 18, isNewPip = p === filled - 1;
+        ctx.beginPath(), ctx.arc(px, py, 4.6, 0, 7), ctx.lineWidth = 1.8, ctx.strokeStyle = "#ffffff", ctx.stroke(), p < filled && (ctx.beginPath(), ctx.arc(px, py, 4.6 * (isNewPip ? pk : 1), 0, 7), ctx.fillStyle = "#ffe36e", ctx.fill());
+      }
+      plainText(`${Math.min(cd.have, cd.need)}/${cd.need} \u2192 L2`, cx, ny + 34, 11, "#ffe9c0", "center", "700"), cd.ready && pk >= 1 && drawMergeTag(cx, ny + 54);
+    }
+    cd.isNew && (ctx.save(), ctx.translate(tx + W2 - 6, ty + 8), ctx.rotate(Math.PI / 4), rr(ctx, -24, -8, 48, 16, 4), ctx.fillStyle = "#ffe36e", ctx.fill(), ctx.lineWidth = 1.8, ctx.strokeStyle = INK, ctx.stroke(), text(ctx, "NEW", 0, 0.5, 11, "#e0607e", "center", null), ctx.restore());
+  }), P.newTower && t >= lastFlipEnd) {
+    let k = Math.min(1, (t - lastFlipEnd) / 0.2);
+    ctx.save(), ctx.globalAlpha = k, rr(ctx, 110, 206, 180, 30, 10), ctx.fillStyle = "#ffe36e", ctx.fill(), ctx.lineWidth = 2.2, ctx.strokeStyle = INK, ctx.stroke(), text(ctx, "NEW TOWER!", 200, 221.5, 17, "#e0607e", "center", null), ctx.restore();
+  }
+  if (inSummary) {
+    let a = Math.min(1, (t - P.summaryAt) / PACK.fade);
+    ctx.save(), ctx.globalAlpha = a, text(ctx, P.title, 200, 150, 28, "#ffe36e"), plainText(P.subtitle, 200, 186, 14, "#ffffff", "center", "700");
+    let merge = anyMergeReady(S.save);
+    drawButton(32, 470, 160, 48, "OK", "#ffd45e"), drawButton(208, 470, 160, 48, merge ? "Merge now" : "Cards", "#b5d8ff", { size: merge ? 16 : 17 }), t - P.summaryAt >= PACK.tapHint && plainText("Tap anywhere to continue", 200, 545, 12, "#ffe9c0", "center", "700"), ctx.restore();
+  }
+  button("packTap", -200, -200, W + 400, H + 400, () => {
+    t < P.summaryAt ? skipPack() : t - P.summaryAt >= PACK.tapHint && closePack("ok");
+  }), inSummary && (button("packOk", 32, 466, 160, 56, () => closePack("ok")), button("packCards", 208, 466, 160, 56, () => closePack("cards")));
+}
+function drawPackArt(x, y) {
+  ctx.save(), ctx.translate(x, y), rr(ctx, -60, -71, 120, 150, 16), ctx.fillStyle = "rgba(74,52,66,0.3)", ctx.fill(), rr(ctx, -60, -75, 120, 150, 16);
+  let g = ctx.createLinearGradient(0, -75, 0, 75);
+  g.addColorStop(0, "#fff3f7"), g.addColorStop(1, "#ffc8d6"), ctx.fillStyle = g, ctx.fill(), ctx.lineWidth = 3, ctx.strokeStyle = INK, ctx.stroke();
+  for (let k = 0; k < 3; k++)
+    ctx.save(), ctx.translate(-26 + k * 26, 6 - (k === 1 ? 8 : 0)), ctx.rotate(-0.25 + k * 0.25), rr(ctx, -18, -26, 36, 50, 7), ctx.fillStyle = ["#ffb3c1", "#b5d8ff", "#ffd27a"][k], ctx.fill(), ctx.lineWidth = 2.2, ctx.strokeStyle = INK, ctx.stroke(), text(ctx, "?", 0, 0, 20), ctx.restore();
+  text(ctx, "CARDS", 0, -56, 15, "#ff6f91"), ctx.restore();
+}
+function drawMergeTag(cx, y) {
+  ctx.save(), rr(ctx, cx - 30, y - 9, 60, 18, 8), ctx.fillStyle = "#55b85a", ctx.fill(), ctx.lineWidth = 1.8, ctx.strokeStyle = INK, ctx.stroke(), ctx.beginPath(), ctx.moveTo(cx - 24, y + 4), ctx.lineTo(cx - 20, y - 4), ctx.lineTo(cx - 16, y + 4), ctx.closePath(), ctx.fillStyle = "#ffffff", ctx.fill(), text(ctx, "MERGE!", cx + 5, y + 0.5, 11, "#ffffff", "center", null), ctx.restore();
 }
 function launchFireworks(n = 8, dur = 2.5) {
   for (let i = 0; i < n; i++) S.fireworks.queue.push({ at: S.t + i / n * dur + Math.random() * 0.2 });

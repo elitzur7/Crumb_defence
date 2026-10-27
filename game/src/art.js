@@ -219,8 +219,11 @@ function sneaker(ctx, x, y, far) {
   ctx.beginPath(); ctx.ellipse(x + 1, y + 0.6, 2.8, 1.7, 0, 0, 7); ctx.fillStyle = far ? '#e6e6ee' : '#ffffff'; ctx.fill(); ctx.lineWidth = 1.3; ctx.strokeStyle = INK; ctx.stroke();
   ctx.beginPath(); ctx.moveTo(x - 0.8, y + 0.4); ctx.lineTo(x + 2.4, y + 0.1); ctx.lineWidth = 1.1; ctx.strokeStyle = '#ff5a6e'; ctx.stroke();
 }
+// v0.7: the small variants wear their parent's look (gas mask / knight armour / wings) on the small body
+const ANT_LOOK = { small_gasmask: 'gasmask', small_armed: 'armored', small_fly: 'flyer' };
 export function drawAnt(ctx, type, phase = 0, opt = {}) {
   const S = C.ANTS[type].size;
+  type = ANT_LOOK[type] || type;
   const col = ANT_COL[type];
   const legCol = shade(col, -0.18), farCol = shade(col, -0.32);
   const P = phase * Math.PI * 2;

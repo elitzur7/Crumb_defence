@@ -33,6 +33,11 @@ export const BATTLE = {
   rerollStep: 3,
   visiblePicks: 3,
   guaranteeDamageOpening: true, // opening hand always holds >=1 ground damage tower (so the free card can earn crumbs)
+  // v0.7 D-R1..R3 (economy plan): a hand never shows the same card twice; the opening hand holds >= openingDamageCards damage
+  // cards (when the deck has that many); the first `freeRedraws` redraws of every battle cost 0 (then 3, 6, 9 ...).
+  distinctHand: true,
+  openingDamageCards: 2,
+  freeRedraws: 1,
   deckSize: 5,
   maxInBattleLevel: 6,      // v0.6 item 11: duplicate card dropped on same tower upgrades it, up to this level (5 upgrades, see TOWERS[x].upgrades)
   firstWaveDelay: 8,        // seconds before wave 1 auto-starts (player can call it early)
@@ -131,6 +136,7 @@ export const AIR_COUNTERS = ['laser', 'zapper'];
 //   queen  = unchanged (Yair: her size is "relatively good").
 // Armored = regular size + armor/helmet only. Late-game exceptions (item 14d/e): Heavy Knight = LARGE armored,
 // Sprint Knight = FAST armored (regular body, sports shoes + jersey). Max 5 ant types per battle (item 15, see LEVELS).
+export const VERSION = '0.7.0'; // v0.7: shown on the map screen (keep in step with package.json + android versionName)
 export const ANT_SIZES = { ...TUNING.antSizes };
 const ANT_TEXT = {
   small: { name: 'Scout Ant', desc: 'Tiny, fast, comes in swarms.' },
@@ -142,6 +148,10 @@ const ANT_TEXT = {
   sprinter: { name: 'Sprint Knight', desc: 'Armored AND fast - sneakers on. Late stages only.' },
   heavy: { name: 'Heavy Knight', desc: 'A big ant in full armor. Late stages only.' },
   queen: { name: 'Ant Queen', desc: 'BOSS. Marches in and calls her scouts. Takes HALF the cookie.' },
+  // v0.7 (Yair ANT-STATS-v0.6.3): small variants - same tiny body as the Scout, with a gas mask / armour / wings
+  small_gasmask: { name: 'Masked Scout', desc: 'A tiny scout with a gas mask - spray does nothing.' },
+  small_armed: { name: 'Armored Scout', desc: 'A tiny scout in armour. Slower, shrugs off weak hits.' },
+  small_fly: { name: 'Flying Scout', desc: 'A tiny flying scout. Laser or zapper!' },
   queen2: { name: 'Swift Queen', desc: 'BOSS of world 2. Fast, calls flying ants. Takes 40 of the cake.' },
 };
 // ---------------- Queens (v0.4 item 19) ----------------
@@ -162,7 +172,7 @@ for (const [id, a] of Object.entries(TUNING.ants)) {
 export const isQueen = (type) => !!(ANTS[type] && ANTS[type].boss);
 // ---------------- Worlds (v0.5 items 13/14) ----------------
 // tuning.json "worlds": each world = 10 levels ending with its queen, its own treat. World 2 unlocks when every level of
-// world 1 is won AND the player has >= minStarsInWorld (v0.6.2: 20) of its 30 stars.
+// world 1 is won AND the player has >= minStarsInWorld (v0.7: 18, was 20) of its 30 stars.
 export const WORLDS = TUNING.worlds.map((w) => ({ ...w }));
 export const QUEENS = Object.fromEntries(WORLDS.map((w) => [w.id, { type: w.queen, traits: TUNING.ants[w.queen].queenTraits }]));
 
@@ -213,6 +223,7 @@ export const ECONOMY = {
   shop: {
     cardL1: 12,                // v0.6 item 4: coins for one level-1 card of a tower you own (there are no "copies" any more)
     cardPack: 40,              // coins for 5 random level-1 cards of towers you own
+    packPity: 10,              // v0.7 D-P3: while a tower is locked, every 10th paid pack without a new tower holds one
     cardPackSize: 5,
     // v0.4 item 10: boosters are bought with DIAMONDS at a FIXED price (all 4 boosters): 15 in the Shop, 20 in battle.
     boosterDiamonds: 15,       // diamonds per booster in the Shop (was 30 coins)

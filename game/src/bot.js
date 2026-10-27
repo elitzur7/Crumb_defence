@@ -7,7 +7,7 @@ const VALUE = { laser: 1.3, slingshot: 1, sound: 1.1, lizard: 1.1, spray: 1, zap
 
 export function chooseDeck(unlocked, levelIndex, { prefer = [] } = {}) {
   const types = levelAntTypes(levelIndex);
-  const flyers = types.includes('flyer') || types.some((t) => C.ANTS[t].spawn && C.ANTS[t].spawn.type === 'flyer');
+  const flyers = types.some((t) => C.ANTS[t].flying) || types.some((t) => C.ANTS[t].spawn && C.ANTS[t].spawn.type === 'flyer');
   const armored = types.some((t) => (C.ANTS[t].armor || 0) >= 4 && !C.ANTS[t].boss); // knights (incl. v0.4 Sprint / Heavy Knight)
   let pri = PRIORITY.filter((id) => unlocked.includes(id));
   if (armored) pri = ['sound', 'gate', ...pri.filter((x) => x !== 'sound' && x !== 'gate')].filter((id) => unlocked.includes(id));
@@ -67,14 +67,21 @@ function bestTile(b, card) {
 }
 
 export function smartBotStep(b) {
-  if (b.result || b.crumbs < b.nextCardCost) return null;
+  if (b.result) return null;
+  // v0.7 D-R3 (sim S2): before the first card, use the FREE redraw when the deck's top-priority damage card is not in the hand
+  if (b.cardsPlayed === 0 && b.rerollPrice === 0 && !b.botRedrawn) {
+    const top = b.deck.find(isDamageCard);
+    b.botRedrawn = true;
+    if (top && !b.picks.includes(top)) b.reroll();
+  }
+  if (b.crumbs < b.nextCardCost) return null;
   let bestMove = null, bestScore = -Infinity;
   b.picks.forEach((card, i) => {
     const same = b.towers.filter((t) => t.type === card);
     const upg = same.filter((t) => t.lvl < b.cfg.maxInBattleLevel).sort((a, z) => a.lvl - z.lvl)[0];
     const v = VALUE[card] || 1;
     // need anti-air early if flyers are coming
-    const airNeed = C.AIR_COUNTERS.includes(card) && b.towers.filter((t) => C.AIR_COUNTERS.includes(t.type)).length < 2 && levelAntTypes(b.levelIndex).includes('flyer') ? 1.5 : 0;
+    const airNeed = C.AIR_COUNTERS.includes(card) && b.towers.filter((t) => C.AIR_COUNTERS.includes(t.type)).length < 2 && levelAntTypes(b.levelIndex).some((t) => C.ANTS[t].flying) ? 1.5 : 0;
     // v0.4: with half the ants there are fewer crumbs - open with a ground-damage tower (it earns the crumbs), not anti-air/utility
     const noEarner = !b.towers.some((t) => isDamageCard(t.type)) && b.picks.some(isDamageCard);
     if (noEarner && !isDamageCard(card)) return;

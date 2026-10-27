@@ -38,10 +38,11 @@ test('item 15: at most 5 ant types per battle', () => {
   assert.equal(C.MAX_ANT_TYPES_PER_BATTLE, 5);
   C.LEVELS.forEach((L, i) => assert.ok(levelAntTypes(i).length <= 5, `level ${i + 1}: ${levelAntTypes(i).join(',')}`));
 });
-test('balance: the smart bot wins every level on 5 seeds (world 1 with level-1 cards, world 2 with level-5 cards); doing nothing loses from level 5', () => {
+test('balance: the smart bot wins >= 3 of 5 seeds on every level (v0.7 proxy card levels: world 1 CL2, world 2 CL3 - plan D-S3); doing nothing loses from level 5', () => {
   for (let i = 0; i < C.LEVELS.length; i++) {
-    const cardLevel = C.LEVELS[i].world === 1 ? 1 : 5; // v0.5 design note: upgrading cards is the intended path to winning
-    for (const seed of [1, 2, 3, 4, 5]) assert.equal(playLevel(i, { unlocked: unlockedAt(i), seed, cardLevel }).result, 'win', `level ${i + 1} seed ${seed}`);
+    const cardLevel = C.LEVELS[i].world === 1 ? 2 : 3; // v0.7: the economy plan's proxy card levels (v0.6: W1 CL1 / W2 CL5, every seed)
+    const wins = [1, 2, 3, 4, 5].filter((seed) => playLevel(i, { unlocked: unlockedAt(i), seed, cardLevel }).result === 'win').length;
+    assert.ok(wins >= 3, `level ${i + 1}: ${wins}/5 wins`);
     if (i >= 4) assert.equal(playLevel(i, { bot: 'idle', unlocked: unlockedAt(i), seed: 1 }).result, 'lose', `idle level ${i + 1}`);
   }
 });
@@ -209,11 +210,11 @@ test('v0.3 save loads: fields kept, card-blink flags + Roasted Lava card added, 
   assert.deepEqual(s.cards.lava, { unlocked: false, level: 0, inv: {}, seen: [], fresh: false });
   assert.deepEqual(s.cards.slingshot.inv, { 1: 4, 2: 1 }, 'v0.5: a level-2 card = one L2 card; v0.6: each of the 4 copies = one L1 card');
   assert.deepEqual(s.cardBlink, { affordShown: false, afterLossShown: false, lossPending: false });
-  assert.equal(s.version, 4);
+  assert.equal(s.version, M.SAVE_VERSION);
   M.writeSave(st, s); const again = M.loadSave(st); assert.equal(again.coins, 321); assert.deepEqual(again.cardBlink, s.cardBlink);
 });
-test('versions: package 0.6.2, Android versionCode 14 / versionName 0.6.2', () => {
-  const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')); assert.equal(pkg.version, '0.6.2');
+test('versions: package 0.7.0, Android versionCode 15 / versionName 0.7.0', () => {
+  const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')); assert.equal(pkg.version, '0.7.0');
   const gradle = readFileSync(new URL('../android/app/build.gradle', import.meta.url), 'utf8');
-  assert.match(gradle, /versionCode 14\b/); assert.match(gradle, /versionName "0\.6\.2"/);
+  assert.match(gradle, /versionCode 15\b/); assert.match(gradle, /versionName "0\.7\.0"/);
 });

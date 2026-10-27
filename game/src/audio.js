@@ -44,5 +44,7 @@ export function sfx(name) {
     case 'freeze': tone(1800, 0.4, 'sine', 0.2, 0.5); break;
     case 'plane': tone(140, 1.2, 'sawtooth', 0.08, 1.3); break;
     case 'gust': noise(0.3, 0.12, 2000); break;
+    case 'packShake': noise(0.15, 0.14, 2000); break; // v0.7 pack reveal: the pack rocks
+    case 'cardFlip': tone(900, 0.05, 'sine', 0.22, 1.3); break; // v0.7 pack reveal: one card flips
   }
 }

@@ -80,11 +80,11 @@ test('item 4: saves migrate with no lost progress (each copy -> one L1 card; cop
   assert.deepEqual(s.cards.slingshot.inv, { 1: 3, 3: 1 }); assert.equal(s.cards.slingshot.level, 3);
   assert.ok(s.cards.laser.unlocked); assert.deepEqual(s.cards.laser.inv, { 1: 2 });
   for (const id of C.ALL_CARDS) assert.ok(!('copies' in s.cards[id]), id);
-  assert.equal(s.version, 4); assert.equal(s.coins, 9);
+  assert.equal(s.version, M.SAVE_VERSION); assert.equal(s.coins, 9);
 });
 
 // ---------- item 5: Zapper onboarding ----------
-test('item 5: first stage-2 win -> one free 5-card gift (4 random + Zapper, NEW CARD reveal); existing players get a Zapper on load', () => {
+test('item 5: first stage-2 win -> one free 5-card gift (4 random + Zapper); existing players past stage 2 get the free pack once (v0.7 D-P0)', () => {
   const s = M.newSave(); assert.equal(s.cards.zapper.unlocked, false);
   M.applyBattleResult(s, 0, 'win', 3, {}, () => 0); assert.equal(M.zapperGiftPending(s), false);
   const out = M.applyBattleResult(s, 1, 'win', 3, {}, () => 0); assert.equal(out.zapperGift, true); assert.ok(M.zapperGiftPending(s));
@@ -97,9 +97,12 @@ test('item 5: first stage-2 win -> one free 5-card gift (4 random + Zapper, NEW 
   const old = { version: 3, coins: 0, cards: {}, bonusStock: {}, levels: Array.from({ length: 20 }, (_, i) => ({ stars: 3, cleared: i < 4 })), calendar: M.newCalendarState() };
   for (const id of C.ALL_CARDS) old.cards[id] = C.STARTER_CARDS.includes(id) ? { unlocked: true, level: 1, inv: { 1: 1 }, seen: [1], fresh: false } : { unlocked: false, level: 0, inv: {}, seen: [], fresh: false };
   const store = new Map([[M.SAVE_KEY, JSON.stringify(old)]]); const st = { getItem: (k) => store.get(k) ?? null, setItem: (k, v) => store.set(k, v) };
-  const l = M.loadSave(st); assert.ok(l.cards.zapper.unlocked); assert.ok(l.onboard.grantedOnLoad); assert.equal(M.zapperGiftPending(l), false);
+  // v0.7 D-P0: no direct Zapper any more - the free pack (always with the Zapper card) waits in the Shop, once
+  const l = M.loadSave(st); assert.equal(l.cards.zapper.unlocked, false); assert.equal(l.onboard.grantedOnLoad, false); assert.equal(M.zapperGiftPending(l), true);
+  const lg = M.claimZapperGift(l, () => 0.3); assert.equal(lg.got.length, 5); assert.ok(l.cards.zapper.unlocked);
+  M.writeSave(st, l); assert.equal(M.zapperGiftPending(M.loadSave(st)), false, 'once');
   const gs = src('game.js');
-  assert.ok(/onboardSpot\(/.test(gs) && /drawFinger\(/.test(gs) && /claimZapperGift/.test(gs) && /grantedOnLoad/.test(gs));
+  assert.ok(/onboardSpot\(/.test(gs) && /drawFinger\(/.test(gs) && /claimZapperGift/.test(gs) && /openPackReveal/.test(gs));
 });
 
 // ---------- item 6: the Tractor ----------

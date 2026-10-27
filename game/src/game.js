@@ -1,6 +1,6 @@
 // Crumb Defense - app shell: screens, input, rendering of battle & menus.
 import * as C from './config.js';
-import { Battle, levelAntTypes, towerStat, upgradeDiff, formatStat, statLabel, cardUpgradeDiff } from './sim.js';
+import { Battle, levelAntTypes, towerStat, upgradeDiff, formatStat, statLabel, cardUpgradeDiff, upgradeGain, worldCardLevelCap } from './sim.js';
 import * as Cal from './calendar.js';
 import * as M from './meta.js';
 import * as A from './art.js';
@@ -12,7 +12,7 @@ import * as Treat from './treat.js';
 const W = 400, H = 720, MAP_Y = 68, MAP_W = C.GRID_COLS * C.TILE, MAP_H = C.GRID_ROWS * C.TILE, TRAY_Y = MAP_Y + MAP_H + 4;
 const BG = '#fbe9dc';
 const canvas = document.getElementById('game');
-const ctx = canvas.getContext('2d');
+let ctx = canvas.getContext('2d'); // let: the v0.7 pack reveal pre-renders card faces by pointing ctx at an offscreen canvas for a moment
 let dpr = 1, scale = 1, offX = 0, offY = 0, pxRatio = 1;
 
 const storage = (() => { try { localStorage.setItem('__t', '1'); localStorage.removeItem('__t'); return localStorage; } catch (e) { const m = {}; return { getItem: (k) => m[k] ?? null, setItem: (k, v) => { m[k] = String(v); } }; } })();
@@ -23,7 +23,7 @@ const S = {
   dialog: null, cal: null, cookieOuch: 0, clockOffset: 0, treat: Treat.newTreatState(),
   // v0.5: map scroll (item 13), per-card screen (items 6/7), NEW CARD reveals (item 7), Move/Swap mode (items 11/12),
   // fireworks (item 16), shop purchase animation (item 8)
-  mapScroll: 0, cardView: null, reveal: [], mode: null, fireworks: { rockets: [], parts: [], queue: [] }, shopFx: null, shopSel: null, queenDown: null,
+  mapScroll: 0, cardView: null, reveal: [], pack: null, mode: null, fireworks: { rockets: [], parts: [], queue: [] }, shopFx: null, shopSel: null, queenDown: null,
 };
 if (S.save.settings && S.save.settings.muted) setMuted(true);
 function persist() { M.writeSave(storage, S.save); }
@@ -91,7 +91,7 @@ canvas.addEventListener('pointerdown', (e) => {
   const b = hit(prevButtons, p.x, p.y);
   down = { x: p.x, y: p.y, b, moved: false };
   // v0.5 item 13: the level map scrolls (drag up/down) - world 2 sits above world 1
-  if (S.screen === 'map' && !S.cal && !S.reveal.length && p.y >= MAPVIEW.top && p.y <= MAPVIEW.bottom) down.scroll0 = S.mapScroll;
+  if (S.screen === 'map' && !S.cal && !S.reveal.length && !S.pack && p.y >= MAPVIEW.top && p.y <= MAPVIEW.bottom) down.scroll0 = S.mapScroll;
   if (b && b.onDown) b.onDown(p);
 });
 canvas.addEventListener('pointermove', (e) => {
@@ -127,6 +127,7 @@ function go(screen) {
   } catch (e) { /* history unavailable */ }
 }
 window.addEventListener('popstate', () => {
+  if (S.pack) { closePack('ok'); try { history.pushState({ inner: 1 }, ''); } catch (e) {} return; } // v0.7: back closes the pack reveal
   if (S.dialog) { S.dialog = null; try { history.pushState({ inner: 1 }, ''); } catch (e) {} return; }
   if (S.screen === 'map') { if (S.cal) S.cal = null; return; }
   const repush = () => { try { history.pushState({ inner: 1 }, ''); } catch (e) {} };
@@ -284,7 +285,7 @@ function consumeEvents() {
         addFx({ k: 'ring2', x: e.x, y: e.y, life: 0.5 + delay, max: 0.5, wait: delay });
         if (e.type === 'upgrade') {
           addFx({ k: 'pillar', x: e.x, y: e.y, life: 0.9 + delay, max: 0.9, wait: delay });
-          addFx({ k: 'txt', x: e.x, y: e.y - 34, s: `Level ${e.lvl}!`, col: '#ffe36e', life: 1.4 + delay, max: 1.4, wait: delay, size: 17 });
+          addFx({ k: 'txt', x: e.x, y: e.y - 34, s: `Level ${e.lvl}!${dmgGainText(e.card, e.lvl, S.battle.cardLevels[e.card] || 1) ? '  ' + dmgGainText(e.card, e.lvl, S.battle.cardLevels[e.card] || 1) : ''}`, col: '#ffe36e', life: 1.4 + delay, max: 1.4, wait: delay, size: 17 });
           (e.diff || []).forEach((d, k) => addFx({ k: 'txt', x: e.x, y: e.y - 52 - k * 16, s: `${d.label} ${formatStat(e.card, d.key, d.from)} \u2192 ${formatStat(e.card, d.key, d.to)}`, col: '#a8ffb0', life: 2 + delay, max: 2, wait: delay, size: 12 }));
           const tw = S.battle.towers.find((q) => q.id === e.id);
           if (tw && !S.autoBot) { const mine = !!(S.info && S.info.tower === tw && !S.info.auto); S.info = { tower: tw, t: 0, changed: e.diff, until: S.t + C.UI.upgradeInfoTime, auto: !mine }; } // B9: auto-closes unless the player had opened it
@@ -345,6 +346,7 @@ function render(dt) {
   else if (S.screen === 'shop') renderShop();
   renderFireworks(dt);
   if (S.reveal.length && S.reveal[0].at <= S.t) renderReveal(dt);
+  if (S.pack) renderPack(dt); // v0.7: pack reveal (free + paid packs)
   if (S.toast) {
     S.toast.t -= dt;
     ctx.save(); ctx.globalAlpha = Math.min(1, S.toast.t * 5);
@@ -514,7 +516,8 @@ function renderMapScreen() {
     else { S.confirmReset = S.t + 3; }
   });
   if (S.cal) renderCalendar();
-  else if (M.zapperGiftPending(S.save) && !S.reveal.length) onboardSpot({ x: 146, y: 662, w: 120, h: 46, r: 14 }, 'shop', () => go('shop'), 'A free gift waits in the Shop!');
+  else if (M.zapperGiftPending(S.save) && !S.reveal.length) onboardSpot({ x: 146, y: 662, w: 120, h: 46, r: 14 }, 'shop', () => go('shop'), 'A free pack waits in the Shop!');
+  plainText('v' + C.VERSION, 392, 714, 11, '#a08090', 'right', '600'); // v0.7: version label
   renderUiFx(1 / 60);
 }
 // ---------------- v0.6 item 5: one-time onboarding (dim everything except one button + a pointing finger) ----------------
@@ -708,6 +711,7 @@ function renderPrep() {
   const ants = levelAntTypes(i);
   A.text(ctx, 'Incoming ants', 30, 92, 14, '#7a5a6a', 'left', null);
   A.text(ctx, `${L.waveCount} waves`, 370, 92, 14, '#7a5a6a', 'right', null);
+  if (levelHasFlyers(i)) { A.rr(ctx, 152, 82, 132, 20, 10); ctx.fillStyle = '#d7ecff'; ctx.fill(); ctx.lineWidth = 1.6; ctx.strokeStyle = '#5a9fe0'; ctx.stroke(); plainText('Flyers in this level', 218, 92.5, 11, '#2f6fae', 'center', '800'); } // v0.7 (Should): flyers preview
   // icons share the panel width; big ants (queen) are scaled so nothing overflows or reaches the header line
   S.layoutPrepAnts = [];
   const n = ants.length, slot = Math.min(76, 340 / n), x0 = 200 - (slot * (n - 1)) / 2;
@@ -721,6 +725,7 @@ function renderPrep() {
   // deck
   const unlocked = M.unlockedCards(S.save);
   A.text(ctx, `Your deck (${S.prep.deck.length}/${C.BATTLE.deckSize}) - tap to pick`, 30, 182, 14, '#7a5a6a', 'left', null);
+  { const cap = worldCardLevelCap(i); if (cap && unlocked.some((id) => S.save.cards[id].level > cap)) plainText(`Cards act as L${cap} max`, 370, 182, 10, '#b0506a', 'right', '800'); } // v0.7 D-P4
   C.ALL_CARDS.forEach((id, k) => { // v0.6: 13 cards -> 5 columns x 3 rows
     const col = k % 5, row = Math.floor(k / 5);
     const x = 22 + col * 72, y = 196 + row * 98, w = 66, h = 90;
@@ -755,7 +760,7 @@ function renderPrep() {
   });
   // warnings
   let warn = null;
-  if ((ants.includes('flyer')) && !S.prep.deck.some((d) => C.AIR_COUNTERS.includes(d))) warn = 'Flying ants ahead! Only Laser, Bug Zapper or the Crop Duster can hit them.';
+  if (levelHasFlyers(i) && !S.prep.deck.some((d) => C.AIR_COUNTERS.includes(d))) warn = 'Flying ants ahead! Only Laser, Bug Zapper or the Crop Duster can hit them.';
   else if (ants.includes('gasmask') && S.prep.deck.includes('spray') && S.prep.deck.filter((d) => d !== 'spray' && C.TOWERS[d].kind === 'tower' && d !== 'fan').length < 2) warn = 'Gas-mask ants ignore Bug Spray - bring other damage too.';
   const issues = M.prepIssues(S.save, S.prep.bonuses);
   if (issues.length) warn = `You have 0 ${C.BONUSES[issues[0].bonus].name}s. Buy one during battle for ${C.ECONOMY.diamonds.boosterPriceStart} diamonds, or in the Shop.`;
@@ -952,6 +957,9 @@ function plainWrap(str, maxW, size, weight = '500') {
   for (const w of str.split(' ')) { const test = line ? line + ' ' + w : w; if (ctx.measureText(test).width > maxW && line) { out.push(line); line = w; } else line = test; }
   if (line) out.push(line); return out;
 }
+// v0.7 D-T6: the gain of an in-battle upgrade, as total damage vs. the level-1 tower ("x2 dmg" ... "x6 dmg"; Laser 1.7 ... 6.3)
+function dmgGainText(type, lvl, cardLevel) { const g = upgradeGain(type, lvl, cardLevel); if (!(g > 1.01)) return ''; const r = Math.round(g * 10) / 10; return `x${Number.isInteger(r) ? r : r.toFixed(1)} dmg`; }
+function levelHasFlyers(i) { return levelAntTypes(i).some((t) => C.ANTS[t].flying || (C.ANTS[t].spawn && C.ANTS[t].spawn.type && C.ANTS[C.ANTS[t].spawn.type] && C.ANTS[C.ANTS[t].spawn.type].flying)); }
 const diffText = (type, d) => `${d.label} ${formatStat(type, d.key, d.from)} \u2192 ${formatStat(type, d.key, d.to)}`;
 // the third stat box: the marble has no range - it shows how far it rolls at this spot / its width
 function rollHere(tw) { return tw.trailDir ? `${tw.trailDir.run} tile${tw.trailDir.run > 1 ? 's' : ''}` : 'no roll'; }
@@ -981,7 +989,7 @@ function renderTowerInfo(b, info) {
   const extra = (info.changed || []).filter((d) => !keys.includes(d.key));
   let line;
   if (extra.length) line = 'Upgraded: ' + extra.map((d) => diffText(tw.type, d)).join(', ');
-  else if (tw.lvl < b.cfg.maxInBattleLevel) line = 'Next (drop same card): ' + upgradeDiff(tw.type, tw.lvl, tw.cardLevel).map((d) => diffText(tw.type, d)).join(', ');
+  else if (tw.lvl < b.cfg.maxInBattleLevel) line = (dmgGainText(tw.type, tw.lvl + 1, tw.cardLevel) ? dmgGainText(tw.type, tw.lvl + 1, tw.cardLevel) + '! ' : '') + 'Next (drop same card): ' + upgradeDiff(tw.type, tw.lvl, tw.cardLevel).map((d) => diffText(tw.type, d)).join(', ');
   else line = 'Max level!';
   plainFit(line, 200, py + 122, 350, 12, extra.length ? '#2f8a36' : INFO_INK, 'center');
   button('infoClose', 14, py, 372, H2, () => { S.info = null; }); // registered after 'map' so it is on top (tapping the panel = the player's own close)
@@ -1258,7 +1266,8 @@ function renderTray(b) {
   button('wave', wx - 4, y0 + 2, ww + 8, L.rerollY - 4, () => { if (b.callWaveEarly() > 0) sfx('return'); });
   const rc = b.rerollPrice, ry = y0 + L.rerollY; // v0.5 item 17: 3, 6, 9, 12 ... (resets every battle)
   drawButton(wx, ry, ww, L.rerollH, '', '#c9b6f2', { disabled: b.crumbs < rc });
-  A.text(ctx, 'Redraw', wx + 30, ry + 18, 13); A.crumbIcon(ctx, wx + 66, ry + 18, 0.65); A.text(ctx, String(rc), wx + 80, ry + 18, 12);
+  if (rc === 0) { A.text(ctx, 'Redraw', wx + 30, ry + 18, 13); A.text(ctx, 'FREE', wx + 76, ry + 18, 12, '#2f8a3a'); } // v0.7 D-R3: the first redraw is free
+  else { A.text(ctx, 'Redraw', wx + 30, ry + 18, 13); A.crumbIcon(ctx, wx + 66, ry + 18, 0.65); A.text(ctx, String(rc), wx + 80, ry + 18, 12); }
   button('reroll', wx - 4, y0 + L.rerollY - 2, ww + 8, L.rowY - L.rerollY, () => { if (b.reroll()) { sfx('tap'); if (rc > 0) { addUi({ k: 'costFly', n: rc, x0: 340, y0: 34, x1: 300, y1: 96, life: 1.0, max: 1.0 }); S.crumbPulse = 0.35; } } else needCrumbs(rc); });
   // bottom row: bonuses, speed, pause
   const by = y0 + L.rowY, bh = L.rowH;
@@ -1478,6 +1487,10 @@ function renderCards() {
   drawButton(145, 652, 110, 48, 'Merge all', anyReady ? '#ff9ec0' : '#e6dce2', { size: 16, disabled: !anyReady }); button('mergeAll', 145, 648, 110, 58, doMergeAll);
   drawButton(264, 652, 110, 48, 'Shop', '#ffd27a'); button('toshop', 264, 650, 110, 54, () => go('shop'));
   if (S.mergeAnim) renderMergeAnim();
+  else if (S.save.onboard && S.save.onboard.cardsHint === 'cards' && S.save.cards.zapper.unlocked) { // v0.7: once, after the free pack
+    const k = C.ALL_CARDS.indexOf('zapper'), x = 30 + (k % 4) * 88, y = 80 + Math.floor(k / 4) * 104;
+    onboardSpot({ x, y, w: 76, h: 96, r: 12 }, 'cardzapper', () => { S.save.onboard.cardsHint = 'done'; persist(); openCardView('zapper'); }, 'Your Bug Zapper - it hits flying ants!');
+  }
 }
 function openCardView(id) { S.cardView = id; S.cardsSel = id; const c = S.save.cards[id]; if (c.fresh) { c.fresh = false; persist(); } go('card'); }
 // One card type's own screen (v0.6 items 4 + 7): a card picture for EACH level you hold (x count), and a Merge button under
@@ -1580,15 +1593,16 @@ function renderShop() {
   for (let k = 0; k < 3; k++) { ctx.save(); ctx.translate(58 + k * 14, 146 - k * 3); ctx.rotate(-0.2 + k * 0.2); A.rr(ctx, -14, -20, 28, 38, 6); ctx.fillStyle = ['#ffb3c1', '#b5d8ff', '#ffd27a'][k]; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = A.INK; ctx.stroke(); A.text(ctx, '?', 0, 0, 16); ctx.restore(); }
   const gift = M.zapperGiftPending(S.save); // v0.6 item 5: the one-time FREE 5-card gift takes the pack's place
   if (gift) {
-    A.text(ctx, `FREE gift: ${E.cardPackSize} cards!`, 112, 132, 14, '#e0607e', 'left', null);
-    A.text(ctx, `${E.cardPackSize - 1} random + a NEW tower`, 112, 152, 11, '#a08090', 'left', null);
+    A.text(ctx, `FREE pack: ${E.cardPackSize} cards!`, 112, 132, 14, '#e0607e', 'left', null);
+    A.text(ctx, `${E.cardPackSize - 1} random + Zapper`, 112, 152, 11, '#a08090', 'left', null); // v0.7 D-P0
     drawButton(290, 122, 74, 40, 'FREE', '#9fe0b5', { size: 17 });
   } else {
     A.text(ctx, `Card pack: ${E.cardPackSize} random cards`, 112, 132, 13, '#7a4a5a', 'left', null);
-    A.text(ctx, M.lockedCards(S.save).length ? `level 1, ${Math.round(E.packNewTowerChance * 100)}% chance: NEW tower` : 'level 1, of your unlocked towers', 112, 152, 11, '#a08090', 'left', null); // v0.6.2 item 13
+    { const left = Math.max(1, (E.packPity || 0) - (S.save.packsSinceNew || 0)); // v0.6.2 item 13 + v0.7 D-P3 pity
+      plainFit(M.lockedCards(S.save).length ? `level 1, ${Math.round(E.packNewTowerChance * 100)}% NEW tower${E.packPity ? ` (sure in ${left})` : ''}` : 'level 1, of your unlocked towers', 112, 152, 172, 11, '#a08090', 'left', '700'); }
     drawButton(290, 122, 74, 40, `${E.cardPack}c`, '#9fe0b5', { size: 15, disabled: S.save.coins < E.cardPack });
-    // v0.6.2 item 13: a new tower in the pack -> NEW CARD reveal
-    button('pack', 290, 122, 74, 40, () => { const got = M.buyPack(S.save); if (got) { persist(); sfx('upgrade'); shopBought('pack', 'pack', E.cardPack, 'coin'); toast('Got: ' + got.map((g) => C.TOWERS[g].short).join(', ')); if (got.newTower) queueReveal(got.newTower, 1, true, S.t + 0.3); } else toast('Not enough coins'); });
+    // v0.7: every pack opens the pack reveal (no toast, no separate NEW CARD reveal; a new tower is the last card)
+    button('pack', 290, 122, 74, 40, () => { const got = M.buyPack(S.save); if (got) { persist(); shopBought('pack', 'pack', E.cardPack, 'coin'); openPackReveal(got, { source: 'paid', newTower: got.newTower }); } else toast('Not enough coins'); });
   }
   // single cards: tap = buy (a copy, or unlock a new tower); (i) = just show its stats below
   plainText(`Tap a card to buy: level-1 card ${E.cardL1}c, new tower 100-400c`, 30, 188, 12, '#7a5a6a', 'left', '700'); // v0.6.2 item 12: tiered unlock prices
@@ -1629,14 +1643,16 @@ function renderShop() {
   cardInfoPanel(S.shopSel, 24, 536, 352, 108, { hint: 'Tap (i) under a card to see its stats.' });
   drawButton(26, 652, 160, 48, 'Back', '#d9cfe0'); button('back', 26, 650, 160, 54, () => go('map'));
   drawButton(214, 652, 160, 48, 'Cards', '#b5d8ff'); button('tocards', 214, 650, 160, 54, () => go('cards'));
-  if (gift && !S.reveal.length) onboardSpot({ x: 286, y: 118, w: 82, h: 48, r: 14 }, 'gift', claimGift, 'Your free gift - tap it!');
+  if (gift && !S.reveal.length && !S.pack) onboardSpot({ x: 286, y: 118, w: 82, h: 48, r: 14 }, 'gift', claimGift, 'Your free pack - tap it!');
+  else if (!S.pack && !S.reveal.length && S.save.onboard && S.save.onboard.cardsHint === 'shop') // v0.7: after the free pack, Cards > Zapper once
+    onboardSpot({ x: 214, y: 652, w: 160, h: 48, r: 14 }, 'tocards', () => { S.save.onboard.cardsHint = 'cards'; persist(); go('cards'); }, 'See your new cards!');
   renderUiFx(1 / 60);
 }
 function claimGift() {
   const res = M.claimZapperGift(S.save); if (!res) return;
-  persist(); sfx('upgrade'); S.shopFx = { kind: 'pack', id: 'pack', t0: S.t };
-  toast('Got: ' + res.got.map((g) => C.TOWERS[g].short).join(', '));
-  queueReveal('zapper', 1, res.zapper.newType, S.t + 0.3);
+  persist(); S.shopFx = { kind: 'pack', id: 'pack', t0: S.t };
+  // v0.7 D-P0: the pack reveal; the Zapper is the last card (NEW when it was locked, a normal card when owned)
+  openPackReveal(res.got, { source: 'free', newTower: res.zapper.newType ? 'zapper' : null, zapperOwned: res.zapperOwned });
 }
 
 // ---------------- v0.5 item 7: NEW CARD reveal (only for a NEW type or a level of that type never owned before) ----------------
@@ -1656,6 +1672,187 @@ function renderReveal(dt) {
   plainText('Added to your Cards', 200, 548, 13, '#ffe9c0', 'center', '700');
   if (R.t > 0.5) { A.rr(ctx, 130, 588, 140, 30, 15); ctx.fillStyle = 'rgba(255,255,255,0.18)'; ctx.fill(); A.text(ctx, 'Tap to continue', 200, 603, 13, '#ffffff', 'center', null); }
   button('revealNext', -200, -200, W + 400, H + 400, () => { if (R.t > 0.4) { S.reveal.shift(); sfx('tap'); } });
+}
+
+// ---------------- v0.7 (economy plan §2.9.2): PACK REVEAL - free pack and every paid pack ----------------
+// dim -> pack drops in -> shake -> burst -> 5 cards dealt face-down -> flipped one by one (merge pips fill) -> NEW TOWER beat
+// (only when the last card is a new tower) -> summary (title, 5 cards, OK + Cards). Tap after 150 ms skips to the summary.
+// Replaces the old "Got: ..." toast and the pack-sourced NEW CARD reveal. Faces are pre-rendered when the pack opens.
+const PACK = { dim: 0.15, drop: 0.2, shake: 0.45, burst: 0.6, deal0: 0.6, dealStep: 0.08, dealDur: 0.2, flip0: 1.15, flipStep: 0.15, flipDur: 0.22,
+  pip: 0.15, beat: 0.4, summary: 2.0, summaryNew: 2.4, fade: 0.15, tapHint: 0.3, cardW: 64, cardH: 86, gap: 8, rowY: 250, packX: 200, packY: 330 };
+function haptic(kind) { /* v0.7: no-op hook (no haptics dependency; plan §2.9.2 "Later") */ }
+function reducedMotion() { try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) { return false; } }
+function packSlotX(i) { return 24 + i * (PACK.cardW + PACK.gap); }
+function prerenderCard(draw, w, h) {
+  const k = dpr * scale, pad = 6;
+  const cv = A.makeCanvas(Math.ceil((w + pad * 2) * k), Math.ceil((h + pad * 2) * k)); const g = cv.getContext('2d');
+  g.scale(k, k); const keep = ctx; ctx = g;
+  try { draw(pad, pad); } finally { ctx = keep; }
+  return { cv, pad };
+}
+function drawCardBack(x, y, w, h) {
+  A.rr(ctx, x, y + 3, w, h, 8); ctx.fillStyle = 'rgba(74,52,66,0.25)'; ctx.fill();
+  A.rr(ctx, x, y, w, h, 8); ctx.fillStyle = '#ff9eb5'; ctx.fill(); ctx.lineWidth = 2.4; ctx.strokeStyle = A.INK; ctx.stroke();
+  A.rr(ctx, x + 5, y + 5, w - 10, h - 10, 6); ctx.fillStyle = '#ffd1dc'; ctx.fill();
+  for (let i = 0; i < 9; i++) { const cx = x + 12 + (i % 3) * ((w - 24) / 2), cy = y + 14 + Math.floor(i / 3) * ((h - 28) / 2); ctx.beginPath(); ctx.arc(cx, cy, 3.2, 0, 7); ctx.fillStyle = '#e8b06a'; ctx.fill(); ctx.lineWidth = 1.2; ctx.strokeStyle = A.INK; ctx.stroke(); }
+}
+// cards: ids in deal order (a new tower LAST). opt: { source: 'free'|'paid', newTower: id|null, zapperOwned }
+function openPackReveal(ids, opt = {}) {
+  const counts = {}; for (const id of ids) counts[id] = (counts[id] || 0) + 1;
+  const seen = {};
+  const cards = ids.map((id, i) => {
+    const c = S.save.cards[id]; const before = M.countAt(c, 1) - counts[id];
+    seen[id] = (seen[id] || 0) + 1;
+    const have = before + seen[id], row = M.mergeRow(c, 1);
+    return { id, have, need: row.need, ready: !row.maxed && have >= row.need, maxed: row.maxed, isNew: !!(opt.newTower && i === ids.length - 1 && id === opt.newTower) };
+  });
+  const newTower = cards.length && cards[cards.length - 1].isNew;
+  const W2 = PACK.cardW, H2 = PACK.cardH;
+  const faces = cards.map((cd) => prerenderCard((x, y) => drawCardPic(x, y, W2, H2, cd.id, { level: 1, still: true }), W2, H2));
+  const back = prerenderCard((x, y) => drawCardBack(x, y, W2, H2), W2, H2);
+  const free = opt.source === 'free';
+  const P = { cards, faces, back, t: 0, skipped: false, source: opt.source || 'paid', newTower, fired: {},
+    summaryAt: newTower ? PACK.summaryNew : PACK.summary,
+    title: free ? 'FREE PACK!' : 'CARD PACK',
+    subtitle: free && opt.zapperOwned ? 'Zapper card + 4 random' : `${cards.length} cards added to your Cards`,
+    stars: Array.from({ length: 10 }, (_, i) => ({ a: i / 10 * Math.PI * 2 + Math.random() * 0.3, sp: 90 + Math.random() * 60 })) };
+  if (reducedMotion()) { P.reduced = true; P.skipped = true; P.t = P.summaryAt; P.fadeFrom = P.summaryAt; }
+  S.pack = P; S.toast = null;
+}
+function skipPack() {
+  const P = S.pack; if (!P || P.skipped || P.t < PACK.dim || P.t >= P.summaryAt) return;
+  P.skipped = true; P.t = P.summaryAt; sfx(P.newTower ? 'win' : 'upgrade');
+}
+function closePack(to) {
+  const P = S.pack; if (!P) return; S.pack = null; sfx('tap');
+  if (P.source === 'free') { S.save.onboard = S.save.onboard || M.newOnboardState(); if (!S.save.onboard.cardsHint) { S.save.onboard.cardsHint = 'shop'; persist(); } }
+  if (to === 'cards') { if (S.save.onboard && S.save.onboard.cardsHint === 'shop') { S.save.onboard.cardsHint = 'cards'; persist(); } go('cards'); }
+}
+function packFire(key, at, fn) { const P = S.pack; if (P.skipped || P.fired[key] || P.t < at) return; P.fired[key] = true; fn(); }
+const easeOut = (k) => 1 - Math.pow(1 - Math.max(0, Math.min(1, k)), 3);
+function renderPack(dt) {
+  const P = S.pack; P.t += dt; const t = P.t;
+  // sounds / haptic hooks at their step times (none after a skip)
+  packFire('drop', 0, () => sfx('tap'));
+  packFire('shake', PACK.drop, () => { sfx('packShake'); haptic('light'); });
+  packFire('burst', PACK.shake, () => { sfx('pop'); haptic('medium'); });
+  P.cards.forEach((cd, i) => {
+    const f0 = PACK.flip0 + i * PACK.flipStep;
+    packFire('flip' + i, f0, () => sfx('cardFlip'));
+    if (cd.ready) packFire('merge' + i, f0 + PACK.flipDur / 2, () => sfx('upgrade'));
+  });
+  const lastFlipEnd = PACK.flip0 + (P.cards.length - 1) * PACK.flipStep + PACK.flipDur;
+  if (P.newTower) packFire('beat', lastFlipEnd, () => { sfx('win'); haptic('medium'); });
+  // dim
+  const dimA = P.reduced ? 0.72 * Math.min(1, (t - P.fadeFrom) / PACK.fade) : 0.72 * Math.min(1, t / PACK.dim);
+  ctx.save(); ctx.fillStyle = `rgba(50,32,46,${dimA})`; ctx.fillRect(-200, -200, W + 400, H + 400); ctx.restore();
+  const inSummary = t >= P.summaryAt;
+  // pack (0 - 0.6 s)
+  if (!inSummary && t < PACK.burst) {
+    ctx.save();
+    if (t < PACK.shake) {
+      const k = easeOut(t / PACK.drop), sc = 0.6 + 0.4 * k, y = 200 + (PACK.packY - 200) * k;
+      const rot = t > PACK.drop ? Math.sin((t - PACK.drop) / (PACK.shake - PACK.drop) * Math.PI * 4) * 4 * Math.PI / 180 : 0;
+      ctx.translate(PACK.packX, y); ctx.rotate(rot); ctx.scale(sc, sc); drawPackArt(0, 1);
+    } else {
+      const k = (t - PACK.shake) / (PACK.burst - PACK.shake);
+      for (const s of [-1, 1]) { ctx.save(); ctx.globalAlpha = 1 - k; ctx.translate(PACK.packX + s * 60 * k, PACK.packY); ctx.rotate(s * 0.4 * k); ctx.beginPath(); ctx.rect(s < 0 ? -80 : 0, -90, 80, 180); ctx.clip(); drawPackArt(0, 1); ctx.restore(); }
+    }
+    ctx.restore();
+  }
+  // burst stars (0.45 - 1.0 s)
+  if (!inSummary && t >= PACK.shake && t < PACK.shake + 0.55) {
+    const k = (t - PACK.shake) / 0.55;
+    for (const s of P.stars) A.starShape(ctx, PACK.packX + Math.cos(s.a) * s.sp * k, PACK.packY + Math.sin(s.a) * s.sp * k, 6 * (1 - k) + 2, '#ffe36e', 1.2);
+  }
+  // cards
+  const W2 = PACK.cardW, H2 = PACK.cardH;
+  P.cards.forEach((cd, i) => {
+    const d0 = PACK.deal0 + i * PACK.dealStep; if (!inSummary && t < d0) return;
+    const dk = inSummary ? 1 : easeOut((t - d0) / PACK.dealDur);
+    const tx = packSlotX(i), ty = PACK.rowY;
+    const x = PACK.packX - W2 / 2 + (tx - (PACK.packX - W2 / 2)) * dk, y = PACK.packY - H2 / 2 + (ty - (PACK.packY - H2 / 2)) * dk;
+    const f0 = PACK.flip0 + i * PACK.flipStep, fp = inSummary ? 1 : Math.max(0, Math.min(1, (t - f0) / PACK.flipDur));
+    const sx = Math.abs(Math.cos(fp * Math.PI)), face = fp > 0.5;
+    let sc = 1;
+    if (cd.ready && face) { const mk = inSummary ? 1 : (t - f0 - PACK.flipDur / 2) / 0.3; if (mk < 1) sc = 1 + 0.08 * Math.sin(Math.max(0, mk) * Math.PI); }
+    if (cd.isNew && face) {
+      const bk = Math.max(0, Math.min(1, (t - lastFlipEnd) / PACK.beat));
+      sc = inSummary ? 1.15 : bk < 0.5 ? 1 + 0.7 * bk : 1.35 - 0.4 * (bk - 0.5);
+      // ray halo (shape, not colour only)
+      ctx.save(); ctx.translate(tx + W2 / 2, ty + H2 / 2);
+      for (let r = 0; r < 14; r++) { ctx.save(); ctx.rotate(r / 14 * Math.PI * 2 + S.t * 0.4); ctx.globalAlpha = 0.28; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(70, -8); ctx.lineTo(70, 8); ctx.closePath(); ctx.fillStyle = '#fff3a8'; ctx.fill(); ctx.restore(); }
+      ctx.restore();
+    }
+    const img = face ? P.faces[i] : P.back;
+    ctx.save(); ctx.translate(x + W2 / 2, y + H2 / 2); ctx.scale(sx * sc, sc);
+    ctx.drawImage(img.cv, -W2 / 2 - img.pad, -H2 / 2 - img.pad, W2 + img.pad * 2, H2 + img.pad * 2);
+    ctx.restore();
+    if (!face) return;
+    // under the card: name, merge pips + "n/3 -> L2", MERGE! / MAX
+    const cx = tx + W2 / 2, ny = ty + H2 + 12;
+    fitText(C.TOWERS[cd.id].short || C.TOWERS[cd.id].name, cx, ny, W2, 11, '#ffffff');
+    const pk = inSummary ? 1 : Math.max(0, Math.min(1, (t - f0 - PACK.flipDur / 2) / PACK.pip));
+    if (cd.maxed) plainText('MAX', cx, ny + 18, 11, '#ffe36e', 'center', '800');
+    else {
+      const filled = Math.min(cd.need, cd.have);
+      for (let p = 0; p < cd.need; p++) {
+        const px = cx - 14 + p * 14, py = ny + 18; const isNewPip = p === filled - 1;
+        ctx.beginPath(); ctx.arc(px, py, 4.6, 0, 7); ctx.lineWidth = 1.8; ctx.strokeStyle = '#ffffff'; ctx.stroke();
+        if (p < filled) { ctx.beginPath(); ctx.arc(px, py, 4.6 * (isNewPip ? pk : 1), 0, 7); ctx.fillStyle = '#ffe36e'; ctx.fill(); }
+      }
+      plainText(`${Math.min(cd.have, cd.need)}/${cd.need} \u2192 L2`, cx, ny + 34, 11, '#ffe9c0', 'center', '700');
+      if (cd.ready && pk >= 1) drawMergeTag(cx, ny + 54);
+    }
+    if (cd.isNew) { // "NEW" ribbon across the top-right corner
+      ctx.save(); ctx.translate(tx + W2 - 6, ty + 8); ctx.rotate(Math.PI / 4);
+      A.rr(ctx, -24, -8, 48, 16, 4); ctx.fillStyle = '#ffe36e'; ctx.fill(); ctx.lineWidth = 1.8; ctx.strokeStyle = A.INK; ctx.stroke();
+      A.text(ctx, 'NEW', 0, 0.5, 11, '#e0607e', 'center', null); ctx.restore();
+    }
+  });
+  // NEW TOWER! ribbon during the beat and on the summary
+  if (P.newTower && t >= lastFlipEnd) {
+    const k = Math.min(1, (t - lastFlipEnd) / 0.2);
+    ctx.save(); ctx.globalAlpha = k; A.rr(ctx, 110, 206, 180, 30, 10); ctx.fillStyle = '#ffe36e'; ctx.fill(); ctx.lineWidth = 2.2; ctx.strokeStyle = A.INK; ctx.stroke();
+    A.text(ctx, 'NEW TOWER!', 200, 221.5, 17, '#e0607e', 'center', null); ctx.restore();
+  }
+  // summary: title, subtitle, buttons (fade in), then tap anywhere closes
+  if (inSummary) {
+    const a = Math.min(1, (t - P.summaryAt) / PACK.fade);
+    ctx.save(); ctx.globalAlpha = a;
+    A.text(ctx, P.title, 200, 150, 28, '#ffe36e');
+    plainText(P.subtitle, 200, 186, 14, '#ffffff', 'center', '700');
+    const merge = M.anyMergeReady(S.save);
+    drawButton(32, 470, 160, 48, 'OK', '#ffd45e');
+    drawButton(208, 470, 160, 48, merge ? 'Merge now' : 'Cards', '#b5d8ff', { size: merge ? 16 : 17 });
+    if (t - P.summaryAt >= PACK.tapHint) plainText('Tap anywhere to continue', 200, 545, 12, '#ffe9c0', 'center', '700');
+    ctx.restore();
+  }
+  // input: whole-screen catcher BEHIND the buttons
+  button('packTap', -200, -200, W + 400, H + 400, () => {
+    if (t < P.summaryAt) skipPack();
+    else if (t - P.summaryAt >= PACK.tapHint) closePack('ok');
+  });
+  if (inSummary) {
+    button('packOk', 32, 466, 160, 56, () => closePack('ok'));
+    button('packCards', 208, 466, 160, 56, () => closePack('cards'));
+  }
+}
+function drawPackArt(x, y) {
+  ctx.save(); ctx.translate(x, y);
+  A.rr(ctx, -60, -75 + 4, 120, 150, 16); ctx.fillStyle = 'rgba(74,52,66,0.3)'; ctx.fill();
+  A.rr(ctx, -60, -75, 120, 150, 16); const g = ctx.createLinearGradient(0, -75, 0, 75); g.addColorStop(0, '#fff3f7'); g.addColorStop(1, '#ffc8d6'); ctx.fillStyle = g; ctx.fill();
+  ctx.lineWidth = 3; ctx.strokeStyle = A.INK; ctx.stroke();
+  for (let k = 0; k < 3; k++) { ctx.save(); ctx.translate(-26 + k * 26, 6 - (k === 1 ? 8 : 0)); ctx.rotate(-0.25 + k * 0.25); A.rr(ctx, -18, -26, 36, 50, 7); ctx.fillStyle = ['#ffb3c1', '#b5d8ff', '#ffd27a'][k]; ctx.fill(); ctx.lineWidth = 2.2; ctx.strokeStyle = A.INK; ctx.stroke(); A.text(ctx, '?', 0, 0, 20); ctx.restore(); }
+  A.text(ctx, 'CARDS', 0, -56, 15, '#ff6f91');
+  ctx.restore();
+}
+function drawMergeTag(cx, y) {
+  ctx.save();
+  A.rr(ctx, cx - 30, y - 9, 60, 18, 8); ctx.fillStyle = '#55b85a'; ctx.fill(); ctx.lineWidth = 1.8; ctx.strokeStyle = A.INK; ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx - 24, y + 4); ctx.lineTo(cx - 20, y - 4); ctx.lineTo(cx - 16, y + 4); ctx.closePath(); ctx.fillStyle = '#ffffff'; ctx.fill(); // up-arrow shape
+  A.text(ctx, 'MERGE!', cx + 5, y + 0.5, 11, '#ffffff', 'center', null);
+  ctx.restore();
 }
 
 // ---------------- v0.5 item 16: fireworks (screen space, above everything) ----------------
@@ -1688,7 +1885,7 @@ if (__TEST_HOOKS__) window.__game = {
   hitAt: (cx, cy) => { const p = { x: (cx - offX) / scale, y: (cy - offY) / scale }; const b = hit(prevButtons, p.x, p.y); return b ? b.id : null; },
   buttons: () => prevButtons.map(({ id, x, y, w, h }) => ({ id, x, y, w, h, sx: offX + (x + w / 2) * scale, sy: offY + (y + h / 2) * scale, cssW: w * scale, cssH: h * scale })),
   go, openPrep, startBattle, finishBattle, consumeEvents, openCardView, queueReveal, launchFireworks, startMode, nodePos, gateY, maxMapScroll,
-  claimGift, doMergeAll, spriteCache: (k) => A.spriteCacheStats(k),
+  claimGift, doMergeAll, openPackReveal, skipPack, closePack, upgradeGain, reducedMotion, spriteCache: (k) => A.spriteCacheStats(k),
   renderOnce: (dt = 1 / 60) => { S.t += dt; render(dt); }, // benchmark hook (test build only)
   setSave(s) { S.save = s; persist(); },
   // fast-forward; only the last ~0.4 s of events become visible effects (so screenshots are not flooded)

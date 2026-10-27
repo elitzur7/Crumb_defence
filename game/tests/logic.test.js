@@ -108,13 +108,11 @@ test('calling a wave early starts it now and grants bonus crumbs', () => {
 });
 
 // ---------- deck & picks ----------
-test('3 visible picks drawn from the deck with replacement; used pick refills', () => {
+test('3 visible picks drawn from the deck; used pick refills (v0.7 D-R1: distinct when the deck allows it)', () => {
   const b = mk({ deck: ['laser', 'gate', 'gate', 'gate', 'gate'], seed: 5 });
   assert.equal(b.picks.length, 3);
   for (const p of b.picks) assert.ok(['laser', 'gate'].includes(p));
-  let dup = false;
-  for (let s = 0; s < 30; s++) { const bb = mk({ seed: s }); if (new Set(bb.picks).size < 3) dup = true; }
-  assert.ok(dup, 'duplicates possible (with replacement)');
+  for (let s = 0; s < 30; s++) { const bb = mk({ seed: s }); assert.equal(new Set(bb.picks).size, 3, 'v0.7: no duplicate in a hand'); }
   const t = pathTile(b); forcePick(b, 'gate');
   b.playCard(0, t.c, t.r);
   assert.equal(b.picks.length, 3);
@@ -206,9 +204,9 @@ test('wave spawning is deterministic and follows the schedule', () => {
   assert.ok(spawned > 0);
   assert.ok(b.nextWave >= 1);
 });
-test('all 9 ant types exist with their traits (v0.4: + Sprint Knight, Heavy Knight)', () => {
-  assert.deepEqual(Object.keys(C.ANTS).sort(), ['armored', 'big', 'flyer', 'gasmask', 'heavy', 'queen', 'queen2', 'small', 'sprinter', 'worker']); // v0.5: + world 2's Swift Queen
-  assert.equal(C.ANTS.worker.hp, 10);
+test('all ant types exist with their traits (v0.4: + Sprint Knight, Heavy Knight; v0.7: + 3 small variants)', () => {
+  assert.deepEqual(Object.keys(C.ANTS).sort(), ['armored', 'big', 'flyer', 'gasmask', 'heavy', 'queen', 'queen2', 'small', 'small_armed', 'small_fly', 'small_gasmask', 'sprinter', 'worker']); // v0.5: + world 2's Swift Queen
+  assert.equal(C.ANTS.worker.hp, 20); // v0.7 (Yair ANT-STATS-v0.6.3)
   assert.ok(C.ANTS.small.speed > C.ANTS.worker.speed && C.ANTS.small.hp < C.ANTS.worker.hp);
   assert.ok(C.ANTS.big.speed < C.ANTS.worker.speed && C.ANTS.big.armor > 0);
   assert.ok(C.ANTS.armored.armor > C.ANTS.big.armor);

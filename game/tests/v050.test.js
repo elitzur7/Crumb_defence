@@ -88,7 +88,7 @@ test('items 6/7 (+ v0.6 item 4): v0.4 save migrates: a level-L card = one L-L ca
   for (const id of C.ALL_CARDS) v04.cards[id] = { unlocked: id === 'slingshot' || id === 'laser', level: id === 'slingshot' ? 4 : id === 'laser' ? 1 : 0, copies: id === 'slingshot' ? 5 : 0 };
   const store = new Map([[M.SAVE_KEY, JSON.stringify(v04)]]); const st = { getItem: (k) => store.get(k) ?? null, setItem: (k, v) => store.set(k, v) };
   const s = M.loadSave(st);
-  assert.equal(s.version, 4); assert.equal(s.levels.length, 20, 'world 2 levels added');
+  assert.equal(s.version, M.SAVE_VERSION); assert.equal(s.levels.length, 20, 'world 2 levels added');
   assert.deepEqual(s.cards.slingshot.inv, { 1: 5, 4: 1 }); assert.equal(s.cards.slingshot.copies, undefined); assert.equal(s.cards.slingshot.level, 4);
   assert.deepEqual(s.cards.slingshot.seen, [1, 2, 3, 4]); assert.equal(s.cards.laser.level, 1);
   assert.equal(s.cards.spray.unlocked, false); assert.deepEqual(s.cards.spray.inv, {});
@@ -107,11 +107,11 @@ test('item 7: a card prize goes straight into the inventory, flagged fresh; reve
 });
 
 // ---------- item 17: redraw ----------
-test('item 17: redraw costs 3, 6, 9, 12 ... and the price resets every battle', () => {
+test('item 17: redraw costs 3, 6, 9, 12 ... and the price resets every battle (v0.7 D-R3: the first redraw is free)', () => {
   const b = mk(); b.addCrumbs(1000); const prices = [];
-  for (let i = 0; i < 4; i++) { prices.push(b.rerollPrice); const c = b.crumbs; assert.ok(b.reroll()); assert.equal(c - b.crumbs, prices[i]); }
-  assert.deepEqual(prices, [3, 6, 9, 12]);
-  assert.equal(mk().rerollPrice, 3, 'new battle -> back to 3');
+  for (let i = 0; i < 5; i++) { prices.push(b.rerollPrice); const c = b.crumbs; assert.ok(b.reroll()); assert.equal(c - b.crumbs, prices[i]); }
+  assert.deepEqual(prices, [0, 3, 6, 9, 12]);
+  assert.equal(mk().rerollPrice, 0, 'new battle -> free again');
 });
 
 // ---------- items 11 + 12: move / swap ----------
@@ -145,13 +145,13 @@ test('items 13/14: world 2 = 10 levels, Cake, its own queen at level 20; maps va
   assert.ok(C.ANTS.queen2.speed > C.ANTS.queen.speed && C.ANTS.queen2.boss && C.ANTS.queen2.size === C.ANT_SIZES.queen);
   assert.ok(generateWaves(19).at(-1).some((e) => e.type === 'queen2'));
 });
-test('item 14: world 2 unlocks only after all 10 world-1 levels are won AND 20+ of 30 stars (v0.6.2 item 15: was 25)', () => {
+test('item 14: world 2 unlocks only after all 10 world-1 levels are won AND 18+ of 30 stars (v0.6.2: 20, v0.7 D-S2: 18)', () => {
   const s = M.newSave(); const W2 = C.WORLD_START[2]; assert.equal(W2, 10);
   for (let i = 0; i < 10; i++) s.levels[i] = { stars: 2, cleared: true };
-  s.levels[0].stars = 1;
-  assert.equal(M.worldStars(s, 1), 19); assert.equal(M.levelUnlocked(s, W2), false, '19 stars: locked');
+  s.levels[0].stars = 1; s.levels[1].stars = 1; s.levels[2].stars = 1;
+  assert.equal(M.worldStars(s, 1), 17); assert.equal(M.levelUnlocked(s, W2), false, '17 stars: locked');
   s.levels[0].stars = 2;
-  assert.equal(M.worldStars(s, 1), 20); assert.equal(M.levelUnlocked(s, W2), true, '20 stars + all won: open');
+  assert.equal(M.worldStars(s, 1), 18); assert.equal(M.levelUnlocked(s, W2), true, '18 stars + all won: open');
   s.levels[9] = { stars: 0, cleared: false }; for (let i = 0; i < 9; i++) s.levels[i].stars = 3;
   assert.equal(M.worldStars(s, 1), 27); assert.equal(M.levelUnlocked(s, W2), false, 'level 10 not won: locked');
   s.levels[9] = { stars: 3, cleared: true }; assert.equal(M.levelUnlocked(s, W2 + 1), false, 'next level needs level 11 won');

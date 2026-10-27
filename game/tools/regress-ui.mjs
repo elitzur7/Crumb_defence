@@ -409,11 +409,11 @@ for (const [w, h, dpr] of VIEWPORTS) {
     if (w === 393) await page.screenshot({ path: `${OUT}/v0.6.2/regress/onboard-shop-gift-393x852.png` });
     const coins0 = await G(() => window.__game.S.save.coins);
     if (gb) await tap(gb.sx, gb.sy); await sleep(600);
-    const g5 = await G(() => { const g = window.__game, s = g.S.save; return { z: s.cards.zapper.unlocked, coins: s.coins, n: g.C.ALL_CARDS.reduce((k, id) => k + g.M.totalCards(s.cards[id]), 0), rev: g.S.reveal.map((r) => r.id || r.type || r.card), pend: g.M.zapperGiftPending(s), disk: JSON.parse(localStorage.getItem('crumbdefense.save.v1')).onboard.zapperGift }; });
-    ok(g5.z && g5.coins === coins0 && g5.n === 10 && !g5.pend && g5.disk === 'done' && g5.rev.length >= 1, `${vp} v0.6 item 5 free gift: 5 cards (4 + Zapper), no coins spent, NEW CARD reveal queued, saved (${JSON.stringify(g5)})`);
+    const g5 = await G(() => { const g = window.__game, s = g.S.save; return { z: s.cards.zapper.unlocked, coins: s.coins, n: g.C.ALL_CARDS.reduce((k, id) => k + g.M.totalCards(s.cards[id]), 0), rev: g.S.reveal.length, pack: g.S.pack && { src: g.S.pack.source, ids: g.S.pack.cards.map((c) => c.id), nw: g.S.pack.newTower }, pend: g.M.zapperGiftPending(s), disk: JSON.parse(localStorage.getItem('crumbdefense.save.v1')).onboard.zapperGift }; });
+    ok(g5.z && g5.coins === coins0 && g5.n === 10 && !g5.pend && g5.disk === 'done' && g5.rev === 0 && g5.pack && g5.pack.src === 'free' && g5.pack.ids.length === 5 && g5.pack.ids[4] === 'zapper' && g5.pack.nw, `${vp} v0.6 item 5 / v0.7 D-P0 free gift: 5 cards (4 + Zapper last), no coins spent, pack reveal (no NEW CARD queue), saved (${JSON.stringify(g5)})`);
     await sleep(500);
     if (w === 393) await page.screenshot({ path: `${OUT}/v0.6.2/regress/onboard-zapper-reveal-393x852.png` });
-    await G(() => { const g = window.__game; g.S.reveal = []; g.go('map'); });
+    await G(() => { const g = window.__game; g.closePack(); g.S.reveal = []; g.go('map'); });
   }
   // ---------- v0.6.1 B2: tower bodies come from cached sprites (per type x visual level), rebuilt after a resize ----------
   {

@@ -10,9 +10,9 @@ export function newSave() {
   const bonusStock = {};
   for (const b of C.BONUS_TYPES) bonusStock[b] = C.ECONOMY.startBonusStock;
   return { version: SAVE_VERSION, coins: C.ECONOMY.startCoins, diamonds: C.ECONOMY.diamonds.start, cards, bonusStock, levels: C.LEVELS.map(() => ({ stars: 0, cleared: false })),
-    lastDeck: C.STARTER_CARDS.slice(), lastBonuses: C.BONUS_TYPES.slice(0, 2), calendar: newCalendarState(), cardBlink: newCardBlinkState(), onboard: newOnboardState() };
+    lastDeck: C.STARTER_CARDS.slice(), lastBonuses: C.BONUS_TYPES.slice(0, 2), calendar: newCalendarState(), cardBlink: newCardBlinkState(), onboard: newOnboardState(), packsSinceNew: 0 };
 }
-export const SAVE_VERSION = 4;
+export const SAVE_VERSION = 5; // v0.7: paid-pack pity counter + one-time free pack for saves past stage 2 (D-P0)
 // v0.6 item 5: the one-time Zapper onboarding. zapperGift: 'none' -> 'pending' (first win of stage 2) -> 'done' (free gift taken).
 // grantedOnLoad: an existing player past stage 2 without a Zapper got one when this version loaded (the game shows the reveal once).
 export function newOnboardState() { return { zapperGift: 'none', grantedOnLoad: false }; }
@@ -172,34 +172,55 @@ export function buyCard(save, id) {
   save.coins -= price; addCards(save, id, 1, 1);
   return true;
 }
-// v0.6.2 item 13: with chance E.packNewTowerChance (while a tower is still locked) ONE of the pack's cards is a new tower (L1,
-// unlocks it, marked fresh). The other cards are level-1 cards of towers you own. Returns the ids; got.newTower = the new id or null.
+// v0.6.2 item 13 / v0.7 D-P2 + D-P3: with chance E.packNewTowerChance (while a tower is still locked) ONE of the pack's cards is a
+// new tower (L1, unlocks it, marked fresh), taken from the CHEAPEST locked price tier (100c -> 200c -> 400c, uniform within the
+// tier). Pity: if the previous packPity-1 paid packs held no new tower, this one does (save.packsSinceNew counts them).
+// The other cards are level-1 cards of towers you own. The new tower is always the LAST card (the pack reveal deals it last).
+// Returns the ids; got.newTower = the new id or null.
+export function cheapestLockedTier(save, E = C.ECONOMY.shop) {
+  const locked = lockedCards(save); if (!locked.length) return [];
+  const min = Math.min(...locked.map((id) => unlockPrice(id, E)));
+  return locked.filter((id) => unlockPrice(id, E) === min);
+}
 export function buyPack(save, rng = Math.random, E = C.ECONOMY.shop) {
   const price = E.cardPack;
   if (save.coins < price) return null;
   const pool = C.ALL_CARDS.filter((id) => save.cards[id].unlocked);
-  const locked = lockedCards(save);
+  const tier = cheapestLockedTier(save, E);
   save.coins -= price;
   const got = [];
   let newTower = null;
-  if (locked.length && rng() < (E.packNewTowerChance || 0)) newTower = locked[Math.floor(rng() * locked.length) % locked.length];
+  const since = save.packsSinceNew || 0;
+  const pity = E.packPity && since >= E.packPity - 1;
+  if (tier.length && (rng() < (E.packNewTowerChance || 0) || pity)) newTower = tier[Math.floor(rng() * tier.length) % tier.length];
+  if (tier.length) save.packsSinceNew = newTower ? 0 : since + 1;
   const n = E.cardPackSize - (newTower ? 1 : 0);
   for (let i = 0; i < n; i++) { const id = pool[Math.floor(rng() * pool.length) % pool.length]; addCards(save, id, 1, 1); got.push(id); }
   if (newTower) { addCards(save, newTower, 1, 1); save.cards[newTower].fresh = true; got.push(newTower); }
   got.newTower = newTower;
   return got;
 }
-// v0.6 item 5: the free one-time gift after the first win of stage 2: 4 random level-1 cards of towers you own + a level-1 Zapper.
-// Returns { got: [ids], zapper: {newType, newLevel} } or null if no gift is waiting.
+// v0.6 item 5 / v0.7 D-P0: the free one-time pack after the first win of stage 2 = 5 level-1 cards:
+// 4 random cards of towers you own (Zapper excluded from the draw), AT LEAST ONE a damage card (sim isDamageCard rule), + 1 Zapper
+// card ALWAYS, dealt last. If the Zapper is locked it is the new unlock; if owned it is a normal card (it takes one random card's place).
+// Outside the paid-pack rules: no 10% roll, no tier rule, does not touch the pity counter.
+// Returns { got: [ids], zapper: {newType, newLevel}, zapperOwned } or null if no gift is waiting.
 export function zapperGiftPending(save) { return !!(save.onboard && save.onboard.zapperGift === 'pending'); }
+export function isDamageId(id) { const T = C.TOWERS[id]; return !!T && T.kind === 'tower' && id !== 'fan' && T.targets !== 'air' && !T.nearTrail; }
 export function claimZapperGift(save, rng = Math.random) {
   if (!zapperGiftPending(save)) return null;
   const pool = C.ALL_CARDS.filter((id) => save.cards[id].unlocked && id !== 'zapper');
+  const dmg = pool.filter(isDamageId);
+  const n = C.ECONOMY.shop.cardPackSize - 1;
+  const ids = [];
+  for (let i = 0; i < n; i++) ids.push(pool[Math.floor(rng() * pool.length) % pool.length]);
+  if (dmg.length && !ids.some(isDamageId)) { const k = Math.floor(rng() * n) % n; ids[k] = dmg[Math.floor(rng() * dmg.length) % dmg.length]; }
   const got = [];
-  for (let i = 0; i < C.ECONOMY.shop.cardPackSize - 1; i++) { const id = pool[Math.floor(rng() * pool.length) % pool.length]; addCards(save, id, 1, 1); got.push(id); }
+  for (const id of ids) { addCards(save, id, 1, 1); got.push(id); }
+  const zapperOwned = !!save.cards.zapper.unlocked;
   const z = addCards(save, 'zapper', 1, 1); got.push('zapper'); save.cards.zapper.fresh = true;
   save.onboard.zapperGift = 'done';
-  return { got, zapper: z };
+  return { got, zapper: z, zapperOwned };
 }
 // v0.4 item 9: every booster costs a fixed 15 diamonds in the shop (was 30 coins).
 export function buyBonus(save, type) {
@@ -243,7 +264,7 @@ export function consumeBonus(save, type) {
 }
 
 export function unlockedCards(save) { return C.ALL_CARDS.filter((id) => save.cards[id].unlocked); }
-// v0.5 item 14: the first level of world w > 1 needs EVERY level of world w-1 won AND >= minStarsInWorld stars there (v0.6.2: 20 of 30, tuning.json worlds[1].unlock).
+// v0.5 item 14: the first level of world w > 1 needs EVERY level of world w-1 won AND >= minStarsInWorld stars there (v0.7: 18 of 30, tuning.json worlds[1].unlock).
 export function worldStars(save, w) { let s = 0; C.LEVELS.forEach((L, i) => { if (L.world === w) s += (save.levels[i] && save.levels[i].stars) || 0; }); return s; }
 export function worldCleared(save, w) { return C.LEVELS.every((L, i) => L.world !== w || (save.levels[i] && save.levels[i].cleared)); }
 export function worldUnlocked(save, w) {
@@ -362,9 +383,15 @@ export function loadSave(storage) {
       s.onboard = newOnboardState();
       if (s.levels[ZAPPER_STAGE] && s.levels[ZAPPER_STAGE].cleared) {
         s.onboard.zapperGift = 'done';
-        if (!s.cards.zapper.unlocked) { addCards(s, 'zapper', 1, 1); s.cards.zapper.fresh = true; s.onboard.grantedOnLoad = true; }
+        // v0.7: no direct Zapper grant any more - the one-time free pack below (D-P0) always holds the Zapper card
       }
     }
+    // v0.7 D-P0: saves from before v0.7 that are past stage 2 get the free pack ONCE (claimed in the Shop, map finger guides there).
+    // A v0.6 save cannot tell "claimed" from "skipped on load" (both are 'done'), so every such save gets it once.
+    if ((s.version || 1) < 5 && s.levels[ZAPPER_STAGE] && s.levels[ZAPPER_STAGE].cleared && s.onboard.zapperGift === 'done' && !s.onboard.legacyPack) {
+      s.onboard.zapperGift = 'pending'; s.onboard.legacyPack = true; s.onboard.grantedOnLoad = false;
+    }
+    if (typeof s.packsSinceNew !== 'number') s.packsSinceNew = 0;
     for (const b of C.BONUS_TYPES) if (s.bonusStock[b] == null) s.bonusStock[b] = 0;
     while (s.levels.length < C.LEVELS.length) s.levels.push({ stars: 0, cleared: false });
     if (typeof s.diamonds !== 'number') s.diamonds = C.ECONOMY.diamonds.start;

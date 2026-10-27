@@ -35,6 +35,17 @@ export function liftable(a, lift) {
 export function canHit(targets, flying) {
   return targets === 'both' || (targets === 'air') === !!flying;
 }
+// v0.7 D-T6: total damage of a tower at in-battle level `lvl` vs. the same tower at level 1 (power x rate):
+// x2 / x3 / x4 / x5 / x6 for the damage towers (Gate 6.05 at L6; Laser 1.7 / 2.4 / 3.1 / 4.5 / 6.3). 0 for towers without damage
+// upgrades (Fan, Glue, Perfume, Tractor). Shown as "x2 dmg" on the tower panel and the upgrade pop-up.
+export function worldCardLevelCap(levelIndex) { const L = C.LEVELS[levelIndex]; const w = L && C.WORLDS.find((x) => x.id === L.world); return (w && w.cardLevelCap) || null; }
+export const DAMAGE_UPGRADE_TOWERS = ['slingshot', 'spray', 'sound', 'ball', 'lizard', 'laser', 'zapper', 'gate', 'lava'];
+export function upgradeGain(type, lvl, cardLevel = 1) {
+  if (!DAMAGE_UPGRADE_TOWERS.includes(type)) return 0;
+  const dps = (L) => towerStat(type, 'power', L, cardLevel) * (towerStat(type, 'rate', L, cardLevel) || 1)
+    * (type === 'laser' ? 1 + (towerStat(type, 'heatMax', L, cardLevel) || 0) : 1); // Laser: at full heat
+  const base = dps(1); return base > 0 ? dps(lvl) / base : 0;
+}
 export function isDamageCard(id) {
   const T = C.TOWERS[id];
   return T.kind === 'tower' && id !== 'fan' && T.targets !== 'air' && !T.nearTrail;
@@ -172,7 +183,8 @@ export class Path {
 }
 
 // ---------- waves ----------
-const SPACING = { small: 0.45, worker: 1, big: 1.6, gasmask: 1, armored: 1.5, flyer: 0.8, sprinter: 0.9, heavy: 1.7, queen: 1, queen2: 1 };
+const SPACING = { small: 0.45, worker: 1, big: 1.6, gasmask: 1, armored: 1.5, flyer: 0.8, sprinter: 0.9, heavy: 1.7, queen: 1, queen2: 1,
+  small_gasmask: 0.45, small_armed: 0.6, small_fly: 0.5 }; // v0.7: small variants (Yair ANT-STATS-v0.6.3)
 export function generateWaves(levelIndex, levels = C.LEVELS) {
   const L = levels[levelIndex];
   if (L.waves) return L.waves.map((groups) => expandGroups(groups, L.interval || 1));
@@ -188,7 +200,7 @@ export function generateWaves(levelIndex, levels = C.LEVELS) {
     for (let k = 0; k < count; k++) {
       let r = rng() * total, type = pool[0].type;
       for (const m of pool) { r -= m.w; if (r <= 0) { type = m.type; break; } }
-      const reps = type === 'small' ? 2 : 1;
+      const reps = type === 'small' || type === 'small_gasmask' || type === 'small_fly' ? 2 : 1;
       for (let j = 0; j < reps; j++) { list.push({ t, type }); t += L.interval * SPACING[type] * (j < reps - 1 ? 0.5 : 1); }
     }
     if (L.special && L.special[n]) {
@@ -254,7 +266,10 @@ export class Battle {
     for (const p of this.props) this.blocked.add(p.c + ',' + p.r);
     this.rng = mulberry32(opts.seed ?? 12345);
     this.deck = opts.deck.slice(0, this.cfg.deckSize);
-    this.cardLevels = opts.cardLevels || {};
+    // v0.7 D-P4 (Should, S3 passed): per-world card-level cap - in battle a card acts as at most worlds[w].cardLevelCap (W1 4, W2 6)
+    this.cardLevelCap = opts.noCardLevelCap ? null : worldCardLevelCap(opts.levelIndex || 0);
+    this.cardLevels = { ...(opts.cardLevels || {}) };
+    if (this.cardLevelCap) for (const k of Object.keys(this.cardLevels)) this.cardLevels[k] = Math.min(this.cardLevels[k], this.cardLevelCap);
     this.bonusTypes = (opts.bonusTypes || []).slice(0, this.cfg.bonusTypesToBring);
     this.bonusStock = { ...(opts.bonusStock || {}) };
     this.bonusUsesLeft = this.cfg.maxBonusUses;
@@ -280,11 +295,37 @@ export class Battle {
     this.paused = false;           // while paused, every player action and the clock are blocked
     this.onBonusUsed = opts.onBonusUsed || null;
     this.picks = [];
-    for (let i = 0; i < this.cfg.visiblePicks; i++) this.picks.push(this.draw());
-    if (this.cfg.guaranteeDamageOpening) {
-      const dmg = this.deck.filter(isDamageCard);
-      if (dmg.length && !this.picks.some(isDamageCard)) this.picks[0] = dmg[Math.floor(this.rng() * dmg.length)];
+    this.dealHand();
+  }
+
+  // v0.7 D-R1/D-R2: a full hand (start of battle and every redraw). Distinct cards when the deck allows it; while no card has been
+  // played yet, the hand holds >= openingDamageCards damage cards (when the deck has that many): draw those first, then the rest.
+  dealHand() {
+    const n = this.cfg.visiblePicks, hand = [];
+    if (this.cfg.distinctHand) {
+      const ids = [...new Set(this.deck)];
+      const take = (pool) => { const id = pool[Math.floor(this.rng() * pool.length) % pool.length]; hand.push(id); ids.splice(ids.indexOf(id), 1); };
+      if (this.cardsPlayed === 0 && this.cfg.openingDamageCards) {
+        for (let k = 0; k < this.cfg.openingDamageCards && hand.length < n; k++) { const dmg = ids.filter(isDamageCard); if (!dmg.length) break; take(dmg); }
+      }
+      while (hand.length < n && ids.length) take(ids);
+      while (hand.length < n) hand.push(this.draw()); // deck smaller than the hand: repeats are unavoidable
+      for (let i = hand.length - 1; i > 0; i--) { const j = Math.floor(this.rng() * (i + 1)); [hand[i], hand[j]] = [hand[j], hand[i]]; }
+    } else {
+      for (let i = 0; i < n; i++) hand.push(this.draw());
     }
+    if (this.cfg.guaranteeDamageOpening && this.cardsPlayed === 0) {
+      const dmg = this.deck.filter(isDamageCard);
+      if (dmg.length && !hand.some(isDamageCard)) hand[0] = dmg[Math.floor(this.rng() * dmg.length)];
+    }
+    this.picks = hand;
+  }
+  // v0.7 D-R1: the card that replaces a played one differs from the two still in the hand (when the deck allows it)
+  drawReplacement(pickIndex) {
+    if (!this.cfg.distinctHand) return this.draw();
+    const others = this.picks.filter((_, i) => i !== pickIndex);
+    const pool = [...new Set(this.deck)].filter((id) => !others.includes(id));
+    return pool.length ? pool[Math.floor(this.rng() * pool.length) % pool.length] : this.draw();
   }
 
   draw() { return this.deck[Math.floor(this.rng() * this.deck.length)]; }
@@ -403,16 +444,17 @@ export class Battle {
       tower.lvl++; if (C.TOWERS[tower.type].directional) this.computeRun(tower);
       this.emit({ type: 'upgrade', x: tower.x, y: tower.y, lvl: tower.lvl, card, pick: pickIndex, cost, id: tower.id, diff });
     } else { tower = this.addTower(card, c, r); this.emit({ type: 'place', x: tower.x, y: tower.y, card, pick: pickIndex, cost, id: tower.id }); }
-    this.picks[pickIndex] = this.draw();
+    this.picks[pickIndex] = this.drawReplacement(pickIndex);
     return { ok: true, upgrade: chk.upgrade, tower, cost, diff };
   }
-  // v0.5 item 17: 3, 6, 9, 12 ... crumbs (rerollCost + rerolls * rerollStep), reset at the start of every battle
-  get rerollPrice() { return this.cfg.rerollCost + this.rerolls * (this.cfg.rerollStep || 0); }
+  // v0.5 item 17: 3, 6, 9, 12 ... crumbs (rerollCost + rerolls * rerollStep), reset at the start of every battle.
+  // v0.7 D-R3: the first `freeRedraws` redraws of a battle are free, then 3, 6, 9 ...
+  get rerollPrice() { const f = this.cfg.freeRedraws || 0; return this.rerolls < f ? 0 : this.cfg.rerollCost + (this.rerolls - f) * (this.cfg.rerollStep || 0); }
   reroll() {
     const price = this.rerollPrice;
     if (this.crumbs < price || this.result || this.paused) return false;
     this.crumbs -= price; this.rerolls++;
-    for (let i = 0; i < this.picks.length; i++) this.picks[i] = this.draw();
+    this.dealHand();
     return true;
   }
   // ----- v0.5 items 11/12: move a placed tower (1 diamond, charged by the game) / swap two placed towers (free) -----

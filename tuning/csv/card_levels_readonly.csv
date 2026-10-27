@@ -69,26 +69,26 @@ lizard,7,46.816,0.499,1.9,rate +10%
 lizard,8,51.4976,0.499,1.9,power +10%
 lizard,9,57.6773,0.499,1.9,power +12%
 lizard,10,63.445,0.499,2.1,range +0.2 tiles & power +10%
-laser,1,5,3.2,2.5,base
-laser,2,5,3.456,2.5,rate +8%
-laser,3,5.5,3.456,2.5,power +10%
-laser,4,5.5,3.456,2.7,range +0.2 tiles
-laser,5,5.5,3.8016,2.7,rate +10%
-laser,6,6.05,3.8016,2.7,power +10%
-laser,7,6.05,3.8016,2.9,range +0.2 tiles
-laser,8,6.776,3.8016,2.9,power +12%
-laser,9,6.776,4.1818,2.9,rate +10%
-laser,10,7.4536,4.6,2.9,power +10% & rate +10%
-zapper,1,15,1.5,2,base
-zapper,2,15,1.5,2.2,range +0.2 tiles
-zapper,3,16.5,1.5,2.2,power +10%
-zapper,4,16.5,1.65,2.2,rate +10%
-zapper,5,16.5,1.65,2.4,range +0.2 tiles
-zapper,6,18.48,1.65,2.4,power +12%
-zapper,7,18.48,1.782,2.4,rate +8%
-zapper,8,20.328,1.782,2.4,power +10%
-zapper,9,20.328,1.782,2.6,range +0.2 tiles
-zapper,10,22.3608,1.782,2.75,power +10% & range +0.15 tiles
+laser,1,3,3.2,2.5,base
+laser,2,3,3.456,2.5,rate +8%
+laser,3,3.3,3.456,2.5,power +10%
+laser,4,3.3,3.456,2.7,range +0.2 tiles
+laser,5,3.3,3.8016,2.7,rate +10%
+laser,6,3.63,3.8016,2.7,power +10%
+laser,7,3.63,3.8016,2.9,range +0.2 tiles
+laser,8,4.0656,3.8016,2.9,power +12%
+laser,9,4.0656,4.1818,2.9,rate +10%
+laser,10,4.4722,4.6,2.9,power +10% & rate +10%
+zapper,1,10,1.5,2,base
+zapper,2,10,1.5,2.2,range +0.2 tiles
+zapper,3,11,1.5,2.2,power +10%
+zapper,4,11,1.65,2.2,rate +10%
+zapper,5,11,1.65,2.4,range +0.2 tiles
+zapper,6,12.32,1.65,2.4,power +12%
+zapper,7,12.32,1.782,2.4,rate +8%
+zapper,8,13.552,1.782,2.4,power +10%
+zapper,9,13.552,1.782,2.6,range +0.2 tiles
+zapper,10,14.9072,1.782,2.75,power +10% & range +0.15 tiles
 glue,1,0.55,null,1,base
 glue,2,0.55,null,1,stickTime +12%
 glue,3,0.594,null,1,power +8%

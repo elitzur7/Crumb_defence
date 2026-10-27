@@ -71,12 +71,13 @@ test('item 6: Tractor lift size by card level (1-2 small, 3+ medium, 8+ large), 
 
 // ---------- item 11: five in-battle upgrades, Yair's design rules ----------
 test('item 11: every tower has 5 in-battle upgrades; 1-2 stats per step; side towers with a range get power, range and rate; not cyclic', () => {
-  const sig = (u) => Object.keys(u).filter((k) => k !== 'rateIfMaxLift').sort().join('+');
+  const sig = (u) => Object.keys(u).filter((k) => k !== 'rateIfMaxLift' && k !== 'power').sort().join('+') || 'power'; // v0.7 D-T6: power is on (almost) every step -> compare the other stats; Lava (power every step, slow on steps 2+4 since v0.6.2) is exempt from the cycle check
   for (const [id, T] of Object.entries(C.TOWERS)) {
     assert.equal(T.upgrades.length, 5, id);
-    for (const u of T.upgrades) { const n = Object.keys(u).filter((k) => k !== 'rateIfMaxLift').length; assert.ok(n >= 1 && n <= 2, `${id}: one stat per step, occasionally two`); }
+    // v0.7 D-T6 adds a `power` multiplier to steps that had other stats -> up to 3 keys (the v0.6.2 stats + power)
+    for (const u of T.upgrades) { const n = Object.keys(u).filter((k) => k !== 'rateIfMaxLift' && k !== 'power').length; assert.ok(n >= 0 && n <= 2 && Object.keys(u).length >= 1, `${id}: one stat per step, occasionally two (+ power)`); }
     const s = T.upgrades.map(sig);
-    for (let i = 0; i + 3 < s.length; i++) assert.ok(!(s[i] === s[i + 2] && s[i + 1] === s[i + 3]), `${id}: no A,B,A,B cycle (${s.join(' | ')})`);
+    if (id !== 'lava') for (let i = 0; i + 3 < s.length; i++) assert.ok(!(s[i] === s[i + 2] && s[i + 1] === s[i + 3]), `${id}: no A,B,A,B cycle (${s.join(' | ')})`);
     for (let i = 0; i + 1 < s.length; i++) if (id !== 'tractor') assert.ok(s[i] !== s[i + 1] || s.filter((x) => x === s[i]).length < 4, id);
     if (T.place === 'side' && T.stats.range != null && T.stats.power != null) {
       for (const k of ['power', 'rate', 'range']) assert.ok(T.upgrades.some((u) => k in u), `${id}: an upgrade improves ${k}`);
@@ -88,9 +89,10 @@ test('item 11: every tower has 5 in-battle upgrades; 1-2 stats per step; side to
   const prod = (ups, k) => ups.reduce((p, u) => p * (u[k] ?? 1), 1);
   for (const id of ['sound', 'laser', 'zapper', 'spray']) {
     const o = OLD.towers[id].battleUpgrades, n = TJ.towers[id].battleUpgrades;
-    for (const k of new Set(o.flatMap((u) => Object.keys(u)))) assert.ok(Math.abs(prod(o, k) - prod(n, k)) < 1e-9, `${id} ${k} L6 total kept`);
+    for (const k of new Set(o.flatMap((u) => Object.keys(u)))) if (k !== 'power') assert.ok(Math.abs(prod(o, k) - prod(n, k)) < 1e-9, `${id} ${k} L6 total kept`);
   }
-  for (const id of Object.keys(TJ.towers)) if (!['sound', 'laser', 'zapper', 'spray'].includes(id)) assert.deepEqual(TJ.towers[id].battleUpgrades, OLD.towers[id].battleUpgrades, `${id} unchanged`);
+  const noPower = (ups) => ups.map((u) => { const c = { ...u }; delete c.power; return c; }); // v0.7 D-T6 changes only `power`
+  for (const id of Object.keys(TJ.towers)) if (!['sound', 'laser', 'zapper', 'spray'].includes(id)) assert.deepEqual(noPower(TJ.towers[id].battleUpgrades), noPower(OLD.towers[id].battleUpgrades), `${id} unchanged`);
 });
 
 // ---------- item 12: tiered Shop unlock prices + "New" marker ----------
@@ -134,7 +136,7 @@ test('item 13: a card pack holds ONE new (locked) tower with chance packNewTower
   let hits = 0; const N = 4000;
   for (let i = 0; i < N; i++) { const v = M.newSave(); v.coins = 40; if (M.buyPack(v, rng).newTower) hits++; }
   assert.ok(Math.abs(hits / N - ch) < 0.02, `rate ${hits / N}`);
-  assert.ok(/got\.newTower\) queueReveal\(got\.newTower/.test(src('game.js')), 'a new tower from a pack gets the NEW CARD reveal');
+  assert.ok(/openPackReveal\(got, \{ source: 'paid', newTower: got\.newTower \}\)/.test(src('game.js')), 'v0.7: a pack (with or without a new tower) opens the pack reveal');
   // the one-time Zapper gift is unchanged (4 owned + Zapper, no random new tower)
   const z = M.newSave(); z.onboard.zapperGift = 'pending'; const zg = M.claimZapperGift(z, () => 0);
   assert.equal(zg.got.length, 5); assert.equal(zg.got.filter((id) => !C.STARTER_CARDS.includes(id)).join(), 'zapper');
@@ -155,12 +157,13 @@ test('item 14: on a queen win the cheer is drawn above the result panel and the 
 });
 
 // ---------- item 15: World 2 gate ----------
-test('item 15: World 2 needs all world-1 levels won and 20 (not 25) of 30 stars', () => {
-  assert.equal(TJ.worlds[1].unlock.minStarsInWorld, 20); assert.equal(TJ.worlds[1].unlock.allLevelsWonInWorld, 1);
+test('item 15: World 2 needs all world-1 levels won and 20 (not 25) of 30 stars (v0.7: 18)', () => {
+  assert.equal(TJ.worlds[1].unlock.minStarsInWorld, 18); assert.equal(TJ.worlds[1].unlock.allLevelsWonInWorld, 1);
   const s = M.newSave(); const W2 = C.WORLD_START[2];
   for (let i = 0; i < 10; i++) s.levels[i] = { stars: 2, cleared: true };
   assert.equal(M.levelUnlocked(s, W2), true, '20 stars');
-  s.levels[3].stars = 1; assert.equal(M.levelUnlocked(s, W2), false, '19 stars');
+  s.levels[3].stars = 1; s.levels[4].stars = 1; assert.equal(M.levelUnlocked(s, W2), true, '18 stars');
+  s.levels[5].stars = 1; assert.equal(M.levelUnlocked(s, W2), false, '17 stars');
   for (let i = 0; i < 10; i++) s.levels[i].stars = 3; s.levels[9].cleared = false;
   assert.equal(M.levelUnlocked(s, W2), false, 'all levels must still be won');
 });
@@ -172,8 +175,8 @@ test('item 1: +1 coin per 3 s survived on top of the win formula', () => {
 });
 
 // ---------- standing rules ----------
-test('standing rules: the treat never speaks; version 0.6.2 / vc14', () => {
+test('standing rules: the treat never speaks; version 0.7.0 / vc15', () => {
   assert.ok(!/treatBubble|speech/i.test(src('treat.js')));
-  assert.equal(JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version, '0.6.2');
-  assert.match(readFileSync(new URL('../android/app/build.gradle', import.meta.url), 'utf8'), /versionCode 14\b/);
+  assert.equal(JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version, '0.7.0');
+  assert.match(readFileSync(new URL('../android/app/build.gradle', import.meta.url), 'utf8'), /versionCode 15\b/);
 });
