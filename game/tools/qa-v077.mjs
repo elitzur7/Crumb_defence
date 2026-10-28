@@ -4,7 +4,7 @@
 import puppeteer from 'puppeteer-core';
 import fs from 'node:fs';
 import { serve } from './serve.mjs';
-const OUT = '/workspace/ant-td/qa/v0.7.7'; const SH = `${OUT}/shots`; fs.mkdirSync(SH, { recursive: true });
+const OUT = '/workspace/ant-td/qa/v0.7.9/suites/v077'; const SH = `${OUT}/shots`; fs.mkdirSync(SH, { recursive: true });
 await serve(8894, 'www-test');
 const browser = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: true, args: ['--no-sandbox'] });
 let fails = 0; const R = [];
@@ -58,7 +58,7 @@ const FN = `(function(li){
     await G((li) => { const g = window.__game; g.go('map'); g.startBattle(li, ['slingshot'], [], 1); }, li); await sleep(100);
     cont.push(await G(`${FN}(${li})`));
   }
-  ok(n === 30, `${n} maps measured (20 + the 10 W3 maps)`);
+  ok(n === 40, `${n} maps measured (20 + the 10 W3 maps + the 10 W4 maps)`);
   const mn = (k) => Math.min(...cont.map((c) => c[k])), mx = (k) => Math.max(...cont.map((c) => c[k]));
   ok(mn('trailVsGround') >= 1.40, `A1 trail vs ground mean >= 1.40 (min ${mn('trailVsGround')})`);
   ok(mn('trailVsLightest') >= 1.25, `A2 trail vs lightest ground tile >= 1.25 (min ${mn('trailVsLightest')}; v0.7.5 1.27)`);
@@ -66,7 +66,7 @@ const FN = `(function(li){
   ok(mx('checker') <= 1.12, `A3 checker ratio <= 1.12 (max ${mx('checker')}; v0.7.5 1.119)`);
   ok(mn('smallVsTrail') >= 1.40, `V1/A5' small ant #f8c07e vs trail >= 1.40 on all 30 maps (min ${mn('smallVsTrail')}, plan expects 1.447)`);
   for (const k of ['greasyVsTrail', 'mamaVsTrail', 'queen3VsTrail']) ok(mn(k) >= 1.40, `A5 (new W3 ants) ${k.replace('VsTrail', '')} body vs trail >= 1.40 on all 30 maps (min ${mn(k)})`);
-  { const w3 = cont.filter((c) => c.theme >= 4); ok(w3.length === 10 && new Set(w3.map((c) => c.theme)).size === 3, `W3 palettes: 10 maps on 3 new themes (${[...new Set(w3.map((c) => c.theme))]})`); info('W3 contrast per map: ' + w3.map((c) => `L${c.li + 1} t${c.theme} trail/ground ${c.trailVsGround} lightest ${c.trailVsLightest} checker ${c.checker} small ${c.smallVsTrail} ring ${c.ring}`).join(' | ')); }
+  { const w3 = cont.filter((c) => c.theme >= 4 && c.li < 30); ok(w3.length === 10 && new Set(w3.map((c) => c.theme)).size === 3, `W3 palettes: 10 maps on 3 new themes (${[...new Set(w3.map((c) => c.theme))]})`); info('W3 contrast per map: ' + w3.map((c) => `L${c.li + 1} t${c.theme} trail/ground ${c.trailVsGround} lightest ${c.trailVsLightest} checker ${c.checker} small ${c.smallVsTrail} ring ${c.ring}`).join(' | ')); }
   ok(mn('inkVsTrail') >= 7, `A6 INK vs trail >= 7 (min ${mn('inkVsTrail')})`);
   ok(mn('edgeVsBody') >= 1.8 && mn('lipVsEdge') >= 1.7, `A7 edge/lip (min ${mn('edgeVsBody')} / ${mn('lipVsEdge')})`);
   const byTheme = {}; for (const c of cont) (byTheme[c.theme] ||= []).push(c);
@@ -115,7 +115,7 @@ const FN = `(function(li){
   }
   const sideOnly = res.flatMap((x) => x.r.towers.filter((t) => ['slingshot', 'spray', 'sound', 'ball', 'fan', 'lizard', 'laser', 'zapper', 'tractor'].includes(t.id)).map((t) => ({ th: x.th, ...t })));
   const pathOnly = res.flatMap((x) => x.r.towers.filter((t) => !['slingshot', 'spray', 'sound', 'ball', 'fan', 'lizard', 'laser', 'zapper', 'tractor'].includes(t.id)));
-  ok(res.length === 7 && res.every((x) => x.r.side === 9) && sideOnly.length === 63, `V2 9 side towers x ${res.length} themes = ${sideOnly.length} samples`);
+  ok(res.length === 8 && res.every((x) => x.r.side === 9) && sideOnly.length === 72, `V2 9 side towers x ${res.length} themes = ${sideOnly.length} samples`);
   ok(sideOnly.every((t) => t.ring), `V2 the INK ring stroke is drawn under every side tower on every theme (${sideOnly.filter((t) => !t.ring).map((t) => t.id + '@' + t.th)} missing)`);
   ok(sideOnly.every((t) => t.lowerMinX >= -21 && t.lowerMaxX <= 21 && t.maxY <= 21.5), `V2 ring stays inside the 40px tile (lower x ${Math.min(...sideOnly.map((t) => t.lowerMinX))}..${Math.max(...sideOnly.map((t) => t.lowerMaxX))}, max y ${Math.max(...sideOnly.map((t) => t.maxY))})`);
   ok(pathOnly.every((t) => !t.ring), `V2 path items (${[...new Set(pathOnly.map((t) => t.id))]}) get no ring`);

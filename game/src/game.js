@@ -207,7 +207,7 @@ function startBattle(levelIndex = S.levelIndex, deck = S.prep.deck, bonuses = S.
   S.battle = new Battle({ levelIndex, deck, bonusTypes: bonuses, bonusStock: { ...S.save.bonusStock }, cardLevels: M.cardLevels(S.save), seed,
     onBonusUsed: (type) => { M.consumeBonus(S.save, type); persist(); } }); // deducted immediately: Restart/Quit can't refund it
   S.battleStartStock = { ...S.save.bonusStock };
-  S.fx = []; S.swatQ = []; S.ui = []; S.result = null; setPaused(false); S.speed = startSpeed(S.speed, C.UI.speedMaxAtStart); clock.acc = 0; S.sel = null; S.info = null; S.mode = null; S.queenDown = null; S.modeHint = false; S.battle.rescueScale = S.speed;
+  S.fx = []; S.swatQ = []; S.ui = []; S.result = null; setPaused(false); S.speed = startSpeed(S.speed, C.UI.speedMaxAtStart); clock.acc = 0; S.sel = null; S.info = null; S.mode = null; S.queenDown = null; S.modeHint = false; S.nurseTip = false; S.battle.rescueScale = S.speed;
   go('battle');
 }
 function finishBattle() {
@@ -283,8 +283,8 @@ function mapTap(p) {
   S.info = tw ? { tower: tw, t: 0 } : null;
 }
 // v0.7.4 M1: a one-time tip (per battle, never while paused) the first time a tank (Armoured / Big / Heavy / Queen) steals food, if a tower could change its target
-const TREAT_NAME = { cookie: 'Cookie', cake: 'Cake', pie: 'Pie' }; // v0.7.7
-const HINT_ANTS = new Set(['armored', 'big', 'heavy', 'queen', 'queen2', 'greasy', 'mama', 'queen3']); // v0.7.7: + world 3's ants
+const TREAT_NAME = { cookie: 'Cookie', cake: 'Cake', pie: 'Pie', sundae: 'Sundae' }; // v0.7.7
+const HINT_ANTS = new Set(['armored', 'big', 'heavy', 'queen', 'queen2', 'greasy', 'mama', 'queen3', 'nurse', 'queen4']); // v0.7.7: + world 3's ants; v0.7.9: + world 4's
 function maybeModeHint(b, e) {
   if (S.modeHint || S.paused || !e.ant || !HINT_ANTS.has(e.ant) || !(e.n > 0)) return;
   if (!b.towers.some((q) => hasTargetModes(q.type))) return;
@@ -442,8 +442,21 @@ function consumeEvents() {
       case 'bomb': addFx({ k: 'boom', x: e.x, y: e.y, r: e.r, life: 0.7, max: 0.7 }); sfx('boom'); break;
       case 'freeze': addFx({ k: 'flash', col: 'rgba(190,235,255,0.7)', life: 0.4, max: 0.4 }); sfx('freeze'); break;
       case 'plane': sfx('plane'); break;
-      case 'wave': addFx({ k: 'banner', s: `Wave ${e.n}`, life: 1.4, max: 1.4 }); sfx('wave'); break;
-      case 'queenCall': addFloatText(S.fx, { key: 'queen', x: e.x, y: e.y - 40, n: 1, fmt: () => (e.calls === 'flyer' ? 'Wings, go!' : e.calls === 'greasy' ? 'Butter up!' : 'Scouts, go!'), col: '#ffb3e0', life: 1 }); break;
+      case 'wave': addFx({ k: 'banner', s: `Wave ${e.n}`, life: 1.4, max: 1.4 }); sfx('wave');
+        if (b.levelIndex === 31 && e.n === 2 && !S.nurseTip) { S.nurseTip = true; toast('Nurse ants heal their friends. Pop them first!', '#ffe39a'); S.toast.hint = true; } // v0.7.9: the first nurse arrives in wave 2 of level 32
+        break;
+      case 'heal': { // v0.7.9 Nurse Ant pulse: an expanding ring over her radius + a rising plus on each healed ant (max 6 per pulse) + a white flash on them. Reduced motion: no expansion / rise, a still ring and plus.
+        const fast = S.speed >= 4, rm = reducedMotion();
+        addFx({ k: 'healRing', x: e.x, y: e.y, r: e.r, life: rm ? 0.35 : 0.5, max: rm ? 0.35 : 0.5 });
+        let shown = 0;
+        for (const id of e.ids || []) {
+          const o = b.ants.find((q) => q.id === id); if (!o) continue;
+          o._healFlash = S.t + 0.28;
+          if (shown < 6 && !(fast && shown >= 2)) { shown++; addFx({ k: 'healPlus', x: o.x + (shown % 2 ? -5 : 5), y: o.y - 22 * (o.size || 1), life: rm ? 0.6 : 0.8, max: rm ? 0.6 : 0.8 }); }
+        }
+        sfx('heal'); break;
+      }
+      case 'queenCall': addFloatText(S.fx, { key: 'queen', x: e.x, y: e.y - 40, n: 1, fmt: () => (e.calls === 'flyer' ? 'Wings, go!' : e.calls === 'greasy' ? 'Butter up!' : e.calls === 'nurse' ? 'Nurses, go!' : 'Scouts, go!'), col: '#ffb3e0', life: 1 }); break;
       case 'split': { // v0.7.7 Brood Ant: a little pop of puffs where each baby lands
         const fast = S.speed >= 4;
         for (const k of e.kids) for (let i = 0; i < (fast ? 1 : 3); i++) addFx({ k: 'puff', x: k.x + (Math.random() - 0.5) * 8, y: k.y + (Math.random() - 0.5) * 5, vx: (Math.random() - 0.5) * 50, vy: -Math.random() * 34, r: 3 + Math.random() * 3, life: 0.45, max: 0.45 });
@@ -1400,7 +1413,7 @@ function renderTowerInfo(b, info) {
 // v0.5 item 16: the queen is beaten -> fireworks + the cheer
 function drawQueenCheer(age, world) {
   const k = Math.min(1, age / 0.35), fade = age > 3.8 ? Math.max(0, 1 - (age - 3.8) / 0.7) : 1;
-  const msg = world === 3 ? ['Way to go,', 'you saved the pie!'] : world === 2 ? ['Way to go,', 'you saved the cake!'] : ['Way to go,', 'you saved the cookies!'];
+  const msg = world === 4 ? ['Way to go,', 'you saved the sundae!'] : world === 3 ? ['Way to go,', 'you saved the pie!'] : world === 2 ? ['Way to go,', 'you saved the cake!'] : ['Way to go,', 'you saved the cookies!'];
   ctx.save(); ctx.globalAlpha = fade; ctx.translate(200, MAP_Y + 210); const sc = 0.6 + 0.4 * k + Math.sin(age * 5) * 0.03; ctx.scale(sc, sc);
   A.rr(ctx, -170, -48, 340, 96, 24); ctx.fillStyle = 'rgba(90,64,88,0.82)'; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = '#ffd45e'; ctx.stroke();
   A.text(ctx, msg[0], 0, -18, 26, '#ffe36e'); A.text(ctx, msg[1], 0, 16, 24, '#ffffff');
@@ -1456,6 +1469,25 @@ function drawGuard(b, ck) {
   }
   A.drawSwatter(ctx, px, py, ang, 0.8, flash);
 }
+// v0.7.9: the Nurse's readiness cues (shape + motion, never colour alone): a dashed ready ring over her heal radius while she is READY and a hurt friend is in range,
+// and a cooldown arc under her feet while she recharges (a full circle outline + a growing arc; grey + a snowflake-free pause bar when frozen).
+function drawNurseHud(a, H, x, y, frozen) {
+  const b = S.battle, R = H.radius * C.TILE, sz = a.size || 1;
+  if (a.healCd > 0 || frozen) {
+    const k = 1 - Math.max(0, a.healCd) / H.every, cy = y + 13 * sz, rad = 7.5;
+    ctx.save(); ctx.lineWidth = 3.4; ctx.strokeStyle = A.INK; ctx.beginPath(); ctx.arc(x, cy, rad, 0, 7); ctx.stroke();
+    ctx.lineWidth = 1.8; ctx.strokeStyle = 'rgba(255,255,255,0.45)'; ctx.beginPath(); ctx.arc(x, cy, rad, 0, 7); ctx.stroke();
+    ctx.strokeStyle = frozen ? '#9fb2c8' : '#ff8fb0'; ctx.lineCap = 'round'; ctx.beginPath(); ctx.arc(x, cy, rad, -Math.PI / 2, -Math.PI / 2 + k * Math.PI * 2); ctx.stroke();
+    if (frozen) { ctx.fillStyle = A.INK; ctx.fillRect(x - 3, cy - 3, 2.2, 6); ctx.fillRect(x + 0.8, cy - 3, 2.2, 6); } // pause bars = "frozen, not charging"
+    ctx.restore();
+    return;
+  }
+  let hurt = false;
+  for (const o of b.ants) { if (o === a || o.dead || o.hp >= o.maxHp - 1e-6 || C.ANTS[o.type].heal) continue; if (Math.hypot(o.x - a.x, o.y - a.y) <= R) { hurt = true; break; } }
+  if (!hurt) return;
+  ctx.save(); ctx.lineWidth = 2.4; ctx.strokeStyle = 'rgba(255,255,255,0.95)'; ctx.setLineDash([5, 5]); ctx.lineDashOffset = reducedMotion() ? 0 : -S.t * 14;
+  ctx.beginPath(); ctx.arc(x, y + 2, R, 0, 7); ctx.stroke(); ctx.setLineDash([]); ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(255,90,126,0.9)'; ctx.beginPath(); ctx.arc(x, y + 2, R - 2.6, 0, 7); ctx.stroke(); ctx.restore();
+}
 function drawAntObj(a, ghost = false) {
   const b = S.battle;
   const frozen = b.time < b.freezeUntil;
@@ -1466,7 +1498,8 @@ function drawAntObj(a, ghost = false) {
   // walk cycle while moving; idle breathing (frame 0 + gentle squash) while stuck, staggered or frozen
   const still = frozen || a.stunT > 0;
   const fr = still ? 0 : Math.floor(((b.time + a.id * 0.37) * speedK * A.ANT_FRAMES)) % A.ANT_FRAMES;
-  const spr = A.antSprite(a.type, fr, a.carrying > 0, pxRatio);
+  const H = C.ANTS[a.type].heal, spent = !!H && (frozen || a.healCd > 0); // v0.7.9: a recharging / frozen nurse wears the grey cap
+  const spr = A.antSprite(a.type, fr, a.carrying > 0, pxRatio, spent ? 'g' : '');
   const breathe = still ? 1 + Math.sin(S.t * 5 + a.id) * 0.035 : 1;
   // tiny lateral offset per id so crowds don't stack perfectly
   let lat = ((a.id * 37) % 9 - 4) * 1.2;
@@ -1476,13 +1509,15 @@ function drawAntObj(a, ghost = false) {
   if (a.hitFlash > 0 && !reducedMotion()) { const q = Math.min(1, a.hitFlash / 0.12), sq = 0.12 * q * q; ctx.scale(1 + sq, 1 - sq); } // v0.7.5 juice: hit squash (1.12, 0.88) easing out over 120 ms (easeOutQuad)
   ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h);
   if (a.hitFlash > 0.04) { ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = 0.6; ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h); } // hit flash: white-add 0.6 for the first 80 ms
+  if (a._healFlash > S.t && !ghost) { ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = reducedMotion() ? 0.35 : 0.55 * Math.min(1, (a._healFlash - S.t) / 0.2); ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h); } // v0.7.9: white flash on a healed ant
   ctx.restore();
+  if (H && !ghost) drawNurseHud(a, H, x, y, frozen);
   if (frozen) { ctx.save(); ctx.globalAlpha = 0.55; A.rr(ctx, x - 17 * a.size, y - 24 * a.size, 34 * a.size, 32 * a.size, 7); ctx.fillStyle = '#d6f3ff'; ctx.fill(); ctx.lineWidth = 1.5; ctx.strokeStyle = '#8fd0f5'; ctx.stroke(); ctx.restore(); }
   if (a.slow > 0.01 && !frozen) { ctx.fillStyle = 'rgba(255,240,160,0.8)'; ctx.beginPath(); ctx.ellipse(x, y + 8, 9 * a.size, 2.5, 0, 0, 7); ctx.fill(); }
   if (a.stunT > 0 && !frozen) A.stunStars(ctx, x, y - 30 * a.size, S.t + a.id, a.size);
   if (a.charmT > 0) A.heart(ctx, x + Math.sin(S.t * 4 + a.id) * 4, y - 32 * a.size - Math.abs(Math.sin(S.t * 3)) * 4, 3, '#ff8fbf');
   if (a.hp < a.maxHp && !ghost) {
-    const w = a.type === 'queen' || a.type === 'queen3' ? 60 : 22, hy = y - (a.flying ? 44 : 33) * a.size;
+    const w = a.type === 'queen' || a.type === 'queen3' || a.type === 'queen4' ? 60 : 22, hy = y - (a.flying ? 44 : 33) * a.size;
     A.rr(ctx, x - w / 2 - 1, hy - 1, w + 2, 6, 3); ctx.fillStyle = A.INK; ctx.fill();
     const f = Math.max(0, a.hp / a.maxHp);
     A.rr(ctx, x - w / 2, hy, w * f, 4, 2); ctx.fillStyle = f > 0.5 ? '#8fe388' : f > 0.25 ? '#ffd45e' : '#ff7a7a'; ctx.fill();
@@ -1521,6 +1556,8 @@ function renderFx(dt) {
         const rm = reducedMotion(), pk = Math.min(1, (f.max * k) / 0.12); ctx.globalAlpha = 1 - k * k;
         const sz = Math.max(MIN_FONT, (f.size || 14) * (rm || pk >= 1 ? 1 : pk < 0.6 ? 0.6 + (1.15 - 0.6) * (pk / 0.6) : 1.15 - 0.15 * ((pk - 0.6) / 0.4))); // v0.7.6 V3: the 120 ms pop-in never starts below 12 px
         A.text(ctx, f.s, Math.max(60, Math.min(MAP_W - 60, f.x)), f.y - (rm ? 0 : 22 * (1 - Math.pow(1 - k, 3))), sz, f.col); break; }
+      case 'healRing': { const rm = reducedMotion(), rr3 = f.r * (rm ? 1 : 0.25 + 0.75 * Math.sqrt(k)); ctx.globalAlpha = (1 - k) * 0.95; ctx.beginPath(); ctx.arc(f.x, f.y + 2, rr3, 0, 7); ctx.lineWidth = 6 * (1 - k) + 1.5; ctx.strokeStyle = A.INK; ctx.stroke(); ctx.lineWidth = 3.6 * (1 - k) + 1; ctx.strokeStyle = '#ffffff'; ctx.stroke(); A.plusShape(ctx, f.x, f.y - 12, 6, '#ff5a7e', 1.5); break; }
+      case 'healPlus': { const rm = reducedMotion(); ctx.globalAlpha = k < 0.7 ? 1 : (1 - k) / 0.3; A.plusShape(ctx, f.x, f.y - (rm ? 4 : k * 22), 5, '#8fe388', 1.6); break; }
       case 'ring2': ctx.globalAlpha = 1 - k; ctx.beginPath(); ctx.arc(f.x, f.y, 8 + k * 34, 0, 7); ctx.lineWidth = 6 * (1 - k) + 1; ctx.strokeStyle = '#ffe36e'; ctx.stroke(); break;
       case 'pillar': { ctx.globalAlpha = (1 - k) * 0.8; const g = ctx.createLinearGradient(0, f.y - 120, 0, f.y + 10); g.addColorStop(0, 'rgba(255,240,150,0)'); g.addColorStop(1, 'rgba(255,240,150,0.9)'); ctx.fillStyle = g; const w = 26 * (1 - k * 0.5); ctx.fillRect(f.x - w / 2, f.y - 120, w, 130); for (let i = 0; i < 4; i++) A.starShape(ctx, f.x + Math.sin(i * 2.1 + k * 6) * 14, f.y - 20 - ((k * 90 + i * 25) % 100), 3.5, '#fff7b0', 1); break; }
       case 'heart': ctx.globalAlpha = 1 - k; A.heart(ctx, f.x + Math.sin(k * 8) * 3, f.y - k * 18, 3.2, '#ff8fbf'); break;
@@ -1771,7 +1808,7 @@ function renderResult(dt) {
   if (R.perfect) { ctx.save(); ctx.globalAlpha = 0.35 + Math.sin(R.t * 4) * 0.15; const g = ctx.createRadialGradient(200, 212, 10, 200, 212, 70); g.addColorStop(0, '#fff6a8'); g.addColorStop(1, 'rgba(255,246,168,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(200, 212, 70, 0, 7); ctx.fill(); ctx.restore();
     for (let i = 0; i < 8; i++) { const a = R.t * 0.8 + i * Math.PI / 4; A.starShape(ctx, 200 + Math.cos(a) * 52, 212 + Math.sin(a) * 40, 4, '#ffe36e', 1); } }
   A.drawTreat(ctx, tk, 200, 212, R.win ? S.battle.foodStored / S.battle.cfg.foodHP : 0.05, S.t, R.win ? { face: 'happy' } : {});
-  if (R.queenKilled) plainFit(tk === 'cake' ? 'Way to go, you saved the cake!' : tk === 'pie' ? 'Way to go, you saved the pie!' : 'Way to go, you saved the cookies!', 200, 180, 300, 13, '#e0607e', 'center', '800'); // v0.5 item 16
+  if (R.queenKilled) plainFit(tk === 'cake' ? 'Way to go, you saved the cake!' : tk === 'pie' ? 'Way to go, you saved the pie!' : tk === 'sundae' ? 'Way to go, you saved the sundae!' : 'Way to go, you saved the cookies!', 200, 180, 300, 13, '#e0607e', 'center', '800'); // v0.5 item 16
   for (let s = 0; s < 3; s++) { const on = s < R.stars && R.t > 0.3 + s * 0.25; const sc = on ? 1 + Math.max(0, 0.2 - (R.t - 0.3 - s * 0.25)) * 3 : 1; A.starShape(ctx, 140 + s * 60, 270, 18 * sc, on ? '#ffd45e' : '#e8dde4', 2.5); }
   A.text(ctx, `Food left: ${fmtFood(S.battle.foodStored)}/${S.battle.cfg.foodHP}   Ants beaten: ${R.kills}`, 200, 302, 12, '#7a5a6a', 'center', null);
   // coin breakdown: win = food + kills (+ level, first clear) + time; loss = kills + time (capped together)

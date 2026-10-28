@@ -45,6 +45,7 @@ export function sfx(name) {
     case 'wave': tone(440, 0.12, 'triangle', 0.3); tone(440, 0.12, 'triangle', 0.3, 1, 0.16); break;
     case 'win': [523, 659, 784, 1046].forEach((f, i) => tone(f, 0.22, 'triangle', 0.4, 1, i * 0.12)); break;
     case 'lose': [392, 330, 262].forEach((f, i) => tone(f, 0.3, 'triangle', 0.4, 1, i * 0.2)); break;
+    case 'heal': tone(880, 0.1, 'sine', 0.18); tone(1175, 0.14, 'sine', 0.16, 1, 0.08); break; // v0.7.9: a soft two-note chime for a nurse pulse
     case 'tap': tone(700, 0.05, 'sine', 0.25); break;
     case 'freeze': tone(1800, 0.4, 'sine', 0.2, 0.5); break;
     case 'plane': tone(140, 1.2, 'sawtooth', 0.08, 1.3); break;

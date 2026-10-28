@@ -15,7 +15,7 @@ const lum = (hex) => { const n = parseInt(hex.slice(1), 16); return 0.2126 * lin
 const ratio = (a, b) => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
 
 test('v0.7.5 version + versionCode (>= 20; the current release is asserted in v076.test.js)', () => {
-  assert.match(C.VERSION, /^0\.7\.[5678]$/);
+  assert.match(C.VERSION, /^0\.7\.[56789]$/);
   assert.ok(+/versionCode (\d+)/.exec(rd('android/app/build.gradle'))[1] >= 20);
 });
 

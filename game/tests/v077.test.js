@@ -13,10 +13,10 @@ const src = (f) => rd(`src/${f}`);
 const tuning = JSON.parse(readFileSync(new URL('../../tuning/tuning.json', import.meta.url), 'utf8'));
 const W3_FIRST = 20, W3_QUEEN = 29;
 
-test('version 0.7.7 or later (the current release, 0.7.8 / versionCode 23, is asserted in v078.test.js)', () => {
-  assert.match(C.VERSION, /^0\.7\.[78]$/);
-  assert.match(rd('android/app/build.gradle'), /versionCode 2[23]\b/); assert.match(rd('android/app/build.gradle'), /versionName "0\.7\.[78]"/);
-  assert.match(JSON.parse(rd('package.json')).version, /^0\.7\.[78]$/);
+test('version 0.7.7 or later (the current release, 0.7.9 / versionCode 24, is asserted in v078.test.js)', () => {
+  assert.match(C.VERSION, /^0\.7\.[789]$/);
+  assert.match(rd('android/app/build.gradle'), /versionCode 2[234]\b/); assert.match(rd('android/app/build.gradle'), /versionName "0\.7\.[789]"/);
+  assert.match(JSON.parse(rd('package.json')).version, /^0\.7\.[789]$/);
 });
 
 // ---------- splitInto ----------
@@ -85,8 +85,8 @@ test('splitInto: a whole Mama level can be played by the bot to a result with ki
 test('W3 Pie Pantry: 10 levels (9 grid maps + 1 waypoint map), cap 5, coinMul 1.25 = 1 + 0.25 x (world - 2), queen last', () => {
   const w = C.WORLDS[2]; assert.equal(w.id, 3); assert.equal(w.levels, 10); assert.equal(w.name, 'Pie Pantry'); assert.equal(w.treat, 'pie'); assert.equal(w.queen, 'queen3');
   assert.equal(w.cardLevelCap, 5); assert.equal(w.coinMul, 1.25); assert.equal(C.WORLDS[2].coinMul, 1 + 0.25 * (w.id - 2));
-  assert.equal(C.LEVELS.length, 30); assert.equal(C.WORLD_START[3], W3_FIRST); assert.ok(C.isBossLevel(W3_QUEEN)); assert.ok(!C.isBossLevel(W3_QUEEN - 1));
-  const lv = C.LEVELS.slice(W3_FIRST); assert.equal(lv.length, 10); assert.ok(lv.every((L) => L.world === 3));
+  assert.equal(C.LEVELS.length, 40); assert.equal(C.WORLD_START[3], W3_FIRST); assert.ok(C.isBossLevel(W3_QUEEN)); assert.ok(!C.isBossLevel(W3_QUEEN - 1));
+  const lv = C.LEVELS.slice(W3_FIRST, W3_FIRST + 10); assert.equal(lv.length, 10); assert.ok(lv.every((L) => L.world === 3));
   const ms = lv.map((L) => MAPS[L.map] || tuning.maps[L.map]); assert.ok(ms.every(Boolean));
   assert.equal(lv.filter((L) => tuning.maps[L.map].grid).length, 9, '9 grid maps'); assert.equal(lv.filter((L) => tuning.maps[L.map].path).length, 1, '1 waypoint map');
   assert.equal(new Set(lv.map((L) => L.map)).size, 10, 'ten different maps');
@@ -115,7 +115,7 @@ test('W3 ants: Greasy hp 24 slowResist 0.75; Mama hp 60; Pie Queen hp 2300 steal
 });
 test('W3 hpMuls and wave counts follow the design table (hp77.json; L30 eased 1.2 -> 1.15 after the 1000-seed sims, see JOB-v0.7.7.md); Mama debuts in L25, Greasy in L22', () => {
   const hp = [3.3, 4.3, 5.2, 4.9, 8, 6, 8, 6, 8.8, 1.45] /* v0.7.8 re-tune; v0.7.7 was [3, 4, 4.5, 3.2, 4.5, 6, 6, 4, 6, 1.15] */, wv = [6, 7, 7, 7, 7, 6, 8, 8, 9, 9];
-  C.LEVELS.slice(W3_FIRST).forEach((L, k) => { assert.equal(L.hpMul, hp[k], `L${21 + k} hpMul`); assert.equal(L.waveCount, wv[k], `L${21 + k} waves`); });
+  C.LEVELS.slice(W3_FIRST, W3_FIRST + 10).forEach((L, k) => { assert.equal(L.hpMul, hp[k], `L${21 + k} hpMul`); assert.equal(L.waveCount, wv[k], `L${21 + k} waves`); });
   const first = (t) => 1 + C.LEVELS.findIndex((_, i) => S.levelAntTypes(i).includes(t));
   assert.equal(first('greasy'), 22); assert.equal(first('mama'), 25);
 });
@@ -187,12 +187,12 @@ test('boss gift: results screen shows a "Boss gift" strip, 30 px strips, buttons
 });
 
 // ---------- save migration ----------
-test('save: v0.7.6 save (version 5, 20 levels) loads into version 6 with 30 levels; stars/cards kept; no retroactive boss gift', () => {
+test('save: v0.7.6 save (version 5, 20 levels) loads into version 6 with 40 levels (since v0.7.9); stars/cards kept; no retroactive boss gift', () => {
   assert.equal(M.SAVE_VERSION, 6);
   const old = M.newSave(); old.version = 5; old.levels = old.levels.slice(0, 20); for (let i = 0; i < 20; i++) old.levels[i] = { stars: 2, cleared: true }; old.coins = 777; M.unlockCard(old, 'laser');
   const store = new Map([[M.SAVE_KEY, JSON.stringify(old)]]); const st = { getItem: (k) => store.get(k) ?? null, setItem: (k, v) => store.set(k, v) };
-  const l = M.loadSave(st); assert.equal(l.version, 6); assert.equal(l.levels.length, 30); assert.equal(l.coins, 777);
-  assert.deepEqual(l.levels.slice(0, 20).map((x) => x.stars), Array(20).fill(2)); assert.ok(l.levels.slice(20).every((x) => !x.cleared && x.stars === 0));
+  const l = M.loadSave(st); assert.equal(l.version, 6); assert.equal(l.levels.length, 40); assert.equal(l.coins, 777); // v0.7.9: a save is padded to the 40 levels
+  assert.deepEqual(l.levels.slice(0, 20).map((x) => x.stars), Array(20).fill(2)); assert.ok(l.levels.slice(20).every((x) => !x.cleared && x.stars === 0)); // v0.7.9: L21-L40 start empty
   assert.ok(M.worldUnlocked(l, 3), 'a v0.7.6 player who finished W2 sees W3 open'); assert.ok(l.cards.laser.unlocked);
   const before = JSON.stringify(l.cards); M.loadSave(st); assert.equal(JSON.stringify(l.cards), before);
 });

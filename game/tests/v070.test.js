@@ -108,7 +108,7 @@ test('Must 6: pack reveal for ALL packs (paid + free), skippable, no toast / NEW
   assert.ok(!/@capacitor\/haptics/.test(readFileSync(new URL('../package.json', import.meta.url), 'utf8')), 'no haptics dependency');
 });
 
-test('version label in game (0.7.x)', () => { assert.match(C.VERSION, /^0\.7\.[678]$/); assert.ok(/'v' \+ C\.VERSION/.test(src('game.js'))); });
+test('version label in game (0.7.x)', () => { assert.match(C.VERSION, /^0\.7\.[6789]$/); assert.ok(/'v' \+ C\.VERSION/.test(src('game.js'))); });
 
 test('Should D-P4: per-world card-level cap in battle (W1 L4, W2 L5 since v0.7.6 E4); the prep screen says so', () => {
   assert.equal(TJ.worlds[0].cardLevelCap, 4); assert.equal(TJ.worlds[1].cardLevelCap, 5);

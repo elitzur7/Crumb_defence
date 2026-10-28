@@ -178,7 +178,7 @@ test('win: clearing all waves without losing the cookie', () => {
 
 // ---------- waves ----------
 test('v0.5: 2 worlds x 10 levels, 4-9 waves each, rising wave counts per world, a queen only in each world\'s level 10', () => {
-  assert.equal(C.LEVELS.length, 30); assert.equal(C.WORLDS.length, 3); // v0.7.7: world 3
+  assert.equal(C.LEVELS.length, 40); assert.equal(C.WORLDS.length, 4); // v0.7.7: world 3; v0.7.9: world 4
   for (const W of C.WORLDS) {
     let prev = 0; const s0 = C.WORLD_START[W.id];
     for (let i = s0; i < s0 + 10; i++) {
@@ -205,7 +205,7 @@ test('wave spawning is deterministic and follows the schedule', () => {
   assert.ok(b.nextWave >= 1);
 });
 test('all ant types exist with their traits (v0.4: + Sprint Knight, Heavy Knight; v0.7: + 3 small variants)', () => {
-  assert.deepEqual(Object.keys(C.ANTS).sort(), ['armored', 'big', 'flyer', 'gasmask', 'greasy', 'heavy', 'mama', 'queen', 'queen2', 'queen3', 'small', 'small_armed', 'small_fly', 'small_gasmask', 'sprinter', 'worker']); // v0.5: + world 2's Swift Queen
+  assert.deepEqual(Object.keys(C.ANTS).sort(), ['armored', 'big', 'flyer', 'gasmask', 'greasy', 'heavy', 'mama', 'nurse', 'queen', 'queen2', 'queen3', 'queen4', 'small', 'small_armed', 'small_fly', 'small_gasmask', 'sprinter', 'worker']); // v0.5: + world 2's Swift Queen
   assert.equal(C.ANTS.worker.hp, 20); // v0.7 (Yair ANT-STATS-v0.6.3)
   assert.ok(C.ANTS.small.speed > C.ANTS.worker.speed && C.ANTS.small.hp < C.ANTS.worker.hp);
   assert.ok(C.ANTS.big.speed < C.ANTS.worker.speed && C.ANTS.big.armor > 0);

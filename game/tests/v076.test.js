@@ -16,10 +16,10 @@ const lin = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0
 const Lm = (h) => { const n = parseInt(h.slice(1), 16); return 0.2126 * lin((n >> 16) & 255) + 0.7152 * lin((n >> 8) & 255) + 0.0722 * lin(n & 255); };
 const ratio = (a, b) => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
 
-test('version 0.7.6 or later (the current release, 0.7.8 / versionCode 23, is asserted in v078.test.js)', () => {
-  assert.match(C.VERSION, /^0\.7\.[678]$/);
-  assert.match(rd('android/app/build.gradle'), /versionCode 2[123]/); assert.match(rd('android/app/build.gradle'), /versionName "0\.7\.[678]"/);
-  assert.match(JSON.parse(rd('package.json')).version, /^0\.7\.[678]$/);
+test('version 0.7.6 or later (the current release, 0.7.9 / versionCode 24, is asserted in v078.test.js)', () => {
+  assert.match(C.VERSION, /^0\.7\.[6789]$/);
+  assert.match(rd('android/app/build.gradle'), /versionCode 2[1234]/); assert.match(rd('android/app/build.gradle'), /versionName "0\.7\.[6789]"/);
+  assert.match(JSON.parse(rd('package.json')).version, /^0\.7\.[6789]$/);
 });
 test('V1: small ant #f8c07e; ladder stays >= 1.30 and small keeps its distance from worker', () => {
   assert.equal(A.ANT_COL.small, '#f8c07e');

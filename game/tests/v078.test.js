@@ -10,16 +10,16 @@ import { runBattle, aggregate } from '../tools/sim-typical.mjs';
 const rd = (f) => readFileSync(new URL(`../${f}`, import.meta.url), 'utf8');
 const TJ = JSON.parse(readFileSync(new URL('../../tuning/tuning.json', import.meta.url), 'utf8'));
 
-test('version 0.7.8 / versionCode 23', () => {
-  assert.equal(C.VERSION, '0.7.8');
-  assert.match(rd('android/app/build.gradle'), /versionCode 23\b/); assert.match(rd('android/app/build.gradle'), /versionName "0\.7\.8"/);
-  assert.equal(JSON.parse(rd('package.json')).version, '0.7.8');
+test('version 0.7.8 or later (the current release, 0.7.9 / versionCode 24, is asserted in v079.test.js)', () => {
+  assert.match(C.VERSION, /^0\.7\.[89]$/);
+  assert.match(rd('android/app/build.gradle'), /versionCode 2[34]\b/); assert.match(rd('android/app/build.gradle'), /versionName "0\.7\.[89]"/);
+  assert.match(JSON.parse(rd('package.json')).version, /^0\.7\.[89]$/);
 });
 
 test('Must 1: World 3 hpMul = [3.3, 4.3, 5.2, 4.9, 8.0, 6.0, 8.0, 6.0, 8.8, 1.45] (L21-L30), nothing else in W3 changed', () => {
   assert.deepEqual(TJ.levels.slice(20, 30).map((l) => l.hpMul), [3.3, 4.3, 5.2, 4.9, 8, 6, 8, 6, 8.8, 1.45]);
   assert.deepEqual(C.LEVELS.slice(20, 30).map((l) => l.hpMul), [3.3, 4.3, 5.2, 4.9, 8, 6, 8, 6, 8.8, 1.45]);
-  assert.equal(C.LEVELS.slice(20).length, 10); assert.ok(C.LEVELS.slice(20).every((l) => l.world === 3));
+  assert.equal(C.LEVELS.slice(20, 30).length, 10); assert.ok(C.LEVELS.slice(20, 30).every((l) => l.world === 3));
 });
 test('Must 2: World 2 hpMul = [3.665, 4.064, 3.45, 4.32, 6.365, 5.056, 2.856, 4.268, 4.878, 1.92] (L11-L20) = v0.7.7 x 1.2', () => {
   const now = TJ.levels.slice(10, 20).map((l) => l.hpMul);
@@ -30,10 +30,11 @@ test('Must 2: World 2 hpMul = [3.665, 4.064, 3.45, 4.32, 6.365, 5.056, 2.856, 4.
 test('Must 2: World 1 hpMul untouched (L1-L10)', () => {
   assert.deepEqual(TJ.levels.slice(0, 10).map((l) => l.hpMul), [1, 1.56, 3, 6.6, 2.803, 4.321, 2.225, 3.72, 4.8, 2.373]);
 });
-test('Must 4: star gates - W1->W2 18, W2->W3 18 (unchanged); World 4 is not in the game yet, so the W3->W4 gate (14, review §1.5) has nothing to attach to', () => {
+test('Must 4: star gates - W1->W2 18, W2->W3 18 (unchanged); the W3->W4 gate (14, review §1.5) is encoded since v0.7.9 when World 4 arrived', () => {
   assert.deepEqual(C.WORLDS[1].unlock, { allLevelsWonInWorld: 1, minStarsInWorld: 18 });
   assert.deepEqual(C.WORLDS[2].unlock, { allLevelsWonInWorld: 2, minStarsInWorld: 18 });
-  assert.equal(C.WORLDS.length, 3); assert.equal(TJ.worlds.length, 3);
+  assert.deepEqual(C.WORLDS[3].unlock, { allLevelsWonInWorld: 3, minStarsInWorld: 14 });
+  assert.equal(C.WORLDS.length, 4); assert.equal(TJ.worlds.length, 4);
   assert.deepEqual(C.STARS, [{ stars: 3, minPct: 90 }, { stars: 2, minPct: 50 }, { stars: 1, minPct: 0.0001 }], 'star thresholds unchanged');
 });
 

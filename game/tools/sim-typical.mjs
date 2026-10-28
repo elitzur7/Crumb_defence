@@ -11,7 +11,7 @@ const E = process.env;
 const PF = E.PROFILES || new URL('./data/profiles-typical.json', import.meta.url).pathname;
 const TR = +(E.TR || 100), SPT = +(E.SPT || 10), MODE = E.MODE || 'prof', CL = +(E.CL || 4);
 if (E.OVR) { const O = JSON.parse(readFileSync(E.OVR, 'utf8')); for (const [l, o] of Object.entries(O)) Object.assign(C.LEVELS[+l - 1], o); }
-const [lo, hi] = (E.LEVELS || '1-30').split('-').map(Number);
+const [lo, hi] = (E.LEVELS || '1-40').split('-').map(Number);
 export function runBattle(i, deck, cardLevels, bonusStock, seed) {
   const b = new S.Battle({ levelIndex: i, deck, seed, cardLevels, bonusTypes: ['bomb', 'plane'], bonusStock, noCardLevelCap: false });
   let th = 0; const dt = 1 / 60;
@@ -42,7 +42,7 @@ if (process.argv[1] && process.argv[1].endsWith('sim-typical.mjs')) {
     console.log(`mode ${MODE}${MODE === 'uni' ? ' CL' + CL : ''}  levels ${lo}-${hi}  ${TR}x${SPT} battles/level  DT 1/60`);
     console.log('level\tn\twin%\tstars/win\t3star%');
     for (const r of agg) console.log(`L${r.L}\t${r.n}\t${r.win.toFixed(1)}\t${r.starsPerWin == null ? '-' : r.starsPerWin.toFixed(2)}\t${r.star3.toFixed(1)}`);
-    for (const [name, a, b2] of [['W1', 1, 10], ['W2', 11, 20], ['W3', 21, 30]]) { const g = agg.filter((r) => r.L >= a && r.L <= b2); if (g.length === b2 - a + 1)
+    for (const [name, a, b2] of [['W1', 1, 10], ['W2', 11, 20], ['W3', 21, 30], ['W4', 31, 40]]) { const g = agg.filter((r) => r.L >= a && r.L <= b2); if (g.length === b2 - a + 1)
       console.log(`${name} mean\t\t${(g.reduce((x, r) => x + r.win, 0) / g.length).toFixed(1)}\t${(g.reduce((x, r) => x + (r.starsPerWin || 0), 0) / g.length).toFixed(2)}\t${(g.reduce((x, r) => x + r.star3, 0) / g.length).toFixed(1)}\tstar sum ${g.reduce((x, r) => x + r.starsPerBattle, 0).toFixed(1)}`); }
   }
 }

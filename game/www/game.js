@@ -8,6 +8,7 @@ var tuning_default = {
     battleUpgrades: "in-battle levels 2-6 (five upgrades; drop the same card on the tower): multipliers",
     speed: "px per second",
     queenTake: "a queen takes 50 + the sum of her trait modifiers (queenTraitMods) from the treat",
+    heal: "optional ant field (v0.7.8 nurse): { radius (tiles), pct (of the TARGET's max hp per pulse), every (s, cooldown after a pulse), bossMul (multiplier when the target is a queen) }. A ready, unfrozen healer pulses when >= 1 hurt non-healer ant is in range; she never heals herself or another healer.",
     rarity: "common | uncommon | rare | elite | boss (v0.7.7). Checked by tests/v077.test.js for worlds >= 3: >= 2 common types per non-boss level, <= 2 rare-or-higher types, a rare first appears at wave >= 2 (never wave 1). W1/W2 only report."
   },
   shop: {
@@ -434,6 +435,30 @@ var tuning_default = {
       boss: !0,
       spawn: { type: "greasy", every: 7, count: 1 },
       queenTraits: ["slower"]
+    },
+    nurse: {
+      hp: 60,
+      speed: 32,
+      armor: 0,
+      steal: 1.2,
+      weight: 0.6,
+      size: "regular",
+      crumbs: 3,
+      rarity: "rare",
+      heal: { radius: 1.5, pct: 0.2, every: 3, bossMul: 0.1 }
+    },
+    queen4: {
+      hp: 2600,
+      speed: 16,
+      armor: 6,
+      weight: 0,
+      size: "queen",
+      crumbs: 180,
+      rarity: "boss",
+      slowResist: 0.6,
+      boss: !0,
+      spawn: { type: "nurse", every: 9, count: 1 },
+      queenTraits: ["slow"]
     }
   },
   worlds: [
@@ -466,6 +491,16 @@ var tuning_default = {
       unlock: { allLevelsWonInWorld: 2, minStarsInWorld: 18 },
       cardLevelCap: 5,
       coinMul: 1.25
+    },
+    {
+      id: 4,
+      name: "Ice-Cream Parlour",
+      treat: "sundae",
+      queen: "queen4",
+      levels: 10,
+      unlock: { allLevelsWonInWorld: 3, minStarsInWorld: 14 },
+      cardLevelCap: 6,
+      coinMul: 1.5
     }
   ],
   levels: [
@@ -1194,6 +1229,453 @@ var tuning_default = {
           { type: "queen3", count: 1, interval: 1, delay: 4 }
         ]
       ]
+    },
+    {
+      world: 4,
+      name: "Sundae Counter",
+      map: "w4_counter",
+      waveCount: 6,
+      hpMul: 3.9,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1.1, delay: 0 }],
+        [{ type: "small", count: 8, interval: 0.45, delay: 0 }, { type: "worker", count: 4, interval: 1.1, delay: 1 }],
+        [
+          { type: "worker", count: 6, interval: 1, delay: 0 },
+          { type: "flyer", count: 3, interval: 0.8, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [{ type: "flyer", count: 4, interval: 0.8, delay: 0 }, { type: "worker", count: 6, interval: 1, delay: 0 }],
+        [
+          { type: "small", count: 10, interval: 0.45, delay: 0 },
+          { type: "worker", count: 6, interval: 1, delay: 0 },
+          { type: "flyer", count: 4, interval: 0.8, delay: 1 }
+        ],
+        [
+          { type: "worker", count: 8, interval: 0.9, delay: 0 },
+          { type: "small", count: 12, interval: 0.45, delay: 1 },
+          { type: "flyer", count: 4, interval: 0.8, delay: 1 }
+        ]
+      ]
+    },
+    {
+      world: 4,
+      name: "Scoop Lane",
+      map: "w4_scoop",
+      waveCount: 7,
+      hpMul: 4.5,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [
+          { type: "worker", count: 5, interval: 1, delay: 0 },
+          { type: "nurse", count: 1, interval: 1.5, delay: 2 },
+          { type: "small", count: 6, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "small", count: 10, interval: 0.45, delay: 0 },
+          { type: "nurse", count: 1, interval: 1.5, delay: 1 },
+          { type: "worker", count: 5, interval: 1, delay: 1 }
+        ],
+        [
+          { type: "worker", count: 6, interval: 1, delay: 0 },
+          { type: "nurse", count: 2, interval: 1.5, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "small", count: 12, interval: 0.45, delay: 0 },
+          { type: "nurse", count: 2, interval: 1.5, delay: 2 },
+          { type: "worker", count: 6, interval: 1, delay: 1 }
+        ],
+        [
+          { type: "worker", count: 8, interval: 0.9, delay: 0 },
+          { type: "nurse", count: 2, interval: 1.4, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "small", count: 12, interval: 0.45, delay: 0 },
+          { type: "nurse", count: 3, interval: 1.4, delay: 1 },
+          { type: "worker", count: 8, interval: 0.9, delay: 1 }
+        ]
+      ]
+    },
+    {
+      world: 4,
+      name: "Cone Crossing",
+      map: "w4_cone",
+      waveCount: 7,
+      hpMul: 7.4,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [{ type: "flyer", count: 4, interval: 0.8, delay: 0 }, { type: "worker", count: 5, interval: 1, delay: 1 }],
+        [
+          { type: "small_fly", count: 8, interval: 0.5, delay: 0 },
+          { type: "worker", count: 6, interval: 1, delay: 1 },
+          { type: "nurse", count: 1, interval: 1.5, delay: 2 }
+        ],
+        [
+          { type: "flyer", count: 5, interval: 0.8, delay: 0 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 },
+          { type: "nurse", count: 1, interval: 1.5, delay: 1 }
+        ],
+        [
+          { type: "small_fly", count: 10, interval: 0.5, delay: 0 },
+          { type: "flyer", count: 4, interval: 0.8, delay: 1 },
+          { type: "worker", count: 6, interval: 1, delay: 1 },
+          { type: "nurse", count: 2, interval: 1.5, delay: 2 }
+        ],
+        [
+          { type: "worker", count: 8, interval: 0.9, delay: 0 },
+          { type: "flyer", count: 6, interval: 0.8, delay: 1 },
+          { type: "nurse", count: 2, interval: 1.4, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 0 }
+        ],
+        [
+          { type: "small_fly", count: 12, interval: 0.5, delay: 0 },
+          { type: "flyer", count: 6, interval: 0.75, delay: 1 },
+          { type: "worker", count: 8, interval: 0.9, delay: 1 },
+          { type: "nurse", count: 2, interval: 1.4, delay: 2 }
+        ]
+      ]
+    },
+    {
+      world: 4,
+      name: "Sprinkle Switchback",
+      map: "w4_sprinkle",
+      waveCount: 7,
+      hpMul: 7.25,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [
+          { type: "small_armed", count: 4, interval: 0.6, delay: 0 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 6, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "armored", count: 2, interval: 1.5, delay: 1 },
+          { type: "worker", count: 4, interval: 1, delay: 0 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "nurse", count: 1, interval: 1.5, delay: 0 },
+          { type: "armored", count: 2, interval: 1.5, delay: 0.5 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "nurse", count: 1, interval: 1.5, delay: 0 },
+          { type: "armored", count: 3, interval: 1.4, delay: 0.5 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "nurse", count: 2, interval: 1.4, delay: 0 },
+          { type: "armored", count: 3, interval: 1.4, delay: 0.5 },
+          { type: "small_armed", count: 4, interval: 0.6, delay: 2 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "nurse", count: 2, interval: 1.4, delay: 0 },
+          { type: "armored", count: 4, interval: 1.3, delay: 0.5 },
+          { type: "worker", count: 6, interval: 1, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ]
+      ]
+    },
+    {
+      world: 4,
+      name: "Waffle Grid",
+      map: "w4_waffle",
+      waveCount: 7,
+      hpMul: 6.6,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [
+          { type: "greasy", count: 3, interval: 1.1, delay: 0 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "mama", count: 1, interval: 1.6, delay: 1 },
+          { type: "worker", count: 4, interval: 1, delay: 0 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "nurse", count: 1, interval: 1.5, delay: 0 },
+          { type: "mama", count: 1, interval: 1.6, delay: 0.5 },
+          { type: "greasy", count: 3, interval: 1, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "nurse", count: 1, interval: 1.5, delay: 0 },
+          { type: "mama", count: 2, interval: 1.6, delay: 0.5 },
+          { type: "greasy", count: 3, interval: 1, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "nurse", count: 2, interval: 1.4, delay: 0 },
+          { type: "mama", count: 2, interval: 1.5, delay: 0.5 },
+          { type: "greasy", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "nurse", count: 2, interval: 1.4, delay: 0 },
+          { type: "mama", count: 3, interval: 1.5, delay: 0.5 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 12, interval: 0.45, delay: 1 }
+        ]
+      ]
+    },
+    {
+      world: 4,
+      name: "Cherry Top",
+      map: "w4_cherry",
+      waveCount: 6,
+      hpMul: 7.7,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [{ type: "flyer", count: 4, interval: 0.8, delay: 0 }, { type: "worker", count: 5, interval: 1, delay: 1 }],
+        [
+          { type: "small_fly", count: 8, interval: 0.5, delay: 0 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 },
+          { type: "nurse", count: 1, interval: 1.5, delay: 2 }
+        ],
+        [
+          { type: "worker", count: 6, interval: 1, delay: 0 },
+          { type: "flyer", count: 5, interval: 0.8, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "small_fly", count: 10, interval: 0.5, delay: 0 },
+          { type: "nurse", count: 1, interval: 1.5, delay: 1 },
+          { type: "worker", count: 6, interval: 1, delay: 1 }
+        ],
+        [
+          { type: "worker", count: 8, interval: 0.9, delay: 0 },
+          { type: "flyer", count: 6, interval: 0.8, delay: 1 },
+          { type: "small", count: 12, interval: 0.45, delay: 1 },
+          { type: "nurse", count: 2, interval: 1.4, delay: 2 }
+        ]
+      ]
+    },
+    {
+      world: 4,
+      name: "Fudge Fork",
+      map: "w4_fudge",
+      waveCount: 8,
+      hpMul: 5.85,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 5, interval: 1, delay: 0 }, { type: "small_gasmask", count: 8, interval: 0.45, delay: 1 }],
+        [
+          { type: "gasmask", count: 4, interval: 1, delay: 0 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small_gasmask", count: 6, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "flyer", count: 4, interval: 0.8, delay: 0 },
+          { type: "gasmask", count: 4, interval: 1, delay: 1 },
+          { type: "small_gasmask", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "gasmask", count: 5, interval: 1, delay: 0 },
+          { type: "flyer", count: 4, interval: 0.8, delay: 1 },
+          { type: "nurse", count: 1, interval: 1.5, delay: 2 },
+          { type: "worker", count: 4, interval: 1, delay: 0 }
+        ],
+        [
+          { type: "small_gasmask", count: 12, interval: 0.45, delay: 0 },
+          { type: "flyer", count: 4, interval: 0.8, delay: 1 },
+          { type: "gasmask", count: 4, interval: 1, delay: 1 },
+          { type: "nurse", count: 1, interval: 1.5, delay: 2 }
+        ],
+        [
+          { type: "gasmask", count: 6, interval: 0.9, delay: 0 },
+          { type: "flyer", count: 5, interval: 0.8, delay: 1 },
+          { type: "nurse", count: 2, interval: 1.4, delay: 1 },
+          { type: "worker", count: 4, interval: 1, delay: 0 }
+        ],
+        [
+          { type: "small_gasmask", count: 14, interval: 0.45, delay: 0 },
+          { type: "gasmask", count: 6, interval: 0.9, delay: 1 },
+          { type: "flyer", count: 5, interval: 0.8, delay: 1 },
+          { type: "nurse", count: 2, interval: 1.4, delay: 2 }
+        ],
+        [
+          { type: "gasmask", count: 8, interval: 0.85, delay: 0 },
+          { type: "flyer", count: 6, interval: 0.8, delay: 1 },
+          { type: "nurse", count: 2, interval: 1.4, delay: 1 },
+          { type: "small_gasmask", count: 12, interval: 0.45, delay: 1 },
+          { type: "worker", count: 5, interval: 0.9, delay: 0 }
+        ]
+      ]
+    },
+    {
+      world: 4,
+      name: "Syrup Spiral",
+      map: "w4_spiral",
+      waveCount: 8,
+      hpMul: 7.4,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [
+          { type: "flyer", count: 4, interval: 0.8, delay: 0 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "nurse", count: 1, interval: 1.5, delay: 1 },
+          { type: "worker", count: 4, interval: 1, delay: 0 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "nurse", count: 1, interval: 1.5, delay: 0 },
+          { type: "flyer", count: 4, interval: 0.8, delay: 1 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "heavy", count: 1, interval: 1.7, delay: 1 },
+          { type: "nurse", count: 1, interval: 1.5, delay: 0.5 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "heavy", count: 1, interval: 1.7, delay: 0.5 },
+          { type: "nurse", count: 2, interval: 1.4, delay: 0 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "heavy", count: 2, interval: 1.7, delay: 0.5 },
+          { type: "nurse", count: 2, interval: 1.4, delay: 0 },
+          { type: "flyer", count: 4, interval: 0.8, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "heavy", count: 3, interval: 1.6, delay: 0.5 },
+          { type: "nurse", count: 2, interval: 1.4, delay: 0 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 12, interval: 0.45, delay: 1 }
+        ]
+      ]
+    },
+    {
+      world: 4,
+      name: "Banana Split",
+      map: "w4_banana",
+      waveCount: 9,
+      hpMul: 5.45,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [
+          { type: "greasy", count: 3, interval: 1.1, delay: 0 },
+          { type: "small", count: 8, interval: 0.45, delay: 0 },
+          { type: "worker", count: 4, interval: 1, delay: 1 }
+        ],
+        [
+          { type: "sprinter", count: 4, interval: 0.9, delay: 1 },
+          { type: "worker", count: 6, interval: 1, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 0 },
+          { type: "nurse", count: 1, interval: 1.5, delay: 2 }
+        ],
+        [
+          { type: "greasy", count: 4, interval: 1, delay: 0 },
+          { type: "nurse", count: 1, interval: 1.5, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "sprinter", count: 6, interval: 0.9, delay: 0 },
+          { type: "worker", count: 6, interval: 1, delay: 1 },
+          { type: "greasy", count: 4, interval: 1, delay: 1 },
+          { type: "nurse", count: 1, interval: 1.5, delay: 2 }
+        ],
+        [
+          { type: "small", count: 14, interval: 0.45, delay: 0 },
+          { type: "nurse", count: 2, interval: 1.4, delay: 1 },
+          { type: "greasy", count: 5, interval: 1, delay: 1 },
+          { type: "sprinter", count: 4, interval: 0.9, delay: 1 }
+        ],
+        [
+          { type: "worker", count: 8, interval: 0.9, delay: 0 },
+          { type: "sprinter", count: 6, interval: 0.85, delay: 1 },
+          { type: "greasy", count: 5, interval: 1, delay: 1 },
+          { type: "nurse", count: 2, interval: 1.4, delay: 2 }
+        ],
+        [
+          { type: "small", count: 14, interval: 0.45, delay: 0 },
+          { type: "greasy", count: 6, interval: 0.95, delay: 1 },
+          { type: "sprinter", count: 6, interval: 0.85, delay: 1 },
+          { type: "nurse", count: 3, interval: 1.4, delay: 1 }
+        ],
+        [
+          { type: "worker", count: 8, interval: 0.9, delay: 0 },
+          { type: "sprinter", count: 8, interval: 0.8, delay: 1 },
+          { type: "greasy", count: 6, interval: 0.95, delay: 1 },
+          { type: "nurse", count: 3, interval: 1.4, delay: 1 },
+          { type: "small", count: 12, interval: 0.45, delay: 1 }
+        ]
+      ]
+    },
+    {
+      world: 4,
+      name: "Parlour Floor",
+      map: "w4_floor",
+      waveCount: 9,
+      hpMul: 0.8,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [
+          { type: "flyer", count: 4, interval: 0.8, delay: 0 },
+          { type: "worker", count: 5, interval: 1, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "nurse", count: 1, interval: 1.5, delay: 2 },
+          { type: "worker", count: 6, interval: 1, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "flyer", count: 5, interval: 0.8, delay: 0 },
+          { type: "nurse", count: 1, interval: 1.5, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 0 }
+        ],
+        [
+          { type: "worker", count: 8, interval: 0.9, delay: 0 },
+          { type: "nurse", count: 2, interval: 1.5, delay: 1 },
+          { type: "flyer", count: 4, interval: 0.8, delay: 1 }
+        ],
+        [
+          { type: "small", count: 14, interval: 0.45, delay: 0 },
+          { type: "flyer", count: 6, interval: 0.8, delay: 1 },
+          { type: "nurse", count: 2, interval: 1.4, delay: 1 }
+        ],
+        [
+          { type: "nurse", count: 2, interval: 1.4, delay: 0 },
+          { type: "worker", count: 8, interval: 0.9, delay: 1 },
+          { type: "flyer", count: 6, interval: 0.8, delay: 1 }
+        ],
+        [
+          { type: "small", count: 14, interval: 0.45, delay: 0 },
+          { type: "nurse", count: 3, interval: 1.4, delay: 1 },
+          { type: "worker", count: 8, interval: 0.9, delay: 1 },
+          { type: "flyer", count: 5, interval: 0.8, delay: 1 }
+        ],
+        [
+          { type: "worker", count: 8, interval: 0.9, delay: 0 },
+          { type: "nurse", count: 2, interval: 1.4, delay: 1 },
+          { type: "flyer", count: 5, interval: 0.8, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 },
+          { type: "queen4", count: 1, interval: 1, delay: 4 }
+        ]
+      ]
     }
   ],
   maps: {
@@ -1544,6 +2026,186 @@ var tuning_default = {
         "....#.....",
         "....C....."
       ]
+    },
+    w4_counter: {
+      name: "Sundae Counter",
+      theme: 7,
+      grid: [
+        ".N........",
+        ".#........",
+        ".#........",
+        ".########.",
+        "........#.",
+        ".....M..#.",
+        "........#.",
+        "..#######.",
+        "P.#.......",
+        "..#.......",
+        "..#######.",
+        "........C."
+      ]
+    },
+    w4_scoop: {
+      name: "Scoop Lane",
+      theme: 7,
+      grid: [
+        ".........J",
+        "N########.",
+        "........#.",
+        ".########.",
+        ".#........",
+        ".########.",
+        "........#P",
+        ".########.",
+        ".#........",
+        ".########.",
+        "........#.",
+        "........#C"
+      ]
+    },
+    w4_cone: {
+      name: "Cone Crossing",
+      theme: 7,
+      grid: [
+        ".....N....",
+        ".....#..S.",
+        ".....#....",
+        ".####+###.",
+        ".#...#..#.",
+        ".#...#..#.",
+        ".#####..#.",
+        "........#.",
+        "..M.....#.",
+        "....#####.",
+        "....#.....",
+        "....C....."
+      ]
+    },
+    w4_sprinkle: {
+      name: "Sprinkle Switchback",
+      theme: 7,
+      grid: [
+        "....J....N",
+        ".........#",
+        ".#########",
+        ".#........",
+        ".########.",
+        "........#.",
+        ".########.",
+        ".#........",
+        ".########.",
+        "........#.",
+        "#########.",
+        "C....B...."
+      ]
+    },
+    w4_waffle: {
+      name: "Waffle Grid",
+      theme: 7,
+      grid: [
+        ".N......N.",
+        ".#......#.",
+        ".#....###.",
+        ".#.M..#...",
+        ".#....#...",
+        ".######...",
+        "......#...",
+        "......#...",
+        "....###...",
+        "....#...P.",
+        "....#.....",
+        "....C....."
+      ]
+    },
+    w4_cherry: {
+      name: "Cherry Top",
+      theme: 7,
+      grid: [
+        "..........",
+        "....M.....",
+        "..........",
+        "N#######..",
+        ".......#..",
+        ".......#..",
+        "..######..",
+        "..#.......",
+        "..#.......",
+        "..####...P",
+        ".....#....",
+        ".....C...."
+      ]
+    },
+    w4_fudge: {
+      name: "Fudge Fork",
+      theme: 7,
+      grid: [
+        "....N.....",
+        "....#....P",
+        "....#.....",
+        ".#######..",
+        ".#.....#..",
+        ".#..B..#..",
+        ".#.....#..",
+        ".#.....#..",
+        ".#######..",
+        "....#.....",
+        "....#.....",
+        "....C....."
+      ]
+    },
+    w4_spiral: {
+      name: "Syrup Spiral",
+      theme: 7,
+      grid: [
+        "..........",
+        "N########.",
+        "........#.",
+        ".######.#.",
+        ".#....#.#.",
+        ".#....#.#M",
+        ".#....C.#.",
+        ".#......#.",
+        ".#..P...#.",
+        ".#......#.",
+        ".########.",
+        ".........."
+      ]
+    },
+    w4_banana: {
+      name: "Banana Split",
+      theme: 7,
+      grid: [
+        ".N......N.",
+        ".#......#.",
+        ".#..J...#.",
+        ".#....###.",
+        ".#....#...",
+        ".######...",
+        "......#...",
+        "......#...",
+        "..#####...",
+        "..#......P",
+        "..#.......",
+        "..C......."
+      ]
+    },
+    w4_floor: {
+      name: "Parlour Floor",
+      theme: 7,
+      grid: [
+        "..N.......",
+        "..#.......",
+        "..######..",
+        ".......#..",
+        ".#######..",
+        ".#...P....",
+        ".#........",
+        ".########.",
+        "........#.",
+        ".....M..#.",
+        "S.......#.",
+        "........C."
+      ]
     }
   }
 };
@@ -1842,7 +2504,7 @@ var AIR_COUNTERS = ["laser", "zapper"], TARGET_MODE_TEXT = {
   lizard: { carrier: "Targets ants carrying food first, then fewest HP left; chews after kills.", front: "Targets the walking ant closest to the cookie; chews after kills." },
   laser: { carrier: "Aims at ants carrying food first, then fewest HP. Heat: +12% per hit on the same ant.", front: "Aims at the walking ant closest to the cookie. Heat: +12% per hit on the same ant." },
   zapper: { carrier: "First zap: food carriers first, then fewest HP. Chains to the nearest flyers (60% each jump).", front: "First zap: the flyer closest to the cookie. Chains to the nearest flyers (60% each jump)." }
-}, VERSION = "0.7.8", ANT_SIZES = { ...tuning_default.antSizes }, ANT_TEXT = {
+}, VERSION = "0.7.9", ANT_SIZES = { ...tuning_default.antSizes }, ANT_TEXT = {
   small: { name: "Scout Ant", desc: "Tiny, fast, comes in swarms." },
   worker: { name: "Worker Ant", desc: "The regular. Hard hat included." },
   big: { name: "Big Ant", desc: "Slow, chunky, a bit of armor." },
@@ -1860,7 +2522,10 @@ var AIR_COUNTERS = ["laser", "zapper"], TARGET_MODE_TEXT = {
   // v0.7.7 world 3 (Pie Pantry)
   greasy: { name: "Buttery Ant", desc: "Slippery! Slowing barely works. Hit it hard." },
   mama: { name: "Brood Ant", desc: "Drops 3 baby ants when she falls." },
-  queen3: { name: "Pie Queen", desc: "BOSS of world 3. Calls buttery ants. Takes 55 of the pie. Ignores most slowing." }
+  queen3: { name: "Pie Queen", desc: "BOSS of world 3. Calls buttery ants. Takes 55 of the pie. Ignores most slowing." },
+  // v0.7.9 world 4 (Ice-Cream Parlour)
+  nurse: { name: "Nurse Ant", desc: "Heals hurt friends nearby every 3 seconds. Pop her first!" },
+  queen4: { name: "Sundae Queen", desc: "BOSS of world 4. Calls a nurse every 9 seconds, and the nurses heal her. Takes 50 of the sundae." }
 }, QUEEN_TRAITS = { ...tuning_default.queenTraitMods };
 function queenTake(traits = [], T = QUEEN_TRAITS) {
   return 50 + traits.reduce((s, t) => s + (T[t] || 0), 0);
@@ -2188,7 +2853,9 @@ var Path = class {
   small_fly: 0.5,
   greasy: 1.1,
   mama: 1.6,
-  queen3: 1
+  queen3: 1,
+  nurse: 1.5,
+  queen4: 1
 };
 function generateWaves(levelIndex, levels = LEVELS) {
   let L = levels[levelIndex];
@@ -2375,6 +3042,8 @@ var NEXT_ID = 1, Battle = class {
       plantSlow: 0,
       plantSlowT: 0,
       spawnT: a.spawn ? a.spawn.every : 0,
+      healCd: 0,
+      healFx: 0,
       dead: !1,
       x: 0,
       y: 0,
@@ -2655,6 +3324,24 @@ var NEXT_ID = 1, Battle = class {
     }
     let frozen = t < this.freezeUntil;
     for (let a of this.ants) a.slow = 0;
+    for (let h of this.ants) {
+      let H2 = ANTS[h.type].heal;
+      if (!H2 || h.dead || (h.healFx = Math.max(0, h.healFx - dt), frozen) || h.healCd > 0 && (h.healCd = Math.max(0, h.healCd - dt), h.healCd > 0))
+        continue;
+      let r22 = (H2.radius * TILE) ** 2, hit2 = [];
+      for (let o of this.ants) {
+        if (o === h || o.dead || o.hp >= o.maxHp - 1e-6 || ANTS[o.type].heal) continue;
+        let dx = o.x - h.x, dy = o.y - h.y;
+        dx * dx + dy * dy <= r22 && hit2.push(o);
+      }
+      if (!hit2.length) continue;
+      let sum = 0;
+      for (let o of hit2) {
+        let g = Math.min(o.maxHp - o.hp, o.maxHp * H2.pct * (ANTS[o.type].boss ? H2.bossMul ?? 1 : 1));
+        o.hp += g, sum += g;
+      }
+      h.healCd = H2.every, h.healFx = 0.5, this.stats.heals = (this.stats.heals || 0) + 1, this.stats.healed = (this.stats.healed || 0) + sum, this.emit({ type: "heal", id: h.id, x: h.x, y: h.y, r: H2.radius * TILE, n: hit2.length, ids: hit2.map((o) => o.id) });
+    }
     for (let tw of this.towers) {
       let T = TOWERS[tw.type];
       if (tw.anim += dt, T.place !== "path") continue;
@@ -3497,7 +4184,7 @@ function starShape(ctx2, x, y, r, fill, lw = 2) {
   }
   ctx2.closePath(), ctx2.fillStyle = fill, ctx2.fill(), ctx2.lineJoin = "round", ctx2.lineWidth = lw, ctx2.strokeStyle = INK, ctx2.stroke();
 }
-var ANT_COL = { small: "#f8c07e", worker: "#f0994d", big: "#d97a3f", gasmask: "#f0994d", armored: "#e48a47", flyer: "#f9b878", queen: "#f59b9b", queen2: "#c7a6f5", sprinter: "#f0994d", heavy: "#b95b34", greasy: "#ee9f45", mama: "#d9774a", queen3: "#e9b05c" }, ALW = 2.4;
+var ANT_COL = { small: "#f8c07e", worker: "#f0994d", big: "#d97a3f", gasmask: "#f0994d", armored: "#e48a47", flyer: "#f9b878", queen: "#f59b9b", queen2: "#c7a6f5", sprinter: "#f0994d", heavy: "#b95b34", greasy: "#ee9f45", mama: "#d9774a", queen3: "#e9b05c", nurse: "#f2b49b", queen4: "#f4b9c8" }, ALW = 2.4;
 function softBlob(ctx2, x, y, rx, ry, col, lw = ALW) {
   blob(ctx2, x, y, rx, ry, col, lw), ctx2.beginPath(), ctx2.ellipse(x - rx * 0.28, y - ry * 0.46, rx * 0.4, ry * 0.22, -0.35, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.5)", ctx2.fill();
 }
@@ -3520,10 +4207,14 @@ function sneaker(ctx2, x, y, far) {
   ctx2.beginPath(), ctx2.ellipse(x + 1, y + 0.6, 2.8, 1.7, 0, 0, 7), ctx2.fillStyle = far ? "#e6e6ee" : "#ffffff", ctx2.fill(), ctx2.lineWidth = 1.3, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(x - 0.8, y + 0.4), ctx2.lineTo(x + 2.4, y + 0.1), ctx2.lineWidth = 1.1, ctx2.strokeStyle = "#ff5a6e", ctx2.stroke();
 }
 var ANT_LOOK = { small_gasmask: "gasmask", small_armed: "armored", small_fly: "flyer" };
+function plusShape(ctx2, x, y, s, fill, lw = 1.5) {
+  let a = s * 0.31, t = s;
+  ctx2.beginPath(), ctx2.moveTo(x - a, y - t), ctx2.lineTo(x + a, y - t), ctx2.lineTo(x + a, y - a), ctx2.lineTo(x + t, y - a), ctx2.lineTo(x + t, y + a), ctx2.lineTo(x + a, y + a), ctx2.lineTo(x + a, y + t), ctx2.lineTo(x - a, y + t), ctx2.lineTo(x - a, y + a), ctx2.lineTo(x - t, y + a), ctx2.lineTo(x - t, y - a), ctx2.lineTo(x - a, y - a), ctx2.closePath(), ctx2.fillStyle = fill, ctx2.fill(), lw > 0 && (ctx2.lineWidth = lw, ctx2.strokeStyle = INK, ctx2.stroke());
+}
 function drawAnt(ctx2, type, phase = 0, opt = {}) {
   let S2 = ANTS[type].size;
   type = ANT_LOOK[type] || type;
-  let col = ANT_COL[type], legCol = shade(col, -0.18), farCol = shade(col, -0.32), P = phase * Math.PI * 2, step = Math.sin(P), hop = Math.abs(Math.sin(P)), flying = type === "flyer", queen = type === "queen" || type === "queen2" || type === "queen3", swiftQueen = type === "queen2", mama = type === "mama", greasy = type === "greasy", pieQueen = type === "queen3", big = type === "big" || type === "heavy" || mama, shell = type === "armored" || type === "heavy" || type === "sprinter", sprinter = type === "sprinter", heavy = type === "heavy";
+  let col = ANT_COL[type], legCol = shade(col, -0.18), farCol = shade(col, -0.32), P = phase * Math.PI * 2, step = Math.sin(P), hop = Math.abs(Math.sin(P)), flying = type === "flyer", queen = type === "queen" || type === "queen2" || type === "queen3" || type === "queen4", swiftQueen = type === "queen2", mama = type === "mama", greasy = type === "greasy", pieQueen = type === "queen3", nurse = type === "nurse", sundaeQueen = type === "queen4", big = type === "big" || type === "heavy" || mama, shell = type === "armored" || type === "heavy" || type === "sprinter", sprinter = type === "sprinter", heavy = type === "heavy";
   ctx2.save(), ctx2.scale(S2, S2), ctx2.lineJoin = "round", ctx2.lineCap = "round", flying ? shadow(ctx2, 0, 21, 10, 3, 0.13) : shadow(ctx2, 0, 10.5, 15 - hop * 2, 4, 0.2);
   let lift = flying ? 9 + Math.sin(P * 2) * 2 : big ? hop * 1.8 : hop * 3.2;
   if (big && !flying && (ctx2.translate(0, 10), ctx2.rotate(Math.sin(P) * 0.06), ctx2.translate(0, -10), hop < 0.18)) {
@@ -3553,7 +4244,7 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
     let sw = Math.sin(P) * 1.5;
     ctx2.beginPath(), ctx2.moveTo(3, -8), ctx2.quadraticCurveTo(-14, -12 + sw, -24, 7), ctx2.quadraticCurveTo(-11, 11, 2, 5), ctx2.closePath();
     let g = ctx2.createLinearGradient(0, -10, 0, 10);
-    g.addColorStop(0, pieQueen ? "#7f9be6" : "#b597f0"), g.addColorStop(1, pieQueen ? "#4f69b8" : "#8a68d8"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = ALW, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(-22, 6.5), ctx2.quadraticCurveTo(-10, 10, 1.5, 4.5), ctx2.lineWidth = 3.4, ctx2.strokeStyle = "#ffffff", ctx2.stroke(), ctx2.fillStyle = INK;
+    g.addColorStop(0, sundaeQueen ? "#8fe0c8" : pieQueen ? "#7f9be6" : "#b597f0"), g.addColorStop(1, sundaeQueen ? "#3fa88f" : pieQueen ? "#4f69b8" : "#8a68d8"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = ALW, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(-22, 6.5), ctx2.quadraticCurveTo(-10, 10, 1.5, 4.5), ctx2.lineWidth = 3.4, ctx2.strokeStyle = "#ffffff", ctx2.stroke(), ctx2.fillStyle = INK;
     for (let [a, b] of [[-17, 6.8], [-10, 8], [-4, 6.6]])
       ctx2.beginPath(), ctx2.arc(a, b, 0.9, 0, 7), ctx2.fill();
   }
@@ -3643,8 +4334,24 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
     for (let [gx, r] of [[hx - 1, 3.3], [hx + 6, 3]])
       blob(ctx2, gx, hy - 5.8, r, r, "#bfe8ff", 2.2), ctx2.beginPath(), ctx2.arc(gx - 1, hy - 7, 0.9, 0, 7), ctx2.fillStyle = "#fff", ctx2.fill();
     ctx2.beginPath(), ctx2.moveTo(hx + 2.3, hy - 5.8), ctx2.lineTo(hx + 3, hy - 5.8), ctx2.lineWidth = 2, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(1, -2), ctx2.quadraticCurveTo(-7, -4 + step * 2, -15, -8 + step * 3), ctx2.lineWidth = 5.6, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.lineWidth = 3.2, ctx2.strokeStyle = "#ff7f9e", ctx2.stroke();
+  } else if (nurse) {
+    let grey = !!opt.grey;
+    ctx2.beginPath(), ctx2.ellipse(hx, hy - 3.4, hr * 0.98, hr * 0.8, 0, Math.PI, 0), ctx2.closePath();
+    let g = ctx2.createLinearGradient(0, top - 1, 0, hy - 3);
+    g.addColorStop(0, grey ? "#e3e3ea" : "#ffffff"), g.addColorStop(1, grey ? "#b9bac6" : "#eef3f6"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = 2.5, ctx2.strokeStyle = INK, ctx2.stroke(), rr(ctx2, hx - hr - 1, hy - 5.2, hr * 2 + 2, 3.2, 1.6), ctx2.fillStyle = grey ? "#b9bac6" : "#ffffff", ctx2.fill(), ctx2.lineWidth = 2, ctx2.strokeStyle = INK, ctx2.stroke(), plusShape(ctx2, hx, hy - 12.6, 4.6, grey ? "#9a9ba8" : "#ff5a7e", 1.5), ctx2.beginPath(), ctx2.ellipse(hx - 5.6, top + 3.6, 2, 1, -0.5, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.85)", ctx2.fill();
   } else if (queen) {
     let cy = top + 3;
+    if (sundaeQueen) {
+      ctx2.beginPath(), ctx2.moveTo(hx - 8.5, cy - 8.5), ctx2.lineTo(hx + 8.5, cy - 8.5), ctx2.lineTo(hx + 1.2, cy + 1), ctx2.lineTo(hx - 1.2, cy + 1), ctx2.closePath();
+      let gc = ctx2.createLinearGradient(0, cy - 9, 0, cy + 1);
+      gc.addColorStop(0, "#f6cf8a"), gc.addColorStop(1, "#d99a4a"), ctx2.fillStyle = gc, ctx2.fill(), ctx2.lineWidth = 2.3, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.save(), ctx2.beginPath(), ctx2.moveTo(hx - 8.5, cy - 8.5), ctx2.lineTo(hx + 8.5, cy - 8.5), ctx2.lineTo(hx + 1.2, cy + 1), ctx2.lineTo(hx - 1.2, cy + 1), ctx2.closePath(), ctx2.clip(), ctx2.lineWidth = 1, ctx2.strokeStyle = "rgba(122,70,30,0.7)";
+      for (let k of [-6, -2, 2, 6])
+        ctx2.beginPath(), ctx2.moveTo(hx + k - 4, cy - 9), ctx2.lineTo(hx + k + 4, cy + 1), ctx2.moveTo(hx + k + 4, cy - 9), ctx2.lineTo(hx + k - 4, cy + 1), ctx2.stroke();
+      ctx2.restore(), blob(ctx2, hx, cy - 11, 8.2, 5.6, "#ff9ec0", 2.2), blob(ctx2, hx - 1.6, cy - 12.6, 2.6, 1.4, "#ffd3e2", 0.1), ctx2.beginPath(), ctx2.moveTo(hx - 6.5, cy - 8.6);
+      for (let k = 0; k < 4; k++) ctx2.quadraticCurveTo(hx - 6.5 + k * 4.4 + 1.6, cy - 5.6, hx - 6.5 + (k + 1) * 4.4, cy - 8.6);
+      ctx2.lineWidth = 1.6, ctx2.strokeStyle = INK, ctx2.stroke(), blob(ctx2, hx + 1, cy - 17.4, 2.6, 2.6, "#e8304e", 1.6), ctx2.beginPath(), ctx2.moveTo(hx + 1, cy - 19.6), ctx2.quadraticCurveTo(hx + 2.5, cy - 23, hx + 5, cy - 23.4), ctx2.lineWidth = 1.6, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.restore();
+      return;
+    }
     ctx2.beginPath(), ctx2.moveTo(hx - 7, cy), ctx2.lineTo(hx - 8, cy - 9), ctx2.lineTo(hx - 3.5, cy - 4.5), ctx2.lineTo(hx, cy - 11), ctx2.lineTo(hx + 3.5, cy - 4.5), ctx2.lineTo(hx + 8, cy - 9), ctx2.lineTo(hx + 7, cy), ctx2.closePath();
     let g = ctx2.createLinearGradient(0, cy - 11, 0, cy);
     g.addColorStop(0, pieQueen ? "#ff8aa0" : "#fff5ad"), g.addColorStop(1, pieQueen ? "#d93a5c" : "#f4b632"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = 2.3, ctx2.strokeStyle = INK, ctx2.stroke(), blob(ctx2, hx, cy - 2.6, 1.8, 1.8, "#ff6f91", 1.2), blob(ctx2, hx - 5, cy - 2.2, 1.2, 1.2, "#7cc6f2", 1), blob(ctx2, hx + 5, cy - 2.2, 1.2, 1.2, "#7cc6f2", 1);
@@ -3653,11 +4360,11 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
   ctx2.restore();
 }
 var spriteCache = /* @__PURE__ */ new Map(), ANT_FRAMES = 12;
-function antSprite(type, frame2, carrying, dpr2) {
-  let key = type + frame2 + (carrying ? "c" : "") + dpr2, s = spriteCache.get(key);
+function antSprite(type, frame2, carrying, dpr2, variant = "") {
+  let key = type + frame2 + (carrying ? "c" : "") + dpr2 + variant, s = spriteCache.get(key);
   if (s) return s;
   let S2 = ANTS[type].size, w = Math.ceil(80 * S2), h = Math.ceil(84 * S2), cv = makeCanvas(Math.ceil(w * dpr2), Math.ceil(h * dpr2)), g = cv.getContext("2d");
-  return g.scale(dpr2, dpr2), g.translate(w / 2, h * 0.66), drawAnt(g, type, frame2 / ANT_FRAMES, { carrying, blink: frame2 === 7 && !isQueen(type) }), s = { cv, w, h, ox: w / 2, oy: h * 0.66 }, spriteCache.set(key, s), s;
+  return g.scale(dpr2, dpr2), g.translate(w / 2, h * 0.66), drawAnt(g, type, frame2 / ANT_FRAMES, { carrying, blink: frame2 === 7 && !isQueen(type), grey: variant === "g" }), s = { cv, w, h, ox: w / 2, oy: h * 0.66 }, spriteCache.set(key, s), s;
 }
 function makeCanvas(w, h) {
   if (typeof OffscreenCanvas < "u") return new OffscreenCanvas(w, h);
@@ -4230,7 +4937,38 @@ function pieBody(ctx2, r, pct) {
   }
   ctx2.restore();
 }
-var TREAT_BODIES = { cookie: cookieBody, cake: cakeBody, pie: pieBody };
+function sundaeBody(ctx2, r, pct) {
+  let bites = Math.round((1 - pct) * 9), bAt = (k) => {
+    let a = -0.6 + k * 0.72;
+    return [Math.cos(a) * r * 0.98, Math.sin(a) * r * 0.98];
+  };
+  ctx2.save(), ctx2.beginPath(), ctx2.arc(0, 0, r, 0, Math.PI * 2);
+  for (let k = 0; k < bites; k++) {
+    let [bx, by] = bAt(k);
+    ctx2.moveTo(bx + 9, by), ctx2.arc(bx, by, 9, 0, Math.PI * 2, !0);
+  }
+  ctx2.clip("evenodd");
+  let g = ctx2.createRadialGradient(-8, -10, 4, 0, 0, r * 1.1);
+  g.addColorStop(0, "#fff3f6"), g.addColorStop(0.7, "#ffc4d6"), g.addColorStop(1, "#f08fb0"), ctx2.beginPath(), ctx2.arc(0, 0, r, 0, 7), ctx2.fillStyle = g, ctx2.fill(), ctx2.beginPath(), ctx2.arc(0, 0, r - 1, 0, 7), ctx2.lineWidth = 6, ctx2.strokeStyle = "#d6f1ea", ctx2.stroke(), ctx2.beginPath(), ctx2.arc(0, 0, r - 4.2, 0, 7), ctx2.lineWidth = 1.4, ctx2.strokeStyle = "rgba(80,150,135,0.7)", ctx2.stroke(), ctx2.lineWidth = 3.4, ctx2.strokeStyle = "#7a4a34", ctx2.lineCap = "round", ctx2.beginPath(), ctx2.moveTo(-r + 7, -9);
+  for (let k = 0; k < 5; k++) ctx2.quadraticCurveTo(-r + 7 + k * 9 + 4.5, -9 + (k % 2 ? 8 : -8), -r + 7 + (k + 1) * 9, -9);
+  ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(-r + 10, 15);
+  for (let k = 0; k < 4; k++) ctx2.quadraticCurveTo(-r + 10 + k * 10 + 5, 15 + (k % 2 ? -7 : 7), -r + 10 + (k + 1) * 10, 15);
+  ctx2.stroke();
+  for (let [x, y, c, a] of [[-14, -17, "#ffe27a", 0.6], [12, -15, "#8fd0f7", -0.5], [17, 8, "#ffffff", 0.9], [-17, 3, "#ffe27a", -0.3], [5, 18, "#8fd0f7", 0.4], [-6, 19, "#ffffff", 1.2], [20, -3, "#ffe27a", 0.2]])
+    ctx2.save(), ctx2.translate(x, y), ctx2.rotate(a), ctx2.fillStyle = c, ctx2.fillRect(-2.2, -0.8, 4.4, 1.7), ctx2.restore();
+  ctx2.restore(), blob(ctx2, -r * 0.5, -r * 0.62, 4.4, 4.4, "#e8304e", 1.8), ctx2.beginPath(), ctx2.moveTo(-r * 0.5, -r * 0.62 - 3.8), ctx2.quadraticCurveTo(-r * 0.5 + 3, -r * 0.62 - 8, -r * 0.5 + 6.5, -r * 0.62 - 8), ctx2.lineWidth = 1.8, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.save(), ctx2.beginPath(), ctx2.rect(-r - 12, -r - 12, r * 2 + 24, r * 2 + 24);
+  for (let k = 0; k < bites; k++) {
+    let [bx, by] = bAt(k);
+    ctx2.moveTo(bx + 9, by), ctx2.arc(bx, by, 9, 0, Math.PI * 2, !0);
+  }
+  ctx2.clip("evenodd"), ctx2.beginPath(), ctx2.arc(0, 0, r, 0, 7), ctx2.lineWidth = 3, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.restore(), ctx2.save(), ctx2.beginPath(), ctx2.arc(0, 0, r + 1, 0, 7), ctx2.clip();
+  for (let k = 0; k < bites; k++) {
+    let [bx, by] = bAt(k);
+    ctx2.beginPath(), ctx2.arc(bx, by, 9, 0, 7), ctx2.lineWidth = 3, ctx2.strokeStyle = INK, ctx2.stroke();
+  }
+  ctx2.restore();
+}
+var TREAT_BODIES = { cookie: cookieBody, cake: cakeBody, pie: pieBody, sundae: sundaeBody };
 function reactMotion(react, t) {
   if (!react) return { dx: 0, dy: 0, sx: 1, sy: 1 };
   let a = react.age, e = Math.max(0, 1 - a / 1.6);
@@ -4402,7 +5140,9 @@ var THEMES = [
   // v0.7.7 world 3 (Crumb Design palettes-W3-W10.json, the first three): butter, blueberry, crust. Checked by the A1-A7/A10 contrast pass on every W3 map.
   { name: "W3 butter", a: "#ecd37f", b: "#e5c974", grout: "rgba(160,130,50,0.25)", trail: "#fffaf0", edge: "#c9a64f", dot: "#d9bb60" },
   { name: "W3 blueberry", a: "#bcd5ef", b: "#b0cbea", check: "rgba(90,130,200,0.14)", grout: "rgba(90,120,170,0.22)", trail: "#fffaf2", edge: "#86a9d6", dot: "#9dbde4" },
-  { name: "W3 crust", a: "#e4bf92", b: "#deb88a", grain: "rgba(130,80,40,0.14)", grout: "rgba(130,85,45,0.28)", trail: "#fffaf0", edge: "#b98a57", dot: "#c99c6a" }
+  { name: "W3 crust", a: "#e4bf92", b: "#deb88a", grain: "rgba(130,80,40,0.14)", grout: "rgba(130,85,45,0.28)", trail: "#fffaf0", edge: "#b98a57", dot: "#c99c6a" },
+  // v0.7.9 world 4 (Crumb Design w4-paste.json artThemes_add index 7): mint. Contrast A1/A2/A3 on all ten W4 maps in qa/v0.7.9/contrast.
+  { name: "W4 mint", a: "#b6e4d6", b: "#abdccd", check: "rgba(60,170,150,0.14)", grout: "rgba(70,150,130,0.22)", trail: "#fffdf5", edge: "#80c3b0", dot: "#98d3c2" }
 ];
 function renderMapBackground(routes, theme, w, h, dpr2, props = []) {
   Array.isArray(routes) || (routes = [routes]);
@@ -4611,6 +5351,10 @@ function sfx(name) {
       case "lose":
         [392, 330, 262].forEach((f, i) => tone(f, 0.3, "triangle", 0.4, 1, i * 0.2));
         break;
+      case "heal":
+        tone(880, 0.1, "sine", 0.18), tone(1175, 0.14, "sine", 0.16, 1, 0.08);
+        break;
+      // v0.7.9: a soft two-note chime for a nurse pulse
       case "tap":
         tone(700, 0.05, "sine", 0.25);
         break;
@@ -5066,7 +5810,7 @@ function startBattle(levelIndex = S.levelIndex, deck = S.prep.deck, bonuses = S.
     onBonusUsed: (type) => {
       consumeBonus(S.save, type), persist();
     }
-  }), S.battleStartStock = { ...S.save.bonusStock }, S.fx = [], S.swatQ = [], S.ui = [], S.result = null, setPaused(!1), S.speed = startSpeed(S.speed, UI.speedMaxAtStart), clock.acc = 0, S.sel = null, S.info = null, S.mode = null, S.queenDown = null, S.modeHint = !1, S.battle.rescueScale = S.speed, go("battle");
+  }), S.battleStartStock = { ...S.save.bonusStock }, S.fx = [], S.swatQ = [], S.ui = [], S.result = null, setPaused(!1), S.speed = startSpeed(S.speed, UI.speedMaxAtStart), clock.acc = 0, S.sel = null, S.info = null, S.mode = null, S.queenDown = null, S.modeHint = !1, S.nurseTip = !1, S.battle.rescueScale = S.speed, go("battle");
 }
 function finishBattle() {
   let b = S.battle, out = applyBattleResult(S.save, b.levelIndex, b.result, b.stars, { kills: b.stats.kills, foodLeft: b.foodStored, perfect: b.perfect, time: b.time });
@@ -5131,7 +5875,7 @@ function mapTap(p) {
   }
   S.info = tw ? { tower: tw, t: 0 } : null;
 }
-var TREAT_NAME = { cookie: "Cookie", cake: "Cake", pie: "Pie" }, HINT_ANTS = /* @__PURE__ */ new Set(["armored", "big", "heavy", "queen", "queen2", "greasy", "mama", "queen3"]);
+var TREAT_NAME = { cookie: "Cookie", cake: "Cake", pie: "Pie", sundae: "Sundae" }, HINT_ANTS = /* @__PURE__ */ new Set(["armored", "big", "heavy", "queen", "queen2", "greasy", "mama", "queen3", "nurse", "queen4"]);
 function maybeModeHint(b, e) {
   S.modeHint || S.paused || !e.ant || !HINT_ANTS.has(e.ant) || !(e.n > 0) || b.towers.some((q) => hasTargetModes(q.type)) && (S.modeHint = !0, toast("Tip: tap a tower, then pick who it shoots", "#ffe39a"), S.toast.hint = !0);
 }
@@ -5354,10 +6098,21 @@ function consumeEvents() {
         sfx("plane");
         break;
       case "wave":
-        addFx({ k: "banner", s: `Wave ${e.n}`, life: 1.4, max: 1.4 }), sfx("wave");
+        addFx({ k: "banner", s: `Wave ${e.n}`, life: 1.4, max: 1.4 }), sfx("wave"), b.levelIndex === 31 && e.n === 2 && !S.nurseTip && (S.nurseTip = !0, toast("Nurse ants heal their friends. Pop them first!", "#ffe39a"), S.toast.hint = !0);
         break;
+      case "heal": {
+        let fast = S.speed >= 4, rm = reducedMotion();
+        addFx({ k: "healRing", x: e.x, y: e.y, r: e.r, life: rm ? 0.35 : 0.5, max: rm ? 0.35 : 0.5 });
+        let shown = 0;
+        for (let id of e.ids || []) {
+          let o = b.ants.find((q) => q.id === id);
+          o && (o._healFlash = S.t + 0.28, shown < 6 && !(fast && shown >= 2) && (shown++, addFx({ k: "healPlus", x: o.x + (shown % 2 ? -5 : 5), y: o.y - 22 * (o.size || 1), life: rm ? 0.6 : 0.8, max: rm ? 0.6 : 0.8 })));
+        }
+        sfx("heal");
+        break;
+      }
       case "queenCall":
-        addFloatText(S.fx, { key: "queen", x: e.x, y: e.y - 40, n: 1, fmt: () => e.calls === "flyer" ? "Wings, go!" : e.calls === "greasy" ? "Butter up!" : "Scouts, go!", col: "#ffb3e0", life: 1 });
+        addFloatText(S.fx, { key: "queen", x: e.x, y: e.y - 40, n: 1, fmt: () => e.calls === "flyer" ? "Wings, go!" : e.calls === "greasy" ? "Butter up!" : e.calls === "nurse" ? "Nurses, go!" : "Scouts, go!", col: "#ffb3e0", life: 1 });
         break;
       case "split": {
         let fast = S.speed >= 4;
@@ -6020,7 +6775,7 @@ function renderTowerInfo(b, info) {
   drawButton(256, py + 5, 62, 24, "", "#9fd8ff", { r: 10, disabled: !canMove }), text(ctx, "Move", 280, py + 17, 12), diamondIcon(ctx, 305, py + 17, 0.55), text(ctx, String(ECONOMY.diamonds.moveTower), 312, py + 17.5, 12), drawButton(322, py + 5, 58, 24, "Swap", "#c9b6f2", { r: 10, size: 12, disabled: b.towers.length < 2 }), button("infoMove", 252, py, 68, 40, () => startMode("move", tw)), button("infoSwap", 320, py, 64, 40, () => startMode("swap", tw));
 }
 function drawQueenCheer(age, world) {
-  let k = Math.min(1, age / 0.35), fade = age > 3.8 ? Math.max(0, 1 - (age - 3.8) / 0.7) : 1, msg = world === 3 ? ["Way to go,", "you saved the pie!"] : world === 2 ? ["Way to go,", "you saved the cake!"] : ["Way to go,", "you saved the cookies!"];
+  let k = Math.min(1, age / 0.35), fade = age > 3.8 ? Math.max(0, 1 - (age - 3.8) / 0.7) : 1, msg = world === 4 ? ["Way to go,", "you saved the sundae!"] : world === 3 ? ["Way to go,", "you saved the pie!"] : world === 2 ? ["Way to go,", "you saved the cake!"] : ["Way to go,", "you saved the cookies!"];
   ctx.save(), ctx.globalAlpha = fade, ctx.translate(200, MAP_Y + 210);
   let sc = 0.6 + 0.4 * k + Math.sin(age * 5) * 0.03;
   ctx.scale(sc, sc), rr(ctx, -170, -48, 340, 96, 24), ctx.fillStyle = "rgba(90,64,88,0.82)", ctx.fill(), ctx.lineWidth = 3, ctx.strokeStyle = "#ffd45e", ctx.stroke(), text(ctx, msg[0], 0, -18, 26, "#ffe36e"), text(ctx, msg[1], 0, 16, 24, "#ffffff"), ctx.restore();
@@ -6070,18 +6825,33 @@ function drawGuard(b, ck) {
   }
   drawSwatter(ctx, px, py, ang, 0.8, flash);
 }
+function drawNurseHud(a, H2, x, y, frozen) {
+  let b = S.battle, R = H2.radius * TILE, sz = a.size || 1;
+  if (a.healCd > 0 || frozen) {
+    let k = 1 - Math.max(0, a.healCd) / H2.every, cy = y + 13 * sz, rad = 7.5;
+    ctx.save(), ctx.lineWidth = 3.4, ctx.strokeStyle = INK, ctx.beginPath(), ctx.arc(x, cy, rad, 0, 7), ctx.stroke(), ctx.lineWidth = 1.8, ctx.strokeStyle = "rgba(255,255,255,0.45)", ctx.beginPath(), ctx.arc(x, cy, rad, 0, 7), ctx.stroke(), ctx.strokeStyle = frozen ? "#9fb2c8" : "#ff8fb0", ctx.lineCap = "round", ctx.beginPath(), ctx.arc(x, cy, rad, -Math.PI / 2, -Math.PI / 2 + k * Math.PI * 2), ctx.stroke(), frozen && (ctx.fillStyle = INK, ctx.fillRect(x - 3, cy - 3, 2.2, 6), ctx.fillRect(x + 0.8, cy - 3, 2.2, 6)), ctx.restore();
+    return;
+  }
+  let hurt = !1;
+  for (let o of b.ants)
+    if (!(o === a || o.dead || o.hp >= o.maxHp - 1e-6 || ANTS[o.type].heal) && Math.hypot(o.x - a.x, o.y - a.y) <= R) {
+      hurt = !0;
+      break;
+    }
+  hurt && (ctx.save(), ctx.lineWidth = 2.4, ctx.strokeStyle = "rgba(255,255,255,0.95)", ctx.setLineDash([5, 5]), ctx.lineDashOffset = reducedMotion() ? 0 : -S.t * 14, ctx.beginPath(), ctx.arc(x, y + 2, R, 0, 7), ctx.stroke(), ctx.setLineDash([]), ctx.lineWidth = 1, ctx.strokeStyle = "rgba(255,90,126,0.9)", ctx.beginPath(), ctx.arc(x, y + 2, R - 2.6, 0, 7), ctx.stroke(), ctx.restore());
+}
 function drawAntObj(a, ghost = !1) {
   let b = S.battle, frozen = b.time < b.freezeUntil, p = b.route(a).at(a.d);
   Math.abs(p.dx) > 0.3 && (a._face = p.dx * (a.dir || 1) >= 0 ? 1 : -1);
-  let face = a._face ?? 1, speedK2 = a.type === "small" ? 2.2 : a.type === "sprinter" ? 2.4 : a.type === "queen" ? 0.6 : a.type === "big" ? 1 : a.type === "heavy" ? 0.9 : 1.5, still = frozen || a.stunT > 0, fr = still ? 0 : Math.floor((b.time + a.id * 0.37) * speedK2 * ANT_FRAMES) % ANT_FRAMES, spr = antSprite(a.type, fr, a.carrying > 0, pxRatio), breathe = still ? 1 + Math.sin(S.t * 5 + a.id) * 0.035 : 1, lat = (a.id * 37 % 9 - 4) * 1.2;
+  let face = a._face ?? 1, speedK2 = a.type === "small" ? 2.2 : a.type === "sprinter" ? 2.4 : a.type === "queen" ? 0.6 : a.type === "big" ? 1 : a.type === "heavy" ? 0.9 : 1.5, still = frozen || a.stunT > 0, fr = still ? 0 : Math.floor((b.time + a.id * 0.37) * speedK2 * ANT_FRAMES) % ANT_FRAMES, H2 = ANTS[a.type].heal, spent = !!H2 && (frozen || a.healCd > 0), spr = antSprite(a.type, fr, a.carrying > 0, pxRatio, spent ? "g" : ""), breathe = still ? 1 + Math.sin(S.t * 5 + a.id) * 0.035 : 1, lat = (a.id * 37 % 9 - 4) * 1.2;
   a.state === "back" && (lat = UI.carrierLane + lat * 0.4);
   let x = a.x + p.dy * lat, y = a.y - p.dx * lat;
   if (ctx.save(), ctx.translate(x, y + 4), ctx.scale(face / breathe, breathe), a.hitFlash > 0 && !reducedMotion()) {
     let q = Math.min(1, a.hitFlash / 0.12), sq = 0.12 * q * q;
     ctx.scale(1 + sq, 1 - sq);
   }
-  if (ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h), a.hitFlash > 0.04 && (ctx.globalCompositeOperation = "lighter", ctx.globalAlpha = 0.6, ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h)), ctx.restore(), frozen && (ctx.save(), ctx.globalAlpha = 0.55, rr(ctx, x - 17 * a.size, y - 24 * a.size, 34 * a.size, 32 * a.size, 7), ctx.fillStyle = "#d6f3ff", ctx.fill(), ctx.lineWidth = 1.5, ctx.strokeStyle = "#8fd0f5", ctx.stroke(), ctx.restore()), a.slow > 0.01 && !frozen && (ctx.fillStyle = "rgba(255,240,160,0.8)", ctx.beginPath(), ctx.ellipse(x, y + 8, 9 * a.size, 2.5, 0, 0, 7), ctx.fill()), a.stunT > 0 && !frozen && stunStars(ctx, x, y - 30 * a.size, S.t + a.id, a.size), a.charmT > 0 && heart(ctx, x + Math.sin(S.t * 4 + a.id) * 4, y - 32 * a.size - Math.abs(Math.sin(S.t * 3)) * 4, 3, "#ff8fbf"), a.hp < a.maxHp && !ghost) {
-    let w = a.type === "queen" || a.type === "queen3" ? 60 : 22, hy = y - (a.flying ? 44 : 33) * a.size;
+  if (ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h), a.hitFlash > 0.04 && (ctx.globalCompositeOperation = "lighter", ctx.globalAlpha = 0.6, ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h)), a._healFlash > S.t && !ghost && (ctx.globalCompositeOperation = "lighter", ctx.globalAlpha = reducedMotion() ? 0.35 : 0.55 * Math.min(1, (a._healFlash - S.t) / 0.2), ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h)), ctx.restore(), H2 && !ghost && drawNurseHud(a, H2, x, y, frozen), frozen && (ctx.save(), ctx.globalAlpha = 0.55, rr(ctx, x - 17 * a.size, y - 24 * a.size, 34 * a.size, 32 * a.size, 7), ctx.fillStyle = "#d6f3ff", ctx.fill(), ctx.lineWidth = 1.5, ctx.strokeStyle = "#8fd0f5", ctx.stroke(), ctx.restore()), a.slow > 0.01 && !frozen && (ctx.fillStyle = "rgba(255,240,160,0.8)", ctx.beginPath(), ctx.ellipse(x, y + 8, 9 * a.size, 2.5, 0, 0, 7), ctx.fill()), a.stunT > 0 && !frozen && stunStars(ctx, x, y - 30 * a.size, S.t + a.id, a.size), a.charmT > 0 && heart(ctx, x + Math.sin(S.t * 4 + a.id) * 4, y - 32 * a.size - Math.abs(Math.sin(S.t * 3)) * 4, 3, "#ff8fbf"), a.hp < a.maxHp && !ghost) {
+    let w = a.type === "queen" || a.type === "queen3" || a.type === "queen4" ? 60 : 22, hy = y - (a.flying ? 44 : 33) * a.size;
     rr(ctx, x - w / 2 - 1, hy - 1, w + 2, 6, 3), ctx.fillStyle = INK, ctx.fill();
     let f = Math.max(0, a.hp / a.maxHp);
     rr(ctx, x - w / 2, hy, w * f, 4, 2), ctx.fillStyle = f > 0.5 ? "#8fe388" : f > 0.25 ? "#ffd45e" : "#ff7a7a", ctx.fill();
@@ -6125,6 +6895,16 @@ function renderFx(dt) {
         ctx.globalAlpha = 1 - k * k;
         let sz = Math.max(MIN_FONT, (f.size || 14) * (rm || pk >= 1 ? 1 : pk < 0.6 ? 0.6 + (1.15 - 0.6) * (pk / 0.6) : 1.15 - 0.15 * ((pk - 0.6) / 0.4)));
         text(ctx, f.s, Math.max(60, Math.min(MAP_W - 60, f.x)), f.y - (rm ? 0 : 22 * (1 - Math.pow(1 - k, 3))), sz, f.col);
+        break;
+      }
+      case "healRing": {
+        let rm = reducedMotion(), rr3 = f.r * (rm ? 1 : 0.25 + 0.75 * Math.sqrt(k));
+        ctx.globalAlpha = (1 - k) * 0.95, ctx.beginPath(), ctx.arc(f.x, f.y + 2, rr3, 0, 7), ctx.lineWidth = 6 * (1 - k) + 1.5, ctx.strokeStyle = INK, ctx.stroke(), ctx.lineWidth = 3.6 * (1 - k) + 1, ctx.strokeStyle = "#ffffff", ctx.stroke(), plusShape(ctx, f.x, f.y - 12, 6, "#ff5a7e", 1.5);
+        break;
+      }
+      case "healPlus": {
+        let rm = reducedMotion();
+        ctx.globalAlpha = k < 0.7 ? 1 : (1 - k) / 0.3, plusShape(ctx, f.x, f.y - (rm ? 4 : k * 22), 5, "#8fe388", 1.6);
         break;
       }
       case "ring2":
@@ -6407,7 +7187,7 @@ function renderResult(dt) {
       starShape(ctx, 200 + Math.cos(a) * 52, 212 + Math.sin(a) * 40, 4, "#ffe36e", 1);
     }
   }
-  drawTreat(ctx, tk, 200, 212, R.win ? S.battle.foodStored / S.battle.cfg.foodHP : 0.05, S.t, R.win ? { face: "happy" } : {}), R.queenKilled && plainFit(tk === "cake" ? "Way to go, you saved the cake!" : tk === "pie" ? "Way to go, you saved the pie!" : "Way to go, you saved the cookies!", 200, 180, 300, 13, "#e0607e", "center", "800");
+  drawTreat(ctx, tk, 200, 212, R.win ? S.battle.foodStored / S.battle.cfg.foodHP : 0.05, S.t, R.win ? { face: "happy" } : {}), R.queenKilled && plainFit(tk === "cake" ? "Way to go, you saved the cake!" : tk === "pie" ? "Way to go, you saved the pie!" : tk === "sundae" ? "Way to go, you saved the sundae!" : "Way to go, you saved the cookies!", 200, 180, 300, 13, "#e0607e", "center", "800");
   for (let s = 0; s < 3; s++) {
     let on = s < R.stars && R.t > 0.3 + s * 0.25, sc = on ? 1 + Math.max(0, 0.2 - (R.t - 0.3 - s * 0.25)) * 3 : 1;
     starShape(ctx, 140 + s * 60, 270, 18 * sc, on ? "#ffd45e" : "#e8dde4", 2.5);

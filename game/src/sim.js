@@ -193,7 +193,7 @@ export class Path {
 export const SPLIT_BACK = 3, SPLIT_STEP = 7, MAX_SPLIT_DEPTH = 1;
 // ---------- waves ----------
 const SPACING = { small: 0.45, worker: 1, big: 1.6, gasmask: 1, armored: 1.5, flyer: 0.8, sprinter: 0.9, heavy: 1.7, queen: 1, queen2: 1,
-  small_gasmask: 0.45, small_armed: 0.6, small_fly: 0.5, greasy: 1.1, mama: 1.6, queen3: 1 }; // v0.7: small variants (Yair ANT-STATS-v0.6.3); v0.7.7: W3 ants (only used by the random-mix generator; W3 levels have explicit waves)
+  small_gasmask: 0.45, small_armed: 0.6, small_fly: 0.5, greasy: 1.1, mama: 1.6, queen3: 1, nurse: 1.5, queen4: 1 }; // v0.7: small variants (Yair ANT-STATS-v0.6.3); v0.7.7: W3 ants + v0.7.9 nurse/queen4 (only used by the random-mix generator; W3/W4 levels have explicit waves)
 export function generateWaves(levelIndex, levels = C.LEVELS) {
   const L = levels[levelIndex];
   if (L.waves) return L.waves.map((groups) => expandGroups(groups, L.interval || 1));
@@ -380,7 +380,7 @@ export class Battle {
     if (ri == null) ri = this.routeCounter++ % this.routes.length;
     const ant = { id: NEXT_ID++, type, ri, hp, maxHp: hp, armor: a.armor, d, speed: a.speed, flying: !!a.flying,
       gasImmune: !!a.gasImmune, weight: a.weight, size: a.size, state: 'go', carrying: 0, trips: 0, waitT: 0, slow: 0, stunT: 0, charmT: 0, charmD: 0,
-      plantSlow: 0, plantSlowT: 0, spawnT: a.spawn ? a.spawn.every : 0, dead: false, x: 0, y: 0, born: this.time, hitFlash: 0, dir: 1 };
+      plantSlow: 0, plantSlowT: 0, spawnT: a.spawn ? a.spawn.every : 0, healCd: 0, healFx: 0, dead: false, x: 0, y: 0, born: this.time, hitFlash: 0, dir: 1 };
     const p = this.routes[ri].at(d); ant.x = p.x; ant.y = p.y;
     this.ants.push(ant);
     this.stats.spawned++;
@@ -671,6 +671,21 @@ export class Battle {
     const frozen = t < this.freezeUntil;
 
     for (const a of this.ants) a.slow = 0;
+    // v0.7.8 nurse (tuning.json ants[].heal = { radius (tiles), pct (of the TARGET's max hp per pulse), every (s, cooldown after a pulse), bossMul (queen multiplier) }):
+    // a nurse that is ready and has at least one hurt ant in range pulses once: every hurt ant within `radius` tiles regains pct x its max hp (a queen: x bossMul).
+    // She never heals herself or another nurse (no stacking). A frozen nurse (Freeze booster) neither pulses nor recharges. No hurt ant in range: she stays ready.
+    for (const h of this.ants) {
+      const H = C.ANTS[h.type].heal; if (!H || h.dead) continue;
+      h.healFx = Math.max(0, h.healFx - dt);
+      if (frozen) continue;
+      if (h.healCd > 0) { h.healCd = Math.max(0, h.healCd - dt); if (h.healCd > 0) continue; }
+      const r2 = (H.radius * C.TILE) ** 2; const hit = [];
+      for (const o of this.ants) { if (o === h || o.dead || o.hp >= o.maxHp - 1e-6 || C.ANTS[o.type].heal) continue; const dx = o.x - h.x, dy = o.y - h.y; if (dx * dx + dy * dy <= r2) hit.push(o); }
+      if (!hit.length) continue;
+      let sum = 0; for (const o of hit) { const g = Math.min(o.maxHp - o.hp, o.maxHp * H.pct * (C.ANTS[o.type].boss ? (H.bossMul ?? 1) : 1)); o.hp += g; sum += g; }
+      h.healCd = H.every; h.healFx = 0.5; this.stats.heals = (this.stats.heals || 0) + 1; this.stats.healed = (this.stats.healed || 0) + sum;
+      this.emit({ type: 'heal', id: h.id, x: h.x, y: h.y, r: H.radius * C.TILE, n: hit.length, ids: hit.map((o) => o.id) });
+    }
     // on-trail objects (auras)
     for (const tw of this.towers) {
       const T = C.TOWERS[tw.type];

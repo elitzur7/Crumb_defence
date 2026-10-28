@@ -188,7 +188,7 @@ export function starShape(ctx, x, y, r, fill, lw = 2) {
 
 // ---------------- ANTS (chibi, side/3-4 view, facing right) ----------------
 // Warm caramel palette, big heads, glossy eyes, thick clean outlines.
-export const ANT_COL = { small: '#f8c07e', worker: '#f0994d', big: '#d97a3f', gasmask: '#f0994d', armored: '#e48a47', flyer: '#f9b878', queen: '#f59b9b', queen2: '#c7a6f5', sprinter: '#f0994d', heavy: '#b95b34', greasy: '#ee9f45', mama: '#d9774a', queen3: '#e9b05c' }; // v0.7.5 C18: value ladder small > worker > big > heavy; v0.7.6 V1 (A5): small #fbc98a -> #f8c07e (>= 1.447 vs the trail on all 20 maps; ladder 1.37 / 1.38 / 1.48)
+export const ANT_COL = { small: '#f8c07e', worker: '#f0994d', big: '#d97a3f', gasmask: '#f0994d', armored: '#e48a47', flyer: '#f9b878', queen: '#f59b9b', queen2: '#c7a6f5', sprinter: '#f0994d', heavy: '#b95b34', greasy: '#ee9f45', mama: '#d9774a', queen3: '#e9b05c', nurse: '#f2b49b', queen4: '#f4b9c8' }; // v0.7.5 C18: value ladder small > worker > big > heavy; v0.7.6 V1 (A5): small #fbc98a -> #f8c07e (>= 1.447 vs the trail on all 20 maps; ladder 1.37 / 1.38 / 1.48)
 const ALW = 2.4; // ant outline width (v0.3: thinner = softer)
 
 function softBlob(ctx, x, y, rx, ry, col, lw = ALW) {
@@ -222,6 +222,13 @@ function sneaker(ctx, x, y, far) {
 }
 // v0.7: the small variants wear their parent's look (gas mask / knight armour / wings) on the small body
 const ANT_LOOK = { small_gasmask: 'gasmask', small_armed: 'armored', small_fly: 'flyer' };
+// v0.7.9: a medical plus (a SHAPE, never a colour-only cue): 12-point cross, half-length s, arm width s*0.62
+export function plusShape(ctx, x, y, s, fill, lw = 1.5) {
+  const a = s * 0.31, t = s;
+  ctx.beginPath(); ctx.moveTo(x - a, y - t); ctx.lineTo(x + a, y - t); ctx.lineTo(x + a, y - a); ctx.lineTo(x + t, y - a); ctx.lineTo(x + t, y + a); ctx.lineTo(x + a, y + a);
+  ctx.lineTo(x + a, y + t); ctx.lineTo(x - a, y + t); ctx.lineTo(x - a, y + a); ctx.lineTo(x - t, y + a); ctx.lineTo(x - t, y - a); ctx.lineTo(x - a, y - a); ctx.closePath();
+  ctx.fillStyle = fill; ctx.fill(); if (lw > 0) { ctx.lineWidth = lw; ctx.strokeStyle = INK; ctx.stroke(); }
+}
 export function drawAnt(ctx, type, phase = 0, opt = {}) {
   const S = C.ANTS[type].size;
   type = ANT_LOOK[type] || type;
@@ -230,8 +237,9 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
   const P = phase * Math.PI * 2;
   const step = Math.sin(P);
   const hop = Math.abs(Math.sin(P));
-  const flying = type === 'flyer', queen = type === 'queen' || type === 'queen2' || type === 'queen3', swiftQueen = type === 'queen2';
+  const flying = type === 'flyer', queen = type === 'queen' || type === 'queen2' || type === 'queen3' || type === 'queen4', swiftQueen = type === 'queen2';
   const mama = type === 'mama', greasy = type === 'greasy', pieQueen = type === 'queen3'; // v0.7.7 world 3
+  const nurse = type === 'nurse', sundaeQueen = type === 'queen4'; // v0.7.9 world 4
   // v0.4 item 14: 'big' and 'heavy' are the LARGE size class (2x a regular ant, was ~3x); armour = shell + helmet
   const big = type === 'big' || type === 'heavy' || mama, shell = type === 'armored' || type === 'heavy' || type === 'sprinter';
   const sprinter = type === 'sprinter', heavy = type === 'heavy';
@@ -265,7 +273,7 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
   if (queen) {
     const sw = Math.sin(P) * 1.5;
     ctx.beginPath(); ctx.moveTo(3, -8); ctx.quadraticCurveTo(-14, -12 + sw, -24, 7); ctx.quadraticCurveTo(-11, 11, 2, 5); ctx.closePath();
-    const g = ctx.createLinearGradient(0, -10, 0, 10); g.addColorStop(0, pieQueen ? '#7f9be6' : '#b597f0'); g.addColorStop(1, pieQueen ? '#4f69b8' : '#8a68d8'); // v0.7.7: the Pie Queen's cape is blueberry
+    const g = ctx.createLinearGradient(0, -10, 0, 10); g.addColorStop(0, sundaeQueen ? '#8fe0c8' : pieQueen ? '#7f9be6' : '#b597f0'); g.addColorStop(1, sundaeQueen ? '#3fa88f' : pieQueen ? '#4f69b8' : '#8a68d8'); // v0.7.9: the Sundae Queen's cape is mint // v0.7.7: the Pie Queen's cape is blueberry
     ctx.fillStyle = g; ctx.fill(); ctx.lineWidth = ALW; ctx.strokeStyle = INK; ctx.stroke();
     ctx.beginPath(); ctx.moveTo(-22, 6.5); ctx.quadraticCurveTo(-10, 10, 1.5, 4.5); ctx.lineWidth = 3.4; ctx.strokeStyle = '#ffffff'; ctx.stroke();
     ctx.fillStyle = INK; for (const [a, b] of [[-17, 6.8], [-10, 8], [-4, 6.6]]) { ctx.beginPath(); ctx.arc(a, b, 0.9, 0, 7); ctx.fill(); }
@@ -418,8 +426,26 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
     ctx.beginPath(); ctx.moveTo(hx + 2.3, hy - 5.8); ctx.lineTo(hx + 3, hy - 5.8); ctx.lineWidth = 2; ctx.strokeStyle = INK; ctx.stroke();
     ctx.beginPath(); ctx.moveTo(1, -2); ctx.quadraticCurveTo(-7, -4 + step * 2, -15, -8 + step * 3); ctx.lineWidth = 5.6; ctx.strokeStyle = INK; ctx.stroke();
     ctx.lineWidth = 3.2; ctx.strokeStyle = '#ff7f9e'; ctx.stroke();
+  } else if (nurse) { // v0.7.9 Nurse Ant: a white nurse cap with a red-pink plus (the plus is a SHAPE cue; the grey cap = recharging / frozen)
+    const grey = !!opt.grey;
+    ctx.beginPath(); ctx.ellipse(hx, hy - 3.4, hr * 0.98, hr * 0.8, 0, Math.PI, 0); ctx.closePath();
+    const g = ctx.createLinearGradient(0, top - 1, 0, hy - 3); g.addColorStop(0, grey ? '#e3e3ea' : '#ffffff'); g.addColorStop(1, grey ? '#b9bac6' : '#eef3f6');
+    ctx.fillStyle = g; ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = INK; ctx.stroke();
+    rr(ctx, hx - hr - 1, hy - 5.2, hr * 2 + 2, 3.2, 1.6); ctx.fillStyle = grey ? '#b9bac6' : '#ffffff'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = INK; ctx.stroke();
+    plusShape(ctx, hx, hy - 12.6, 4.6, grey ? '#9a9ba8' : '#ff5a7e', 1.5);
+    ctx.beginPath(); ctx.ellipse(hx - 5.6, top + 3.6, 2, 1, -0.5, 0, 7); ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.fill();
   } else if (queen) { // crown
     const cy = top + 3;
+    if (sundaeQueen) { // v0.7.9 Sundae Queen: a waffle cone worn point-down as a crown, with a pink scoop and a cherry on top
+      ctx.beginPath(); ctx.moveTo(hx - 8.5, cy - 8.5); ctx.lineTo(hx + 8.5, cy - 8.5); ctx.lineTo(hx + 1.2, cy + 1); ctx.lineTo(hx - 1.2, cy + 1); ctx.closePath();
+      const gc = ctx.createLinearGradient(0, cy - 9, 0, cy + 1); gc.addColorStop(0, '#f6cf8a'); gc.addColorStop(1, '#d99a4a'); ctx.fillStyle = gc; ctx.fill(); ctx.lineWidth = 2.3; ctx.strokeStyle = INK; ctx.stroke();
+      ctx.save(); ctx.beginPath(); ctx.moveTo(hx - 8.5, cy - 8.5); ctx.lineTo(hx + 8.5, cy - 8.5); ctx.lineTo(hx + 1.2, cy + 1); ctx.lineTo(hx - 1.2, cy + 1); ctx.closePath(); ctx.clip();
+      ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(122,70,30,0.7)'; for (const k of [-6, -2, 2, 6]) { ctx.beginPath(); ctx.moveTo(hx + k - 4, cy - 9); ctx.lineTo(hx + k + 4, cy + 1); ctx.moveTo(hx + k + 4, cy - 9); ctx.lineTo(hx + k - 4, cy + 1); ctx.stroke(); } ctx.restore();
+      blob(ctx, hx, cy - 11, 8.2, 5.6, '#ff9ec0', 2.2); blob(ctx, hx - 1.6, cy - 12.6, 2.6, 1.4, '#ffd3e2', 0.1);
+      ctx.beginPath(); ctx.moveTo(hx - 6.5, cy - 8.6); for (let k = 0; k < 4; k++) ctx.quadraticCurveTo(hx - 6.5 + k * 4.4 + 1.6, cy - 5.6, hx - 6.5 + (k + 1) * 4.4, cy - 8.6); ctx.lineWidth = 1.6; ctx.strokeStyle = INK; ctx.stroke();
+      blob(ctx, hx + 1, cy - 17.4, 2.6, 2.6, '#e8304e', 1.6); ctx.beginPath(); ctx.moveTo(hx + 1, cy - 19.6); ctx.quadraticCurveTo(hx + 2.5, cy - 23, hx + 5, cy - 23.4); ctx.lineWidth = 1.6; ctx.strokeStyle = INK; ctx.stroke();
+      ctx.restore(); return;
+    }
     ctx.beginPath(); ctx.moveTo(hx - 7, cy); ctx.lineTo(hx - 8, cy - 9); ctx.lineTo(hx - 3.5, cy - 4.5); ctx.lineTo(hx, cy - 11); ctx.lineTo(hx + 3.5, cy - 4.5); ctx.lineTo(hx + 8, cy - 9); ctx.lineTo(hx + 7, cy); ctx.closePath();
     const g = ctx.createLinearGradient(0, cy - 11, 0, cy); g.addColorStop(0, pieQueen ? '#ff8aa0' : '#fff5ad'); g.addColorStop(1, pieQueen ? '#d93a5c' : '#f4b632'); ctx.fillStyle = g; ctx.fill(); // v0.7.7: the Pie Queen wears a cherry-red crown
     ctx.lineWidth = 2.3; ctx.strokeStyle = INK; ctx.stroke();
@@ -432,8 +458,8 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
 // Sprite cache: renders each ant type/frame/carrying once at device scale.
 const spriteCache = new Map();
 export const ANT_FRAMES = 12; // v0.3: smoother walk cycle
-export function antSprite(type, frame, carrying, dpr) {
-  const key = type + frame + (carrying ? 'c' : '') + dpr;
+export function antSprite(type, frame, carrying, dpr, variant = '') {
+  const key = type + frame + (carrying ? 'c' : '') + dpr + variant; // v0.7.9: variant 'g' = the Nurse's grey (recharging / frozen) cap
   let s = spriteCache.get(key);
   if (s) return s;
   const S = C.ANTS[type].size;
@@ -441,7 +467,7 @@ export function antSprite(type, frame, carrying, dpr) {
   const cv = makeCanvas(Math.ceil(w * dpr), Math.ceil(h * dpr));
   const g = cv.getContext('2d');
   g.scale(dpr, dpr); g.translate(w / 2, h * 0.66);
-  drawAnt(g, type, frame / ANT_FRAMES, { carrying, blink: frame === 7 && !C.isQueen(type) });
+  drawAnt(g, type, frame / ANT_FRAMES, { carrying, blink: frame === 7 && !C.isQueen(type), grey: variant === 'g' });
   s = { cv, w, h, ox: w / 2, oy: h * 0.66 };
   spriteCache.set(key, s);
   return s;
@@ -1105,7 +1131,33 @@ function pieBody(ctx, r, pct) {
   for (let k = 0; k < bites; k++) { const [bx, by] = bAt(k); ctx.beginPath(); ctx.arc(bx, by, 9, 0, 7); ctx.lineWidth = 3; ctx.strokeStyle = INK; ctx.stroke(); }
   ctx.restore();
 }
-export const TREAT_BODIES = { cookie: cookieBody, cake: cakeBody, pie: pieBody };
+// v0.7.9 world 4: the Sundae (a glass dish seen from above: pink scoop, fudge drizzle, sprinkles, a cherry). Same bite scheme as the cookie; the shared faces sit on the scoop.
+function sundaeBody(ctx, r, pct) {
+  const bites = Math.round((1 - pct) * 9), bAt = (k) => { const a = -0.6 + k * 0.72; return [Math.cos(a) * r * 0.98, Math.sin(a) * r * 0.98]; };
+  ctx.save();
+  ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2);
+  for (let k = 0; k < bites; k++) { const [bx, by] = bAt(k); ctx.moveTo(bx + 9, by); ctx.arc(bx, by, 9, 0, Math.PI * 2, true); }
+  ctx.clip('evenodd');
+  const g = ctx.createRadialGradient(-8, -10, 4, 0, 0, r * 1.1); g.addColorStop(0, '#fff3f6'); g.addColorStop(0.7, '#ffc4d6'); g.addColorStop(1, '#f08fb0');
+  ctx.beginPath(); ctx.arc(0, 0, r, 0, 7); ctx.fillStyle = g; ctx.fill();
+  ctx.beginPath(); ctx.arc(0, 0, r - 1, 0, 7); ctx.lineWidth = 6; ctx.strokeStyle = '#d6f1ea'; ctx.stroke(); // glass dish rim
+  ctx.beginPath(); ctx.arc(0, 0, r - 4.2, 0, 7); ctx.lineWidth = 1.4; ctx.strokeStyle = 'rgba(80,150,135,0.7)'; ctx.stroke();
+  ctx.lineWidth = 3.4; ctx.strokeStyle = '#7a4a34'; ctx.lineCap = 'round'; // fudge drizzle
+  ctx.beginPath(); ctx.moveTo(-r + 7, -9); for (let k = 0; k < 5; k++) ctx.quadraticCurveTo(-r + 7 + k * 9 + 4.5, -9 + (k % 2 ? 8 : -8), -r + 7 + (k + 1) * 9, -9); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-r + 10, 15); for (let k = 0; k < 4; k++) ctx.quadraticCurveTo(-r + 10 + k * 10 + 5, 15 + (k % 2 ? -7 : 7), -r + 10 + (k + 1) * 10, 15); ctx.stroke();
+  for (const [x, y, c, a] of [[-14, -17, '#ffe27a', 0.6], [12, -15, '#8fd0f7', -0.5], [17, 8, '#ffffff', 0.9], [-17, 3, '#ffe27a', -0.3], [5, 18, '#8fd0f7', 0.4], [-6, 19, '#ffffff', 1.2], [20, -3, '#ffe27a', 0.2]]) { ctx.save(); ctx.translate(x, y); ctx.rotate(a); ctx.fillStyle = c; ctx.fillRect(-2.2, -0.8, 4.4, 1.7); ctx.restore(); }
+  ctx.restore();
+  blob(ctx, -r * 0.5, -r * 0.62, 4.4, 4.4, '#e8304e', 1.8); ctx.beginPath(); ctx.moveTo(-r * 0.5, -r * 0.62 - 3.8); ctx.quadraticCurveTo(-r * 0.5 + 3, -r * 0.62 - 8, -r * 0.5 + 6.5, -r * 0.62 - 8); ctx.lineWidth = 1.8; ctx.strokeStyle = INK; ctx.stroke();
+  ctx.save();
+  ctx.beginPath(); ctx.rect(-r - 12, -r - 12, r * 2 + 24, r * 2 + 24);
+  for (let k = 0; k < bites; k++) { const [bx, by] = bAt(k); ctx.moveTo(bx + 9, by); ctx.arc(bx, by, 9, 0, Math.PI * 2, true); }
+  ctx.clip('evenodd');
+  ctx.beginPath(); ctx.arc(0, 0, r, 0, 7); ctx.lineWidth = 3; ctx.strokeStyle = INK; ctx.stroke(); ctx.restore();
+  ctx.save(); ctx.beginPath(); ctx.arc(0, 0, r + 1, 0, 7); ctx.clip();
+  for (let k = 0; k < bites; k++) { const [bx, by] = bAt(k); ctx.beginPath(); ctx.arc(bx, by, 9, 0, 7); ctx.lineWidth = 3; ctx.strokeStyle = INK; ctx.stroke(); }
+  ctx.restore();
+}
+export const TREAT_BODIES = { cookie: cookieBody, cake: cakeBody, pie: pieBody, sundae: sundaeBody };
 // The body moves with the reaction: a jump (surprised), a fast shiver (oy oy oy), sinking (sad), sobbing bounces (crying).
 function reactMotion(react, t) {
   if (!react) return { dx: 0, dy: 0, sx: 1, sy: 1 };
@@ -1282,6 +1334,8 @@ export const THEMES = [
   { name: 'W3 butter', a: '#ecd37f', b: '#e5c974', grout: 'rgba(160,130,50,0.25)', trail: '#fffaf0', edge: '#c9a64f', dot: '#d9bb60' },
   { name: 'W3 blueberry', a: '#bcd5ef', b: '#b0cbea', check: 'rgba(90,130,200,0.14)', grout: 'rgba(90,120,170,0.22)', trail: '#fffaf2', edge: '#86a9d6', dot: '#9dbde4' },
   { name: 'W3 crust', a: '#e4bf92', b: '#deb88a', grain: 'rgba(130,80,40,0.14)', grout: 'rgba(130,85,45,0.28)', trail: '#fffaf0', edge: '#b98a57', dot: '#c99c6a' },
+  // v0.7.9 world 4 (Crumb Design w4-paste.json artThemes_add index 7): mint. Contrast A1/A2/A3 on all ten W4 maps in qa/v0.7.9/contrast.
+  { name: 'W4 mint', a: '#b6e4d6', b: '#abdccd', check: 'rgba(60,170,150,0.14)', grout: 'rgba(70,150,130,0.22)', trail: '#fffdf5', edge: '#80c3b0', dot: '#98d3c2' },
 ];
 export function renderMapBackground(routes, theme, w, h, dpr, props = []) {
   if (!Array.isArray(routes)) routes = [routes];

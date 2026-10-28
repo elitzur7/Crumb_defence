@@ -154,7 +154,7 @@ export const TARGET_MODE_TEXT = {
   laser: { carrier: 'Aims at ants carrying food first, then fewest HP. Heat: +12% per hit on the same ant.', front: 'Aims at the walking ant closest to the cookie. Heat: +12% per hit on the same ant.' },
   zapper: { carrier: 'First zap: food carriers first, then fewest HP. Chains to the nearest flyers (60% each jump).', front: 'First zap: the flyer closest to the cookie. Chains to the nearest flyers (60% each jump).' },
 };
-export const VERSION = '0.7.8'; // v0.7: shown on the map screen (keep in step with package.json + android versionName)
+export const VERSION = '0.7.9'; // v0.7: shown on the map screen (keep in step with package.json + android versionName)
 export const ANT_SIZES = { ...TUNING.antSizes };
 const ANT_TEXT = {
   small: { name: 'Scout Ant', desc: 'Tiny, fast, comes in swarms.' },
@@ -175,6 +175,9 @@ const ANT_TEXT = {
   greasy: { name: 'Buttery Ant', desc: 'Slippery! Slowing barely works. Hit it hard.' },
   mama: { name: 'Brood Ant', desc: 'Drops 3 baby ants when she falls.' },
   queen3: { name: 'Pie Queen', desc: 'BOSS of world 3. Calls buttery ants. Takes 55 of the pie. Ignores most slowing.' },
+  // v0.7.9 world 4 (Ice-Cream Parlour)
+  nurse: { name: 'Nurse Ant', desc: 'Heals hurt friends nearby every 3 seconds. Pop her first!' },
+  queen4: { name: 'Sundae Queen', desc: 'BOSS of world 4. Calls a nurse every 9 seconds, and the nurses heal her. Takes 50 of the sundae.' },
 };
 // ---------------- Queens (v0.4 item 19) ----------------
 // One queen per world, each a bit different. What a queen takes from the treat when she reaches it (`steal`) follows ONE formula:
@@ -199,6 +202,8 @@ export const rarityRank = (type) => Math.max(0, RARITY_TIERS.indexOf(rarityOf(ty
 // ---------------- Worlds (v0.5 items 13/14) ----------------
 // tuning.json "worlds": each world = 10 levels ending with its queen, its own treat. World 2 unlocks when every level of
 // world 1 is won AND the player has >= minStarsInWorld (v0.7: 18, was 20) of its 30 stars.
+// Star gates (v0.7.9): W1->W2 18, W2->W3 18, W3->W4 14 (encoded in tuning.json worlds[3].unlock). W4->W5 = 12 stars in W4 (review v0.7.8 plan s7, first-attempt W4 star sum 11.7):
+// recorded here only; encode it as worlds[4].unlock {allLevelsWonInWorld: 4, minStarsInWorld: 12} when World 5 exists.
 export const WORLDS = TUNING.worlds.map((w) => ({ coinMul: 1, ...w })); // v0.7.6 E5: coinMul (default 1) multiplies that world's win coins (not the first-clear bonus)
 export const QUEENS = Object.fromEntries(WORLDS.map((w) => [w.id, { type: w.queen, traits: TUNING.ants[w.queen].queenTraits }]));
 

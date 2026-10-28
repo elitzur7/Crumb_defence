@@ -3,7 +3,7 @@
 // (layout math, hit areas, taps, hidden in battle / modals), reduced motion, production build hygiene. Screenshots -> /workspace/ant-td/qa/v0.7.2/
 import puppeteer from 'puppeteer-core';
 import { serve } from './serve.mjs';
-const OUT = '/workspace/ant-td/qa/v0.7.2';
+const OUT = '/workspace/ant-td/qa/v0.7.9/suites/v072';
 await serve(8881, 'www-test'); await serve(8882, 'www');
 const browser = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: true, args: ['--no-sandbox'] });
 let fails = 0; const R = [];
