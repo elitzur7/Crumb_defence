@@ -13,7 +13,7 @@
 //   Only today's tile can be claimed, only today. Earlier unclaimed tiles of the cycle are "missed" for good.
 //   Days without any visit do not move the cursor, so Yair's example always gives 4/7: claim day 1, day 2,
 //   open day 3 without claiming (tile 3 -> missed), stay away any number of days -> the next visit is tile 4/7 (and 1/30).
-// Coins: the k-th coin prize of the current streak gives coinsByStreak[min(k,4)-1] = 5, 10, 15, 20, 20 ... (in order);
+// Coins: the k-th coin prize of the current streak gives coinsByStreak[min(k,4)-1] = 30, 60, 90, 120, 120 ... (v0.7.6: x (1 + 0.5 x (world - 1)), in order);
 //   the count restarts with the streak.
 import * as C from './config.js';
 import * as M from './meta.js';
@@ -55,11 +55,13 @@ export function nextStreak(save, now, K = C.CALENDAR) {
 }
 // coin prizes already taken in the streak today's claim continues (0 if it restarts)
 function coinBase(c, save, now, K) { return canClaim(save, now) && streakResets(c, dayNumber(now), K) ? 0 : (c.coinStep || 0); }
-export const coinAmount = (k, K = C.CALENDAR) => K.coinsByStreak[Math.min(Math.max(1, k), K.coinsByStreak.length) - 1];
+// v0.7.6 E2: coins = coinsByStreak[k] x (1 + worldStep x (world - 1)), rounded to a multiple of roundTo (world = the highest unlocked world, 1 by default)
+export const worldMul = (world = 1, K = C.CALENDAR) => 1 + (K.worldStep || 0) * (Math.max(1, world) - 1);
+export const coinAmount = (k, K = C.CALENDAR, world = 1) => { const v = K.coinsByStreak[Math.min(Math.max(1, k), K.coinsByStreak.length) - 1] * worldMul(world, K); const q = K.roundTo || 1; return Math.round(v / q) * q; };
 // what a tile gives: coins by the k-th coin day of the streak (coinStep, 1-based), diamonds by the streak week
-export function prizeFor(tile, streak, K = C.CALENDAR, coinStep = streak) {
+export function prizeFor(tile, streak, K = C.CALENDAR, coinStep = streak, world = 1) {
   const e = K.week[tile]; const s = Math.max(1, streak);
-  if (e.kind === 'coins') return { kind: 'coins', count: e.count ?? coinAmount(coinStep, K) };
+  if (e.kind === 'coins') return { kind: 'coins', count: e.count ?? coinAmount(coinStep, K, world) };
   if (e.kind === 'diamonds') return { kind: 'diamonds', count: e.count ?? K.diamondsByStreakWeek[Math.min(Math.floor((s - 1) / 7), K.diamondsByStreakWeek.length - 1)] };
   // v0.4 item 2: the wide day-7 tile is a level-2 card PLUS 5 diamonds (`extra`)
   if (e.kind === 'card') return { kind: 'card', level: e.level || 1, ...(e.extra ? { extra: { ...e.extra } } : {}) };
@@ -71,15 +73,15 @@ export function status(save, now, K = C.CALENDAR) {
   const tile = c.pos; const claimable = canClaim(save, now);
   const streakAfter = nextStreak(save, now, K);
   const resetPending = claimable && c.lastClaimDay != null && streakResets(c, today, K);
-  const base = coinBase(c, save, now, K);
+  const base = coinBase(c, save, now, K); const world = M.highestWorld(save);
   let coins = base; // preview assumes a claim on every coming visit day
   const tiles = K.week.map((e, i) => {
     let step = base + 1;
     if (i >= tile) { if (e.kind === 'coins') coins++; step = coins; }
     return {
       i, state: c.weekClaimed[i] ? 'claimed' : i === tile ? (claimable ? 'today' : 'claimed') : i < tile ? 'missed' : 'future',
-      prize: c.weekClaimed[i] && c.weekGot && c.weekGot[i] && c.weekGot[i].kind === e.kind ? { ...prizeFor(i, streakAfter, K, step), count: c.weekGot[i].count } // what was really received
-        : prizeFor(i, i >= tile ? streakAfter + (i - tile) : streakAfter, K, step),
+      prize: c.weekClaimed[i] && c.weekGot && c.weekGot[i] && c.weekGot[i].kind === e.kind ? { ...prizeFor(i, streakAfter, K, step, world), count: c.weekGot[i].count } // what was really received
+        : prizeFor(i, i >= tile ? streakAfter + (i - tile) : streakAfter, K, step, world),
     };
   });
   return { tile, claimable, streak: resetPending ? 0 : c.streak, streakAfter, resetPending, tiles, monthLength: K.monthLength, milestones: K.monthMilestones, cycleStartDay: c.cycleStartDay };
@@ -101,7 +103,7 @@ export function claim(save, now, rng = Math.random, K = C.CALENDAR) {
   const streak = nextStreak(save, now, K);
   const base = coinBase(c, save, now, K);
   const isCoins = K.week[tile].kind === 'coins';
-  const p0 = prizeFor(tile, streak, K, base + 1);
+  const p0 = prizeFor(tile, streak, K, base + 1, M.highestWorld(save));
   const prize = grant(save, p0, rng);
   const extra = p0.extra ? grant(save, p0.extra, rng) : null; // v0.4 item 2 (day 7: + 5 diamonds)
   if (prize && extra) prize.extra = extra;

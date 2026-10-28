@@ -224,7 +224,7 @@ for (const [w, h, dpr] of VIEWPORTS) {
     const { tx } = await texts(100);
     const want = `${res.tiles} tile${res.tiles > 1 ? 's' : ''}`; // v0.5 item 2: straight trail tiles until the wall/turn where it breaks
     ok(res && tx.includes(want) && tx.some((t) => t.startsWith('Roll here')), `${vp} B10 marble panel shows the roll at this spot "${want}"`);
-    ok(tx.some((t) => /Marble width [\d.]+ tiles \u2192 [\d.]+ tiles/.test(t)), `${vp} B10 marble size upgrade line has a unit (${tx.find((t) => t.includes('Marble')) || 'none'})`);
+    ok(/Marble width [\d.]+ tiles \u2192 [\d.]+ tiles/.test(tx.join(' ')), `${vp} B10 marble size upgrade line has a unit (v0.7.6: the line wraps to 2 lines at 12 px) (${tx.filter((t) => /Marble|tiles/.test(t)).join(' / ') || 'none'})`);
   }
   // ---------- B10b: Perfect Cookie title drawn once per frame; dimmed tray under results takes no taps ----------
   {
@@ -457,7 +457,7 @@ for (const [w, h, dpr] of VIEWPORTS) {
     await G(() => window.__game.go('map'));
   }
   // ---------- W9: item 13 - no "bonus" anywhere on screen during the whole run ----------
-  { const all = await G(() => [...window.__allTx]); const bon = all.filter((t) => /bonus/i.test(t)); ok(bon.length === 0, `${vp} W9 no "bonus" text drawn (boosters only) ${bon.slice(0, 5).join(' | ')}`); }
+  { const all = await G(() => [...window.__allTx]); const bon = all.filter((t) => /bonus/i.test(t) && t !== 'Star bonus' /* v0.7.6 E1: the results screen's Star bonus row is the one intended exception */); ok(bon.length === 0, `${vp} W9 no "bonus" text drawn (boosters only) ${bon.slice(0, 5).join(' | ')}`); }
   const allBad = bad(await G(() => [...window.__allTx]));
   ok(allBad.length === 0, `${vp} B8 no NaN/undefined/null text drawn anywhere during the whole run ${allBad.slice(0, 5).join(' | ')}`);
   // ---------- v0.7.2 C16: bottom tab bar ----------

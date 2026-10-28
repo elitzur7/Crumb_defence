@@ -154,7 +154,7 @@ export const TARGET_MODE_TEXT = {
   laser: { carrier: 'Aims at ants carrying food first, then fewest HP. Heat: +12% per hit on the same ant.', front: 'Aims at the walking ant closest to the cookie. Heat: +12% per hit on the same ant.' },
   zapper: { carrier: 'First zap: food carriers first, then fewest HP. Chains to the nearest flyers (60% each jump).', front: 'First zap: the flyer closest to the cookie. Chains to the nearest flyers (60% each jump).' },
 };
-export const VERSION = '0.7.5'; // v0.7: shown on the map screen (keep in step with package.json + android versionName)
+export const VERSION = '0.7.6'; // v0.7: shown on the map screen (keep in step with package.json + android versionName)
 export const ANT_SIZES = { ...TUNING.antSizes };
 const ANT_TEXT = {
   small: { name: 'Scout Ant', desc: 'Tiny, fast, comes in swarms.' },
@@ -191,7 +191,7 @@ export const isQueen = (type) => !!(ANTS[type] && ANTS[type].boss);
 // ---------------- Worlds (v0.5 items 13/14) ----------------
 // tuning.json "worlds": each world = 10 levels ending with its queen, its own treat. World 2 unlocks when every level of
 // world 1 is won AND the player has >= minStarsInWorld (v0.7: 18, was 20) of its 30 stars.
-export const WORLDS = TUNING.worlds.map((w) => ({ ...w }));
+export const WORLDS = TUNING.worlds.map((w) => ({ coinMul: 1, ...w })); // v0.7.6 E5: coinMul (default 1) multiplies that world's win coins (not the first-clear bonus)
 export const QUEENS = Object.fromEntries(WORLDS.map((w) => [w.id, { type: w.queen, traits: TUNING.ants[w.queen].queenTraits }]));
 
 // Crumbs per kill: basic ant = 1; others proportional to their "power" vs the worker (power ~ effective HP x speed factor).
@@ -221,6 +221,10 @@ export const ECONOMY = {
   // WIN  : coins = winBase + foodLeft * coinsPerFood + kills * coinsPerKillWin + levelIndex * coinsPerLevel  (+ firstClearBonus)
   winBase: 10, coinsPerFood: 0.3, coinsPerKillWin: 0.15, coinsPerLevel: 3,
   firstClearBonus: 25,
+  // v0.7.6 E1: coins paid ONCE per level the first time it reaches 2 / 3 stars (tuning.json economy.starBonus); a 1 -> 3 star jump pays both
+  starBonus: { 2: TUNING.economy.starBonus['2'], 3: TUNING.economy.starBonus['3'] },
+  // v0.7.6 E3: diamonds on the first clear of a world's boss level (its last level) and on the first 3 stars there (tuning.json economy.bossGems)
+  bossGems: { firstClear: TUNING.economy.bossGems.firstClear, firstThreeStars: TUNING.economy.bossGems.firstThreeStars },
   // v0.6 item 1: + floor(battle time / secondsPerCoin) for the time survived - its own results line, on a win AND on a loss.
   secondsPerCoin: 3,
   // LOSS : coins = min(lossCap, floor(kills * coinsPerKillLoss) + floor(time / secondsPerCoin)). The cap covers the whole loss
@@ -274,13 +278,15 @@ export const ECONOMY = {
 //   local calendar day passed without a claim (the hour of day never matters). Legacy alternative: 'hours24' (> `hours` since last seen).
 // Weekly row = the player's own 7-day cycle: it starts on the first visit day; every new visit day (a local calendar day on which the
 //   game was opened, claimed or not) moves one tile forward; after tile 7 a new cycle starts. Unclaimed earlier tiles are missed.
-// Amounts: coins = 5, 10, 15, 20 (cap) for the 1st, 2nd, 3rd, 4th+ coin prize of the current streak; diamonds 2..5 by streak week.
+// Amounts: coins = 30, 60, 90, 120 (cap; v0.7.6, x world multiplier) for the 1st, 2nd, 3rd, 4th+ coin prize of the current streak; diamonds 2..5 by streak week.
 // Card prizes prefer cards you don't own. Boosters are allowed in the table but are always clamped to ONE (item 14).
 // Formulas: see src/calendar.js header.
 export const CALENDAR = {
   monthLength: 30,
   monthlyReset: { rule: 'missedDay', hours: 24 }, // 'missedDay' (default) | 'hours24' (legacy alternative; uses `hours`)
-  coinsByStreak: [5, 10, 15, 20],              // 1st, 2nd, 3rd, 4th+ coin prize of the current streak (cap 20)
+  // v0.7.6 E2/E5: [30, 60, 90, 120] (tuning.json economy.calendar; was 5/10/15/20) x (1 + worldStep x (highest unlocked world - 1)), rounded to roundTo
+  coinsByStreak: TUNING.economy.calendar.coinsByStreak.slice(), // 1st, 2nd, 3rd, 4th+ coin prize of the current streak (the last value is the cap)
+  worldStep: TUNING.economy.calendar.worldStep, roundTo: TUNING.economy.calendar.roundTo,
   diamondsByStreakWeek: [2, 3, 4, 5],          // streak days 1-7, 8-14, 15-21, 22-30
   week: [                                      // tile 1..7 of the player's 7-day cycle
     { kind: 'coins' },
@@ -348,6 +354,7 @@ export { MAPS } from './maps.js'; // map layouts: tuning.json "maps"
 //   v0.3 values for reference (base, growth): L1 9/1.6, L2 7/1.8, L3 8/1.8, L4 8/2.0, L5 9/2.0, L6 10/2.1, L7 10/2.2, L8 11/2.2,
 //   L9 12/2.4, L10 12/2.4. hpMul re-tuned with the bots (npm run sim) after the range change (item 6).
 export const LEVELS = TUNING.levels.map((L) => ({ ...L }));
+export const isBossLevel = (i) => { const L = LEVELS[i]; const w = L && WORLDS.find((x) => x.id === L.world); return !!w && i === WORLD_START[w.id] + w.levels - 1; }; // v0.7.6 E3: the last level of a world (its queen)
 // first level index of each world
 export const WORLD_START = Object.fromEntries(WORLDS.map((w) => [w.id, LEVELS.findIndex((L) => L.world === w.id)]));
 export const worldOf = (i) => (LEVELS[i] ? LEVELS[i].world : 1);

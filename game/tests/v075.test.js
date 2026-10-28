@@ -14,18 +14,17 @@ const lin = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0
 const lum = (hex) => { const n = parseInt(hex.slice(1), 16); return 0.2126 * lin((n >> 16) & 255) + 0.7152 * lin((n >> 8) & 255) + 0.0722 * lin(n & 255); };
 const ratio = (a, b) => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
 
-test('v0.7.5 version + versionCode 20', () => {
-  assert.equal(C.VERSION, '0.7.5');
-  assert.match(rd('android/app/build.gradle'), /versionCode 20\b[\s\S]*versionName "0\.7\.5"/);
-  assert.equal(JSON.parse(rd('package.json')).version, '0.7.5');
+test('v0.7.5 version + versionCode (>= 20; the current release is asserted in v076.test.js)', () => {
+  assert.match(C.VERSION, /^0\.7\.[56]$/);
+  assert.ok(+/versionCode (\d+)/.exec(rd('android/app/build.gradle'))[1] >= 20);
 });
 
-test('A4: the ant body value ladder small > worker > big > heavy has adjacent steps >= 1.30 (plan: 1.48 / 1.38 / 1.48)', () => {
+test('A4: the ant body value ladder small > worker > big > heavy has adjacent steps >= 1.30 (v0.7.5 plan: 1.48 / 1.38 / 1.48; v0.7.6 V1: 1.37 / 1.38 / 1.48)', () => {
   const L = (t) => lum(A.ANT_COL[t]);
   const s1 = ratio(L('small'), L('worker')), s2 = ratio(L('worker'), L('big')), s3 = ratio(L('big'), L('heavy'));
   for (const s of [s1, s2, s3]) assert.ok(s >= 1.30, `step ${s.toFixed(2)}`);
   assert.ok(L('small') > L('worker') && L('worker') > L('big') && L('big') > L('heavy'));
-  assert.ok(Math.abs(s1 - 1.48) < 0.02 && Math.abs(s2 - 1.38) < 0.02 && Math.abs(s3 - 1.48) < 0.02, `${s1.toFixed(2)} ${s2.toFixed(2)} ${s3.toFixed(2)}`);
+  assert.ok(Math.abs(s1 - 1.37) < 0.02 && Math.abs(s2 - 1.38) < 0.02 && Math.abs(s3 - 1.48) < 0.02, `${s1.toFixed(2)} ${s2.toFixed(2)} ${s3.toFixed(2)}`);
 });
 
 test('C18: the trail is baked into the cached map background (no per-frame trail draw, no dashes, no hairlines)', () => {
@@ -82,7 +81,7 @@ test('mode chips: 34 px tall with an inactive outline; the badge pops for 0.5 s 
 
 test('juice table: hit squash 1.12/0.88 over 120 ms, number pop 0.6 -> 1.15 -> 1, death pop 1.25 in 80 ms then out in 120 ms, all gated by reducedMotion()', () => {
   const g = src('game.js');
-  assert.match(g, /sq = 0\.12 \* q \* q/); assert.match(g, /1\.15 - 0\.15/); assert.match(g, /1\.25 \* \(1 - /); assert.match(g, /k: 'ko'[^\n]*life: 0\.2, max: 0\.2/);
+  assert.match(g, /sq = 0\.12 \* q \* q/); assert.match(g, /1\.15 - 0\.15/); assert.match(g, /1\.25 \* \(1 - /); /* v0.7.6 V4: pop in the first 25%, KO life 0.32 s */ assert.match(g, /k: 'ko'[^\n]*life: 0\.32, max: 0\.32/);
   assert.ok((g.match(/reducedMotion\(\)/g) || []).length >= 8, 'reduced motion is consulted by the new juice');
   assert.match(src('fx.js'), /maxAlive: 8/);
 });

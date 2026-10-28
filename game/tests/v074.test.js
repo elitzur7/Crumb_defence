@@ -17,7 +17,7 @@ const mk = (o = {}) => { const b = new Battle({ levelIndex: 0, deck: DECK, seed:
 const still = (a) => { a.speed = 0; return a; };
 
 test('v0.7.4 version + versionCode (>= 18; the hotfix v0.7.4.1 is asserted in v0741.test.js)', () => {
-  assert.match(C.VERSION, /^0\.7\.[45](\.\d+)?$/); // v0.7.5 keeps this passing
+  assert.match(C.VERSION, /^0\.7\.[456](\.\d+)?$/); // v0.7.6 keeps this passing
   assert.ok(+/versionCode (\d+)/.exec(readFileSync(new URL('../android/app/build.gradle', import.meta.url), 'utf8'))[1] >= 18);
   assert.equal(JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version, C.VERSION);
 });

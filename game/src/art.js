@@ -188,7 +188,7 @@ export function starShape(ctx, x, y, r, fill, lw = 2) {
 
 // ---------------- ANTS (chibi, side/3-4 view, facing right) ----------------
 // Warm caramel palette, big heads, glossy eyes, thick clean outlines.
-export const ANT_COL = { small: '#fbc98a', worker: '#f0994d', big: '#d97a3f', gasmask: '#f0994d', armored: '#e48a47', flyer: '#f9b878', queen: '#f59b9b', queen2: '#c7a6f5', sprinter: '#f0994d', heavy: '#b95b34' }; // v0.7.5 C18: value ladder small > worker > big > heavy
+export const ANT_COL = { small: '#f8c07e', worker: '#f0994d', big: '#d97a3f', gasmask: '#f0994d', armored: '#e48a47', flyer: '#f9b878', queen: '#f59b9b', queen2: '#c7a6f5', sprinter: '#f0994d', heavy: '#b95b34' }; // v0.7.5 C18: value ladder small > worker > big > heavy; v0.7.6 V1 (A5): small #fbc98a -> #f8c07e (>= 1.447 vs the trail on all 20 maps; ladder 1.37 / 1.38 / 1.48)
 const ALW = 2.4; // ant outline width (v0.3: thinner = softer)
 
 function softBlob(ctx, x, y, rx, ry, col, lw = ALW) {
@@ -505,6 +505,8 @@ export function drawTower(ctx, type, t = 0, tw = null) {
   // upgraded towers look fancier: gold trim ring (L2+), a bit bigger each level, and (v0.6 research item 8) every level adds
   // visible parts that change the silhouette: L2 + L3 tower-specific parts, L4 a studded stone plinth, L5 a third part,
   // L6 (max) the crown + a pennant.
+  // v0.7.6 V2 (A10): one contact ring under every side tower (fan, lizard, tractor included; path items get none), drawn first
+  if (T.place === 'side') baked(ctx, 'ring76', (g) => { g.beginPath(); g.ellipse(0, 9, 19.5, 10.5, 0, 0, 7); g.fillStyle = '#a67c5c'; g.fill(); g.lineWidth = 3; g.strokeStyle = INK; g.stroke(); });
   if (lvl >= 4 && T.place === 'side') baked(ctx, 'plinth', plinthPaths);
   if (lvl >= 2 && T.place === 'side') {
     baked(ctx, 'trim', (g) => { g.beginPath(); g.ellipse(0, 7, 19, 10.5, 0, 0, 7); g.lineWidth = 3.2; g.strokeStyle = '#f4b632'; g.stroke(); });

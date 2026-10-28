@@ -208,31 +208,31 @@ test('calendar: skipping a whole calendar day resets the monthly bar to 1 (even 
   const s2 = M.newSave(); claimOn(s2, at(2026, 10, 19, 10)); visitOn(s2, at(2026, 10, 20, 10));
   assert.equal(claimOn(s2, at(2026, 10, 21, 10)).streak, 1);
 });
-test('calendar: coins rise 5, 10, 15, 20 in order on coin days, for every start weekday; restart with the streak', () => {
+test('calendar: coins rise 30, 60, 90, 120 in order (v0.7.6 E2: x6, was 5/10/15/20) on coin days, for every start weekday; restart with the streak', () => {
   for (let wd = 0; wd < 7; wd++) {
     const s = M.newSave(); const d1 = at(2026, 10, 18 + wd, 11); const coins = [];
     for (let d = 0; d < 21; d++) { const r = claimOn(s, d1 + d * DAY); if (r.prize.kind === 'coins') coins.push(r.prize.count); }
-    assert.deepEqual(coins, [5, 10, 15, 20, 20, 20, 20, 20, 20], `start wd ${wd}`);
+    assert.deepEqual(coins, [30, 60, 90, 120, 120, 120, 120, 120, 120], `start wd ${wd}`);
     // preview on the calendar matches what a claim gives
     const t = d1 + 21 * DAY; const st = visitOn(s, t); const r = Cal.claim(s, t, () => 0); assert.deepEqual(st.tiles[st.tile].prize.count, r.prize.count);
   }
   // claimed tiles show what was really received
   { const s = M.newSave(); const d1 = at(2026, 10, 20, 9); for (let d = 0; d < 4; d++) claimOn(s, d1 + d * DAY);
-    assert.deepEqual(visitOn(s, d1 + 4 * DAY).tiles.filter((x) => x.prize.kind === 'coins').map((x) => x.prize.count), [5, 10, 15]); }
-  // after a reset the coin steps start again at 5
+    assert.deepEqual(visitOn(s, d1 + 4 * DAY).tiles.filter((x) => x.prize.kind === 'coins').map((x) => x.prize.count), [30, 60, 90]); }
+  // after a reset the coin steps start again at 30
   const s = M.newSave(); const d1 = at(2026, 10, 20, 9);
   for (let d = 0; d < 4; d++) claimOn(s, d1 + d * DAY);                    // tiles 1-4: coins 5, 10, -, 15
   const back = d1 + 9 * DAY; const st = visitOn(s, back); assert.equal(st.tile, 4); // tile 5 (card); streak restarts
   claimOn(s, back); claimOn(s, back + DAY); claimOn(s, back + 2 * DAY);       // tiles 5, 6, 7
-  assert.deepEqual(claimOn(s, back + 3 * DAY).prize, { kind: 'coins', count: 5 }, 'new cycle tile 1 = first coin day of the new streak');
+  assert.deepEqual(claimOn(s, back + 3 * DAY).prize, { kind: 'coins', count: 30 }, 'new cycle tile 1 = first coin day of the new streak');
   // preview: the calendar shows the coming coin tiles in order
-  const s2 = M.newSave(); const st2 = visitOn(s2, d1); assert.deepEqual(st2.tiles.filter((x) => x.prize.kind === 'coins').map((x) => x.prize.count), [5, 10, 15]);
+  const s2 = M.newSave(); const st2 = visitOn(s2, d1); assert.deepEqual(st2.tiles.filter((x) => x.prize.kind === 'coins').map((x) => x.prize.count), [30, 60, 90]);
 });
-test('calendar prizes: coins 5/10/15/20 (cap), diamonds 2-5, day 7 = level-2 card + 5 diamonds (v0.4), one booster max', () => {
+test('calendar prizes: coins 30/60/90/120 (cap; v0.7.6 E2), diamonds 2-5, day 7 = level-2 card + 5 diamonds (v0.4), one booster max', () => {
   const K = C.CALENDAR; const kinds = K.week.map((e) => e.kind);
   assert.ok(kinds.every((k) => ['coins', 'diamonds', 'card', 'booster'].includes(k)));
   assert.deepEqual(K.week[6], { kind: 'card', level: 2, extra: { kind: 'diamonds', count: 5 } });
-  assert.deepEqual([1, 2, 3, 4, 5, 30].map((n) => Cal.prizeFor(0, n).count), [5, 10, 15, 20, 20, 20]);
+  assert.deepEqual([1, 2, 3, 4, 5, 30].map((n) => Cal.prizeFor(0, n).count), [30, 60, 90, 120, 120, 120]);
   const dia = []; for (let n = 1; n <= 30; n++) dia.push(Cal.prizeFor(2, n).count);
   assert.equal(Math.min(...dia), 2); assert.equal(Math.max(...dia), 5);
   for (const m of Object.values(K.monthMilestones)) if (m.kind === 'diamonds') assert.ok(m.count >= 2 && m.count <= 5);
@@ -270,7 +270,7 @@ test('no "bonus" in player-facing text: boosters are Bomb, Crop Duster, Freezer,
   assert.deepEqual(C.BONUS_TYPES.map((k) => C.BONUSES[k].name), ['Bomb', 'Crop Duster', 'Freezer', 'Sugar Cube']);
   const g = src('game.js');
   const strings = [...g.matchAll(/(['`])((?:(?!\1)[^\\\n]|\\.)*)\1/g)].map((m) => m[2].replace(/\$\{[^}]*\}/g, ''));
-  const ui = strings.filter((s) => /\bbonus(es)?\b/i.test(s) && /\s/.test(s));
+  const ui = strings.filter((s) => /\bbonus(es)?\b/i.test(s) && /\s/.test(s) && !/^Star bonus$/.test(s)); // v0.7.6 E1: 'Star bonus' is the first-time star coins line, not a booster
   assert.deepEqual(ui, [], 'UI strings mentioning bonus');
   for (const b of Object.values(C.BONUSES)) assert.ok(!/bonus/i.test(b.desc));
 });

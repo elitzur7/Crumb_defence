@@ -267,6 +267,8 @@ export function unlockedCards(save) { return C.ALL_CARDS.filter((id) => save.car
 // v0.5 item 14: the first level of world w > 1 needs EVERY level of world w-1 won AND >= minStarsInWorld stars there (v0.7: 18 of 30, tuning.json worlds[1].unlock).
 export function worldStars(save, w) { let s = 0; C.LEVELS.forEach((L, i) => { if (L.world === w) s += (save.levels[i] && save.levels[i].stars) || 0; }); return s; }
 export function worldCleared(save, w) { return C.LEVELS.every((L, i) => L.world !== w || (save.levels[i] && save.levels[i].cleared)); }
+// v0.7.6 E2: the highest world the player has unlocked (the calendar coin prizes scale with it)
+export function highestWorld(save) { let h = 1; for (const W of C.WORLDS) if (worldUnlocked(save, W.id)) h = Math.max(h, W.id); return h; }
 export function worldUnlocked(save, w) {
   const W = C.WORLDS.find((x) => x.id === w); if (!W || !W.unlock) return true;
   const u = W.unlock; const prev = u.allLevelsWonInWorld ?? w - 1;
@@ -283,10 +285,12 @@ export function cardLevels(save) { const o = {}; for (const id of C.ALL_CARDS) o
 // Coins earned for a battle (pure). Win: food left + ants killed (+ level, first clear) + time survived.
 // v0.6 item 1: time = floor(battle seconds / 3), its own line. Loss: ants killed + time survived, capped TOGETHER at lossCap (15).
 export function timeCoins(time, E = C.ECONOMY) { return Math.max(0, Math.floor((time || 0) / E.secondsPerCoin)); }
-export function battleCoins(result, { kills = 0, foodLeft = 0, levelIndex = 0, firstClear = false, time = 0 } = {}, E = C.ECONOMY) {
+export function battleCoins(result, { kills = 0, foodLeft = 0, levelIndex = 0, firstClear = false, time = 0, coinMul = 1 } = {}, E = C.ECONOMY) {
   if (result === 'win') {
-    const parts = { base: E.winBase, food: Math.round(foodLeft * E.coinsPerFood), kills: Math.round(kills * E.coinsPerKillWin),
-      level: levelIndex * E.coinsPerLevel, firstClear: firstClear ? E.firstClearBonus : 0, time: timeCoins(time, E) };
+    // v0.7.6 E5: worlds[w].coinMul scales the win coins (each line, so the results rows still add up); the first-clear bonus is not scaled
+    const m = (v) => (coinMul === 1 ? v : Math.round(v * coinMul));
+    const parts = { base: m(E.winBase), food: m(Math.round(foodLeft * E.coinsPerFood)), kills: m(Math.round(kills * E.coinsPerKillWin)),
+      level: m(levelIndex * E.coinsPerLevel), firstClear: firstClear ? E.firstClearBonus : 0, time: m(timeCoins(time, E)) };
     return { total: Object.values(parts).reduce((s, v) => s + v, 0), parts };
   }
   const k = Math.min(E.lossCap, Math.floor(kills * E.coinsPerKillLoss));
@@ -315,12 +319,22 @@ export function grantPerfectPrize(save, rng = Math.random, table = C.ECONOMY.per
 // info: { kills, foodLeft, perfect, time }. Cards and prizes are granted ONLY on a win (prize only on a perfect win).
 export function applyBattleResult(save, levelIndex, result, stars, info = {}, rng = Math.random) {
   const E = C.ECONOMY;
-  const out = { coins: 0, parts: {}, unlocked: null, bonusReward: null, booster: null, prize: null, firstClear: false, perfect: false };
+  const out = { coins: 0, parts: {}, unlocked: null, bonusReward: null, booster: null, prize: null, firstClear: false, perfect: false, starCoins: 0, gems: 0 };
   if (result === 'win') {
     const lv = save.levels[levelIndex];
     out.firstClear = !lv.cleared;
-    const c = battleCoins('win', { kills: info.kills || 0, foodLeft: info.foodLeft ?? C.BATTLE.foodHP, levelIndex, firstClear: out.firstClear, time: info.time || 0 });
+    const lvW = C.WORLDS.find((x) => x.id === C.worldOf(levelIndex));
+    const c = battleCoins('win', { kills: info.kills || 0, foodLeft: info.foodLeft ?? C.BATTLE.foodHP, levelIndex, firstClear: out.firstClear, time: info.time || 0, coinMul: (lvW && lvW.coinMul) ?? 1 });
     out.coins = c.total; out.parts = c.parts;
+    // v0.7.6 E1: first-time star coins. The stored `stars` of an existing save count as already paid (no retroactive grant, nothing is paid on load).
+    // A jump 1 -> 3 stars pays both steps; a repeat pays nothing.
+    const before = lv.stars || 0; const SB = E.starBonus;
+    out.starCoins = (before < 2 && stars >= 2 ? SB[2] : 0) + (before < 3 && stars >= 3 ? SB[3] : 0);
+    if (out.starCoins) { out.coins += out.starCoins; out.parts.stars = out.starCoins; }
+    // v0.7.6 E3: gems from play - the first clear of a world's boss level, and the first 3 stars there
+    out.gems = 0;
+    if (C.isBossLevel(levelIndex)) out.gems = (out.firstClear ? E.bossGems.firstClear : 0) + (before < 3 && stars >= 3 ? E.bossGems.firstThreeStars : 0);
+    if (out.gems) save.diamonds = (save.diamonds || 0) + out.gems;
     if (out.firstClear) {
       // v0.3 item 10: no card is unlocked by clearing a level any more.
       // v0.3 item 14: specific first-clear booster prizes (level 1 -> ONE Bomb)

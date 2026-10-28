@@ -24,6 +24,27 @@ var tuning_default = {
     unlockPriceDefault: 200,
     packNewTowerChance: 0.1
   },
+  economy: {
+    _about: "v0.7.6 E1/E2/E3/E5. starBonus: coins paid ONCE per level the first time it reaches 2 (key 2) and 3 (key 3) stars (a 1 -> 3 star jump pays both; stored stars count as already paid, no retroactive grant). bossGems: diamonds on the FIRST clear of a world's last level (its queen) and on the first 3 stars there. calendar.coinsByStreak: coins of the 1st, 2nd, 3rd, 4th+ coin prize of a streak, multiplied by 1 + worldStep x (highest unlocked world - 1), rounded to a multiple of roundTo. worlds[].coinMul (default 1) multiplies the win coins of that world's levels (not the first-clear bonus, not loss coins).",
+    starBonus: {
+      "2": 15,
+      "3": 25
+    },
+    bossGems: {
+      firstClear: 10,
+      firstThreeStars: 5
+    },
+    calendar: {
+      coinsByStreak: [
+        30,
+        60,
+        90,
+        120
+      ],
+      worldStep: 0.5,
+      roundTo: 5
+    }
+  },
   queenTraitMods: {
     fast: -10,
     flying: -15,
@@ -951,7 +972,8 @@ var tuning_default = {
       queen: "queen",
       levels: 10,
       unlock: null,
-      cardLevelCap: 4
+      cardLevelCap: 4,
+      coinMul: 1
     },
     {
       id: 2,
@@ -963,7 +985,8 @@ var tuning_default = {
         allLevelsWonInWorld: 1,
         minStarsInWorld: 18
       },
-      cardLevelCap: 6
+      cardLevelCap: 5,
+      coinMul: 1
     }
   ],
   levels: [
@@ -2227,7 +2250,7 @@ var AIR_COUNTERS = ["laser", "zapper"], TARGET_MODE_TEXT = {
   lizard: { carrier: "Targets ants carrying food first, then fewest HP left; chews after kills.", front: "Targets the walking ant closest to the cookie; chews after kills." },
   laser: { carrier: "Aims at ants carrying food first, then fewest HP. Heat: +12% per hit on the same ant.", front: "Aims at the walking ant closest to the cookie. Heat: +12% per hit on the same ant." },
   zapper: { carrier: "First zap: food carriers first, then fewest HP. Chains to the nearest flyers (60% each jump).", front: "First zap: the flyer closest to the cookie. Chains to the nearest flyers (60% each jump)." }
-}, VERSION = "0.7.5", ANT_SIZES = { ...tuning_default.antSizes }, ANT_TEXT = {
+}, VERSION = "0.7.6", ANT_SIZES = { ...tuning_default.antSizes }, ANT_TEXT = {
   small: { name: "Scout Ant", desc: "Tiny, fast, comes in swarms." },
   worker: { name: "Worker Ant", desc: "The regular. Hard hat included." },
   big: { name: "Big Ant", desc: "Slow, chunky, a bit of armor." },
@@ -2249,7 +2272,7 @@ function queenTake(traits = [], T = QUEEN_TRAITS) {
 var ANTS = {};
 for (let [id, a] of Object.entries(tuning_default.ants))
   ANTS[id] = { ...ANT_TEXT[id] || { name: id, desc: "" }, ...a, size: ANT_SIZES[a.size] ?? a.size, sizeClass: a.size }, a.boss && (ANTS[id].steal = queenTake(a.queenTraits || []));
-var isQueen = (type) => !!(ANTS[type] && ANTS[type].boss), WORLDS = tuning_default.worlds.map((w) => ({ ...w })), QUEENS = Object.fromEntries(WORLDS.map((w) => [w.id, { type: w.queen, traits: tuning_default.ants[w.queen].queenTraits }]));
+var isQueen = (type) => !!(ANTS[type] && ANTS[type].boss), WORLDS = tuning_default.worlds.map((w) => ({ coinMul: 1, ...w })), QUEENS = Object.fromEntries(WORLDS.map((w) => [w.id, { type: w.queen, traits: tuning_default.ants[w.queen].queenTraits }]));
 function antPower(a) {
   return a.hp * (1 + 0.12 * a.armor) * (a.gasImmune ? 1.15 : 1) * (a.flying ? 1.4 : 1) * Math.sqrt(a.speed / ANTS.worker.speed);
 }
@@ -2271,6 +2294,10 @@ var BONUSES = {
   coinsPerKillWin: 0.15,
   coinsPerLevel: 3,
   firstClearBonus: 25,
+  // v0.7.6 E1: coins paid ONCE per level the first time it reaches 2 / 3 stars (tuning.json economy.starBonus); a 1 -> 3 star jump pays both
+  starBonus: { 2: tuning_default.economy.starBonus[2], 3: tuning_default.economy.starBonus[3] },
+  // v0.7.6 E3: diamonds on the first clear of a world's boss level (its last level) and on the first 3 stars there (tuning.json economy.bossGems)
+  bossGems: { firstClear: tuning_default.economy.bossGems.firstClear, firstThreeStars: tuning_default.economy.bossGems.firstThreeStars },
   // v0.6 item 1: + floor(battle time / secondsPerCoin) for the time survived - its own results line, on a win AND on a loss.
   secondsPerCoin: 3,
   // LOSS : coins = min(lossCap, floor(kills * coinsPerKillLoss) + floor(time / secondsPerCoin)). The cap covers the whole loss
@@ -2336,8 +2363,11 @@ var BONUSES = {
   monthLength: 30,
   monthlyReset: { rule: "missedDay", hours: 24 },
   // 'missedDay' (default) | 'hours24' (legacy alternative; uses `hours`)
-  coinsByStreak: [5, 10, 15, 20],
-  // 1st, 2nd, 3rd, 4th+ coin prize of the current streak (cap 20)
+  // v0.7.6 E2/E5: [30, 60, 90, 120] (tuning.json economy.calendar; was 5/10/15/20) x (1 + worldStep x (highest unlocked world - 1)), rounded to roundTo
+  coinsByStreak: tuning_default.economy.calendar.coinsByStreak.slice(),
+  // 1st, 2nd, 3rd, 4th+ coin prize of the current streak (the last value is the cap)
+  worldStep: tuning_default.economy.calendar.worldStep,
+  roundTo: tuning_default.economy.calendar.roundTo,
   diamondsByStreakWeek: [2, 3, 4, 5],
   // streak days 1-7, 8-14, 15-21, 22-30
   week: [
@@ -2395,7 +2425,10 @@ var BONUSES = {
 }, TREATS = Object.fromEntries(WORLDS.map((w) => [w.id, w.treat])), MERGE = {
   cardsPerMerge: 3,
   coinCost: [0, 0, 10, 20, 40, 60, 90, 130, 180, 240, 320]
-}, MAX_CARD_LEVEL = 10, LEVELS = tuning_default.levels.map((L) => ({ ...L })), WORLD_START = Object.fromEntries(WORLDS.map((w) => [w.id, LEVELS.findIndex((L) => L.world === w.id)])), worldOf = (i) => LEVELS[i] ? LEVELS[i].world : 1, treatOf = (i) => TREATS[worldOf(i)] || "cookie";
+}, MAX_CARD_LEVEL = 10, LEVELS = tuning_default.levels.map((L) => ({ ...L })), isBossLevel = (i) => {
+  let L = LEVELS[i], w = L && WORLDS.find((x) => x.id === L.world);
+  return !!w && i === WORLD_START[w.id] + w.levels - 1;
+}, WORLD_START = Object.fromEntries(WORLDS.map((w) => [w.id, LEVELS.findIndex((L) => L.world === w.id)])), worldOf = (i) => LEVELS[i] ? LEVELS[i].world : 1, treatOf = (i) => TREATS[worldOf(i)] || "cookie";
 
 // src/sim.js
 function mulberry32(seed) {
@@ -3487,6 +3520,11 @@ function worldStars(save, w) {
 function worldCleared(save, w) {
   return LEVELS.every((L, i) => L.world !== w || save.levels[i] && save.levels[i].cleared);
 }
+function highestWorld(save) {
+  let h = 1;
+  for (let W2 of WORLDS) worldUnlocked(save, W2.id) && (h = Math.max(h, W2.id));
+  return h;
+}
 function worldUnlocked(save, w) {
   let W2 = WORLDS.find((x) => x.id === w);
   if (!W2 || !W2.unlock) return !0;
@@ -3506,15 +3544,15 @@ function cardLevels(save) {
 function timeCoins(time, E = ECONOMY) {
   return Math.max(0, Math.floor((time || 0) / E.secondsPerCoin));
 }
-function battleCoins(result, { kills = 0, foodLeft = 0, levelIndex = 0, firstClear = !1, time = 0 } = {}, E = ECONOMY) {
+function battleCoins(result, { kills = 0, foodLeft = 0, levelIndex = 0, firstClear = !1, time = 0, coinMul = 1 } = {}, E = ECONOMY) {
   if (result === "win") {
-    let parts = {
-      base: E.winBase,
-      food: Math.round(foodLeft * E.coinsPerFood),
-      kills: Math.round(kills * E.coinsPerKillWin),
-      level: levelIndex * E.coinsPerLevel,
+    let m = (v) => coinMul === 1 ? v : Math.round(v * coinMul), parts = {
+      base: m(E.winBase),
+      food: m(Math.round(foodLeft * E.coinsPerFood)),
+      kills: m(Math.round(kills * E.coinsPerKillWin)),
+      level: m(levelIndex * E.coinsPerLevel),
       firstClear: firstClear ? E.firstClearBonus : 0,
-      time: timeCoins(time, E)
+      time: m(timeCoins(time, E))
     };
     return { total: Object.values(parts).reduce((s, v) => s + v, 0), parts };
   }
@@ -3536,12 +3574,14 @@ function grantPerfectPrize(save, rng = Math.random, table = ECONOMY.perfectPrize
   return grantBooster(save, pick.id, pick.count);
 }
 function applyBattleResult(save, levelIndex, result, stars, info = {}, rng = Math.random) {
-  let E = ECONOMY, out = { coins: 0, parts: {}, unlocked: null, bonusReward: null, booster: null, prize: null, firstClear: !1, perfect: !1 };
+  let E = ECONOMY, out = { coins: 0, parts: {}, unlocked: null, bonusReward: null, booster: null, prize: null, firstClear: !1, perfect: !1, starCoins: 0, gems: 0 };
   if (result === "win") {
     let lv = save.levels[levelIndex];
     out.firstClear = !lv.cleared;
-    let c = battleCoins("win", { kills: info.kills || 0, foodLeft: info.foodLeft ?? BATTLE.foodHP, levelIndex, firstClear: out.firstClear, time: info.time || 0 });
-    if (out.coins = c.total, out.parts = c.parts, out.firstClear) {
+    let lvW = WORLDS.find((x) => x.id === worldOf(levelIndex)), c = battleCoins("win", { kills: info.kills || 0, foodLeft: info.foodLeft ?? BATTLE.foodHP, levelIndex, firstClear: out.firstClear, time: info.time || 0, coinMul: (lvW && lvW.coinMul) ?? 1 });
+    out.coins = c.total, out.parts = c.parts;
+    let before = lv.stars || 0, SB = E.starBonus;
+    if (out.starCoins = (before < 2 && stars >= 2 ? SB[2] : 0) + (before < 3 && stars >= 3 ? SB[3] : 0), out.starCoins && (out.coins += out.starCoins, out.parts.stars = out.starCoins), out.gems = 0, isBossLevel(levelIndex) && (out.gems = (out.firstClear ? E.bossGems.firstClear : 0) + (before < 3 && stars >= 3 ? E.bossGems.firstThreeStars : 0)), out.gems && (save.diamonds = (save.diamonds || 0) + out.gems), out.firstClear) {
       let fb = (E.firstClearBoosters || {})[levelIndex];
       if (fb && (out.booster = grantBooster(save, fb, 1)), E.bonusRewardOnFirstClear && !out.booster) {
         let b = BONUS_TYPES[Math.floor(rng() * BONUS_TYPES.length)];
@@ -3624,20 +3664,23 @@ function nextStreak(save, now2, K = CALENDAR) {
 function coinBase(c, save, now2, K) {
   return canClaim(save, now2) && streakResets(c, dayNumber(now2), K) ? 0 : c.coinStep || 0;
 }
-var coinAmount = (k, K = CALENDAR) => K.coinsByStreak[Math.min(Math.max(1, k), K.coinsByStreak.length) - 1];
-function prizeFor(tile, streak, K = CALENDAR, coinStep = streak) {
+var worldMul = (world = 1, K = CALENDAR) => 1 + (K.worldStep || 0) * (Math.max(1, world) - 1), coinAmount = (k, K = CALENDAR, world = 1) => {
+  let v = K.coinsByStreak[Math.min(Math.max(1, k), K.coinsByStreak.length) - 1] * worldMul(world, K), q = K.roundTo || 1;
+  return Math.round(v / q) * q;
+};
+function prizeFor(tile, streak, K = CALENDAR, coinStep = streak, world = 1) {
   let e = K.week[tile], s = Math.max(1, streak);
-  return e.kind === "coins" ? { kind: "coins", count: e.count ?? coinAmount(coinStep, K) } : e.kind === "diamonds" ? { kind: "diamonds", count: e.count ?? K.diamondsByStreakWeek[Math.min(Math.floor((s - 1) / 7), K.diamondsByStreakWeek.length - 1)] } : e.kind === "card" ? { kind: "card", level: e.level || 1, ...e.extra ? { extra: { ...e.extra } } : {} } : e.kind === "booster" ? { kind: "booster", id: e.id, count: 1 } : { ...e };
+  return e.kind === "coins" ? { kind: "coins", count: e.count ?? coinAmount(coinStep, K, world) } : e.kind === "diamonds" ? { kind: "diamonds", count: e.count ?? K.diamondsByStreakWeek[Math.min(Math.floor((s - 1) / 7), K.diamondsByStreakWeek.length - 1)] } : e.kind === "card" ? { kind: "card", level: e.level || 1, ...e.extra ? { extra: { ...e.extra } } : {} } : e.kind === "booster" ? { kind: "booster", id: e.id, count: 1 } : { ...e };
 }
 function status(save, now2, K = CALENDAR) {
   let c = cal(save), today = dayNumber(now2);
   visit(c, today, K);
-  let tile = c.pos, claimable = canClaim(save, now2), streakAfter = nextStreak(save, now2, K), resetPending = claimable && c.lastClaimDay != null && streakResets(c, today, K), base = coinBase(c, save, now2, K), coins = base, tiles = K.week.map((e, i) => {
+  let tile = c.pos, claimable = canClaim(save, now2), streakAfter = nextStreak(save, now2, K), resetPending = claimable && c.lastClaimDay != null && streakResets(c, today, K), base = coinBase(c, save, now2, K), world = highestWorld(save), coins = base, tiles = K.week.map((e, i) => {
     let step = base + 1;
     return i >= tile && (e.kind === "coins" && coins++, step = coins), {
       i,
       state: c.weekClaimed[i] ? "claimed" : i === tile ? claimable ? "today" : "claimed" : i < tile ? "missed" : "future",
-      prize: c.weekClaimed[i] && c.weekGot && c.weekGot[i] && c.weekGot[i].kind === e.kind ? { ...prizeFor(i, streakAfter, K, step), count: c.weekGot[i].count } : prizeFor(i, i >= tile ? streakAfter + (i - tile) : streakAfter, K, step)
+      prize: c.weekClaimed[i] && c.weekGot && c.weekGot[i] && c.weekGot[i].kind === e.kind ? { ...prizeFor(i, streakAfter, K, step, world), count: c.weekGot[i].count } : prizeFor(i, i >= tile ? streakAfter + (i - tile) : streakAfter, K, step, world)
     };
   });
   return { tile, claimable, streak: resetPending ? 0 : c.streak, streakAfter, resetPending, tiles, monthLength: K.monthLength, milestones: K.monthMilestones, cycleStartDay: c.cycleStartDay };
@@ -3650,7 +3693,7 @@ function claim(save, now2, rng = Math.random, K = CALENDAR) {
   if (visit(c, today, K), !canClaim(save, now2)) return { ok: !1, why: "claimed" };
   let tile = c.pos;
   if (c.weekClaimed[tile]) return { ok: !1, why: "claimed" };
-  let streak = nextStreak(save, now2, K), base = coinBase(c, save, now2, K), isCoins = K.week[tile].kind === "coins", p0 = prizeFor(tile, streak, K, base + 1), prize = grant(save, p0, rng), extra = p0.extra ? grant(save, p0.extra, rng) : null;
+  let streak = nextStreak(save, now2, K), base = coinBase(c, save, now2, K), isCoins = K.week[tile].kind === "coins", p0 = prizeFor(tile, streak, K, base + 1, highestWorld(save)), prize = grant(save, p0, rng), extra = p0.extra ? grant(save, p0.extra, rng) : null;
   prize && extra && (prize.extra = extra);
   let ms = K.monthMilestones && K.monthMilestones[streak], milestone = ms ? grant(save, ms.kind === "booster" ? { ...ms, count: 1 } : ms, rng) : null;
   return c.streak = streak, c.coinStep = base + (isCoins ? 1 : 0), c.lastClaimDay = today, c.lastClaimTs = now2, c.lastSeenTs = now2, c.broken = !1, c.weekClaimed[tile] = !0, c.weekGot = c.weekGot || [], c.weekGot[tile] = prize && prize.count != null ? { kind: prize.kind, count: prize.count } : null, c.log = [...c.log || [], { day: today, tile, streak, prize: prize && prize.kind }].slice(-40), { ok: !0, tile, streak, prize, extra, milestone };
@@ -3823,7 +3866,7 @@ function starShape(ctx2, x, y, r, fill, lw = 2) {
   }
   ctx2.closePath(), ctx2.fillStyle = fill, ctx2.fill(), ctx2.lineJoin = "round", ctx2.lineWidth = lw, ctx2.strokeStyle = INK, ctx2.stroke();
 }
-var ANT_COL = { small: "#fbc98a", worker: "#f0994d", big: "#d97a3f", gasmask: "#f0994d", armored: "#e48a47", flyer: "#f9b878", queen: "#f59b9b", queen2: "#c7a6f5", sprinter: "#f0994d", heavy: "#b95b34" }, ALW = 2.4;
+var ANT_COL = { small: "#f8c07e", worker: "#f0994d", big: "#d97a3f", gasmask: "#f0994d", armored: "#e48a47", flyer: "#f9b878", queen: "#f59b9b", queen2: "#c7a6f5", sprinter: "#f0994d", heavy: "#b95b34" }, ALW = 2.4;
 function softBlob(ctx2, x, y, rx, ry, col, lw = ALW) {
   blob(ctx2, x, y, rx, ry, col, lw), ctx2.beginPath(), ctx2.ellipse(x - rx * 0.28, y - ry * 0.46, rx * 0.4, ry * 0.22, -0.35, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.5)", ctx2.fill();
 }
@@ -4029,7 +4072,9 @@ function padPaths(ctx2, color) {
 var lvKey = (lvl) => lvl >= 5 ? 5 : lvl >= 3 ? 3 : lvl >= 2 ? 2 : 1, r2 = (v) => Math.round(v * 100) / 100;
 function drawTower(ctx2, type, t = 0, tw = null) {
   let T = TOWERS[type], aim = tw ? tw.aim : -0.6, fx = tw ? tw.fireFx : 0, lvl = tw && tw.lvl || 1, lk = lvKey(lvl);
-  switch (ctx2.save(), ctx2.lineJoin = "round", ctx2.lineCap = "round", lvl >= 4 && T.place === "side" && baked(ctx2, "plinth", plinthPaths), lvl >= 2 && T.place === "side" && (baked(ctx2, "trim", (g) => {
+  switch (ctx2.save(), ctx2.lineJoin = "round", ctx2.lineCap = "round", T.place === "side" && baked(ctx2, "ring76", (g) => {
+    g.beginPath(), g.ellipse(0, 9, 19.5, 10.5, 0, 0, 7), g.fillStyle = "#a67c5c", g.fill(), g.lineWidth = 3, g.strokeStyle = INK, g.stroke();
+  }), lvl >= 4 && T.place === "side" && baked(ctx2, "plinth", plinthPaths), lvl >= 2 && T.place === "side" && (baked(ctx2, "trim", (g) => {
     g.beginPath(), g.ellipse(0, 7, 19, 10.5, 0, 0, 7), g.lineWidth = 3.2, g.strokeStyle = "#f4b632", g.stroke();
   }), ctx2.beginPath(), ctx2.ellipse(0, 7, 19, 10.5, 0, Math.PI * 1.1 + t % 3 * 0.6, Math.PI * 1.3 + t % 3 * 0.6), ctx2.lineWidth = 2, ctx2.strokeStyle = "#fff6c0", ctx2.stroke()), lvl > 1 && ctx2.scale(1 + 0.03 * (lvl - 1), 1 + 0.03 * (lvl - 1)), lvl >= 4 && T.place === "path" && pathStuds(ctx2, t), type) {
     case "slingshot": {
@@ -5451,7 +5496,18 @@ function modeTap(b, t) {
 function addFx(f) {
   S.fx.push(f);
   let cap = S.speed >= 4 ? 220 : 300;
-  S.fx.length > cap && S.fx.splice(0, 60);
+  if (S.fx.length > cap) {
+    let n = 0, j = 0;
+    for (let i = 0; i < S.fx.length; i++) {
+      let q = S.fx[i];
+      if (q.k === "spark" && n < 60) {
+        n++;
+        continue;
+      }
+      S.fx[j++] = q;
+    }
+    S.fx.length = j, S.fx.length > cap && S.fx.splice(0, 60);
+  }
 }
 function addUi(f) {
   S.ui.push(f), S.ui.length > 60 && S.ui.splice(0, 20);
@@ -5467,7 +5523,7 @@ function killFx(e) {
   }
   let fast = S.speed >= 4;
   for (let i = 0; i < (fast ? 1 : 4); i++) addFx({ k: "crumbBit", x: e.x, y: e.y - 6, vx: (Math.random() - 0.5) * 90, vy: -40 - Math.random() * 60, life: 0.6, max: 0.6 });
-  addFx({ k: "ko", x: e.x, y: e.y, ant: e.ant, life: 0.2, max: 0.2, face: Math.random() < 0.5 ? 1 : -1 });
+  addFx({ k: "ko", x: e.x, y: e.y, ant: e.ant, life: 0.32, max: 0.32, face: Math.random() < 0.5 ? 1 : -1 });
   for (let i = 0; i < (fast ? 2 : 5); i++) addFx({ k: "puff", x: e.x + (Math.random() - 0.5) * 10, y: e.y + (Math.random() - 0.5) * 6, vx: (Math.random() - 0.5) * 40, vy: -Math.random() * 30, r: 4 + Math.random() * 4, life: 0.5, max: 0.5 });
   addFloatText(S.fx, { k: "crumbTxt", key: "crumb", x: e.x, y: e.y - 14, n: e.crumbs, fmt: (n) => n, life: 0.9 }), sfx("pop");
 }
@@ -5810,10 +5866,10 @@ function drawMapRoad() {
 }
 function drawWorldGate(w) {
   let W2 = WORLDS.find((x) => x.id === w), y = gateY(w), open = worldUnlocked(S.save, w), prev = W2.unlock ? W2.unlock.allLevelsWonInWorld ?? w - 1 : w - 1;
-  if (panel(40, y - 30, 320, 60, open ? "#fff1f6" : "#efe7ec", 18), ctx.save(), ctx.translate(76, y + 2), ctx.scale(0.62, 0.62), drawTreat(ctx, W2.treat, 0, 0, 1, S.t, { face: open ? "happy" : "content" }), ctx.restore(), text(ctx, `World ${w}: ${W2.name}`, 214, y - 12, 17, open ? "#ff8fab" : "#b9a6b2"), open) plainText("Open! Beat the queen at the top.", 214, y + 12, 11.5, "#6b5562", "center", "600");
+  if (panel(40, y - 30, 320, 60, open ? "#fff1f6" : "#efe7ec", 18), ctx.save(), ctx.translate(76, y + 2), ctx.scale(0.62, 0.62), drawTreat(ctx, W2.treat, 0, 0, 1, S.t, { face: open ? "happy" : "content" }), ctx.restore(), text(ctx, `World ${w}: ${W2.name}`, 214, y - 12, 17, open ? "#ff8fab" : "#b9a6b2"), open) plainText("Open! Beat the queen at the top.", 214, y + 12, 12, "#6b5562", "center", "600");
   else {
     let won = LEVELS.filter((L, i) => L.world === prev && S.save.levels[i].cleared).length, total = LEVELS.filter((L) => L.world === prev).length;
-    plainFit(`Locked: win all ${total} levels (${won}/${total}) + ${W2.unlock.minStarsInWorld} stars (${worldStars(S.save, prev)}/${total * 3})`, 214, y + 12, 262, 12, "#a0607e", "center", "700"), ctx.save(), ctx.translate(346, y - 22), rr(ctx, -8, -3, 16, 13, 3), ctx.fillStyle = "#8c8090", ctx.fill(), ctx.beginPath(), ctx.arc(0, -4, 5.5, Math.PI, 0), ctx.lineWidth = 3, ctx.strokeStyle = "#8c8090", ctx.stroke(), ctx.restore();
+    plainFit(`Locked: all ${total} levels (${won}/${total}) + ${W2.unlock.minStarsInWorld} stars (${worldStars(S.save, prev)}/${total * 3})`, 214, y + 12, 262, 12, "#a0607e", "center", "700"), ctx.save(), ctx.translate(346, y - 22), rr(ctx, -8, -3, 16, 13, 3), ctx.fillStyle = "#8c8090", ctx.fill(), ctx.beginPath(), ctx.arc(0, -4, 5.5, Math.PI, 0), ctx.lineWidth = 3, ctx.strokeStyle = "#8c8090", ctx.stroke(), ctx.restore();
   }
 }
 function updateCardsBlink() {
@@ -5827,7 +5883,7 @@ function renderMapScreen() {
   let wob = Math.sin(S.t * 2) * 2;
   text(ctx, "Crumb", -22, -8 + wob, 40, "#ffd27a"), text(ctx, "Defense", 26, 28 - wob, 36, "#ffb3c1"), ctx.restore(), drawCookie(ctx, 64, 66, 0.9, S.t, {}), ctx.save(), ctx.translate(336, 86), ctx.scale(1.6, 1.6), drawAnt(ctx, "worker", S.t * 1.2 % 1), ctx.restore(), panel(158, 112, 110, 36, "#fff6ee", 18), diamondIcon(ctx, 178, 130, 1.1), text(ctx, String(S.save.diamonds || 0), 224, 131, 18, "#7fd3ff"), panel(276, 112, 116, 36, "#fff6ee", 18), coinIcon(ctx, 296, 130, 1.2), text(ctx, String(S.save.coins), 344, 131, 18, "#ffd45e");
   let claim2 = canClaim(S.save, now());
-  claim2 && (rr(ctx, 10, 106, 74, 74, 20), ctx.fillStyle = `rgba(255,212,94,${0.3 + 0.25 * Math.sin(S.t * 5)})`, ctx.fill()), rr(ctx, 14, 110, 66, 66, 16), ctx.fillStyle = claim2 ? "#ffe7a8" : "#fbe3ee", ctx.fill(), ctx.lineWidth = 2.5, ctx.strokeStyle = INK, ctx.stroke(), giftIcon(ctx, 14 + 66 / 2, 136 + (claim2 ? Math.sin(S.t * 5) * 1.5 : 0), 1.05), plainText("Calendar", 14 + 66 / 2, 162, 11, "#5a4652", "center", "700"), claim2 && (blob(ctx, 78, 112, 8, 8, "#ff6f91", 1.6), text(ctx, "!", 78, 110 + 2.5, 12)), button("calendar", 10, 106, 74, 74, () => openCalendar()), S.mapScroll = clampScroll(S.mapScroll || 0);
+  claim2 && (rr(ctx, 10, 106, 74, 74, 20), ctx.fillStyle = `rgba(255,212,94,${0.3 + 0.25 * Math.sin(S.t * 5)})`, ctx.fill()), rr(ctx, 14, 110, 66, 66, 16), ctx.fillStyle = claim2 ? "#ffe7a8" : "#fbe3ee", ctx.fill(), ctx.lineWidth = 2.5, ctx.strokeStyle = INK, ctx.stroke(), giftIcon(ctx, 14 + 66 / 2, 136 + (claim2 ? Math.sin(S.t * 5) * 1.5 : 0), 1.05), plainText("Calendar", 14 + 66 / 2, 162, 12, "#5a4652", "center", "700"), claim2 && (blob(ctx, 78, 112, 8, 8, "#ff6f91", 1.6), text(ctx, "!", 78, 110 + 2.5, 12)), button("calendar", 10, 106, 74, 74, () => openCalendar()), S.mapScroll = clampScroll(S.mapScroll || 0);
   let sc = S.mapScroll;
   ctx.save(), ctx.beginPath(), ctx.rect(-200, MAPVIEW.top, W + 400, MAPVIEW.bottom - MAPVIEW.top), ctx.clip(), ctx.translate(0, sc), drawMapRoad();
   for (let w of WORLDS) w.id > 1 && drawWorldGate(w.id);
@@ -5842,11 +5898,11 @@ function renderMapScreen() {
   }
   if (ctx.restore(), gateY(2) + sc < MAPVIEW.top - 10) {
     let a = 0.75 + 0.25 * Math.sin(S.t * 4);
-    ctx.save(), ctx.globalAlpha = a, rr(ctx, 128, MAPVIEW.top + 4, 144, 26, 13), ctx.fillStyle = "rgba(90,64,88,0.85)", ctx.fill(), plainText("\u25B2 World 2 - scroll up", 200, MAPVIEW.top + 17.5, 11.5, "#ffffff", "center", "700"), ctx.restore();
+    ctx.save(), ctx.globalAlpha = a, rr(ctx, 128, MAPVIEW.top + 4, 144, 26, 13), ctx.fillStyle = "rgba(90,64,88,0.85)", ctx.fill(), plainText("\u25B2 World 2 - scroll up", 200, MAPVIEW.top + 17.5, 12, "#ffffff", "center", "700"), ctx.restore();
   }
   updateCardsBlink(), blob(ctx, 363, 22, 19, 19, "#fff6ee", 2.2), drawGearIcon(363, 22, 12), button("gear", 337, 0, 52, 52, () => openSettings());
   let shopHint = !S.cal && !S.settings && zapperGiftPending(S.save) && !S.reveal.length;
-  !S.cal && !S.settings && !shopHint && plainText("v" + VERSION, 14, 186, 11, "#a08090", "left", "600"), S.cal ? renderCalendar() : S.settings ? renderSettings() : shopHint && onboardSpot(tabRect(2), "shop", () => go("shop"), "A free pack waits in the Shop!"), renderUiFx(1 / 60);
+  !S.cal && !S.settings && !shopHint && plainText("v" + VERSION, 14, 186, 12, "#a08090", "left", "600"), S.cal ? renderCalendar() : S.settings ? renderSettings() : shopHint && onboardSpot(tabRect(2), "shop", () => go("shop"), "A free pack waits in the Shop!"), renderUiFx(1 / 60);
 }
 var lastBubble = null;
 function onboardSpot(R, id, onTap, msg, bub = null) {
@@ -5872,7 +5928,7 @@ function drawFinger(x, y) {
   rr(ctx, -16, -62, 36, 14, 5), ctx.fillStyle = "#9ad0ff", ctx.lineWidth = 2.4, ctx.fill(), ctx.stroke(), ctx.beginPath(), ctx.ellipse(0, -6, 3, 2, 0, 0, 7), ctx.fillStyle = "#fff3ea", ctx.fill(), ctx.restore();
 }
 function prizeIcon(p, x, y, s = 1) {
-  p.kind === "coins" ? (coinIcon(ctx, x - 6 * s, y + 2 * s, 1.1 * s), coinIcon(ctx, x + 5 * s, y - 3 * s, 1.1 * s)) : p.kind === "diamonds" ? diamondIcon(ctx, x, y, 1.25 * s) : p.kind === "card" ? (ctx.save(), ctx.translate(x, y), ctx.rotate(-0.12), rr(ctx, -11 * s, -14 * s, 22 * s, 28 * s, 5 * s), ctx.fillStyle = p.level >= 2 ? "#ffd27a" : "#b5d8ff", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), text(ctx, "L" + p.level, 0, 0.5, 11 * s, "#fff"), ctx.restore()) : (p.kind === "booster" || p.kind === "bonus") && (ctx.save(), ctx.translate(x, y), ctx.scale(0.8 * s, 0.8 * s), drawBonusIcon(ctx, p.id, S.t), ctx.restore());
+  p.kind === "coins" ? (coinIcon(ctx, x - 6 * s, y + 2 * s, 1.1 * s), coinIcon(ctx, x + 5 * s, y - 3 * s, 1.1 * s)) : p.kind === "diamonds" ? diamondIcon(ctx, x, y, 1.25 * s) : p.kind === "card" ? (ctx.save(), ctx.translate(x, y), ctx.rotate(-0.12), rr(ctx, -11 * s, -14 * s, 22 * s, 28 * s, 5 * s), ctx.fillStyle = p.level >= 2 ? "#ffd27a" : "#b5d8ff", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), text(ctx, "L" + p.level, 0, 0.5, 12 * s, "#fff"), ctx.restore()) : (p.kind === "booster" || p.kind === "bonus") && (ctx.save(), ctx.translate(x, y), ctx.scale(0.8 * s, 0.8 * s), drawBonusIcon(ctx, p.id, S.t), ctx.restore());
 }
 function prizeLabel(p) {
   return p ? p.kind === "coins" ? `${p.count} coins` : p.kind === "diamonds" ? `${p.count} diamonds` : p.kind === "card" ? p.id ? p.newCard ? `New tower: ${TOWERS[p.id].name} (L${p.level})` : `${TOWERS[p.id].short} L${p.level} - in your Cards` : `L${p.level} tower card` : p.kind === "bonus" || p.kind === "booster" ? `1 ${BONUSES[p.id].name} booster` : "" : "";
@@ -5892,14 +5948,14 @@ function renderCalendar() {
   }
   if (ctx.lineWidth = 2, rr(ctx, bx - 2, 150, bw + 4, 18, 6), ctx.strokeStyle = INK, ctx.stroke(), Object.keys(st.milestones || {}).map(Number).sort((a, b) => a - b).forEach((m, k) => {
     let tier = m >= st.monthLength ? 3 : Math.min(2, k + 1), sc = tier === 3 ? 1.55 : tier === 2 ? 1.12 : 1, mx = Math.min(bx + bw - 34, bx + (m - 0.5) * segW), my = tier === 3 ? 200 : 194;
-    ctx.beginPath(), ctx.moveTo(bx + (m - 0.5) * segW, 168), ctx.lineTo(mx, my - 14 * sc), ctx.lineWidth = 2, ctx.strokeStyle = "rgba(82,60,75,0.35)", ctx.stroke(), monthBox(ctx, mx, my, sc, tier, S.t, shown >= m), plainText(`Day ${m}`, mx, my + 24 * sc - (tier === 3 ? 4 : 0), tier === 3 ? 11 : 10, tier === 3 ? "#c27a00" : "#6b5562", "center", "700");
-  }), st.resetPending && !CA.result ? plainText("You missed a day - the streak restarts at 1.", 200, 256, 11, "#c0392b", "center", "600") : plainText("Collect every day to keep the streak. Bigger prizes as it grows!", 200, 256, 11, "#6b5562", "center"), plainText("Your 7-day cycle", 36, 276, 13, "#3d2a36", "left", "700"), st.tiles.forEach((tl, i) => {
+    ctx.beginPath(), ctx.moveTo(bx + (m - 0.5) * segW, 168), ctx.lineTo(mx, my - 14 * sc), ctx.lineWidth = 2, ctx.strokeStyle = "rgba(82,60,75,0.35)", ctx.stroke(), monthBox(ctx, mx, my, sc, tier, S.t, shown >= m), plainText(`Day ${m}`, mx, my + 24 * sc - (tier === 3 ? 4 : 0), 12, tier === 3 ? "#c27a00" : "#6b5562", "center", "700");
+  }), st.resetPending && !CA.result ? plainText("You missed a day - the streak restarts at 1.", 200, 256, 12, "#c0392b", "center", "600") : plainText("Collect every day to keep the streak. Bigger prizes as it grows!", 200, 256, 12, "#6b5562", "center"), plainText("Your 7-day cycle", 36, 276, 13, "#3d2a36", "left", "700"), st.tiles.forEach((tl, i) => {
     let big = i === 6, row = big ? 2 : Math.floor(i / 3), col = big ? 0 : i % 3, gap = 8, cw2 = (328 - 2 * gap) / 3, rh = 74, w = big ? 328 : cw2, h = big ? 84 : rh, x = 36 + col * (cw2 + gap), y = 286 + row * (rh + gap), today = tl.state === "today", claimed = tl.state === "claimed", missed = tl.state === "missed", glow = today ? 0.5 + 0.5 * Math.sin(S.t * 5) : 0;
     if (ctx.save(), today && (rr(ctx, x - 4, y - 4, w + 8, h + 8, 16), ctx.fillStyle = `rgba(255,212,94,${0.35 + glow * 0.4})`, ctx.fill()), rr(ctx, x, y, w, h, 13), big && !claimed && !missed) {
       let g = ctx.createLinearGradient(x, y, x + w, y + h);
       g.addColorStop(0, "#fff1c9"), g.addColorStop(1, "#ffe1ec"), ctx.fillStyle = g;
     } else ctx.fillStyle = claimed ? "#e3f6dc" : missed ? "#ece6ea" : today ? "#fff1c9" : "#ffffff";
-    ctx.fill(), ctx.lineWidth = today ? 3.5 : big ? 2.6 : 2, ctx.strokeStyle = today ? "#e8a620" : big ? "#e0a830" : INK, ctx.stroke(), plainText(`Day ${i + 1}`, x + 9, y + 13, 11, "#6b5562", "left", "700"), missed && plainText("missed", x + w - 8, y + 13, 10, "#8c7a86", "right", "600"), today && text(ctx, "TAP!", x + w - 22, y + 13, 12, "#ff8fab"), missed && (ctx.globalAlpha = 0.45);
+    ctx.fill(), ctx.lineWidth = today ? 3.5 : big ? 2.6 : 2, ctx.strokeStyle = today ? "#e8a620" : big ? "#e0a830" : INK, ctx.stroke(), plainText(`Day ${i + 1}`, x + 9, y + 13, 12, "#6b5562", "left", "700"), missed && plainText("missed", x + w - 8, y + 13, 12, "#8c7a86", "right", "600"), today && text(ctx, "TAP!", x + w - 22, y + 13, 12, "#ff8fab"), missed && (ctx.globalAlpha = 0.45);
     let bobY = today ? Math.sin(S.t * 4) * 2 : 0;
     if (big) {
       for (let k = 0; k < 2; k++) starShape(ctx, x + (k ? w - 34 : 34), y + 42 + Math.sin(S.t * 2 + k * 2) * 3, 5, "#fff7a8", 1.2);
@@ -5942,7 +5998,7 @@ function drawCard(x, y, w, h, type, opt = {}) {
   ctx.save(), opt.lift && (y -= opt.lift), opt.dim && (ctx.globalAlpha = 0.55), rr(ctx, x, y + 4, w, h, 14), ctx.fillStyle = "rgba(74,52,66,0.28)", ctx.fill(), rr(ctx, x, y, w, h, 14);
   let g = ctx.createLinearGradient(0, y, 0, y + h);
   if (g.addColorStop(0, shade(T.color, 0.5)), g.addColorStop(1, T.color), ctx.fillStyle = opt.locked ? "#ddd3da" : g, ctx.fill(), ctx.lineWidth = opt.selected ? 4 : 2.5, ctx.strokeStyle = opt.selected ? opt.selCol || "#ff6f91" : INK, ctx.stroke(), opt.locked) {
-    text(ctx, "?", x + w / 2, y + h * 0.42, 30, "#fff"), text(ctx, opt.lockText || "Locked", x + w / 2, y + h - 14, 10, "#7a6a76", "center", null), ctx.restore();
+    text(ctx, "?", x + w / 2, y + h * 0.42, 30, "#fff"), text(ctx, opt.lockText || "Locked", x + w / 2, y + h - 14, 12, "#7a6a76", "center", null), ctx.restore();
     return;
   }
   ctx.save(), ctx.beginPath(), rr(ctx, x + 4, y + 4, w - 8, h - 8, 11), ctx.clip();
@@ -5951,11 +6007,11 @@ function drawCard(x, y, w, h, type, opt = {}) {
   let iconS = Math.min(w / 58, (nameY - y) / 58);
   ctx.translate(x + w / 2, iconY), ctx.scale(iconS, iconS), drawTower(ctx, type, S.t, null), ctx.restore();
   let tag = T.place === "path" ? "on trail" : T.targets === "air" ? "air only" : type === "laser" ? "gnd+air" : "";
-  if (tag && h > 70 && !opt.badge && text(ctx, tag, x + w - 7, y + 11, 9, "#fff", "right"), fitText(T.short || T.name, x + w / 2, nameY, w - 10, w < 85 ? 13 : 14, "#fff"), opt.level && (blob(ctx, x + 12, y + 12, 11, 10, "#ffe36e", 2), text(ctx, "L" + opt.level, x + 12, y + 12.5, 10, "#7a4a2a", "center", null)), opt.cost != null && (rr(ctx, x + 10, y + h - 21, w - 20, 17, 8), ctx.fillStyle = opt.afford ? "#fff8ec" : "#ffd6d6", ctx.fill(), ctx.lineWidth = 1.8, ctx.strokeStyle = INK, ctx.stroke(), crumbIcon(ctx, x + w / 2 - (opt.cost === 0 ? 22 : 14), y + h - 12.5, 0.75), text(ctx, opt.cost === 0 ? "FREE" : String(opt.cost), x + w / 2 + 6, y + h - 12, 12, opt.afford ? "#7a4a2a" : "#c0392b", "center", null)), opt.badge && (blob(ctx, x + w - 11, y + 11, 11, 11, "#ff8fab", 2), text(ctx, opt.badge, x + w - 11, y + 11.5, 12, "#fff")), opt.mergeReady) {
+  if (tag && h > 70 && !opt.badge && text(ctx, tag, x + w - 7, y + 11, 11, "#fff", "right"), fitText(T.short || T.name, x + w / 2, nameY, w - 10, w < 85 ? 13 : 14, "#fff"), opt.level && (blob(ctx, x + 12, y + 12, 11, 10, "#ffe36e", 2), text(ctx, "L" + opt.level, x + 12, y + 12.5, 11, "#7a4a2a", "center", null)), opt.cost != null && (rr(ctx, x + 10, y + h - 21, w - 20, 17, 8), ctx.fillStyle = opt.afford ? "#fff8ec" : "#ffd6d6", ctx.fill(), ctx.lineWidth = 1.8, ctx.strokeStyle = INK, ctx.stroke(), crumbIcon(ctx, x + w / 2 - (opt.cost === 0 ? 22 : 14), y + h - 12.5, 0.75), text(ctx, opt.cost === 0 ? "FREE" : String(opt.cost), x + w / 2 + 6, y + h - 12, 12, opt.afford ? "#7a4a2a" : "#c0392b", "center", null)), opt.badge && (blob(ctx, x + w - 11, y + 11, 11, 11, "#ff8fab", 2), text(ctx, opt.badge, x + w - 11, y + 11.5, 12, "#fff")), opt.mergeReady) {
     let p = 1 + Math.sin(S.t * 6) * 0.08;
     ctx.save(), ctx.translate(x + w - 10, y + 10), ctx.scale(p, p), blob(ctx, 0, 0, 11, 11, "#ff6f91", 2), text(ctx, "!", 0, 0.5, 14, "#fff"), ctx.restore();
   }
-  opt.fresh && (rr(ctx, x + w / 2 - 17, y - 9, 34, 17, 8), ctx.fillStyle = "#ffd45e", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), text(ctx, "NEW", x + w / 2, y - 0.5, 10, "#fff")), ctx.restore();
+  opt.fresh && (rr(ctx, x + w / 2 - 19, y - 9, 38, 17, 8), ctx.fillStyle = "#ffd45e", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), text(ctx, "NEW", x + w / 2, y - 0.5, 12, "#fff")), ctx.restore();
 }
 function antIcon(type, x, y, s = 1) {
   ctx.save(), ctx.translate(x, y), ctx.scale(s, s), drawAnt(ctx, type, S.t * 1.3 % 1), ctx.restore();
@@ -5964,21 +6020,26 @@ function renderPrep() {
   let i = S.levelIndex, L = LEVELS[i];
   panel(12, 12, 376, 696, "#fff6ee"), text(ctx, `Level ${i + 1}`, 200, 40, 26, "#ffb3c1"), text(ctx, `${L.name}  -  ${MAPS[L.map].name}`, 200, 66, 13, "#7a5a6a", "center", null);
   let ants = levelAntTypes(i);
-  text(ctx, "Incoming ants", 30, 92, 14, "#7a5a6a", "left", null), text(ctx, `${L.waveCount} waves`, 370, 92, 14, "#7a5a6a", "right", null), levelHasFlyers(i) && (rr(ctx, 152, 82, 132, 20, 10), ctx.fillStyle = "#d7ecff", ctx.fill(), ctx.lineWidth = 1.6, ctx.strokeStyle = "#5a9fe0", ctx.stroke(), plainText("Flyers in this level", 218, 92.5, 11, "#2f6fae", "center", "800")), S.layoutPrepAnts = [];
+  text(ctx, "Incoming ants", 30, 92, 14, "#7a5a6a", "left", null), text(ctx, `${L.waveCount} waves`, 370, 92, 14, "#7a5a6a", "right", null), levelHasFlyers(i) && (rr(ctx, 152, 82, 132, 20, 10), ctx.fillStyle = "#d7ecff", ctx.fill(), ctx.lineWidth = 1.6, ctx.strokeStyle = "#5a9fe0", ctx.stroke(), plainText("Flyers in this level", 218, 92.5, 12, "#2f6fae", "center", "800")), S.layoutPrepAnts = [];
   let n = ants.length, slot = Math.min(76, 340 / n), x0 = 200 - slot * (n - 1) / 2;
   ants.forEach((t, k) => {
     let x = x0 + k * slot, sz = ANTS[t].size, sc = Math.min(1.15, (slot - 6) / (40 * sz), 30 / (34 * sz));
-    antIcon(t, x, 136, sc), S.layoutPrepAnts.push({ type: t, x: x - 20 * sz * sc, y: 136 - 34 * sz * sc, w: 40 * sz * sc, h: 46 * sz * sc }), fitText(ANTS[t].name.replace(" Ant", ""), x, 160, slot - 4, 10, "#7a5a6a");
+    antIcon(t, x, 136, sc), S.layoutPrepAnts.push({ type: t, x: x - 20 * sz * sc, y: 136 - 34 * sz * sc, w: 40 * sz * sc, h: 46 * sz * sc });
+    {
+      let nm = ANTS[t].name.replace(" Ant", "");
+      if (ctx.font = `bold 12px ${FONT}`, ctx.measureText(nm).width <= slot - 2) text(ctx, nm, x, 160, 12, "#7a5a6a");
+      else {
+        let parts = nm.includes(" ") ? nm.split(" ") : nm.split(/(?<=-)/);
+        (parts.length > 2 ? [parts[0], parts.slice(1).join(" ")] : parts).forEach((q, qi) => text(ctx, q, x, 154.5 + qi * 12.5, 12, "#7a5a6a"));
+      }
+    }
   });
   let unlocked = unlockedCards(S.save);
   text(ctx, `Your deck (${S.prep.deck.length}/${BATTLE.deckSize}) - tap to pick`, 30, 182, 14, "#7a5a6a", "left", null);
-  {
-    let cap = worldCardLevelCap(i);
-    cap && unlocked.some((id) => S.save.cards[id].level > cap) && plainText(`Cards act as L${cap} max`, 370, 182, 10, "#b0506a", "right", "800");
-  }
-  ALL_CARDS.forEach((id, k) => {
+  let capW = worldCardLevelCap(i), overCap = (id) => !!capW && unlocked.includes(id) && S.save.cards[id].level > capW;
+  capW && unlocked.some(overCap) && plainText(`A card above L${capW} acts as L${capW} in this world`, 200, 488, 12, "#b0506a", "center", "800"), ALL_CARDS.forEach((id, k) => {
     let col = k % 5, row = Math.floor(k / 5), x = 22 + col * 72, y = 196 + row * 98, w = 66, h = 90, isU = unlocked.includes(id), di = S.prep.deck.indexOf(id);
-    drawCardPic(x, y, w, h, id, { locked: !isU, lockText: "Shop or prize", selected: di >= 0, selCol: "#111111", badge: di >= 0 ? String(di + 1) : null, tag: !0, level: isU ? S.save.cards[id].level : 0, dim: isU && di < 0 && S.prep.deck.length >= BATTLE.deckSize }), isU && button("deck" + id, x, y, w, h, () => {
+    drawCardPic(x, y, w, h, id, { locked: !isU, lockText: "Shop or prize", selected: di >= 0, selCol: "#111111", badge: di >= 0 ? String(di + 1) : null, tag: !0, level: isU ? S.save.cards[id].level : 0, capNote: overCap(id) ? capW : 0, dim: isU && di < 0 && S.prep.deck.length >= BATTLE.deckSize }), isU && button("deck" + id, x, y, w, h, () => {
       let d = S.prep.deck, j = d.indexOf(id);
       j >= 0 ? d.splice(j, 1) : d.length < BATTLE.deckSize ? d.push(id) : toast("Deck is full (5). Tap a card to remove it."), sfx("tap");
     });
@@ -5995,8 +6056,8 @@ function renderPrep() {
   levelHasFlyers(i) && !S.prep.deck.some((d) => AIR_COUNTERS.includes(d)) ? warn = "Flying ants ahead! Only Laser, Bug Zapper or the Crop Duster can hit them." : ants.includes("gasmask") && S.prep.deck.includes("spray") && S.prep.deck.filter((d) => d !== "spray" && TOWERS[d].kind === "tower" && d !== "fan").length < 2 && (warn = "Gas-mask ants ignore Bug Spray - bring other damage too.");
   let issues = prepIssues(S.save, S.prep.bonuses);
   if (issues.length && (warn = `You have 0 ${BONUSES[issues[0].bonus].name}s. Buy one during battle for ${ECONOMY.diamonds.boosterPriceStart} diamonds, or in the Shop.`), S.layoutWarn = null, warn) {
-    let lines = wrapLines(warn, 324, 11.5).slice(0, 3), hh = 12 + lines.length * 14;
-    panel(26, 646 - hh - 2, 348, hh, issues.length ? "#ffd9d0" : "#fff0c2", 12), lines.forEach((l, k) => text(ctx, l, 200, 646 - hh + 6 + k * 14 + 5, 12, issues.length ? "#c0392b" : "#b0602a", "center", null)), ctx.font = `bold 11.5px ${FONT}`, S.layoutWarn = { box: { x: 26, y: 646 - hh - 2, w: 348, h: hh }, lines: lines.map((l) => ctx.measureText(l).width), maxW: 324 };
+    let lines = wrapLines(warn, 324, 12).slice(0, 3), hh = 12 + lines.length * 14;
+    panel(26, 646 - hh - 2, 348, hh, issues.length ? "#ffd9d0" : "#fff0c2", 12), lines.forEach((l, k) => text(ctx, l, 200, 646 - hh + 6 + k * 14 + 5, 12, issues.length ? "#c0392b" : "#b0602a", "center", null)), ctx.font = `bold 12px ${FONT}`, S.layoutWarn = { box: { x: 26, y: 646 - hh - 2, w: 348, h: hh }, lines: lines.map((l) => ctx.measureText(l).width), maxW: 324 };
   }
   drawButton(26, 652, 110, 48, "Back", "#d9cfe0"), button("back", 26, 652, 110, 48, () => go("map"));
   let ready = S.prep.deck.length === Math.min(BATTLE.deckSize, unlocked.length);
@@ -6121,9 +6182,7 @@ function drawFanAreas(b) {
 }
 var INFO_INK = "#3d2a36", INFO_SOFT = "#6b5562";
 function plainFit(str, x, y, maxW, size, col, align = "left", weight = "500") {
-  ctx.font = `${weight} ${size}px ${FONT}`;
-  let w = ctx.measureText(str).width;
-  plainText(str, x, y, w > maxW ? size * maxW / w : size, col, align, weight);
+  plainText(str, x, y, fitSize(str, maxW, size, weight), col, align, weight);
 }
 function plainWrap(str, maxW, size, weight = "500") {
   ctx.font = `${weight} ${size}px ${FONT}`;
@@ -6167,7 +6226,7 @@ function drawPieces(b) {
     let frac = Math.max(0, q.left / q.total), blink = q.left <= 1 && Math.floor(S.t * 8) % 2 === 0, bounce = rm ? 0 : Math.abs(Math.sin(S.t * 6 + q.id)) * 5;
     ctx.save(), ctx.translate(q.x, q.y), ctx.beginPath(), ctx.ellipse(0, 6, 9, 3, 0, 0, 7), ctx.fillStyle = "rgba(60,40,50,0.25)", ctx.fill();
     let pr = 17 + (rm ? 0 : Math.sin(S.t * 5) * 2.5);
-    ctx.beginPath(), ctx.arc(0, -2, pr, 0, 7), ctx.lineWidth = 2, ctx.strokeStyle = "rgba(255,255,255,0.75)", ctx.stroke(), ctx.beginPath(), ctx.arc(0, -2, 14, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * frac), ctx.lineWidth = 3.4, ctx.lineCap = "round", ctx.strokeStyle = blink ? "#ff5a5a" : "#ffd45e", ctx.stroke(), crumbIcon(ctx, 0, -4 - bounce, 1.35, !0), q.bonus >= 0.05 && text(ctx, "+" + fmtFood(q.bonus), 0, -24 - bounce * 0.5, 10, "#fff7c9"), ctx.restore();
+    ctx.beginPath(), ctx.arc(0, -2, pr, 0, 7), ctx.lineWidth = 2, ctx.strokeStyle = "rgba(255,255,255,0.75)", ctx.stroke(), ctx.beginPath(), ctx.arc(0, -2, 14, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * frac), ctx.lineWidth = 3.4, ctx.lineCap = "round", ctx.strokeStyle = blink ? "#ff5a5a" : "#ffd45e", ctx.stroke(), crumbIcon(ctx, 0, -4 - bounce, 1.35, !0), q.bonus >= 0.05 && text(ctx, "+" + fmtFood(q.bonus), 0, -24 - bounce * 0.5, 12, "#fff7c9"), ctx.restore();
   }
 }
 function drawWaveStrip(b) {
@@ -6228,9 +6287,13 @@ function renderTowerInfo(b, info) {
     info.changed = null;
   }
   let modes = hasTargetModes(tw.type), H2 = modes ? 176 : 140, py = tw.y + MAP_Y > 300 ? MAP_Y + 8 : MAP_Y + MAP_H - H2 - 8;
-  S.layoutInfo = { x: 14, y: py, w: 372, h: H2 }, panel(14, py, 372, H2, "#fffaf5", 14), ctx.font = `bold 15px ${FONT}`;
-  let tW = Math.min(150, ctx.measureText(T.name).width);
-  fitText(T.name, 26 + tW / 2, py + 17, 150, 15, "#ff8fab"), plainFit(`Lv ${tw.lvl}/${b.cfg.maxInBattleLevel} \xB7 card L${tw.cardLevel}`, 34 + tW, py + 17, 222 - tW, 12, INFO_SOFT, "left", "600");
+  S.layoutInfo = { x: 14, y: py, w: 372, h: H2 }, panel(14, py, 372, H2, "#fffaf5", 14);
+  let lvStr = `Lv ${tw.lvl}/${b.cfg.maxInBattleLevel} \xB7 card L${tw.cardLevel}`;
+  ctx.font = `600 12px ${FONT}`;
+  let lvW = ctx.measureText(lvStr).width, titleMax = Math.min(150, 222 - lvW - 8);
+  ctx.font = `bold 15px ${FONT}`;
+  let tW = Math.min(titleMax, ctx.measureText(T.name).width);
+  fitText(T.name, 26 + tW / 2, py + 17, titleMax, 15, "#ff8fab"), plainText(lvStr, 34 + tW, py + 17, 12, INFO_SOFT, "left", "600");
   let desc = T.ability || T.desc;
   modes && tw.mode && TARGET_MODE_TEXT[tw.type] && TARGET_MODE_TEXT[tw.type][tw.mode] && (desc = TARGET_MODE_TEXT[tw.type][tw.mode]), T.directional && !tw.trailDir && (desc = tw.type === "ball" ? "No trail right next to it - the marble cannot roll here. Move it!" : tw.type === "tractor" ? "No trail right next to it - nothing to scoop here. Move it!" : "No trail right next to it - no wind here. Move it!"), plainWrap(desc, 346, 12.5).slice(0, 2).forEach((l, i) => plainText(l, 26, py + 38 + i * 16, 12.5, T.directional && !tw.trailDir ? "#c0392b" : INFO_INK));
   let keys = tw.type === "tractor" ? ["liftSize", "rate", "scoop"] : ["power", "rate", tw.type === "ball" ? "roll" : "range"], changed = new Set((info.changed || []).map((d) => d.key));
@@ -6241,14 +6304,19 @@ function renderTowerInfo(b, info) {
     plainFit(val, x + w / 2, y + 27, w - 12, 14, on ? "#2f8a36" : INFO_INK, "center", "600");
   });
   let extra = (info.changed || []).filter((d) => !keys.includes(d.key)), line;
-  extra.length ? line = "Upgraded: " + extra.map((d) => diffText(tw.type, d)).join(", ") : tw.lvl < b.cfg.maxInBattleLevel ? line = (dmgGainText(tw.type, tw.lvl + 1, tw.cardLevel) ? dmgGainText(tw.type, tw.lvl + 1, tw.cardLevel) + "! " : "") + "Next (drop same card): " + upgradeDiff(tw.type, tw.lvl, tw.cardLevel).map((d) => diffText(tw.type, d)).join(", ") : line = "Max level!", plainFit(line, 200, py + (modes ? 160 : 122), 350, 12, extra.length ? "#2f8a36" : INFO_INK, "center"), button("infoClose", 14, py, 372, H2, () => {
+  extra.length ? line = "Upgraded: " + extra.map((d) => diffText(tw.type, d)).join(", ") : tw.lvl < b.cfg.maxInBattleLevel ? line = (dmgGainText(tw.type, tw.lvl + 1, tw.cardLevel) ? dmgGainText(tw.type, tw.lvl + 1, tw.cardLevel) + "! " : "") + "Next (drop same card): " + upgradeDiff(tw.type, tw.lvl, tw.cardLevel).map((d) => diffText(tw.type, d)).join(", ") : line = "Max level!";
+  {
+    let ls = plainWrap(line, 350, 12).slice(0, 2), y0 = py + (modes ? 160 : 122) - (ls.length > 1 ? 8 : 0);
+    ls.forEach((l, i) => plainText(l, 200, y0 + i * 15, 12, extra.length ? "#2f8a36" : INFO_INK, "center"));
+  }
+  button("infoClose", 14, py, 372, H2, () => {
     S.info = null;
   }), modes && TARGET_MODES.forEach((m, i) => {
     let x = 22 + i * 120, y = py + 108, w = 114, h = 34, on = tw.mode === m, age = S.t - (tw._modeAt ?? -9), pop = on && age >= 0 && age < 0.12 && !reducedMotion() ? 1 + 0.08 * Math.sin(age / 0.12 * Math.PI) : 1;
     ctx.save(), pop !== 1 && (ctx.translate(x + w / 2, y + h / 2), ctx.scale(pop, pop), ctx.translate(-(x + w / 2), -(y + h / 2))), rr(ctx, x, y, w, h, 11), ctx.fillStyle = on ? "#ffd27a" : "#f7efeb", ctx.fill(), ctx.lineWidth = on ? 2.6 : 1.5, ctx.strokeStyle = on ? INK : "#d9c5cc", ctx.stroke(), drawModeIcon(m, x + 18, y + h / 2, 1), plainFit(MODE_NAME[m], x + 34, y + h / 2 + 0.5, w - 40, 13, on ? INK : INFO_INK, "left", on ? "700" : "600"), ctx.restore(), button("mode_" + m, x - 2, y - 2, w + 4, h + 4, () => setMode(tw, m));
   });
   let canMove = (S.save.diamonds || 0) >= ECONOMY.diamonds.moveTower;
-  drawButton(256, py + 5, 62, 24, "", "#9fd8ff", { r: 10, disabled: !canMove }), text(ctx, "Move", 280, py + 17, 11.5), diamondIcon(ctx, 305, py + 17, 0.55), text(ctx, String(ECONOMY.diamonds.moveTower), 312, py + 17.5, 10), drawButton(322, py + 5, 58, 24, "Swap", "#c9b6f2", { r: 10, size: 11.5, disabled: b.towers.length < 2 }), button("infoMove", 252, py, 68, 40, () => startMode("move", tw)), button("infoSwap", 320, py, 64, 40, () => startMode("swap", tw));
+  drawButton(256, py + 5, 62, 24, "", "#9fd8ff", { r: 10, disabled: !canMove }), text(ctx, "Move", 280, py + 17, 12), diamondIcon(ctx, 305, py + 17, 0.55), text(ctx, String(ECONOMY.diamonds.moveTower), 312, py + 17.5, 12), drawButton(322, py + 5, 58, 24, "Swap", "#c9b6f2", { r: 10, size: 12, disabled: b.towers.length < 2 }), button("infoMove", 252, py, 68, 40, () => startMode("move", tw)), button("infoSwap", 320, py, 64, 40, () => startMode("swap", tw));
 }
 function drawQueenCheer(age, world) {
   let k = Math.min(1, age / 0.35), fade = age > 3.8 ? Math.max(0, 1 - (age - 3.8) / 0.7) : 1, msg = world === 2 ? ["Way to go,", "you saved the cake!"] : ["Way to go,", "you saved the cookies!"];
@@ -6256,10 +6324,16 @@ function drawQueenCheer(age, world) {
   let sc = 0.6 + 0.4 * k + Math.sin(age * 5) * 0.03;
   ctx.scale(sc, sc), rr(ctx, -170, -48, 340, 96, 24), ctx.fillStyle = "rgba(90,64,88,0.82)", ctx.fill(), ctx.lineWidth = 3, ctx.strokeStyle = "#ffd45e", ctx.stroke(), text(ctx, msg[0], 0, -18, 26, "#ffe36e"), text(ctx, msg[1], 0, 16, 24, "#ffffff"), ctx.restore();
 }
-function fitText(str, x, y, maxW, size, col) {
-  ctx.font = `bold ${size}px ${FONT}`;
+var MIN_FONT = 12;
+function fitSize(str, maxW, size, weight) {
+  ctx.font = `${weight} ${size}px ${FONT}`;
   let w = ctx.measureText(str).width;
-  text(ctx, str, x, y, w > maxW ? size * maxW / w : size, col);
+  if (w <= maxW) return size;
+  let s = size * maxW / w;
+  return Math.max(MIN_FONT, s);
+}
+function fitText(str, x, y, maxW, size, col) {
+  text(ctx, str, x, y, fitSize(str, maxW, size, "bold"), col);
 }
 function drawTowerObj(tw) {
   ctx.save(), ctx.translate(tw.x, tw.y);
@@ -6335,8 +6409,8 @@ function renderFx(dt) {
         break;
       }
       case "ko": {
-        let spr = antSprite(f.ant, 0, !1, pxRatio), rmo = reducedMotion(), ds = rmo ? 1 : k < 0.4 ? 1 + 0.25 * (k / 0.4) : 1.25 * (1 - (k - 0.4) / 0.6);
-        ctx.globalAlpha = rmo ? 1 - k : 1 - k * k, ctx.translate(f.x, f.y - (rmo ? 0 : k * 30)), ctx.rotate(rmo ? 0 : Math.PI * k * 0.4 * f.face), ctx.scale(f.face * ds, -ds), ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h), ctx.scale(1, -1), ctx.beginPath(), ctx.ellipse(0, -18, 8, 2.5, 0, 0, 7), ctx.lineWidth = 2, ctx.strokeStyle = "#ffe36e", ctx.stroke();
+        let spr = antSprite(f.ant, 0, !1, pxRatio), rmo = reducedMotion(), ds = rmo ? 1 : k < 0.25 ? 1 + 0.25 * (k / 0.25) : 1.25 * (1 - (k - 0.25) / 0.75);
+        ctx.globalAlpha = rmo ? 1 - k : 1 - k * k, ctx.translate(f.x, f.y - (rmo ? 0 : k * 24)), ctx.rotate(rmo ? 0 : Math.PI * k * 0.4 * f.face), ctx.scale(f.face * ds, -ds), ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h), ctx.scale(1, -1), ctx.beginPath(), ctx.ellipse(0, -18, 8, 2.5, 0, 0, 7), ctx.lineWidth = 2, ctx.strokeStyle = "#ffe36e", ctx.stroke();
         break;
       }
       case "puff":
@@ -6348,7 +6422,7 @@ function renderFx(dt) {
       case "txt": {
         let rm = reducedMotion(), pk = Math.min(1, f.max * k / 0.12);
         ctx.globalAlpha = 1 - k * k;
-        let sz = (f.size || 14) * (rm || pk >= 1 ? 1 : pk < 0.6 ? 0.6 + (1.15 - 0.6) * (pk / 0.6) : 1.15 - 0.15 * ((pk - 0.6) / 0.4));
+        let sz = Math.max(MIN_FONT, (f.size || 14) * (rm || pk >= 1 ? 1 : pk < 0.6 ? 0.6 + (1.15 - 0.6) * (pk / 0.6) : 1.15 - 0.15 * ((pk - 0.6) / 0.4)));
         text(ctx, f.s, Math.max(60, Math.min(MAP_W - 60, f.x)), f.y - (rm ? 0 : 22 * (1 - Math.pow(1 - k, 3))), sz, f.col);
         break;
       }
@@ -6531,7 +6605,7 @@ function renderDialog() {
     for (let k = 0; k < 5; k++) crumbIcon(ctx, -28 + k * 14, Math.sin(S.t * 4 + k) * 2, 1.4);
   else
     ctx.scale(1.4, 1.4), drawBonusIcon(ctx, D.booster, S.t);
-  ctx.restore(), plainText(D.line, 200, 338, 14, "#3d2a36", "center", "600"), diamondIcon(ctx, 178, 364, 1.2), text(ctx, String(D.price), 212, 365, 22, "#7fd3ff"), plainText(afford ? `You have ${have} diamonds.` : `You have ${have} diamonds. Get diamonds from the Reward Calendar.`, 200, 392, 11.5, afford ? "#5a4652" : "#c0392b", "center"), plainText(D.note, 200, 408, 11, "#7a6a76", "center"), drawButton(64, 420, 128, 46, "Cancel", "#d9cfe0"), button("dlgCancel", 60, 418, 136, 52, () => {
+  ctx.restore(), plainText(D.line, 200, 338, 14, "#3d2a36", "center", "600"), diamondIcon(ctx, 178, 364, 1.2), text(ctx, String(D.price), 212, 365, 22, "#7fd3ff"), plainText(afford ? `You have ${have} diamonds.` : `You have ${have} diamonds. Get diamonds from the Reward Calendar.`, 200, 392, 12, afford ? "#5a4652" : "#c0392b", "center"), plainText(D.note, 200, 408, 12, "#7a6a76", "center"), drawButton(64, 420, 128, 46, "Cancel", "#d9cfe0"), button("dlgCancel", 60, 418, 136, 52, () => {
     S.dialog = null;
   }), drawButton(208, 420, 128, 46, "Buy", "#9fe0ff", { disabled: !afford }), button("dlgBuy", 204, 418, 136, 52, () => {
     if (!afford) {
@@ -6571,10 +6645,10 @@ function renderTray(b) {
   let by = y0 + L.rowY, bh = L.rowH, hitY = y0 + L.rowY - 2, hitH = H - hitY;
   b.bonusTypes.forEach((bt, k) => {
     let x = 12 + k * 104, w = 98, can = b.canUseBonus(bt), sel = S.sel && S.sel.kind === "bonus" && S.sel.type === bt, stock = b.bonusStock[bt] || 0, buyable = stock <= 0 && b.bonusUsesLeft > 0;
-    if (drawButton(x, by, w, bh, "", sel ? "#ffd27a" : BONUSES[bt].color, { disabled: !can && !buyable, r: 12 }), ctx.save(), ctx.translate(x + 17, by + bh / 2), ctx.scale(0.85, 0.85), drawBonusIcon(ctx, bt, S.t), ctx.restore(), fitText(BONUSES[bt].name, x + 59, by + 15, 66, 11, "#fff"), buyable) {
+    if (drawButton(x, by, w, bh, "", sel ? "#ffd27a" : BONUSES[bt].color, { disabled: !can && !buyable, r: 12 }), ctx.save(), ctx.translate(x + 17, by + bh / 2), ctx.scale(0.85, 0.85), drawBonusIcon(ctx, bt, S.t), ctx.restore(), fitText(BONUSES[bt].name, x + 59, by + 15, 70, 12, "#fff"), buyable) {
       let pr = nextBoosterPrice(b, bt);
-      diamondIcon(ctx, x + 47, by + 31, 0.62), text(ctx, String(pr), x + 66, by + 31, 11, "#fff8c0");
-    } else text(ctx, `x${stock}`, x + 59, by + 31, 10, "#fff8c0");
+      diamondIcon(ctx, x + 47, by + 31, 0.62), text(ctx, String(pr), x + 66, by + 31, 12, "#fff8c0");
+    } else text(ctx, `x${stock}`, x + 59, by + 31, 12, "#fff8c0");
     button("bonus" + bt, x - 2, hitY, w + 4, hitH, () => {
       if (buyable) {
         openBoosterDialog(bt);
@@ -6639,18 +6713,18 @@ function renderResult(dt) {
   }
   text(ctx, `Food left: ${fmtFood(S.battle.foodStored)}/${S.battle.cfg.foodHP}   Ants beaten: ${R.kills}`, 200, 302, 12, "#7a5a6a", "center", null);
   let P = out.parts || {}, rows = [];
-  R.win ? (rows.push(["Victory", P.base]), rows.push(["Food left", P.food]), rows.push(["Ants beaten", P.kills]), P.level && rows.push(["Level reward", P.level]), P.firstClear && rows.push(["First clear", P.firstClear])) : rows.push(["Ants beaten", P.kills || 0]), rows.push([R.win ? "Time survived" : `Time survived${out.coins >= ECONOMY.lossCap ? ` (max ${ECONOMY.lossCap})` : ""}`, P.time || 0]);
+  R.win ? (rows.push(["Victory", P.base]), rows.push(["Food left", P.food]), rows.push(["Ants beaten", P.kills]), P.level && rows.push(["Level reward", P.level]), P.firstClear && rows.push(["First clear", P.firstClear]), P.stars && rows.push(["Star bonus", P.stars])) : rows.push(["Ants beaten", P.kills || 0]), rows.push([R.win ? "Time survived" : `Time survived${out.coins >= ECONOMY.lossCap ? ` (max ${ECONOMY.lossCap})` : ""}`, P.time || 0]);
   let RS = rows.length > 5 ? 14 : 16;
   rr(ctx, 70, 316, 260, 14 + rows.length * RS, 10), ctx.fillStyle = "#f6ece8", ctx.fill(), rows.forEach(([l, v], i) => {
     text(ctx, l, 84, 330 + i * RS, 12, "#7a5a6a", "left", null), text(ctx, `+${v}`, 316, 330 + i * RS, 12, "#c9962a", "right", null);
   });
   let yy = 330 + rows.length * RS + 18;
-  if (coinIcon(ctx, 150, yy, 1.3), text(ctx, `+${out.coins} coins`, 208, yy + 1, 18, "#ffd45e"), yy += 20, text(ctx, `(${R.crumbsLeft} unspent crumbs vanish)`, 200, yy, 10, "#a08090", "center", null), yy += 20, R.win || text(ctx, "Win to earn cards and prizes!", 200, yy, 12, "#a08090", "center", null), out.booster && (rr(ctx, 70, yy - 12, 260, 26, 12), ctx.fillStyle = "#ffe9f0", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = "#ff9ab0", ctx.stroke(), ctx.save(), ctx.translate(92, yy + 1), ctx.scale(0.62, 0.62), drawBonusIcon(ctx, out.booster.id, S.t), ctx.restore(), text(ctx, `First clear: +1 ${BONUSES[out.booster.id].name} booster`, 210, yy + 1, 12.5, "#e0607e", "center", null), yy += 30), out.prize && !celebrating) {
+  if (out.gems ? (coinIcon(ctx, 92, yy, 1.3), text(ctx, `+${out.coins} coins`, 146, yy + 1, 18, "#ffd45e", "center"), diamondIcon(ctx, 226, yy, 0.8), text(ctx, `+${out.gems} gems`, 240, yy + 1, 18, "#8fd0ff", "left")) : (coinIcon(ctx, 150, yy, 1.3), text(ctx, `+${out.coins} coins`, 208, yy + 1, 18, "#ffd45e")), yy += 20, text(ctx, `(${R.crumbsLeft} unspent crumbs vanish)`, 200, yy, 12, "#a08090", "center", null), yy += 20, R.win || text(ctx, "Win to earn cards and prizes!", 200, yy, 12, "#a08090", "center", null), out.booster && (rr(ctx, 70, yy - 12, 260, 26, 12), ctx.fillStyle = "#ffe9f0", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = "#ff9ab0", ctx.stroke(), ctx.save(), ctx.translate(92, yy + 1), ctx.scale(0.62, 0.62), drawBonusIcon(ctx, out.booster.id, S.t), ctx.restore(), text(ctx, `First clear: +1 ${BONUSES[out.booster.id].name} booster`, 210, yy + 1, 12.5, "#e0607e", "center", null), yy += 30), out.prize && !celebrating) {
     let k = Math.min(1, (R.t - UI.perfectAnimTime) * 4);
     ctx.save(), ctx.translate(200, yy + 12), ctx.scale(0.5 + k * 0.5, 0.5 + k * 0.5), rr(ctx, -130, -16, 260, 32, 14), ctx.fillStyle = "#fff2b8", ctx.fill(), ctx.lineWidth = 2.4, ctx.strokeStyle = "#e0a830", ctx.stroke();
     let pz = out.prize, label = pz.kind === "cards" ? pz.newCard ? `Prize: new tower - ${TOWERS[pz.id].short}!` : `You won a card: ${TOWERS[pz.id].short} L${pz.level}` : `Prize: +${pz.count} ${BONUSES[pz.id].name} booster`;
     pz.kind === "bonus" ? (ctx.save(), ctx.translate(-108, 0), ctx.scale(0.8, 0.8), drawBonusIcon(ctx, pz.id, S.t), ctx.restore()) : (ctx.save(), ctx.translate(-108, 6), ctx.scale(0.42, 0.42), drawTower(ctx, pz.id, S.t, null), ctx.restore()), text(ctx, label, 10, 1, 13, "#c47a12"), ctx.restore();
-  } else R.win && !R.perfect && S.battle.stats.stolen > 0 && text(ctx, "Tip: lose no food at all for a Perfect prize", 200, yy + 10, 10.5, "#a08090", "center", null);
+  } else R.win && !R.perfect && S.battle.stats.stolen > 0 && text(ctx, "Tip: lose no food at all for a Perfect prize", 200, yy + 10, 12, "#a08090", "center", null);
   ctx.restore();
   for (let c of R.confetti)
     c.vy += 420 * dt, c.x += c.vx * dt, c.y += c.vy * dt, c.r += dt * 8, c.y < 760 && (ctx.save(), ctx.translate(c.x, c.y), ctx.rotate(c.r), ctx.fillStyle = c.c, ctx.fillRect(-4, -2.5, 8, 5), ctx.restore());
@@ -6683,10 +6757,10 @@ function cardInfoPanel(id, x, y, w, h, opt = {}) {
   let next = cardUpgradeDiff(id, L), nk = new Set(next.map((d) => d.key)), keys = cardStatKeys(id), bw = (w - 24 - 12) / 3;
   keys.forEach((k, i) => {
     let bx = x + 12 + i * (bw + 6), by = y + (cmp ? 44 : 50);
-    rr(ctx, bx, by, bw, cmp ? 36 : 38, 9), ctx.fillStyle = nk.has(k) ? "#eefbe9" : "#f7efeb", ctx.fill(), ctx.lineWidth = nk.has(k) ? 2 : 1.2, ctx.strokeStyle = nk.has(k) ? "#8fd18f" : "#e0cfd4", ctx.stroke(), plainFit(k === "scoop" ? "Scoops" : statLabel(id, k), bx + 7, by + (cmp ? 9.5 : 10), bw - 12, 10.5, INFO_SOFT, "left", "600"), plainFit(k === "scoop" ? "1 trail tile" : formatStat(id, k, towerStat(id, k, 1, L)), bx + bw / 2, by + (cmp ? 24.5 : 26), bw - 10, 13.5, INFO_INK, "center", "700");
+    rr(ctx, bx, by, bw, cmp ? 36 : 38, 9), ctx.fillStyle = nk.has(k) ? "#eefbe9" : "#f7efeb", ctx.fill(), ctx.lineWidth = nk.has(k) ? 2 : 1.2, ctx.strokeStyle = nk.has(k) ? "#8fd18f" : "#e0cfd4", ctx.stroke(), plainFit(k === "scoop" ? "Scoops" : statLabel(id, k), bx + 7, by + (cmp ? 9.5 : 10), bw - 12, 12, INFO_SOFT, "left", "600"), plainFit(k === "scoop" ? "1 trail tile" : formatStat(id, k, towerStat(id, k, 1, L)), bx + bw / 2, by + (cmp ? 24.5 : 26), bw - 10, 13.5, INFO_INK, "center", "700");
   });
   let line = next.length ? `Next card level L${L + 1}: ` + next.map((d) => diffText(id, d)).join(" + ") : "Top card level (L10)!";
-  plainFit(line, x + w / 2, y + (cmp ? h - 9 : 102), w - 20, 12, next.length ? "#2f8a36" : "#c9962a", "center", "700"), h > 118 && !opt.noFoot && plainFit(opt.foot || (own ? "Merge cards on its own screen to reach the next level." : `Get it in the Shop (${unlockPrice(id)}c) or as a prize.`), x + w / 2, y + h - 13, w - 20, 10.5, "#a08090", "center", "600");
+  plainFit(line, x + w / 2, y + (cmp ? h - 9 : 102), w - 20, 12, next.length ? "#2f8a36" : "#c9962a", "center", "700"), h > 118 && !opt.noFoot && plainFit(opt.foot || (own ? "Merge cards on its own screen to reach the next level." : `Get it in the Shop (${unlockPrice(id)}c) or as a prize.`), x + w / 2, y + h - 13, w - 20, 12, "#a08090", "center", "600");
 }
 var CARD_BANDS = [[3, "#d9965f", "#f3c79c"], [6, "#9fb2c8", "#e1e9f2"], [9, "#e8b830", "#ffe9a0"], [10, "#ff7fb8", "#ffd6ec"]];
 function cardBand(L) {
@@ -6697,12 +6771,12 @@ function drawCardPic(x, y, w, h, type, opt = {}) {
   ctx.save(), opt.dim && (ctx.globalAlpha = 0.42);
   let r = Math.max(7, w * 0.12);
   if (rr(ctx, x, y + 3, w, h, r), ctx.fillStyle = "rgba(74,52,66,0.25)", ctx.fill(), rr(ctx, x, y, w, h, r), opt.locked) {
-    ctx.fillStyle = "#ddd3da", ctx.fill(), ctx.lineWidth = 2.5, ctx.strokeStyle = INK, ctx.stroke(), rr(ctx, x + 5, y + 5, w - 10, h - 10, r - 3), ctx.fillStyle = "#eee6eb", ctx.fill(), text(ctx, "?", x + w / 2, y + h * 0.42, w * 0.38, "#fff"), plainFit(opt.lockText || "Locked", x + w / 2, y + h - 13, w - 10, 10, "#7a6a76", "center", "700"), ctx.restore();
+    ctx.fillStyle = "#ddd3da", ctx.fill(), ctx.lineWidth = 2.5, ctx.strokeStyle = INK, ctx.stroke(), rr(ctx, x + 5, y + 5, w - 10, h - 10, r - 3), ctx.fillStyle = "#eee6eb", ctx.fill(), text(ctx, "?", x + w / 2, y + h * 0.42, w * 0.38, "#fff"), plainFit(opt.lockText || "Locked", x + w / 2, y + h - 13, w - 10, 12, "#7a6a76", "center", "700"), ctx.restore();
     return;
   }
   let fg = ctx.createLinearGradient(x, y, x + w, y + h);
   fg.addColorStop(0, frameLt), fg.addColorStop(0.5, frame2), fg.addColorStop(1, frameLt), ctx.fillStyle = fg, ctx.fill(), ctx.lineWidth = opt.selected ? 4 : 2.4, ctx.strokeStyle = opt.selected ? opt.selCol || "#ff6f91" : INK, ctx.stroke();
-  let compact = h < w * 1.1, m = Math.max(4, w * 0.07), ax = x + m, ay = y + m, aw = w - 2 * m, ah = compact ? h - m * 1.6 - 15 : h * 0.66 - m;
+  let compact = h < w * 1.1, m = Math.max(4, w * 0.07), ax = x + m, ay = y + m, aw = w - 2 * m, ah = compact ? h - m * 1.6 - 19 : h * 0.66 - m;
   ctx.save(), rr(ctx, ax, ay, aw, ah, r * 0.6), ctx.clip();
   let bg = ctx.createRadialGradient(ax + aw / 2, ay + ah * 0.45, 2, ax + aw / 2, ay + ah * 0.5, aw * 0.8);
   bg.addColorStop(0, shade(T.color, 0.75)), bg.addColorStop(1, shade(T.color, 0.25)), ctx.fillStyle = bg, ctx.fillRect(ax, ay, aw, ah), ctx.globalAlpha *= 0.22;
@@ -6711,15 +6785,19 @@ function drawCardPic(x, y, w, h, type, opt = {}) {
   ctx.globalAlpha = opt.dim ? 0.42 : 1, ctx.beginPath(), ctx.ellipse(ax + aw / 2, ay + ah * 0.86, aw * 0.36, ah * 0.08, 0, 0, 7), ctx.fillStyle = "rgba(74,52,66,0.18)", ctx.fill();
   let s = (compact ? Math.min(aw / 50, ah / 46) : Math.min(aw / 54, ah / 56)) * (T.place === "path" ? 1.15 : 1);
   ctx.translate(ax + aw / 2, ay + ah * (compact ? 0.72 : 0.62)), ctx.scale(s, s), drawTower(ctx, type, opt.still ? 0 : S.t, null), ctx.restore(), rr(ctx, ax, ay, aw, ah, r * 0.6), ctx.lineWidth = 1.6, ctx.strokeStyle = "rgba(74,52,66,0.55)", ctx.stroke();
-  let by = ay + ah + (compact ? 2 : 3), bh = compact ? 12 : Math.max(14, h * 0.16);
-  rr(ctx, x + m * 0.6, by, w - m * 1.2, bh, bh * 0.4), ctx.fillStyle = shade(T.color, -0.15), ctx.fill(), ctx.lineWidth = 1.6, ctx.strokeStyle = INK, ctx.stroke(), fitText(T.short || T.name, x + w / 2, by + bh / 2 + 0.5, w - m * 2 - 4, Math.min(14, bh * 0.78), "#fff");
+  let by = ay + ah + (compact ? 2 : 3), bh = compact ? 16 : Math.max(16, h * 0.16);
+  rr(ctx, x + m * 0.6, by, w - m * 1.2, bh, bh * 0.4), ctx.fillStyle = shade(T.color, -0.15), ctx.fill(), ctx.lineWidth = 1.6, ctx.strokeStyle = INK, ctx.stroke(), fitText(T.short || T.name, x + w / 2, by + bh / 2 + 0.5, w - m * 1.2 - 3.4, Math.min(14, Math.max(12, bh * 0.78)), "#fff");
   let py = by + bh + (y + h - by - bh) / 2, n = MAX_CARD_LEVEL, gap = Math.min(7, (w - 2 * m - 6) / n);
   if (!compact) for (let i = 0; i < n; i++)
     ctx.beginPath(), ctx.arc(x + w / 2 - (n - 1) * gap / 2 + i * gap, py, Math.max(1.6, gap * 0.32), 0, 7), ctx.fillStyle = i < L ? "#fff6c0" : "rgba(74,52,66,0.25)", ctx.fill();
-  let bs = Math.max(10, w * 0.15);
-  if (blob(ctx, x + bs * 0.75, y + bs * 0.75, bs, bs * 0.92, "#ffe36e", 2), text(ctx, "L" + L, x + bs * 0.75, y + bs * 0.75 + 0.5, bs * 0.92, "#7a4a2a", "center", null), opt.tag && !opt.badge) {
+  let bs = Math.max(11, w * 0.15);
+  if (blob(ctx, x + bs * 0.75, y + bs * 0.75, bs, bs * 0.92, "#ffe36e", 2), text(ctx, "L" + L, x + bs * 0.75, y + bs * 0.75 + 0.5, 11, "#7a4a2a", "center", null), opt.capNote) {
+    let pw = Math.min(w - 6, 62), ph = 17, pyy = ay + ah - ph - 3;
+    rr(ctx, x + (w - pw) / 2, pyy, pw, ph, 8), ctx.fillStyle = "#b0506a", ctx.fill(), ctx.lineWidth = 1.6, ctx.strokeStyle = INK, ctx.stroke(), plainText(`acts as L${opt.capNote}`, x + w / 2, pyy + ph / 2 + 0.5, 12, "#ffffff", "center", "800");
+  }
+  if (opt.tag && !opt.badge) {
     let tag = T.place === "path" ? "on trail" : T.targets === "air" ? "air only" : type === "laser" ? "gnd+air" : "";
-    tag && text(ctx, tag, ax + aw - 3, ay + 8, 8.5, "#fff", "right");
+    tag && text(ctx, tag, ax + aw - 3, ay + 8, 11, "#fff", "right");
   }
   if (opt.badge && (blob(ctx, x + w - 11, y + 11, 11, 11, "#ff8fab", 2), text(ctx, opt.badge, x + w - 11, y + 11.5, 12, "#fff")), opt.count != null) {
     let str = `\xD7${opt.count}`;
@@ -6731,7 +6809,7 @@ function drawCardPic(x, y, w, h, type, opt = {}) {
     let p = 1 + Math.sin(S.t * 6) * 0.08;
     ctx.save(), ctx.translate(x + w - 10, y + 10), ctx.scale(p, p), blob(ctx, 0, 0, 11, 11, "#ff6f91", 2), text(ctx, "!", 0, 0.5, 14, "#fff"), ctx.restore();
   }
-  opt.fresh && (rr(ctx, x + w / 2 - 17, y - 9, 34, 17, 8), ctx.fillStyle = "#ffd45e", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), text(ctx, "NEW", x + w / 2, y - 0.5, 10, "#fff")), ctx.restore();
+  opt.fresh && (rr(ctx, x + w / 2 - 19, y - 9, 38, 17, 8), ctx.fillStyle = "#ffd45e", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), text(ctx, "NEW", x + w / 2, y - 0.5, 12, "#fff")), ctx.restore();
 }
 function doMergeAll() {
   let done = mergeAll(S.save);
@@ -6744,7 +6822,7 @@ function doMergeAll() {
   S.mergeAnim = { id: top.id, from: top.from, to: top.to, n: 3, t: 0, all: done.length };
 }
 function renderCards() {
-  panel(12, 12, 376, 636, "#fff6ee"), text(ctx, "Cards", 200, 36, 26, "#b5d8ff"), coinIcon(ctx, 304, 60, 1), text(ctx, String(S.save.coins), 336, 61, 15, "#ffd45e"), plainText("Tap a card: stats.  Tap again: open.", 28, 60, 11.5, "#7a5a6a", "left", "600"), S.layoutMerge = [], ALL_CARDS.forEach((id, k) => {
+  panel(12, 12, 376, 636, "#fff6ee"), text(ctx, "Cards", 200, 36, 26, "#b5d8ff"), coinIcon(ctx, 304, 60, 1), text(ctx, String(S.save.coins), 336, 61, 15, "#ffd45e"), plainText("Tap a card: stats.  Tap again: open.", 28, 60, 12, "#7a5a6a", "left", "600"), S.layoutMerge = [], ALL_CARDS.forEach((id, k) => {
     let col = k % 4, row = Math.floor(k / 4), x = 30 + col * 88, y = 80 + row * 104, w = 76, h = 96, c = S.save.cards[id], ready = c.unlocked && mergeReady(S.save, id);
     drawCardPic(x, y, w, h, id, { locked: !c.unlocked, lockText: "Shop or prize", level: c.level, selected: S.cardsSel === id, mergeReady: ready, fresh: c.fresh }), button("card" + id, x, y, w, h, () => {
       S.cardsSel === id && c.unlocked ? openCardView(id) : S.cardsSel = id, sfx("tap");
@@ -6781,11 +6859,11 @@ function renderCardView() {
   plainText("Your cards by level", 28, 212, 12, "#3d2a36", "left", "800"), rows.forEach((r, k) => {
     let col = k % 5, row = Math.floor(k / 5), x = 26 + col * 70, y = 224 + row * 138, w = 62, h = 80;
     if (drawCardPic(x, y, w, h, id, { level: r.L, count: r.have, dim: r.have === 0, still: !0 }), r.maxed) {
-      plainText("top level", x + w / 2, y + h + 16, 11, "#c9962a", "center", "700");
+      plainText("top level", x + w / 2, y + h + 16, 12, "#c9962a", "center", "700");
       return;
     }
     let can = canMergeAt(S.save, id, r.L);
-    plainFit(`${Math.min(r.have, r.need)}/${r.need}`, x + w / 2, y + h + 9, w, 10.5, r.ready ? "#2f8a36" : "#a08090", "center", "700"), drawButton(x, y + h + 17, w, 24, `\u2192 L${r.to}`, can ? "#ff9ec0" : "#e6dce2", { size: 12, r: 9, disabled: !can }), r.coins && plainFit(`${r.coins} coins`, x + w / 2, y + h + 50, w, 10, "#c9962a", "center", "700"), button("mrg" + r.L, x - 3, y + h + 2, w + 6, 58, () => {
+    plainFit(`${Math.min(r.have, r.need)}/${r.need}`, x + w / 2, y + h + 9, w, 12, r.ready ? "#2f8a36" : "#a08090", "center", "700"), drawButton(x, y + h + 17, w, 24, `\u2192 L${r.to}`, can ? "#ff9ec0" : "#e6dce2", { size: 12, r: 9, disabled: !can }), r.coins && plainFit(`${r.coins} coins`, x + w / 2, y + h + 50, w, 12, "#c9962a", "center", "700"), button("mrg" + r.L, x - 3, y + h + 2, w + 6, 58, () => {
       if (!r.ready) {
         toast(`Need ${r.need} cards of level ${r.L}`);
         return;
@@ -6849,7 +6927,7 @@ function countBadge(x, y, n, k) {
 }
 function renderShop() {
   let E = ECONOMY.shop;
-  panel(12, 12, 376, 636, "#fff6ee"), text(ctx, "Shop", 200, 36, 28, "#ffd27a"), panel(62, 56, 132, 32, "#e6f5ff", 16), diamondIcon(ctx, 84, 72, 1), text(ctx, String(S.save.diamonds || 0), 140, 73, 17, "#7fd3ff"), panel(206, 56, 132, 32, "#fff1d6", 16), coinIcon(ctx, 228, 72, 1.1), text(ctx, String(S.save.coins), 284, 73, 17, "#ffd45e"), plainText("No real money, ever. Diamonds come from Daily Rewards.", 200, 101, 11, "#a08090", "center", "600"), panel(26, 112, 348, 62, "#ffe9f0", 14);
+  panel(12, 12, 376, 636, "#fff6ee"), text(ctx, "Shop", 200, 36, 28, "#ffd27a"), panel(62, 56, 132, 32, "#e6f5ff", 16), diamondIcon(ctx, 84, 72, 1), text(ctx, String(S.save.diamonds || 0), 140, 73, 17, "#7fd3ff"), panel(206, 56, 132, 32, "#fff1d6", 16), coinIcon(ctx, 228, 72, 1.1), text(ctx, String(S.save.coins), 284, 73, 17, "#ffd45e"), plainText("No real money, ever. Diamonds come from Daily Rewards.", 200, 101, 12, "#a08090", "center", "600"), panel(26, 112, 348, 62, "#ffe9f0", 14);
   for (let k = 0; k < 3; k++)
     ctx.save(), ctx.translate(58 + k * 14, 146 - k * 3), ctx.rotate(-0.2 + k * 0.2), rr(ctx, -14, -20, 28, 38, 6), ctx.fillStyle = ["#ffb3c1", "#b5d8ff", "#ffd27a"][k], ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), text(ctx, "?", 0, 0, 16), ctx.restore();
   let gift = zapperGiftPending(S.save);
@@ -6859,7 +6937,7 @@ function renderShop() {
     text(ctx, `Card pack: ${E.cardPackSize} random cards`, 112, 132, 13, "#7a4a5a", "left", null);
     {
       let left = Math.max(1, (E.packPity || 0) - (S.save.packsSinceNew || 0));
-      plainFit(lockedCards(S.save).length ? `level 1, ${Math.round(E.packNewTowerChance * 100)}% NEW tower${E.packPity ? ` (sure in ${left})` : ""}` : "level 1, of your unlocked towers", 112, 152, 172, 12, "#a08090", "left", "700");
+      plainFit(lockedCards(S.save).length ? `level 1, ${Math.round(E.packNewTowerChance * 100)}% NEW tower${E.packPity ? ` (sure in ${left})` : ""}` : "level 1, any unlocked tower", 112, 152, 172, 12, "#a08090", "left", "700");
     }
     drawButton(290, 122, 74, 40, `${E.cardPack}c`, "#9fe0b5", { size: 15, disabled: S.save.coins < E.cardPack }), button("pack", 290, 122, 74, 40, () => {
       let got = buyPack(S.save);
@@ -6868,7 +6946,7 @@ function renderShop() {
   }
   plainText(`Tap a card to buy: level-1 card ${E.cardL1}c, new tower 100-400c`, 30, 188, 12, "#7a5a6a", "left", "700"), ALL_CARDS.forEach((id, k) => {
     let col = k % 5, row = Math.floor(k / 5), x = 24 + col * 71, y = 200 + row * 84, w = 64, h = 62, c = S.save.cards[id], own = c.unlocked, up = unlockPrice(id), pk = shopPulse("card", id), cs = pk == null ? 1 : 1 + SHOP_FX.cardPulse * Math.sin(pk * Math.PI);
-    ctx.save(), ctx.translate(x + w / 2, y + h / 2), ctx.scale(cs, cs), ctx.translate(-(x + w / 2), -(y + h / 2)), drawCardPic(x, y, w, h, id, { level: c.level, locked: !own, lockText: `Unlock ${up}c`, selected: S.shopSel === id, selCol: "#5a9fe0" }), ctx.restore(), own && countBadge(x + w - 17, y + 13, totalCards(c), pk), blob(ctx, x + 10, y + h + 10, 8, 8, S.shopSel === id ? "#5a9fe0" : "#d7e8ff", 1.6), text(ctx, "i", x + 10, y + h + 10.5, 11, "#fff"), plainText(own ? `${E.cardL1}c` : `${up}c`, x + w - 4, y + h + 10, 11.5, own ? "#c9962a" : "#e0607e", "right", "800"), button("buy" + id, x, y, w, h, () => {
+    ctx.save(), ctx.translate(x + w / 2, y + h / 2), ctx.scale(cs, cs), ctx.translate(-(x + w / 2), -(y + h / 2)), drawCardPic(x, y, w, h, id, { level: c.level, locked: !own, lockText: `Unlock ${up}c`, selected: S.shopSel === id, selCol: "#5a9fe0" }), ctx.restore(), own && countBadge(x + w - 17, y + 13, totalCards(c), pk), blob(ctx, x + 10, y + h + 10, 8, 8, S.shopSel === id ? "#5a9fe0" : "#d7e8ff", 1.6), text(ctx, "i", x + 10, y + h + 10.5, 12, "#fff"), plainText(own ? `${E.cardL1}c` : `${up}c`, x + w - 4, y + h + 10, 12, own ? "#c9962a" : "#e0607e", "right", "800"), button("buy" + id, x, y, w, h, () => {
       S.shopSel = id, own ? buyCard(S.save, id) ? (persist(), sfx("tap"), shopBought("card", id, E.cardL1, "coin")) : toast("Not enough coins") : buyCardUnlock(S.save, id) ? (persist(), sfx("upgrade"), shopBought("card", id, up, "coin"), queueReveal(id, 1, !0, S.t + 0.3)) : toast(`Need ${up} coins`);
     }), button("info" + id, x - 2, y + h - 2, 40, 24, () => {
       S.shopSel = S.shopSel === id ? null : id, sfx("tap");
@@ -6881,7 +6959,7 @@ function renderShop() {
   }
   BONUS_TYPES.forEach((bt, k) => {
     let x = 26 + k * 88, y = by + 10, w = 80, h = 56, pk = shopPulse("booster", bt), cs = pk == null ? 1 : 1 + SHOP_FX.cardPulse * Math.sin(pk * Math.PI);
-    ctx.save(), ctx.translate(x + w / 2, y + h / 2), ctx.scale(cs, cs), ctx.translate(-(x + w / 2), -(y + h / 2)), rr(ctx, x, y, w, h, 14), ctx.fillStyle = shade(BONUSES[bt].color, 0.2), ctx.fill(), ctx.lineWidth = 2.5, ctx.strokeStyle = INK, ctx.stroke(), ctx.save(), ctx.translate(x + w / 2, y + 22), ctx.scale(1.05, 1.05), drawBonusIcon(ctx, bt, S.t), ctx.restore(), fitText(BONUSES[bt].name, x + w / 2, y + 46, w - 8, 10.5, "#fff"), ctx.restore(), countBadge(x + w - 19, y + 15, S.save.bonusStock[bt] || 0, pk), button("bbuy" + bt, x, y, w, h, () => {
+    ctx.save(), ctx.translate(x + w / 2, y + h / 2), ctx.scale(cs, cs), ctx.translate(-(x + w / 2), -(y + h / 2)), rr(ctx, x, y, w, h, 14), ctx.fillStyle = shade(BONUSES[bt].color, 0.2), ctx.fill(), ctx.lineWidth = 2.5, ctx.strokeStyle = INK, ctx.stroke(), ctx.save(), ctx.translate(x + w / 2, y + 22), ctx.scale(1.05, 1.05), drawBonusIcon(ctx, bt, S.t), ctx.restore(), fitText(BONUSES[bt].name, x + w / 2, y + 46, w - 8, 12, "#fff"), ctx.restore(), countBadge(x + w - 19, y + 15, S.save.bonusStock[bt] || 0, pk), button("bbuy" + bt, x, y, w, h, () => {
       buyBonus(S.save, bt) ? (persist(), sfx("tap"), shopBought("booster", bt, E.boosterDiamonds, "diamond")) : toast(`Need ${E.boosterDiamonds} diamonds`);
     });
   }), cardInfoPanel(S.shopSel, 24, 534, 352, 108, { hint: "Tap (i) under a card to see its stats." }), gift && !S.reveal.length && !S.pack ? onboardSpot({ x: 286, y: 118, w: 82, h: 48, r: 14 }, "gift", claimGift, "Your free pack - tap it!") : !S.pack && !S.reveal.length && S.save.onboard && S.save.onboard.cardsHint === "shop" && onboardSpot(tabRect(1), "tocards", () => {
@@ -7058,18 +7136,18 @@ function renderPack(dt) {
     let img = face ? P.faces[i] : P.back;
     if (ctx.save(), ctx.translate(x + W2 / 2, y + H2 / 2), ctx.scale(sx * sc, sc), ctx.drawImage(img.cv, -W2 / 2 - img.pad, -H2 / 2 - img.pad, W2 + img.pad * 2, H2 + img.pad * 2), ctx.restore(), !face) return;
     let cx = tx + W2 / 2, ny = ty + H2 + 12;
-    fitText(TOWERS[cd.id].short || TOWERS[cd.id].name, cx, ny, W2, 11, "#ffffff");
+    fitText(TOWERS[cd.id].short || TOWERS[cd.id].name, cx, ny, W2, 12, "#ffffff");
     let pk = inSummary ? 1 : Math.max(0, Math.min(1, (t - f0 - PACK.flipDur / 2) / PACK.pip));
-    if (cd.maxed) plainText("MAX", cx, ny + 18, 11, "#ffe36e", "center", "800");
+    if (cd.maxed) plainText("MAX", cx, ny + 18, 12, "#ffe36e", "center", "800");
     else {
       let filled = Math.min(cd.need, cd.have);
       for (let p = 0; p < cd.need; p++) {
         let px = cx - 14 + p * 14, py = ny + 18, isNewPip = p === filled - 1;
         ctx.beginPath(), ctx.arc(px, py, 4.6, 0, 7), ctx.lineWidth = 1.8, ctx.strokeStyle = "#ffffff", ctx.stroke(), p < filled && (ctx.beginPath(), ctx.arc(px, py, 4.6 * (isNewPip ? pk : 1), 0, 7), ctx.fillStyle = "#ffe36e", ctx.fill());
       }
-      plainText(`${Math.min(cd.have, cd.need)}/${cd.need} \u2192 L2`, cx, ny + 34, 11, "#ffe9c0", "center", "700"), cd.ready && pk >= 1 && drawMergeTag(cx, ny + 54);
+      plainText(`${Math.min(cd.have, cd.need)}/${cd.need} \u2192 L2`, cx, ny + 34, 12, "#ffe9c0", "center", "700"), cd.ready && pk >= 1 && drawMergeTag(cx, ny + 54);
     }
-    cd.isNew && (ctx.save(), ctx.translate(tx + W2 - 6, ty + 8), ctx.rotate(Math.PI / 4), rr(ctx, -24, -8, 48, 16, 4), ctx.fillStyle = "#ffe36e", ctx.fill(), ctx.lineWidth = 1.8, ctx.strokeStyle = INK, ctx.stroke(), text(ctx, "NEW", 0, 0.5, 11, "#e0607e", "center", null), ctx.restore());
+    cd.isNew && (ctx.save(), ctx.translate(tx + W2 - 6, ty + 8), ctx.rotate(Math.PI / 4), rr(ctx, -24, -8, 48, 16, 4), ctx.fillStyle = "#ffe36e", ctx.fill(), ctx.lineWidth = 1.8, ctx.strokeStyle = INK, ctx.stroke(), text(ctx, "NEW", 0, 0.5, 12, "#e0607e", "center", null), ctx.restore());
   }), P.newTower && t >= lastFlipEnd) {
     let k = Math.min(1, (t - lastFlipEnd) / 0.2);
     ctx.save(), ctx.globalAlpha = k, rr(ctx, 110, 206, 180, 30, 10), ctx.fillStyle = "#ffe36e", ctx.fill(), ctx.lineWidth = 2.2, ctx.strokeStyle = INK, ctx.stroke(), text(ctx, "NEW TOWER!", 200, 221.5, 17, "#e0607e", "center", null), ctx.restore();
@@ -7093,7 +7171,7 @@ function drawPackArt(x, y) {
   text(ctx, "CARDS", 0, -56, 15, "#ff6f91"), ctx.restore();
 }
 function drawMergeTag(cx, y) {
-  ctx.save(), rr(ctx, cx - 30, y - 9, 60, 18, 8), ctx.fillStyle = "#55b85a", ctx.fill(), ctx.lineWidth = 1.8, ctx.strokeStyle = INK, ctx.stroke(), ctx.beginPath(), ctx.moveTo(cx - 24, y + 4), ctx.lineTo(cx - 20, y - 4), ctx.lineTo(cx - 16, y + 4), ctx.closePath(), ctx.fillStyle = "#ffffff", ctx.fill(), text(ctx, "MERGE!", cx + 5, y + 0.5, 11, "#ffffff", "center", null), ctx.restore();
+  ctx.save(), rr(ctx, cx - 30, y - 9, 60, 18, 8), ctx.fillStyle = "#55b85a", ctx.fill(), ctx.lineWidth = 1.8, ctx.strokeStyle = INK, ctx.stroke(), ctx.beginPath(), ctx.moveTo(cx - 24, y + 4), ctx.lineTo(cx - 20, y - 4), ctx.lineTo(cx - 16, y + 4), ctx.closePath(), ctx.fillStyle = "#ffffff", ctx.fill(), text(ctx, "MERGE!", cx + 5, y + 0.5, 12, "#ffffff", "center", null), ctx.restore();
 }
 function launchFireworks(n = 8, dur = 2.5) {
   for (let i = 0; i < n; i++) S.fireworks.queue.push({ at: S.t + i / n * dur + Math.random() * 0.2 });

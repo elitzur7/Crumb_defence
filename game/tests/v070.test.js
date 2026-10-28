@@ -108,17 +108,17 @@ test('Must 6: pack reveal for ALL packs (paid + free), skippable, no toast / NEW
   assert.ok(!/@capacitor\/haptics/.test(readFileSync(new URL('../package.json', import.meta.url), 'utf8')), 'no haptics dependency');
 });
 
-test('version label in game (0.7.5)', () => { assert.equal(C.VERSION, '0.7.5'); assert.ok(/'v' \+ C\.VERSION/.test(src('game.js'))); });
+test('version label in game (0.7.6)', () => { assert.equal(C.VERSION, '0.7.6'); assert.ok(/'v' \+ C\.VERSION/.test(src('game.js'))); });
 
-test('Should D-P4: per-world card-level cap in battle (W1 L4, W2 L6); the prep screen says so', () => {
-  assert.equal(TJ.worlds[0].cardLevelCap, 4); assert.equal(TJ.worlds[1].cardLevelCap, 6);
+test('Should D-P4: per-world card-level cap in battle (W1 L4, W2 L5 since v0.7.6 E4); the prep screen says so', () => {
+  assert.equal(TJ.worlds[0].cardLevelCap, 4); assert.equal(TJ.worlds[1].cardLevelCap, 5);
   const cl = { slingshot: 9, spray: 3 };
   const b1 = new Battle({ levelIndex: 0, deck: ['slingshot', 'spray'], cardLevels: cl, seed: 1 });
   assert.deepEqual([b1.cardLevels.slingshot, b1.cardLevels.spray], [4, 3]);
   const b2 = new Battle({ levelIndex: 12, deck: ['slingshot', 'spray'], cardLevels: cl, seed: 1 });
-  assert.deepEqual([b2.cardLevels.slingshot, b2.cardLevels.spray], [6, 3]);
+  assert.deepEqual([b2.cardLevels.slingshot, b2.cardLevels.spray], [5, 3]);
   assert.equal(cl.slingshot, 9, 'the save is not touched');
-  assert.ok(/Cards act as L\$\{cap\} max/.test(src('game.js')));
+  assert.ok(/acts as L\${capW} in this world/.test(src('game.js')));
 });
 
 test('Should D-A6 (updated for the v0.7.3 C17 mixes): variants wired - small_gasmask from L2 (wave 3), small_fly from L3, small_armed from L5 (<= 5 ant types each)', async () => {

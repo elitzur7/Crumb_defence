@@ -316,7 +316,13 @@ function modeTap(b, t) {
 }
 
 // ---------------- FX from sim events ----------------
-function addFx(f) { S.fx.push(f); const cap = S.speed >= 4 ? 220 : 300; if (S.fx.length > cap) S.fx.splice(0, 60); } // v0.7.4 M0: a lower cap at 4x keeps S.fx well under 300 with 54 ants
+function addFx(f) {
+  S.fx.push(f); const cap = S.speed >= 4 ? 220 : 300;
+  if (S.fx.length > cap) { // v0.7.6 V4: when full, drop the oldest sparks first (up to 60), then the oldest effects of any kind (ko included)
+    let n = 0, j = 0; for (let i = 0; i < S.fx.length; i++) { const q = S.fx[i]; if (q.k === 'spark' && n < 60) { n++; continue; } S.fx[j++] = q; } S.fx.length = j;
+    if (S.fx.length > cap) S.fx.splice(0, 60);
+  }
+} // v0.7.4 M0: a lower cap at 4x keeps S.fx well under 300 with 54 ants
 function addUi(f) { S.ui.push(f); if (S.ui.length > 60) S.ui.splice(0, 20); }
 const fmtFood = (n) => (Math.abs(n - Math.round(n)) < 0.05 ? String(Math.round(n)) : n.toFixed(1));
 // v0.7.3 C13: swatter visuals run on the BATTLE clock (b.time), so they follow pause and 2x speed. The sim applies the damage when the swing starts; the slap
@@ -328,7 +334,7 @@ function killFx(e) {
   if (e.src === 'tractor') { addFloatText(S.fx, { k: 'crumbTxt', key: 'crumb', x: e.x, y: e.y - 14, n: e.crumbs, fmt: (n) => n, life: 0.9 }); return; } // the scoop event animates the throw
   const fast = S.speed >= 4; // v0.7.4 M0: at 4x fewer cosmetic bits per kill (the S.fx list stays small with 54 ants)
   for (let i = 0; i < (fast ? 1 : 4); i++) addFx({ k: 'crumbBit', x: e.x, y: e.y - 6, vx: (Math.random() - 0.5) * 90, vy: -40 - Math.random() * 60, life: 0.6, max: 0.6 });
-  addFx({ k: 'ko', x: e.x, y: e.y, ant: e.ant, life: 0.2, max: 0.2, face: Math.random() < 0.5 ? 1 : -1 });
+  addFx({ k: 'ko', x: e.x, y: e.y, ant: e.ant, life: 0.32, max: 0.32, face: Math.random() < 0.5 ? 1 : -1 });
   for (let i = 0; i < (fast ? 2 : 5); i++) addFx({ k: 'puff', x: e.x + (Math.random() - 0.5) * 10, y: e.y + (Math.random() - 0.5) * 6, vx: (Math.random() - 0.5) * 40, vy: -Math.random() * 30, r: 4 + Math.random() * 4, life: 0.5, max: 0.5 });
   addFloatText(S.fx, { k: 'crumbTxt', key: 'crumb', x: e.x, y: e.y - 14, n: e.crumbs, fmt: (n) => n, life: 0.9 });
   sfx('pop');
@@ -693,10 +699,10 @@ function drawWorldGate(w) {
   panel(40, y - 30, 320, 60, open ? '#fff1f6' : '#efe7ec', 18);
   ctx.save(); ctx.translate(76, y + 2); ctx.scale(0.62, 0.62); A.drawTreat(ctx, W2.treat, 0, 0, 1, S.t, { face: open ? 'happy' : 'content' }); ctx.restore();
   A.text(ctx, `World ${w}: ${W2.name}`, 214, y - 12, 17, open ? '#ff8fab' : '#b9a6b2');
-  if (open) plainText('Open! Beat the queen at the top.', 214, y + 12, 11.5, '#6b5562', 'center', '600');
+  if (open) plainText('Open! Beat the queen at the top.', 214, y + 12, 12, '#6b5562', 'center', '600');
   else {
     const won = C.LEVELS.filter((L, i) => L.world === prev && S.save.levels[i].cleared).length, total = C.LEVELS.filter((L) => L.world === prev).length;
-    plainFit(`Locked: win all ${total} levels (${won}/${total}) + ${W2.unlock.minStarsInWorld} stars (${M.worldStars(S.save, prev)}/${total * 3})`, 214, y + 12, 262, 12, '#a0607e', 'center', '700');
+    plainFit(`Locked: all ${total} levels (${won}/${total}) + ${W2.unlock.minStarsInWorld} stars (${M.worldStars(S.save, prev)}/${total * 3})`, 214, y + 12, 262, 12, '#a0607e', 'center', '700');
     // padlock
     ctx.save(); ctx.translate(346, y - 22); A.rr(ctx, -8, -3, 16, 13, 3); ctx.fillStyle = '#8c8090'; ctx.fill(); ctx.beginPath(); ctx.arc(0, -4, 5.5, Math.PI, 0); ctx.lineWidth = 3; ctx.strokeStyle = '#8c8090'; ctx.stroke(); ctx.restore();
   }
@@ -725,7 +731,7 @@ function renderMapScreen() {
     if (claim) { A.rr(ctx, bx - 4, by - 4, bs + 8, bs + 8, 20); ctx.fillStyle = `rgba(255,212,94,${0.3 + 0.25 * Math.sin(S.t * 5)})`; ctx.fill(); }
     A.rr(ctx, bx, by, bs, bs, 16); ctx.fillStyle = claim ? '#ffe7a8' : '#fbe3ee'; ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = A.INK; ctx.stroke();
     A.giftIcon(ctx, bx + bs / 2, by + 26 + (claim ? Math.sin(S.t * 5) * 1.5 : 0), 1.05);
-    plainText('Calendar', bx + bs / 2, by + 52, 11, '#5a4652', 'center', '700');
+    plainText('Calendar', bx + bs / 2, by + 52, 12, '#5a4652', 'center', '700');
     if (claim) { A.blob(ctx, bx + bs - 2, by + 2, 8, 8, '#ff6f91', 1.6); A.text(ctx, '!', bx + bs - 2, by + 2.5, 12); }
     button('calendar', bx - 4, by - 4, bs + 8, bs + 8, () => openCalendar()); }
   // scrolling stage map (clipped between the header and the bottom buttons)
@@ -754,7 +760,7 @@ function renderMapScreen() {
   if (gy < MAPVIEW.top - 10) {
     const a = 0.75 + 0.25 * Math.sin(S.t * 4);
     ctx.save(); ctx.globalAlpha = a; A.rr(ctx, 128, MAPVIEW.top + 4, 144, 26, 13); ctx.fillStyle = 'rgba(90,64,88,0.85)'; ctx.fill();
-    plainText('\u25B2 World 2 - scroll up', 200, MAPVIEW.top + 17.5, 11.5, '#ffffff', 'center', '700'); ctx.restore();
+    plainText('\u25B2 World 2 - scroll up', 200, MAPVIEW.top + 17.5, 12, '#ffffff', 'center', '700'); ctx.restore();
   }
   // v0.7.2 C16: the bottom buttons moved into the fixed tab bar (renderTabBar); Snd / Reset live in the settings panel behind the gear
   updateCardsBlink();
@@ -762,7 +768,7 @@ function renderMapScreen() {
   // v0.7.3: the version label sits in the free corner under the Calendar badge (it used to collide with the bottom-row stage label), and is drawn only
   // when no modal / onboarding spot covers the map (Daily Rewards, settings, the Shop hint)
   const shopHint = !S.cal && !S.settings && M.zapperGiftPending(S.save) && !S.reveal.length;
-  if (!S.cal && !S.settings && !shopHint) plainText('v' + C.VERSION, 14, 186, 11, '#a08090', 'left', '600');
+  if (!S.cal && !S.settings && !shopHint) plainText('v' + C.VERSION, 14, 186, 12, '#a08090', 'left', '600');
   if (S.cal) renderCalendar();
   else if (S.settings) renderSettings();
   else if (shopHint) onboardSpot(tabRect(2), 'shop', () => go('shop'), 'A free pack waits in the Shop!');
@@ -804,7 +810,7 @@ function drawFinger(x, y) {
 function prizeIcon(p, x, y, s = 1) {
   if (p.kind === 'coins') { A.coinIcon(ctx, x - 6 * s, y + 2 * s, 1.1 * s); A.coinIcon(ctx, x + 5 * s, y - 3 * s, 1.1 * s); }
   else if (p.kind === 'diamonds') { A.diamondIcon(ctx, x, y, 1.25 * s); }
-  else if (p.kind === 'card') { ctx.save(); ctx.translate(x, y); ctx.rotate(-0.12); A.rr(ctx, -11 * s, -14 * s, 22 * s, 28 * s, 5 * s); ctx.fillStyle = p.level >= 2 ? '#ffd27a' : '#b5d8ff'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = A.INK; ctx.stroke(); A.text(ctx, 'L' + p.level, 0, 0.5, 11 * s, '#fff'); ctx.restore(); }
+  else if (p.kind === 'card') { ctx.save(); ctx.translate(x, y); ctx.rotate(-0.12); A.rr(ctx, -11 * s, -14 * s, 22 * s, 28 * s, 5 * s); ctx.fillStyle = p.level >= 2 ? '#ffd27a' : '#b5d8ff'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = A.INK; ctx.stroke(); A.text(ctx, 'L' + p.level, 0, 0.5, 12 * s, '#fff'); ctx.restore(); }
   else if (p.kind === 'booster' || p.kind === 'bonus') { ctx.save(); ctx.translate(x, y); ctx.scale(0.8 * s, 0.8 * s); A.drawBonusIcon(ctx, p.id, S.t); ctx.restore(); }
 }
 function prizeLabel(p) {
@@ -842,10 +848,10 @@ function renderCalendar() {
     const mx = Math.min(bx + bw - 34, bx + (m - 0.5) * segW), my = tier === 3 ? 200 : 194;
     ctx.beginPath(); ctx.moveTo(bx + (m - 0.5) * segW, 168); ctx.lineTo(mx, my - 14 * sc); ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(82,60,75,0.35)'; ctx.stroke();
     A.monthBox(ctx, mx, my, sc, tier, S.t, shown >= m);
-    plainText(`Day ${m}`, mx, my + 24 * sc - (tier === 3 ? 4 : 0), tier === 3 ? 11 : 10, tier === 3 ? '#c27a00' : '#6b5562', 'center', '700');
+    plainText(`Day ${m}`, mx, my + 24 * sc - (tier === 3 ? 4 : 0), 12, tier === 3 ? '#c27a00' : '#6b5562', 'center', '700');
   });
-  if (st.resetPending && !CA.result) plainText('You missed a day - the streak restarts at 1.', 200, 256, 11, '#c0392b', 'center', '600');
-  else plainText('Collect every day to keep the streak. Bigger prizes as it grows!', 200, 256, 11, '#6b5562', 'center');
+  if (st.resetPending && !CA.result) plainText('You missed a day - the streak restarts at 1.', 200, 256, 12, '#c0392b', 'center', '600');
+  else plainText('Collect every day to keep the streak. Bigger prizes as it grows!', 200, 256, 12, '#6b5562', 'center');
   // v0.4 item 2: weekly cycle as a 3x3 square - days 1-6 in two rows of three, day 7 = one wide tile across the bottom row
   plainText('Your 7-day cycle', 36, 276, 13, '#3d2a36', 'left', '700');
   st.tiles.forEach((tl, i) => {
@@ -862,8 +868,8 @@ function renderCalendar() {
     else ctx.fillStyle = claimed ? '#e3f6dc' : missed ? '#ece6ea' : today ? '#fff1c9' : '#ffffff';
     ctx.fill();
     ctx.lineWidth = today ? 3.5 : big ? 2.6 : 2; ctx.strokeStyle = today ? '#e8a620' : big ? '#e0a830' : A.INK; ctx.stroke();
-    plainText(`Day ${i + 1}`, x + 9, y + 13, 11, '#6b5562', 'left', '700');
-    if (missed) plainText('missed', x + w - 8, y + 13, 10, '#8c7a86', 'right', '600');
+    plainText(`Day ${i + 1}`, x + 9, y + 13, 12, '#6b5562', 'left', '700');
+    if (missed) plainText('missed', x + w - 8, y + 13, 12, '#8c7a86', 'right', '600');
     if (today) A.text(ctx, 'TAP!', x + w - 22, y + 13, 12, '#ff8fab');
     if (missed) ctx.globalAlpha = 0.45;
     const bobY = today ? Math.sin(S.t * 4) * 2 : 0;
@@ -925,7 +931,7 @@ function drawCard(x, y, w, h, type, opt = {}) {
   ctx.lineWidth = opt.selected ? 4 : 2.5; ctx.strokeStyle = opt.selected ? (opt.selCol || '#ff6f91') : A.INK; ctx.stroke();
   if (opt.locked) {
     A.text(ctx, '?', x + w / 2, y + h * 0.42, 30, '#fff');
-    A.text(ctx, opt.lockText || 'Locked', x + w / 2, y + h - 14, 10, '#7a6a76', 'center', null);
+    A.text(ctx, opt.lockText || 'Locked', x + w / 2, y + h - 14, 12, '#7a6a76', 'center', null);
     ctx.restore(); return;
   }
   ctx.save(); ctx.beginPath(); A.rr(ctx, x + 4, y + 4, w - 8, h - 8, 11); ctx.clip();
@@ -936,9 +942,9 @@ function drawCard(x, y, w, h, type, opt = {}) {
   ctx.translate(x + w / 2, iconY); ctx.scale(iconS, iconS); A.drawTower(ctx, type, S.t, null);
   ctx.restore();
   const tag = T.place === 'path' ? 'on trail' : (T.targets === 'air' ? 'air only' : type === 'laser' ? 'gnd+air' : '');
-  if (tag && h > 70 && !opt.badge) A.text(ctx, tag, x + w - 7, y + 11, 9, '#fff', 'right');
+  if (tag && h > 70 && !opt.badge) A.text(ctx, tag, x + w - 7, y + 11, 11, '#fff', 'right');
   fitText(T.short || T.name, x + w / 2, nameY, w - 10, w < 85 ? 13 : 14, '#fff');
-  if (opt.level) { A.blob(ctx, x + 12, y + 12, 11, 10, '#ffe36e', 2); A.text(ctx, 'L' + opt.level, x + 12, y + 12.5, 10, '#7a4a2a', 'center', null); }
+  if (opt.level) { A.blob(ctx, x + 12, y + 12, 11, 10, '#ffe36e', 2); A.text(ctx, 'L' + opt.level, x + 12, y + 12.5, 11, '#7a4a2a', 'center', null); }
   if (opt.cost != null) {
     A.rr(ctx, x + 10, y + h - 21, w - 20, 17, 8); ctx.fillStyle = opt.afford ? '#fff8ec' : '#ffd6d6'; ctx.fill(); ctx.lineWidth = 1.8; ctx.strokeStyle = A.INK; ctx.stroke();
     A.crumbIcon(ctx, x + w / 2 - (opt.cost === 0 ? 22 : 14), y + h - 12.5, 0.75);
@@ -947,7 +953,7 @@ function drawCard(x, y, w, h, type, opt = {}) {
   if (opt.badge) { A.blob(ctx, x + w - 11, y + 11, 11, 11, '#ff8fab', 2); A.text(ctx, opt.badge, x + w - 11, y + 11.5, 12, '#fff'); }
   // v0.5 items 6/7: '!' = a merge is ready on this card; '+1' = a won card you have not looked at yet
   if (opt.mergeReady) { const p = 1 + Math.sin(S.t * 6) * 0.08; ctx.save(); ctx.translate(x + w - 10, y + 10); ctx.scale(p, p); A.blob(ctx, 0, 0, 11, 11, '#ff6f91', 2); A.text(ctx, '!', 0, 0.5, 14, '#fff'); ctx.restore(); }
-  if (opt.fresh) { A.rr(ctx, x + w / 2 - 17, y - 9, 34, 17, 8); ctx.fillStyle = '#ffd45e'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = A.INK; ctx.stroke(); A.text(ctx, 'NEW', x + w / 2, y - 0.5, 10, '#fff'); }
+  if (opt.fresh) { A.rr(ctx, x + w / 2 - 19, y - 9, 38, 17, 8); ctx.fillStyle = '#ffd45e'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = A.INK; ctx.stroke(); A.text(ctx, 'NEW', x + w / 2, y - 0.5, 12, '#fff'); }
   ctx.restore();
 }
 function antIcon(type, x, y, s = 1) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); A.drawAnt(ctx, type, (S.t * 1.3) % 1); ctx.restore(); }
@@ -962,7 +968,7 @@ function renderPrep() {
   const ants = levelAntTypes(i);
   A.text(ctx, 'Incoming ants', 30, 92, 14, '#7a5a6a', 'left', null);
   A.text(ctx, `${L.waveCount} waves`, 370, 92, 14, '#7a5a6a', 'right', null);
-  if (levelHasFlyers(i)) { A.rr(ctx, 152, 82, 132, 20, 10); ctx.fillStyle = '#d7ecff'; ctx.fill(); ctx.lineWidth = 1.6; ctx.strokeStyle = '#5a9fe0'; ctx.stroke(); plainText('Flyers in this level', 218, 92.5, 11, '#2f6fae', 'center', '800'); } // v0.7 (Should): flyers preview
+  if (levelHasFlyers(i)) { A.rr(ctx, 152, 82, 132, 20, 10); ctx.fillStyle = '#d7ecff'; ctx.fill(); ctx.lineWidth = 1.6; ctx.strokeStyle = '#5a9fe0'; ctx.stroke(); plainText('Flyers in this level', 218, 92.5, 12, '#2f6fae', 'center', '800'); } // v0.7 (Should): flyers preview
   // icons share the panel width; big ants (queen) are scaled so nothing overflows or reaches the header line
   S.layoutPrepAnts = [];
   const n = ants.length, slot = Math.min(76, 340 / n), x0 = 200 - (slot * (n - 1)) / 2;
@@ -971,18 +977,24 @@ function renderPrep() {
     const sc = Math.min(1.15, (slot - 6) / (40 * sz), 30 / (34 * sz)); // width ~40*size, height above feet ~34*size
     antIcon(t, x, 136, sc);
     S.layoutPrepAnts.push({ type: t, x: x - 20 * sz * sc, y: 136 - 34 * sz * sc, w: 40 * sz * sc, h: 46 * sz * sc });
-    fitText(C.ANTS[t].name.replace(' Ant', ''), x, 160, slot - 4, 10, '#7a5a6a');
+    { // v0.7.6 V3: ant names stay 12 px - a name wider than its slot wraps to two lines (words, or after a hyphen)
+      const nm = C.ANTS[t].name.replace(' Ant', ''); ctx.font = `bold 12px ${A.FONT}`;
+      if (ctx.measureText(nm).width <= slot - 2) A.text(ctx, nm, x, 160, 12, '#7a5a6a');
+      else { const parts = nm.includes(' ') ? nm.split(' ') : nm.split(/(?<=-)/); const ln = parts.length > 2 ? [parts[0], parts.slice(1).join(' ')] : parts; ln.forEach((q, qi) => A.text(ctx, q, x, 154.5 + qi * 12.5, 12, '#7a5a6a')); }
+    }
   });
   // deck
   const unlocked = M.unlockedCards(S.save);
   A.text(ctx, `Your deck (${S.prep.deck.length}/${C.BATTLE.deckSize}) - tap to pick`, 30, 182, 14, '#7a5a6a', 'left', null);
-  { const cap = worldCardLevelCap(i); if (cap && unlocked.some((id) => S.save.cards[id].level > cap)) plainText(`Cards act as L${cap} max`, 370, 182, 10, '#b0506a', 'right', '800'); } // v0.7 D-P4
+  // v0.7 D-P4 / v0.7.6 E4: a card above the world's cap acts as the cap in this world - a pill on the card and one line under the grid
+  const capW = worldCardLevelCap(i); const overCap = (id) => !!capW && unlocked.includes(id) && S.save.cards[id].level > capW;
+  if (capW && unlocked.some(overCap)) plainText(`A card above L${capW} acts as L${capW} in this world`, 200, 488, 12, '#b0506a', 'center', '800');
   C.ALL_CARDS.forEach((id, k) => { // v0.6: 13 cards -> 5 columns x 3 rows
     const col = k % 5, row = Math.floor(k / 5);
     const x = 22 + col * 72, y = 196 + row * 98, w = 66, h = 90;
     const isU = unlocked.includes(id);
     const di = S.prep.deck.indexOf(id);
-    drawCardPic(x, y, w, h, id, { locked: !isU, lockText: 'Shop or prize', selected: di >= 0, selCol: '#111111', badge: di >= 0 ? String(di + 1) : null, tag: true, level: isU ? S.save.cards[id].level : 0, dim: isU && di < 0 && S.prep.deck.length >= C.BATTLE.deckSize }); // v0.6.1: card picture
+    drawCardPic(x, y, w, h, id, { locked: !isU, lockText: 'Shop or prize', selected: di >= 0, selCol: '#111111', badge: di >= 0 ? String(di + 1) : null, tag: true, level: isU ? S.save.cards[id].level : 0, capNote: overCap(id) ? capW : 0, dim: isU && di < 0 && S.prep.deck.length >= C.BATTLE.deckSize }); // v0.6.1: card picture
     if (isU) button('deck' + id, x, y, w, h, () => {
       const d = S.prep.deck; const j = d.indexOf(id);
       if (j >= 0) d.splice(j, 1); else if (d.length < C.BATTLE.deckSize) d.push(id); else toast('Deck is full (5). Tap a card to remove it.');
@@ -1018,10 +1030,10 @@ function renderPrep() {
   // warnings are word-wrapped inside an auto-height box (no overflow on narrow phones)
   S.layoutWarn = null;
   if (warn) {
-    const lines = wrapLines(warn, 324, 11.5).slice(0, 3); const hh = 12 + lines.length * 14;
+    const lines = wrapLines(warn, 324, 12).slice(0, 3); const hh = 12 + lines.length * 14;
     panel(26, 646 - hh - 2, 348, hh, issues.length ? '#ffd9d0' : '#fff0c2', 12);
     lines.forEach((l, k) => A.text(ctx, l, 200, 646 - hh + 6 + k * 14 + 5, 12, issues.length ? '#c0392b' : '#b0602a', 'center', null));
-    ctx.font = `bold 11.5px ${A.FONT}`;
+    ctx.font = `bold 12px ${A.FONT}`;
     S.layoutWarn = { box: { x: 26, y: 646 - hh - 2, w: 348, h: hh }, lines: lines.map((l) => ctx.measureText(l).width), maxW: 324 };
   }
   drawButton(26, 652, 110, 48, 'Back', '#d9cfe0'); button('back', 26, 652, 110, 48, () => go('map'));
@@ -1204,8 +1216,7 @@ function drawFanAreas(b) {
 // v0.5 items 11/12: Move (1 diamond) and Swap (free) buttons on the panel.
 const INFO_INK = '#3d2a36', INFO_SOFT = '#6b5562';
 function plainFit(str, x, y, maxW, size, col, align = 'left', weight = '500') {
-  ctx.font = `${weight} ${size}px ${A.FONT}`; const w = ctx.measureText(str).width;
-  plainText(str, x, y, w > maxW ? size * maxW / w : size, col, align, weight);
+  plainText(str, x, y, fitSize(str, maxW, size, weight), col, align, weight);
 }
 function plainWrap(str, maxW, size, weight = '500') {
   ctx.font = `${weight} ${size}px ${A.FONT}`; const out = []; let line = '';
@@ -1250,7 +1261,7 @@ function drawPieces(b) {
     ctx.beginPath(); ctx.arc(0, -2, pr, 0, 7); ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(255,255,255,0.75)'; ctx.stroke();
     ctx.beginPath(); ctx.arc(0, -2, 14, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * frac); ctx.lineWidth = 3.4; ctx.lineCap = 'round'; ctx.strokeStyle = blink ? '#ff5a5a' : '#ffd45e'; ctx.stroke();
     A.crumbIcon(ctx, 0, -4 - bounce, 1.35, true);
-    if (q.bonus >= 0.05) A.text(ctx, '+' + fmtFood(q.bonus), 0, -24 - bounce * 0.5, 10, '#fff7c9');
+    if (q.bonus >= 0.05) A.text(ctx, '+' + fmtFood(q.bonus), 0, -24 - bounce * 0.5, 12, '#fff7c9');
     ctx.restore();
   }
 }
@@ -1317,9 +1328,11 @@ function renderTowerInfo(b, info) {
   const modes = hasTargetModes(tw.type), H2 = modes ? 176 : 140, py = tw.y + MAP_Y > 300 ? MAP_Y + 8 : MAP_Y + MAP_H - H2 - 8;
   S.layoutInfo = { x: 14, y: py, w: 372, h: H2 };
   panel(14, py, 372, H2, '#fffaf5', 14);
-  ctx.font = `bold 15px ${A.FONT}`; const tW = Math.min(150, ctx.measureText(T.name).width);
-  fitText(T.name, 26 + tW / 2, py + 17, 150, 15, '#ff8fab'); // title stays bold
-  plainFit(`Lv ${tw.lvl}/${b.cfg.maxInBattleLevel} \u00b7 card L${tw.cardLevel}`, 34 + tW, py + 17, 222 - tW, 12, INFO_SOFT, 'left', '600');
+  // v0.7.6 V3: the Lv text keeps 12 px; the title shrinks (never below 12) to leave it room
+  const lvStr = `Lv ${tw.lvl}/${b.cfg.maxInBattleLevel} \u00b7 card L${tw.cardLevel}`; ctx.font = `600 12px ${A.FONT}`; const lvW = ctx.measureText(lvStr).width;
+  const titleMax = Math.min(150, 222 - lvW - 8); ctx.font = `bold 15px ${A.FONT}`; const tW = Math.min(titleMax, ctx.measureText(T.name).width);
+  fitText(T.name, 26 + tW / 2, py + 17, titleMax, 15, '#ff8fab'); // title stays bold
+  plainText(lvStr, 34 + tW, py + 17, 12, INFO_SOFT, 'left', '600');
   let desc = T.ability || T.desc;
   if (modes && tw.mode && C.TARGET_MODE_TEXT[tw.type] && C.TARGET_MODE_TEXT[tw.type][tw.mode]) desc = C.TARGET_MODE_TEXT[tw.type][tw.mode]; // v0.7.5 (review finding 3): the text follows the selected mode
   if (T.directional && !tw.trailDir) desc = tw.type === 'ball' ? 'No trail right next to it - the marble cannot roll here. Move it!' : tw.type === 'tractor' ? 'No trail right next to it - nothing to scoop here. Move it!' : 'No trail right next to it - no wind here. Move it!';
@@ -1340,7 +1353,8 @@ function renderTowerInfo(b, info) {
   if (extra.length) line = 'Upgraded: ' + extra.map((d) => diffText(tw.type, d)).join(', ');
   else if (tw.lvl < b.cfg.maxInBattleLevel) line = (dmgGainText(tw.type, tw.lvl + 1, tw.cardLevel) ? dmgGainText(tw.type, tw.lvl + 1, tw.cardLevel) + '! ' : '') + 'Next (drop same card): ' + upgradeDiff(tw.type, tw.lvl, tw.cardLevel).map((d) => diffText(tw.type, d)).join(', ');
   else line = 'Max level!';
-  plainFit(line, 200, py + (modes ? 160 : 122), 350, 12, extra.length ? '#2f8a36' : INFO_INK, 'center');
+  { const ls = plainWrap(line, 350, 12).slice(0, 2), y0 = py + (modes ? 160 : 122) - (ls.length > 1 ? 8 : 0); // v0.7.6 V3: a long line wraps to 2 lines at 12 px instead of shrinking
+    ls.forEach((l, i) => plainText(l, 200, y0 + i * 15, 12, extra.length ? '#2f8a36' : INFO_INK, 'center')); }
   button('infoClose', 14, py, 372, H2, () => { S.info = null; }); // registered after 'map' so it is on top (tapping the panel = the player's own close)
   if (modes) { // v0.7.4 M1: who this tower shoots - three chips under the stat boxes (tap = select). v0.7.5 C18: 34 px tall, a visible 1.5 px outline when inactive, a 120 ms pop on change
     TARGET_MODES.forEach((m, i) => {
@@ -1357,8 +1371,8 @@ function renderTowerInfo(b, info) {
   // Move / Swap (on top of the panel's close area)
   const canMove = (S.save.diamonds || 0) >= C.ECONOMY.diamonds.moveTower;
   drawButton(256, py + 5, 62, 24, '', '#9fd8ff', { r: 10, disabled: !canMove });
-  A.text(ctx, 'Move', 280, py + 17, 11.5); A.diamondIcon(ctx, 305, py + 17, 0.55); A.text(ctx, String(C.ECONOMY.diamonds.moveTower), 312, py + 17.5, 10);
-  drawButton(322, py + 5, 58, 24, 'Swap', '#c9b6f2', { r: 10, size: 11.5, disabled: b.towers.length < 2 });
+  A.text(ctx, 'Move', 280, py + 17, 12); A.diamondIcon(ctx, 305, py + 17, 0.55); A.text(ctx, String(C.ECONOMY.diamonds.moveTower), 312, py + 17.5, 12);
+  drawButton(322, py + 5, 58, 24, 'Swap', '#c9b6f2', { r: 10, size: 12, disabled: b.towers.length < 2 });
   button('infoMove', 252, py, 68, 40, () => startMode('move', tw));
   button('infoSwap', 320, py, 64, 40, () => startMode('swap', tw));
 }
@@ -1371,10 +1385,15 @@ function drawQueenCheer(age, world) {
   A.text(ctx, msg[0], 0, -18, 26, '#ffe36e'); A.text(ctx, msg[1], 0, 16, 24, '#ffffff');
   ctx.restore();
 }
+// v0.7.6 V3: fitText / plainFit never draw below MIN_FONT (12 px); a string that does not fit at 12 must be wrapped, shortened or given more room by the caller
+const MIN_FONT = 12;
+function fitSize(str, maxW, size, weight) {
+  ctx.font = `${weight} ${size}px ${A.FONT}`; const w = ctx.measureText(str).width; if (w <= maxW) return size;
+  const s = size * maxW / w; if (__TEST_HOOKS__ && s < MIN_FONT - 0.01) (window.__fitOver ||= []).push([str, +maxW.toFixed(1), +(w * MIN_FONT / size).toFixed(1)]);
+  return Math.max(MIN_FONT, s);
+}
 function fitText(str, x, y, maxW, size, col) {
-  ctx.font = `bold ${size}px ${A.FONT}`;
-  const w = ctx.measureText(str).width;
-  A.text(ctx, str, x, y, w > maxW ? size * maxW / w : size, col);
+  A.text(ctx, str, x, y, fitSize(str, maxW, size, 'bold'), col);
 }
 function wrapText(s, x, y, maxW, size, col) {
   ctx.font = `bold ${size}px ${A.FONT}`; const words = s.split(' '); let line = '', yy = y;
@@ -1468,9 +1487,9 @@ function renderFx(dt) {
       case 'crumbFly': { const x = f.x0 + (f.x1 - f.x0) * k, y = f.y0 + (f.y1 - f.y0) * k - Math.sin(k * Math.PI) * 24; ctx.globalAlpha = k > 0.85 ? (1 - k) / 0.15 : 1; A.crumbIcon(ctx, x, y, 1.1 - k * 0.5, true); break; }
       case 'ko': {
         const spr = A.antSprite(f.ant, 0, false, pxRatio);
-        // v0.7.5 juice: death = scale 1 -> 1.25 in 80 ms, then -> 0 in 120 ms (reduced motion: a plain fade, no scale / spin)
-        const rmo = reducedMotion(), ds = rmo ? 1 : k < 0.4 ? 1 + 0.25 * (k / 0.4) : 1.25 * (1 - (k - 0.4) / 0.6);
-        ctx.globalAlpha = rmo ? 1 - k : 1 - k * k; ctx.translate(f.x, f.y - (rmo ? 0 : k * 30)); ctx.rotate(rmo ? 0 : Math.PI * k * 0.4 * f.face); ctx.scale(f.face * ds, -ds);
+        // v0.7.6 V4: death = scale 1 -> 1.25 in 80 ms (first 25%), then -> 0 over 240 ms; life 0.32 s (was 0.2); reduced motion: a plain fade of the same length, no scale / spin
+        const rmo = reducedMotion(), ds = rmo ? 1 : k < 0.25 ? 1 + 0.25 * (k / 0.25) : 1.25 * (1 - (k - 0.25) / 0.75);
+        ctx.globalAlpha = rmo ? 1 - k : 1 - k * k; ctx.translate(f.x, f.y - (rmo ? 0 : k * 24)); ctx.rotate(rmo ? 0 : Math.PI * k * 0.4 * f.face); ctx.scale(f.face * ds, -ds);
         ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h);
         ctx.scale(1, -1); ctx.beginPath(); ctx.ellipse(0, -18, 8, 2.5, 0, 0, 7); ctx.lineWidth = 2; ctx.strokeStyle = '#ffe36e'; ctx.stroke();
         break;
@@ -1479,7 +1498,7 @@ function renderFx(dt) {
       case 'crumbTxt': ctx.globalAlpha = 1 - k * k; A.crumbIcon(ctx, f.x - 7, f.y - k * 24, 0.7); A.text(ctx, '+' + f.n, f.x + 7, f.y - k * 24, 12, '#ffe3a8'); break;
       case 'txt': { // v0.7.5 juice: rise 22 px with easeOutCubic; scale 0.6 -> 1.15 -> 1 in the first 120 ms; reduced motion: no rise, no pop
         const rm = reducedMotion(), pk = Math.min(1, (f.max * k) / 0.12); ctx.globalAlpha = 1 - k * k;
-        const sz = (f.size || 14) * (rm || pk >= 1 ? 1 : pk < 0.6 ? 0.6 + (1.15 - 0.6) * (pk / 0.6) : 1.15 - 0.15 * ((pk - 0.6) / 0.4));
+        const sz = Math.max(MIN_FONT, (f.size || 14) * (rm || pk >= 1 ? 1 : pk < 0.6 ? 0.6 + (1.15 - 0.6) * (pk / 0.6) : 1.15 - 0.15 * ((pk - 0.6) / 0.4))); // v0.7.6 V3: the 120 ms pop-in never starts below 12 px
         A.text(ctx, f.s, Math.max(60, Math.min(MAP_W - 60, f.x)), f.y - (rm ? 0 : 22 * (1 - Math.pow(1 - k, 3))), sz, f.col); break; }
       case 'ring2': ctx.globalAlpha = 1 - k; ctx.beginPath(); ctx.arc(f.x, f.y, 8 + k * 34, 0, 7); ctx.lineWidth = 6 * (1 - k) + 1; ctx.strokeStyle = '#ffe36e'; ctx.stroke(); break;
       case 'pillar': { ctx.globalAlpha = (1 - k) * 0.8; const g = ctx.createLinearGradient(0, f.y - 120, 0, f.y + 10); g.addColorStop(0, 'rgba(255,240,150,0)'); g.addColorStop(1, 'rgba(255,240,150,0.9)'); ctx.fillStyle = g; const w = 26 * (1 - k * 0.5); ctx.fillRect(f.x - w / 2, f.y - 120, w, 130); for (let i = 0; i < 4; i++) A.starShape(ctx, f.x + Math.sin(i * 2.1 + k * 6) * 14, f.y - 20 - ((k * 90 + i * 25) % 100), 3.5, '#fff7b0', 1); break; }
@@ -1619,8 +1638,8 @@ function renderDialog() {
   ctx.restore();
   plainText(D.line, 200, 338, 14, '#3d2a36', 'center', '600');
   A.diamondIcon(ctx, 178, 364, 1.2); A.text(ctx, String(D.price), 212, 365, 22, '#7fd3ff');
-  plainText(afford ? `You have ${have} diamonds.` : `You have ${have} diamonds. Get diamonds from the Reward Calendar.`, 200, 392, 11.5, afford ? '#5a4652' : '#c0392b', 'center');
-  plainText(D.note, 200, 408, 11, '#7a6a76', 'center');
+  plainText(afford ? `You have ${have} diamonds.` : `You have ${have} diamonds. Get diamonds from the Reward Calendar.`, 200, 392, 12, afford ? '#5a4652' : '#c0392b', 'center');
+  plainText(D.note, 200, 408, 12, '#7a6a76', 'center');
   drawButton(64, 420, 128, 46, 'Cancel', '#d9cfe0'); button('dlgCancel', 60, 418, 136, 52, () => { S.dialog = null; });
   drawButton(208, 420, 128, 46, 'Buy', '#9fe0ff', { disabled: !afford }); button('dlgBuy', 204, 418, 136, 52, () => { if (!afford) { toast('Not enough diamonds'); return; } const r = D.onBuy(); S.dialog = null; if (!r.ok) toast(r.why === 'uses' ? 'No booster uses left' : 'Not enough diamonds'); });
 }
@@ -1672,9 +1691,9 @@ function renderTray(b) {
     const stock = b.bonusStock[bt] || 0; const buyable = stock <= 0 && b.bonusUsesLeft > 0; // v0.3: 0 left -> buy one with diamonds
     drawButton(x, by, w, bh, '', sel ? '#ffd27a' : C.BONUSES[bt].color, { disabled: !can && !buyable, r: 12 });
     ctx.save(); ctx.translate(x + 17, by + bh / 2); ctx.scale(0.85, 0.85); A.drawBonusIcon(ctx, bt, S.t); ctx.restore();
-    fitText(C.BONUSES[bt].name, x + 59, by + 15, 66, 11, '#fff');
-    if (buyable) { const pr = M.nextBoosterPrice(b, bt); A.diamondIcon(ctx, x + 47, by + 31, 0.62); A.text(ctx, String(pr), x + 66, by + 31, 11, '#fff8c0'); }
-    else A.text(ctx, `x${stock}`, x + 59, by + 31, 10, '#fff8c0');
+    fitText(C.BONUSES[bt].name, x + 59, by + 15, 70, 12, '#fff');
+    if (buyable) { const pr = M.nextBoosterPrice(b, bt); A.diamondIcon(ctx, x + 47, by + 31, 0.62); A.text(ctx, String(pr), x + 66, by + 31, 12, '#fff8c0'); }
+    else A.text(ctx, `x${stock}`, x + 59, by + 31, 12, '#fff8c0');
     button('bonus' + bt, x - 2, hitY, w + 4, hitH, () => {
       if (buyable) { openBoosterDialog(bt); return; }
       if (!b.canUseBonus(bt)) { toast(b.bonusUsesLeft <= 0 ? `Max ${b.cfg.maxBonusUses} boosters per battle` : 'None left'); return; }
@@ -1737,15 +1756,18 @@ function renderResult(dt) {
   // coin breakdown: win = food + kills (+ level, first clear) + time; loss = kills + time (capped together)
   // v0.6 item 1: "Time survived" = floor(battle seconds / 3) - its own line, on a win and on a loss
   const P = out.parts || {}; const rows = [];
-  if (R.win) { rows.push(['Victory', P.base]); rows.push(['Food left', P.food]); rows.push(['Ants beaten', P.kills]); if (P.level) rows.push(['Level reward', P.level]); if (P.firstClear) rows.push(['First clear', P.firstClear]); }
+  if (R.win) { rows.push(['Victory', P.base]); rows.push(['Food left', P.food]); rows.push(['Ants beaten', P.kills]); if (P.level) rows.push(['Level reward', P.level]); if (P.firstClear) rows.push(['First clear', P.firstClear]); if (P.stars) rows.push(['Star bonus', P.stars]); } // v0.7.6 E1: first-time 2 / 3 star coins
   else rows.push(['Ants beaten', P.kills || 0]);
   rows.push([R.win ? 'Time survived' : `Time survived${out.coins >= C.ECONOMY.lossCap ? ` (max ${C.ECONOMY.lossCap})` : ''}`, P.time || 0]);
   const RS = rows.length > 5 ? 14 : 16;
   A.rr(ctx, 70, 316, 260, 14 + rows.length * RS, 10); ctx.fillStyle = '#f6ece8'; ctx.fill();
   rows.forEach(([l, v], i) => { A.text(ctx, l, 84, 330 + i * RS, 12, '#7a5a6a', 'left', null); A.text(ctx, `+${v}`, 316, 330 + i * RS, 12, '#c9962a', 'right', null); });
   let yy = 330 + rows.length * RS + 18;
-  A.coinIcon(ctx, 150, yy, 1.3); A.text(ctx, `+${out.coins} coins`, 208, yy + 1, 18, '#ffd45e');
-  yy += 20; A.text(ctx, `(${R.crumbsLeft} unspent crumbs vanish)`, 200, yy, 10, '#a08090', 'center', null);
+  if (out.gems) { // v0.7.6 E3: boss first clear / first 3 stars -> a gems line beside the coin total
+    A.coinIcon(ctx, 92, yy, 1.3); A.text(ctx, `+${out.coins} coins`, 146, yy + 1, 18, '#ffd45e', 'center');
+    A.diamondIcon(ctx, 226, yy, 0.8); A.text(ctx, `+${out.gems} gems`, 240, yy + 1, 18, '#8fd0ff', 'left');
+  } else { A.coinIcon(ctx, 150, yy, 1.3); A.text(ctx, `+${out.coins} coins`, 208, yy + 1, 18, '#ffd45e'); }
+  yy += 20; A.text(ctx, `(${R.crumbsLeft} unspent crumbs vanish)`, 200, yy, 12, '#a08090', 'center', null);
   yy += 20;
   if (!R.win) A.text(ctx, 'Win to earn cards and prizes!', 200, yy, 12, '#a08090', 'center', null);
   if (out.booster) { // v0.3 item 14: first clear of level 1 -> ONE Bomb
@@ -1763,7 +1785,7 @@ function renderResult(dt) {
     else { ctx.save(); ctx.translate(-108, 6); ctx.scale(0.42, 0.42); A.drawTower(ctx, pz.id, S.t, null); ctx.restore(); }
     A.text(ctx, label, 10, 1, 13, '#c47a12');
     ctx.restore();
-  } else if (R.win && !R.perfect && S.battle.stats.stolen > 0) A.text(ctx, 'Tip: lose no food at all for a Perfect prize', 200, yy + 10, 10.5, '#a08090', 'center', null);
+  } else if (R.win && !R.perfect && S.battle.stats.stolen > 0) A.text(ctx, 'Tip: lose no food at all for a Perfect prize', 200, yy + 10, 12, '#a08090', 'center', null);
   ctx.restore();
   // confetti (v0.5 item 16: 3 stars or a full score; the Perfect win too)
   for (const c of R.confetti) { c.vy += 420 * dt; c.x += c.vx * dt; c.y += c.vy * dt; c.r += dt * 8; if (c.y < 760) { ctx.save(); ctx.translate(c.x, c.y); ctx.rotate(c.r); ctx.fillStyle = c.c; ctx.fillRect(-4, -2.5, 8, 5); ctx.restore(); } }
@@ -1797,12 +1819,12 @@ function cardInfoPanel(id, x, y, w, h, opt = {}) {
   keys.forEach((k, i) => {
     const bx = x + 12 + i * (bw + 6), by = y + (cmp ? 44 : 50), bh = cmp ? 36 : 38;
     A.rr(ctx, bx, by, bw, bh, 9); ctx.fillStyle = nk.has(k) ? '#eefbe9' : '#f7efeb'; ctx.fill(); ctx.lineWidth = nk.has(k) ? 2 : 1.2; ctx.strokeStyle = nk.has(k) ? '#8fd18f' : '#e0cfd4'; ctx.stroke();
-    plainFit(k === 'scoop' ? 'Scoops' : statLabel(id, k), bx + 7, by + (cmp ? 9.5 : 10), bw - 12, 10.5, INFO_SOFT, 'left', '600');
+    plainFit(k === 'scoop' ? 'Scoops' : statLabel(id, k), bx + 7, by + (cmp ? 9.5 : 10), bw - 12, 12, INFO_SOFT, 'left', '600');
     plainFit(k === 'scoop' ? '1 trail tile' : formatStat(id, k, towerStat(id, k, 1, L)), bx + bw / 2, by + (cmp ? 24.5 : 26), bw - 10, 13.5, INFO_INK, 'center', '700');
   });
   const line = next.length ? `Next card level L${L + 1}: ` + next.map((d) => diffText(id, d)).join(' + ') : 'Top card level (L10)!';
   plainFit(line, x + w / 2, y + (cmp ? h - 9 : 102), w - 20, 12, next.length ? '#2f8a36' : '#c9962a', 'center', '700');
-  if (h > 118 && !opt.noFoot) plainFit(opt.foot || (own ? 'Merge cards on its own screen to reach the next level.' : `Get it in the Shop (${M.unlockPrice(id)}c) or as a prize.`), x + w / 2, y + h - 13, w - 20, 10.5, '#a08090', 'center', '600');
+  if (h > 118 && !opt.noFoot) plainFit(opt.foot || (own ? 'Merge cards on its own screen to reach the next level.' : `Get it in the Shop (${M.unlockPrice(id)}c) or as a prize.`), x + w / 2, y + h - 13, w - 20, 12, '#a08090', 'center', '600');
 }
 // ---------------- v0.6 item 7: real card pictures (art window + name banner + level badge) ----------------
 // The frame colour follows the level band (bronze 1-3, silver 4-6, gold 7-9, rainbow-pink 10). Used on the Cards screen, the
@@ -1819,7 +1841,7 @@ function drawCardPic(x, y, w, h, type, opt = {}) {
   if (opt.locked) { ctx.fillStyle = '#ddd3da'; ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = A.INK; ctx.stroke();
     A.rr(ctx, x + 5, y + 5, w - 10, h - 10, r - 3); ctx.fillStyle = '#eee6eb'; ctx.fill();
     A.text(ctx, '?', x + w / 2, y + h * 0.42, w * 0.38, '#fff');
-    plainFit(opt.lockText || 'Locked', x + w / 2, y + h - 13, w - 10, 10, '#7a6a76', 'center', '700');
+    plainFit(opt.lockText || 'Locked', x + w / 2, y + h - 13, w - 10, 12, '#7a6a76', 'center', '700');
     ctx.restore(); return; }
   const fg = ctx.createLinearGradient(x, y, x + w, y + h); fg.addColorStop(0, frameLt); fg.addColorStop(0.5, frame); fg.addColorStop(1, frameLt);
   ctx.fillStyle = fg; ctx.fill();
@@ -1827,7 +1849,7 @@ function drawCardPic(x, y, w, h, type, opt = {}) {
   // art window
   // v0.6.1: compact (wide) tiles - the Shop grid - get a taller art window and no level pips, so the tower stays as big as on the old tile
   const compact = h < w * 1.1;
-  const m = Math.max(4, w * 0.07), ax = x + m, ay = y + m, aw = w - 2 * m, ah = compact ? h - m * 1.6 - 15 : h * 0.66 - m;
+  const m = Math.max(4, w * 0.07), ax = x + m, ay = y + m, aw = w - 2 * m, ah = compact ? h - m * 1.6 - 19 : h * 0.66 - m;
   ctx.save(); A.rr(ctx, ax, ay, aw, ah, r * 0.6); ctx.clip();
   const bg = ctx.createRadialGradient(ax + aw / 2, ay + ah * 0.45, 2, ax + aw / 2, ay + ah * 0.5, aw * 0.8);
   bg.addColorStop(0, A.shade(T.color, 0.75)); bg.addColorStop(1, A.shade(T.color, 0.25)); ctx.fillStyle = bg; ctx.fillRect(ax, ay, aw, ah);
@@ -1839,24 +1861,25 @@ function drawCardPic(x, y, w, h, type, opt = {}) {
   ctx.restore();
   A.rr(ctx, ax, ay, aw, ah, r * 0.6); ctx.lineWidth = 1.6; ctx.strokeStyle = 'rgba(74,52,66,0.55)'; ctx.stroke();
   // name banner
-  const by = ay + ah + (compact ? 2 : 3), bh = compact ? 12 : Math.max(14, h * 0.16);
+  const by = ay + ah + (compact ? 2 : 3), bh = compact ? 16 : Math.max(16, h * 0.16); // v0.7.6 V3: the banner is tall enough for a 12 px name
   A.rr(ctx, x + m * 0.6, by, w - m * 1.2, bh, bh * 0.4); ctx.fillStyle = A.shade(T.color, -0.15); ctx.fill(); ctx.lineWidth = 1.6; ctx.strokeStyle = A.INK; ctx.stroke();
-  fitText(T.short || T.name, x + w / 2, by + bh / 2 + 0.5, w - m * 2 - 4, Math.min(14, bh * 0.78), '#fff');
+  fitText(T.short || T.name, x + w / 2, by + bh / 2 + 0.5, w - m * 1.2 - 3.4, Math.min(14, Math.max(12, bh * 0.78)), '#fff');
   // level pips along the bottom (10 dots, filled up to the level)
   const py = by + bh + (y + h - by - bh) / 2, n = C.MAX_CARD_LEVEL, gap = Math.min(7, (w - 2 * m - 6) / n);
   if (!compact) for (let i = 0; i < n; i++) { ctx.beginPath(); ctx.arc(x + w / 2 - (n - 1) * gap / 2 + i * gap, py, Math.max(1.6, gap * 0.32), 0, 7); ctx.fillStyle = i < L ? '#fff6c0' : 'rgba(74,52,66,0.25)'; ctx.fill(); }
   // level badge (top-left, overlapping the frame)
-  const bs = Math.max(10, w * 0.15);
-  A.blob(ctx, x + bs * 0.75, y + bs * 0.75, bs, bs * 0.92, '#ffe36e', 2); A.text(ctx, 'L' + L, x + bs * 0.75, y + bs * 0.75 + 0.5, bs * 0.92, '#7a4a2a', 'center', null);
+  const bs = Math.max(11, w * 0.15); // v0.7.6 V3: the L-badge text is 11 px bold (same exception as the tower tags)
+  A.blob(ctx, x + bs * 0.75, y + bs * 0.75, bs, bs * 0.92, '#ffe36e', 2); A.text(ctx, 'L' + L, x + bs * 0.75, y + bs * 0.75 + 0.5, 11, '#7a4a2a', 'center', null);
+  if (opt.capNote) { const pw = Math.min(w - 6, 62), ph = 17, pyy = ay + ah - ph - 3; A.rr(ctx, x + (w - pw) / 2, pyy, pw, ph, 8); ctx.fillStyle = '#b0506a'; ctx.fill(); ctx.lineWidth = 1.6; ctx.strokeStyle = A.INK; ctx.stroke(); plainText(`acts as L${opt.capNote}`, x + w / 2, pyy + ph / 2 + 0.5, 12, '#ffffff', 'center', '800'); } // v0.7.6 E4
   // v0.6.1 (item 7 consistency): the Shop + pre-battle screens use this card picture too -> deck-slot badge + trail/air tag
   if (opt.tag && !opt.badge) { const tag = T.place === 'path' ? 'on trail' : (T.targets === 'air' ? 'air only' : type === 'laser' ? 'gnd+air' : '');
-    if (tag) A.text(ctx, tag, ax + aw - 3, ay + 8, 8.5, '#fff', 'right'); }
+    if (tag) A.text(ctx, tag, ax + aw - 3, ay + 8, 11, '#fff', 'right'); }
   if (opt.badge) { A.blob(ctx, x + w - 11, y + 11, 11, 11, '#ff8fab', 2); A.text(ctx, opt.badge, x + w - 11, y + 11.5, 12, '#fff'); }
   if (opt.count != null) { const str = `\u00d7${opt.count}`; ctx.font = `bold 12px ${A.FONT}`; const cw = Math.max(24, ctx.measureText(str).width + 10);
     A.rr(ctx, x + w - cw - 2, y + 3, cw, 18, 9); ctx.fillStyle = opt.count ? '#ffffff' : '#efe6ea'; ctx.fill(); ctx.lineWidth = 1.8; ctx.strokeStyle = A.INK; ctx.stroke();
     A.text(ctx, str, x + w - cw / 2 - 2, y + 12.5, 12, opt.count ? '#ff6f91' : '#b9a6b2'); }
   if (opt.mergeReady) { const p = 1 + Math.sin(S.t * 6) * 0.08; ctx.save(); ctx.translate(x + w - 10, y + 10); ctx.scale(p, p); A.blob(ctx, 0, 0, 11, 11, '#ff6f91', 2); A.text(ctx, '!', 0, 0.5, 14, '#fff'); ctx.restore(); }
-  if (opt.fresh) { A.rr(ctx, x + w / 2 - 17, y - 9, 34, 17, 8); ctx.fillStyle = '#ffd45e'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = A.INK; ctx.stroke(); A.text(ctx, 'NEW', x + w / 2, y - 0.5, 10, '#fff'); }
+  if (opt.fresh) { A.rr(ctx, x + w / 2 - 19, y - 9, 38, 17, 8); ctx.fillStyle = '#ffd45e'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = A.INK; ctx.stroke(); A.text(ctx, 'NEW', x + w / 2, y - 0.5, 12, '#fff'); }
   ctx.restore();
 }
 // v0.5 items 6 + 7 / v0.6 item 7: the main Cards screen shows every type as a card picture at its HIGHEST owned level (the
@@ -1872,7 +1895,7 @@ function renderCards() {
   panel(12, 12, 376, 636, '#fff6ee');
   A.text(ctx, 'Cards', 200, 36, 26, '#b5d8ff');
   A.coinIcon(ctx, 304, 60, 1); A.text(ctx, String(S.save.coins), 336, 61, 15, '#ffd45e');
-  plainText('Tap a card: stats.  Tap again: open.', 28, 60, 11.5, '#7a5a6a', 'left', '600');
+  plainText('Tap a card: stats.  Tap again: open.', 28, 60, 12, '#7a5a6a', 'left', '600');
   S.layoutMerge = [];
   C.ALL_CARDS.forEach((id, k) => {
     const col = k % 4, row = Math.floor(k / 4);
@@ -1918,11 +1941,11 @@ function renderCardView() {
     const col = k % 5, row = Math.floor(k / 5);
     const x = 26 + col * 70, y = 224 + row * 138, w = 62, h = 80;
     drawCardPic(x, y, w, h, id, { level: r.L, count: r.have, dim: r.have === 0, still: true });
-    if (r.maxed) { plainText('top level', x + w / 2, y + h + 16, 11, '#c9962a', 'center', '700'); return; }
+    if (r.maxed) { plainText('top level', x + w / 2, y + h + 16, 12, '#c9962a', 'center', '700'); return; }
     const can = M.canMergeAt(S.save, id, r.L);
-    plainFit(`${Math.min(r.have, r.need)}/${r.need}`, x + w / 2, y + h + 9, w, 10.5, r.ready ? '#2f8a36' : '#a08090', 'center', '700');
+    plainFit(`${Math.min(r.have, r.need)}/${r.need}`, x + w / 2, y + h + 9, w, 12, r.ready ? '#2f8a36' : '#a08090', 'center', '700');
     drawButton(x, y + h + 17, w, 24, `\u2192 L${r.to}`, can ? '#ff9ec0' : '#e6dce2', { size: 12, r: 9, disabled: !can });
-    if (r.coins) plainFit(`${r.coins} coins`, x + w / 2, y + h + 50, w, 10, '#c9962a', 'center', '700');
+    if (r.coins) plainFit(`${r.coins} coins`, x + w / 2, y + h + 50, w, 12, '#c9962a', 'center', '700');
     button('mrg' + r.L, x - 3, y + h + 2, w + 6, 58, () => { // touch target covers the n/3 label, the button and its price (>= 44 px)
       if (!r.ready) { toast(`Need ${r.need} cards of level ${r.L}`); return; }
       if (S.save.coins < r.coins) { toast(`Need ${r.coins} coins`); return; }
@@ -1992,7 +2015,7 @@ function renderShop() {
   A.text(ctx, 'Shop', 200, 36, 28, '#ffd27a');
   panel(62, 56, 132, 32, '#e6f5ff', 16); A.diamondIcon(ctx, 84, 72, 1); A.text(ctx, String(S.save.diamonds || 0), 140, 73, 17, '#7fd3ff');
   panel(206, 56, 132, 32, '#fff1d6', 16); A.coinIcon(ctx, 228, 72, 1.1); A.text(ctx, String(S.save.coins), 284, 73, 17, '#ffd45e');
-  plainText('No real money, ever. Diamonds come from Daily Rewards.', 200, 101, 11, '#a08090', 'center', '600');
+  plainText('No real money, ever. Diamonds come from Daily Rewards.', 200, 101, 12, '#a08090', 'center', '600');
   // pack
   panel(26, 112, 348, 62, '#ffe9f0', 14);
   for (let k = 0; k < 3; k++) { ctx.save(); ctx.translate(58 + k * 14, 146 - k * 3); ctx.rotate(-0.2 + k * 0.2); A.rr(ctx, -14, -20, 28, 38, 6); ctx.fillStyle = ['#ffb3c1', '#b5d8ff', '#ffd27a'][k]; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = A.INK; ctx.stroke(); A.text(ctx, '?', 0, 0, 16); ctx.restore(); }
@@ -2004,7 +2027,7 @@ function renderShop() {
   } else {
     A.text(ctx, `Card pack: ${E.cardPackSize} random cards`, 112, 132, 13, '#7a4a5a', 'left', null);
     { const left = Math.max(1, (E.packPity || 0) - (S.save.packsSinceNew || 0)); // v0.6.2 item 13 + v0.7 D-P3 pity
-      plainFit(M.lockedCards(S.save).length ? `level 1, ${Math.round(E.packNewTowerChance * 100)}% NEW tower${E.packPity ? ` (sure in ${left})` : ''}` : 'level 1, of your unlocked towers', 112, 152, 172, 12, '#a08090', 'left', '700'); }
+      plainFit(M.lockedCards(S.save).length ? `level 1, ${Math.round(E.packNewTowerChance * 100)}% NEW tower${E.packPity ? ` (sure in ${left})` : ''}` : 'level 1, any unlocked tower', 112, 152, 172, 12, '#a08090', 'left', '700'); }
     drawButton(290, 122, 74, 40, `${E.cardPack}c`, '#9fe0b5', { size: 15, disabled: S.save.coins < E.cardPack });
     // v0.7: every pack opens the pack reveal (no toast, no separate NEW CARD reveal; a new tower is the last card)
     button('pack', 290, 122, 74, 40, () => { const got = M.buyPack(S.save); if (got) { persist(); shopBought('pack', 'pack', E.cardPack, 'coin'); openPackReveal(got, { source: 'paid', newTower: got.newTower }); } else toast('Not enough coins'); });
@@ -2021,8 +2044,8 @@ function renderShop() {
     ctx.restore();
     if (own) countBadge(x + w - 17, y + 13, M.totalCards(c), pk); // v0.6: how many cards of this tower you hold (all levels) // inside the card corner (no overlap with the row above)
     // info + price row under the card
-    A.blob(ctx, x + 10, y + h + 10, 8, 8, S.shopSel === id ? '#5a9fe0' : '#d7e8ff', 1.6); A.text(ctx, 'i', x + 10, y + h + 10.5, 11, '#fff');
-    plainText(own ? `${E.cardL1}c` : `${up}c`, x + w - 4, y + h + 10, 11.5, own ? '#c9962a' : '#e0607e', 'right', '800');
+    A.blob(ctx, x + 10, y + h + 10, 8, 8, S.shopSel === id ? '#5a9fe0' : '#d7e8ff', 1.6); A.text(ctx, 'i', x + 10, y + h + 10.5, 12, '#fff');
+    plainText(own ? `${E.cardL1}c` : `${up}c`, x + w - 4, y + h + 10, 12, own ? '#c9962a' : '#e0607e', 'right', '800');
     button('buy' + id, x, y, w, h, () => {
       S.shopSel = id;
       if (own) { if (M.buyCard(S.save, id)) { persist(); sfx('tap'); shopBought('card', id, E.cardL1, 'coin'); } else toast('Not enough coins'); }
@@ -2040,7 +2063,7 @@ function renderShop() {
     ctx.save(); ctx.translate(x + w / 2, y + h / 2); ctx.scale(cs, cs); ctx.translate(-(x + w / 2), -(y + h / 2));
     A.rr(ctx, x, y, w, h, 14); ctx.fillStyle = A.shade(C.BONUSES[bt].color, 0.2); ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = A.INK; ctx.stroke();
     ctx.save(); ctx.translate(x + w / 2, y + 22); ctx.scale(1.05, 1.05); A.drawBonusIcon(ctx, bt, S.t); ctx.restore();
-    fitText(C.BONUSES[bt].name, x + w / 2, y + 46, w - 8, 10.5, '#fff');
+    fitText(C.BONUSES[bt].name, x + w / 2, y + 46, w - 8, 12, '#fff');
     ctx.restore();
     countBadge(x + w - 19, y + 15, S.save.bonusStock[bt] || 0, pk);
     button('bbuy' + bt, x, y, w, h, () => { if (M.buyBonus(S.save, bt)) { persist(); sfx('tap'); shopBought('booster', bt, E.boosterDiamonds, 'diamond'); } else toast(`Need ${E.boosterDiamonds} diamonds`); });
@@ -2194,9 +2217,9 @@ function renderPack(dt) {
     if (!face) return;
     // under the card: name, merge pips + "n/3 -> L2", MERGE! / MAX
     const cx = tx + W2 / 2, ny = ty + H2 + 12;
-    fitText(C.TOWERS[cd.id].short || C.TOWERS[cd.id].name, cx, ny, W2, 11, '#ffffff');
+    fitText(C.TOWERS[cd.id].short || C.TOWERS[cd.id].name, cx, ny, W2, 12, '#ffffff');
     const pk = inSummary ? 1 : Math.max(0, Math.min(1, (t - f0 - PACK.flipDur / 2) / PACK.pip));
-    if (cd.maxed) plainText('MAX', cx, ny + 18, 11, '#ffe36e', 'center', '800');
+    if (cd.maxed) plainText('MAX', cx, ny + 18, 12, '#ffe36e', 'center', '800');
     else {
       const filled = Math.min(cd.need, cd.have);
       for (let p = 0; p < cd.need; p++) {
@@ -2204,13 +2227,13 @@ function renderPack(dt) {
         ctx.beginPath(); ctx.arc(px, py, 4.6, 0, 7); ctx.lineWidth = 1.8; ctx.strokeStyle = '#ffffff'; ctx.stroke();
         if (p < filled) { ctx.beginPath(); ctx.arc(px, py, 4.6 * (isNewPip ? pk : 1), 0, 7); ctx.fillStyle = '#ffe36e'; ctx.fill(); }
       }
-      plainText(`${Math.min(cd.have, cd.need)}/${cd.need} \u2192 L2`, cx, ny + 34, 11, '#ffe9c0', 'center', '700');
+      plainText(`${Math.min(cd.have, cd.need)}/${cd.need} \u2192 L2`, cx, ny + 34, 12, '#ffe9c0', 'center', '700');
       if (cd.ready && pk >= 1) drawMergeTag(cx, ny + 54);
     }
     if (cd.isNew) { // "NEW" ribbon across the top-right corner
       ctx.save(); ctx.translate(tx + W2 - 6, ty + 8); ctx.rotate(Math.PI / 4);
       A.rr(ctx, -24, -8, 48, 16, 4); ctx.fillStyle = '#ffe36e'; ctx.fill(); ctx.lineWidth = 1.8; ctx.strokeStyle = A.INK; ctx.stroke();
-      A.text(ctx, 'NEW', 0, 0.5, 11, '#e0607e', 'center', null); ctx.restore();
+      A.text(ctx, 'NEW', 0, 0.5, 12, '#e0607e', 'center', null); ctx.restore();
     }
   });
   // NEW TOWER! ribbon during the beat and on the summary
@@ -2254,7 +2277,7 @@ function drawMergeTag(cx, y) {
   ctx.save();
   A.rr(ctx, cx - 30, y - 9, 60, 18, 8); ctx.fillStyle = '#55b85a'; ctx.fill(); ctx.lineWidth = 1.8; ctx.strokeStyle = A.INK; ctx.stroke();
   ctx.beginPath(); ctx.moveTo(cx - 24, y + 4); ctx.lineTo(cx - 20, y - 4); ctx.lineTo(cx - 16, y + 4); ctx.closePath(); ctx.fillStyle = '#ffffff'; ctx.fill(); // up-arrow shape
-  A.text(ctx, 'MERGE!', cx + 5, y + 0.5, 11, '#ffffff', 'center', null);
+  A.text(ctx, 'MERGE!', cx + 5, y + 0.5, 12, '#ffffff', 'center', null);
   ctx.restore();
 }
 

@@ -1,4 +1,4 @@
-// csv/*.csv -> tuning.json. Sections not covered by a CSV (_about, _units) are kept from the existing JSON. v0.6.2: the "shop" section (unlock prices, pack chance) is JSON-only and kept as well.
+// csv/*.csv -> tuning.json. Sections not covered by a CSV (_about, _units) are kept from the existing JSON. v0.6.2: the "shop" and (v0.7.6) "economy" sections (unlock prices, pack chance; star coins, boss gems, calendar coins) are JSON-only and kept as well.
 // Columns starting with "_" (computed) and the read-only card_levels_readonly.csv are ignored.
 // Usage (from /workspace/ant-td): node tuning/csv2json.mjs [--dir tuning/csv] [--json tuning/tuning.json] [--out tuning/tuning.json]
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
@@ -44,7 +44,7 @@ for (const [id, a] of Object.entries(ants)) need(antSizes[a.size] !== undefined,
 levels.forEach((L, i) => { need(maps[L.map], `levels: level ${i + 1} uses unknown map "${L.map}"`); for (const m of L.mix || []) need(ants[m.type], `levels: level ${i + 1} mix has unknown ant "${m.type}"`); });
 if (errors.length) { console.error('Not written - fix these first:\n  ' + errors.join('\n  ')); process.exit(1); }
 
-const outJ = { _about: T._about, _units: T._units, shop: T.shop, queenTraitMods, antSizes, towers, ants, worlds, levels, maps };
+const outJ = { _about: T._about, _units: T._units, shop: T.shop, economy: T.economy, queenTraitMods, antSizes, towers, ants, worlds, levels, maps };
 for (const k of Object.keys(outJ)) if (outJ[k] === undefined) delete outJ[k];
 writeFileSync(outPath, prettyJson(outJ) + '\n');
 console.log(`wrote ${outPath}: ${Object.keys(towers).length} towers, ${Object.keys(ants).length} ants, ${worlds.length} worlds, ${levels.length} levels, ${Object.keys(maps).length} maps`);

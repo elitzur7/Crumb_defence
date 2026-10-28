@@ -23,6 +23,27 @@
     "unlockPriceDefault": 200,
     "packNewTowerChance": 0.1
   },
+  "economy": {
+    "_about": "v0.7.6 E1/E2/E3/E5. starBonus: coins paid ONCE per level the first time it reaches 2 (key 2) and 3 (key 3) stars (a 1 -> 3 star jump pays both; stored stars count as already paid, no retroactive grant). bossGems: diamonds on the FIRST clear of a world's last level (its queen) and on the first 3 stars there. calendar.coinsByStreak: coins of the 1st, 2nd, 3rd, 4th+ coin prize of a streak, multiplied by 1 + worldStep x (highest unlocked world - 1), rounded to a multiple of roundTo. worlds[].coinMul (default 1) multiplies the win coins of that world's levels (not the first-clear bonus, not loss coins).",
+    "starBonus": {
+      "2": 15,
+      "3": 25
+    },
+    "bossGems": {
+      "firstClear": 10,
+      "firstThreeStars": 5
+    },
+    "calendar": {
+      "coinsByStreak": [
+        30,
+        60,
+        90,
+        120
+      ],
+      "worldStep": 0.5,
+      "roundTo": 5
+    }
+  },
   "queenTraitMods": {
     "fast": -10,
     "flying": -15,
@@ -950,7 +971,8 @@
       "queen": "queen",
       "levels": 10,
       "unlock": null,
-      "cardLevelCap": 4
+      "cardLevelCap": 4,
+      "coinMul": 1
     },
     {
       "id": 2,
@@ -962,7 +984,8 @@
         "allLevelsWonInWorld": 1,
         "minStarsInWorld": 18
       },
-      "cardLevelCap": 6
+      "cardLevelCap": 5,
+      "coinMul": 1
     }
   ],
   "levels": [
