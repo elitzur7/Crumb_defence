@@ -184,7 +184,7 @@ for (const [w, h, dpr] of VIEWPORTS) {
       await G((i) => { const g = window.__game; g.go('cards'); g.S.cardsSel = i; }, id);
       const { tx } = await texts(80);
       const desc = tx.join(' '); // v0.5 item 1b/5b: real stats + the next card-level upgrade
-      if (bad(tx).length || !/Next card level L\d+: |Top card level/.test(desc)) badCards.push(`${id}:${bad(tx).join('|') || 'missing next-level line'}`);
+      if (bad(tx).length || !/Next card level L\d+: |Top card level|At the world cap/.test(desc)) badCards.push(`${id}:${bad(tx).join('|') || 'missing next-level line'}`);
     }
     ok(badCards.length === 0, `${vp} B8 Cards screen panel shows real stats + the next card upgrade, no NaN/undefined ${badCards.join(' ')}`);
     if (w === 320) await page.screenshot({ path: `${OUT}/v0.6.2/regress/B8-cards-desc-320x568.png` });

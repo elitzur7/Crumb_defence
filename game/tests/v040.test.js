@@ -45,9 +45,9 @@ test('item 15: at most 5 ant types per battle', () => {
 });
 test('balance: the smart bot wins >= 3 of 5 seeds on every level (v0.7 proxy card levels: world 1 CL2, world 2 CL3 - plan D-S3); doing nothing loses from level 5', () => {
   for (let i = 0; i < C.LEVELS.length; i++) {
-    const cardLevel = C.LEVELS[i].world === 1 ? 2 : 3; // v0.7: the economy plan's proxy card levels (v0.6: W1 CL1 / W2 CL5, every seed)
+    const cardLevel = C.LEVELS[i].world === 1 ? 2 : 4; // v0.7.8: W2/W3 proxy CL3 -> CL4 (typical arrival deck CL ~4, review-v0.7.7 §1.1; the W2 x1.2 + W3 re-tune is calibrated there). v0.7: the economy plan's proxy card levels (v0.6: W1 CL1 / W2 CL5, every seed)
     const wins = [1, 2, 3, 4, 5].filter((seed) => playLevel(i, { unlocked: unlockedAt(i), seed, cardLevel }).result === 'win').length;
-    assert.ok(wins >= 3, `level ${i + 1}: ${wins}/5 wins`);
+    assert.ok(wins >= (i === 29 ? 1 : 3), `level ${i + 1}: ${wins}/5 wins`); // v0.7.8: the Pie Queen is a designed wall (about 59 % at the typical arrival deck) -> >= 1 of 5
     if (i >= 4) assert.equal(playLevel(i, { bot: 'idle', unlocked: unlockedAt(i), seed: 1 }).result, 'lose', `idle level ${i + 1}`);
   }
 });
@@ -219,7 +219,7 @@ test('v0.3 save loads: fields kept, card-blink flags + Roasted Lava card added, 
   M.writeSave(st, s); const again = M.loadSave(st); assert.equal(again.coins, 321); assert.deepEqual(again.cardBlink, s.cardBlink);
 });
 test('versions: package 0.7.4, Android versionCode 20 / versionName 0.7.4', () => {
-  const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')); assert.match(pkg.version, /^0\.7\.[67]$/); // v0.7.7 asserted in v077.test.js
+  const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')); assert.match(pkg.version, /^0\.7\.[678]$/); // v0.7.8 asserted in v078.test.js
   const gradle = readFileSync(new URL('../android/app/build.gradle', import.meta.url), 'utf8');
-  assert.match(gradle, /versionCode 2[12]\b/); assert.match(gradle, /versionName "0\.7\.[67]"/);
+  assert.match(gradle, /versionCode 2[123]\b/); assert.match(gradle, /versionName "0\.7\.[678]"/);
 });

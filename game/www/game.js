@@ -621,7 +621,7 @@ var tuning_default = {
       name: "Cake Gate",
       map: "frosting",
       waveCount: 6,
-      hpMul: 3.054,
+      hpMul: 3.665,
       base: 10,
       growth: 1.8,
       interval: 1,
@@ -637,7 +637,7 @@ var tuning_default = {
       name: "Sugar Steps",
       map: "staircase",
       waveCount: 6,
-      hpMul: 3.387,
+      hpMul: 4.064,
       base: 9,
       growth: 2,
       interval: 0.95,
@@ -654,7 +654,7 @@ var tuning_default = {
       name: "Layer Cake",
       map: "layers",
       waveCount: 6,
-      hpMul: 2.875,
+      hpMul: 3.45,
       base: 10,
       growth: 2,
       interval: 0.95,
@@ -671,7 +671,7 @@ var tuning_default = {
       name: "Candle Light",
       map: "candles",
       waveCount: 6,
-      hpMul: 3.6,
+      hpMul: 4.32,
       base: 10,
       growth: 2.1,
       interval: 0.9,
@@ -688,7 +688,7 @@ var tuning_default = {
       name: "Tea Party",
       map: "teaparty",
       waveCount: 7,
-      hpMul: 5.304,
+      hpMul: 6.365,
       base: 10.5,
       growth: 2.1,
       interval: 0.9,
@@ -705,7 +705,7 @@ var tuning_default = {
       name: "Frosting Rush",
       map: "frosting",
       waveCount: 7,
-      hpMul: 4.213,
+      hpMul: 5.056,
       base: 11,
       growth: 2.2,
       interval: 0.85,
@@ -722,7 +722,7 @@ var tuning_default = {
       name: "Heavy Icing",
       map: "snake",
       waveCount: 8,
-      hpMul: 2.38,
+      hpMul: 2.856,
       base: 11,
       growth: 2.2,
       interval: 0.9,
@@ -739,7 +739,7 @@ var tuning_default = {
       name: "Sprinkle Storm",
       map: "layers",
       waveCount: 8,
-      hpMul: 3.557,
+      hpMul: 4.268,
       base: 11.5,
       growth: 2.3,
       interval: 0.85,
@@ -756,7 +756,7 @@ var tuning_default = {
       name: "Cherry on Top",
       map: "candles",
       waveCount: 9,
-      hpMul: 4.065,
+      hpMul: 4.878,
       base: 12,
       growth: 2.4,
       interval: 0.8,
@@ -773,7 +773,7 @@ var tuning_default = {
       name: "The Swift Queen",
       map: "cross",
       waveCount: 9,
-      hpMul: 1.6,
+      hpMul: 1.92,
       base: 12,
       growth: 2.4,
       interval: 0.8,
@@ -785,7 +785,7 @@ var tuning_default = {
       name: "Pantry Door",
       map: "w3_shelves",
       waveCount: 6,
-      hpMul: 3,
+      hpMul: 3.3,
       interval: 1,
       waves: [
         [{ type: "worker", count: 6, interval: 1.1, delay: 0 }],
@@ -813,7 +813,7 @@ var tuning_default = {
       name: "Butter Fingers",
       map: "w3_butter",
       waveCount: 7,
-      hpMul: 4,
+      hpMul: 4.3,
       interval: 1,
       waves: [
         [{ type: "worker", count: 5, interval: 1, delay: 0 }, { type: "small", count: 6, interval: 0.45, delay: 1 }],
@@ -850,7 +850,7 @@ var tuning_default = {
       name: "Lattice",
       map: "w3_lattice",
       waveCount: 7,
-      hpMul: 4.5,
+      hpMul: 5.2,
       interval: 1,
       waves: [
         [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
@@ -887,7 +887,7 @@ var tuning_default = {
       name: "Spice Rack",
       map: "w3_spice",
       waveCount: 7,
-      hpMul: 3.2,
+      hpMul: 4.9,
       interval: 1,
       waves: [
         [{ type: "worker", count: 5, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
@@ -925,7 +925,7 @@ var tuning_default = {
       name: "Brood Nest",
       map: "w3_jar",
       waveCount: 7,
-      hpMul: 4.5,
+      hpMul: 8,
       interval: 1,
       waves: [
         [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
@@ -994,7 +994,7 @@ var tuning_default = {
       name: "Gas Mask Gala",
       map: "w3_gala",
       waveCount: 8,
-      hpMul: 6,
+      hpMul: 8,
       interval: 1,
       waves: [
         [
@@ -1044,7 +1044,7 @@ var tuning_default = {
       name: "Heavy Pastry",
       map: "w3_cloud",
       waveCount: 8,
-      hpMul: 4,
+      hpMul: 6,
       interval: 1,
       waves: [
         [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
@@ -1093,7 +1093,7 @@ var tuning_default = {
       name: "Everything Pie",
       map: "w3_every",
       waveCount: 9,
-      hpMul: 6,
+      hpMul: 8.8,
       interval: 1,
       waves: [
         [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
@@ -1146,7 +1146,7 @@ var tuning_default = {
       name: "Pie Queen",
       map: "w3_tin",
       waveCount: 9,
-      hpMul: 1.15,
+      hpMul: 1.45,
       interval: 1,
       waves: [
         [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
@@ -1842,7 +1842,7 @@ var AIR_COUNTERS = ["laser", "zapper"], TARGET_MODE_TEXT = {
   lizard: { carrier: "Targets ants carrying food first, then fewest HP left; chews after kills.", front: "Targets the walking ant closest to the cookie; chews after kills." },
   laser: { carrier: "Aims at ants carrying food first, then fewest HP. Heat: +12% per hit on the same ant.", front: "Aims at the walking ant closest to the cookie. Heat: +12% per hit on the same ant." },
   zapper: { carrier: "First zap: food carriers first, then fewest HP. Chains to the nearest flyers (60% each jump).", front: "First zap: the flyer closest to the cookie. Chains to the nearest flyers (60% each jump)." }
-}, VERSION = "0.7.7", ANT_SIZES = { ...tuning_default.antSizes }, ANT_TEXT = {
+}, VERSION = "0.7.8", ANT_SIZES = { ...tuning_default.antSizes }, ANT_TEXT = {
   small: { name: "Scout Ant", desc: "Tiny, fast, comes in swarms." },
   worker: { name: "Worker Ant", desc: "The regular. Hard hat included." },
   big: { name: "Big Ant", desc: "Slow, chunky, a bit of armor." },
@@ -3199,7 +3199,7 @@ function grantBossGift(save, levelIndex) {
       let n = totalCards(save.cards[x]);
       n > best && (best = n, id = x);
     }
-    level = Math.min(MAX_CARD_LEVEL, Math.max(2, cap - 2));
+    level = Math.min(MAX_CARD_LEVEL, Math.max(2, cap - (worldOf(levelIndex) >= 3 ? 1 : 2)));
   }
   let got = addCards(save, id, level, 1);
   return save.cards[id].fresh = !0, { kind: "cards", id, level, count: 1, newCard: got.newType, newLevel: got.newLevel, reveal: got.newType || got.newLevel, boss: !0 };
@@ -5001,7 +5001,7 @@ function closeSettings() {
   S.settings = null, S.confirmReset = 0, S.settingsPushed && (S.settingsPushed = !1, ownBack());
 }
 function go(screen) {
-  S.settingsPushed = !1, S.screen = screen, S.sel = null, S.info = null, S.drag = null, S.mergeAnim = null, S.toast = null, S.dialog = null, S.cal = null, S.settings = null, S.mode = null, S.shopFx = null, sfx("tap"), screen === "map" && (S.mapScroll = autoMapScroll(), maybeShowCalendar());
+  S.settingsPushed = !1, S.screen = screen, S.prepTip = null, S.sel = null, S.info = null, S.drag = null, S.mergeAnim = null, S.toast = null, S.dialog = null, S.cal = null, S.settings = null, S.mode = null, S.shopFx = null, sfx("tap"), screen === "map" && (S.mapScroll = autoMapScroll(), maybeShowCalendar());
   try {
     let inner = history.state && history.state.inner;
     screen !== "map" && !inner ? history.pushState({ inner: 1 }, "") : screen === "map" && inner && ownBack();
@@ -5586,7 +5586,7 @@ function renderMapScreen() {
   let hintW = WORLDS.map((x) => x.id).filter((id) => id >= 2).find((id) => gateY(id) + sc < MAPVIEW.top - 10);
   if (hintW) {
     let a = 0.75 + 0.25 * Math.sin(S.t * 4);
-    ctx.save(), ctx.globalAlpha = a, rr(ctx, 128, MAPVIEW.top + 4, 144, 26, 13), ctx.fillStyle = "rgba(90,64,88,0.85)", ctx.fill(), plainText(`\u25B2 World ${hintW} - scroll up`, 200, MAPVIEW.top + 17.5, 12, "#ffffff", "center", "700"), ctx.restore();
+    ctx.save(), ctx.globalAlpha = a, rr(ctx, 128, MAPVIEW.top - 30, 144, 24, 12), ctx.fillStyle = "rgba(90,64,88,0.85)", ctx.fill(), plainText(`\u25B2 World ${hintW} - scroll up`, 200, MAPVIEW.top - 17.5, 12, "#ffffff", "center", "700"), ctx.restore();
   }
   updateCardsBlink(), blob(ctx, 363, 22, 19, 19, "#fff6ee", 2.2), drawGearIcon(363, 22, 12), button("gear", 337, 0, 52, 52, () => openSettings());
   let shopHint = !S.cal && !S.settings && zapperGiftPending(S.save) && !S.reveal.length;
@@ -5718,6 +5718,9 @@ function renderPrep() {
       if (rk <= 4) for (let q = 0; q < rk; q++)
         ctx.beginPath(), ctx.arc(x + (q - (rk - 1) / 2) * 6, 148, 2.2, 0, Math.PI * 2), ctx.fillStyle = cols[rk - 1], ctx.fill(), ctx.lineWidth = 0.8, ctx.strokeStyle = "rgba(70,40,55,.55)", ctx.stroke();
     }
+    button("ant" + t, x - slot / 2, 104, slot, 66, () => {
+      S.prepTip = { type: t, until: S.t + 3.4 }, sfx("tap");
+    });
     {
       let nm = ANTS[t].name.replace(" Ant", "");
       if (ctx.font = `bold 12px ${FONT}`, ctx.measureText(nm).width <= slot - 2) text(ctx, nm, x, 161, 12, "#7a5a6a");
@@ -5730,13 +5733,18 @@ function renderPrep() {
   let unlocked = unlockedCards(S.save);
   text(ctx, `Your deck (${S.prep.deck.length}/${BATTLE.deckSize}) - tap to pick`, 30, 182, 14, "#7a5a6a", "left", null);
   let capW = worldCardLevelCap(i), overCap = (id) => !!capW && unlocked.includes(id) && S.save.cards[id].level > capW;
-  capW && unlocked.some(overCap) && plainText(`A card above L${capW} acts as L${capW} in this world`, 200, 488, 12, "#b0506a", "center", "800"), ALL_CARDS.forEach((id, k) => {
+  if (capW && unlocked.some(overCap) && plainText(`A card above L${capW} acts as L${capW} in this world`, 200, 488, 12, "#b0506a", "center", "800"), ALL_CARDS.forEach((id, k) => {
     let col = k % 5, row = Math.floor(k / 5), x = 22 + col * 72, y = 196 + row * 98, w = 66, h = 90, isU = unlocked.includes(id), di = S.prep.deck.indexOf(id);
     drawCardPic(x, y, w, h, id, { locked: !isU, lockText: "Shop or prize", selected: di >= 0, selCol: "#111111", badge: di >= 0 ? String(di + 1) : null, tag: !0, level: isU ? S.save.cards[id].level : 0, cap: capW || 0, dim: isU && di < 0 && S.prep.deck.length >= BATTLE.deckSize }), isU && button("deck" + id, x, y, w, h, () => {
       let d = S.prep.deck, j = d.indexOf(id);
       j >= 0 ? d.splice(j, 1) : d.length < BATTLE.deckSize ? d.push(id) : toast("Deck is full (5). Tap a card to remove it."), sfx("tap");
     });
-  });
+  }), S.prepTip && S.t < S.prepTip.until) {
+    let tp = S.prepTip.type, rk = rarityRank(tp) + 1, tier = rarityOf(tp), nm = ANTS[tp].name;
+    panel(20, 179, 360, 40, "#5a4058", 14), plainFit(rk <= 4 ? `${nm}: ${tier} (${rk} dot${rk > 1 ? "s" : ""})` : `${nm}: ${tier} (no dots)`, 200, 192, 336, 12, "#ffe39a", "center", "800"), plainFit("Dots: 1 common, 2 uncommon, 3 rare, 4 elite", 200, 208, 336, 12, "#ffffff", "center", "600"), button("antTip", 20, 175, 360, 48, () => {
+      S.prepTip = null;
+    });
+  } else S.prepTip = null;
   let by = 510;
   text(ctx, `Boosters (bring ${BATTLE.bonusTypesToBring}, max ${BATTLE.maxBonusUses} uses)`, 30, by, 14, "#7a5a6a", "left", null), BONUS_TYPES.forEach((bt, k) => {
     let x = 26 + k * 88, y = by + 14, w = 80, h = 64, sel = S.prep.bonuses.includes(bt), stock = S.save.bonusStock[bt] || 0;
@@ -6455,12 +6463,12 @@ function cardInfoPanel(id, x, y, w, h, opt = {}) {
   fitText(T.name, x + 12 + Math.min(170, 9 * T.name.length) / 2, y + 16, 170, 14.5, "#ff8fab"), plainFit(own ? capCard && capCard < c.level ? `Card L${c.level} - fights as L${capCard}` : `Card L${c.level} (used in battle)` : "Not owned yet", x + w - 12, y + 16, 150, 12, INFO_SOFT, "right", "700");
   let cmp = h < 108;
   plainFit(T.desc, x + 12, y + (cmp ? 33 : 37), w - 24, 12, INFO_INK, "left", "500");
-  let next = cardUpgradeDiff(id, L), nk = new Set(next.map((d) => d.key)), keys = cardStatKeys(id), bw = (w - 24 - 12) / 3;
+  let Le = capCard ? Math.min(L, capCard) : L, atCap = !!(own && capCard && L >= capCard), next = atCap ? [] : cardUpgradeDiff(id, L), nk = new Set(next.map((d) => d.key)), keys = cardStatKeys(id), bw = (w - 24 - 12) / 3;
   keys.forEach((k, i) => {
     let bx = x + 12 + i * (bw + 6), by = y + (cmp ? 44 : 50);
-    rr(ctx, bx, by, bw, cmp ? 36 : 38, 9), ctx.fillStyle = nk.has(k) ? "#eefbe9" : "#f7efeb", ctx.fill(), ctx.lineWidth = nk.has(k) ? 2 : 1.2, ctx.strokeStyle = nk.has(k) ? "#8fd18f" : "#e0cfd4", ctx.stroke(), plainFit(k === "scoop" ? "Scoops" : statLabel(id, k), bx + 7, by + (cmp ? 9.5 : 10), bw - 12, 12, INFO_SOFT, "left", "600"), plainFit(k === "scoop" ? "1 trail tile" : formatStat(id, k, towerStat(id, k, 1, L)), bx + bw / 2, by + (cmp ? 24.5 : 26), bw - 10, 13.5, INFO_INK, "center", "700");
+    rr(ctx, bx, by, bw, cmp ? 36 : 38, 9), ctx.fillStyle = nk.has(k) ? "#eefbe9" : "#f7efeb", ctx.fill(), ctx.lineWidth = nk.has(k) ? 2 : 1.2, ctx.strokeStyle = nk.has(k) ? "#8fd18f" : "#e0cfd4", ctx.stroke(), plainFit(k === "scoop" ? "Scoops" : statLabel(id, k), bx + 7, by + (cmp ? 9.5 : 10), bw - 12, 12, INFO_SOFT, "left", "600"), plainFit(k === "scoop" ? "1 trail tile" : formatStat(id, k, towerStat(id, k, 1, Le)), bx + bw / 2, by + (cmp ? 24.5 : 26), bw - 10, 13.5, INFO_INK, "center", "700");
   });
-  let line = next.length ? `Next card level L${L + 1}: ` + next.map((d) => diffText(id, d)).join(" + ") : "Top card level (L10)!";
+  let line = atCap ? `At the world cap (L${capCard}): higher cards add nothing yet` : next.length ? `Next card level L${L + 1}: ` + next.map((d) => diffText(id, d)).join(" + ") : "Top card level (L10)!";
   plainFit(line, x + w / 2, y + (cmp ? h - 9 : 102), w - 20, 12, next.length ? "#2f8a36" : "#c9962a", "center", "700"), h > 118 && !opt.noFoot && plainFit(opt.foot || (own ? "Merge cards on its own screen to reach the next level." : `Get it in the Shop (${unlockPrice(id)}c) or as a prize.`), x + w / 2, y + h - 13, w - 20, 12, "#a08090", "center", "600");
 }
 var CARD_BANDS = [[3, "#d9965f", "#f3c79c"], [6, "#9fb2c8", "#e1e9f2"], [9, "#e8b830", "#ffe9a0"], [10, "#ff7fb8", "#ffd6ec"]];

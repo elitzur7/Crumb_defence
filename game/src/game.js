@@ -169,7 +169,7 @@ function openSettings() {
 function closeSettings() { S.settings = null; S.confirmReset = 0; if (S.settingsPushed) { S.settingsPushed = false; ownBack(); } }
 function go(screen) {
   S.settingsPushed = false; // a leave-the-map navigation reuses the gear panel's history entry (it is the screen's 'inner' entry)
-  S.screen = screen; S.sel = null; S.info = null; S.drag = null; S.mergeAnim = null; S.toast = null; S.dialog = null; S.cal = null; S.settings = null; S.mode = null; S.shopFx = null; sfx('tap');
+  S.screen = screen; S.prepTip = null; S.sel = null; S.info = null; S.drag = null; S.mergeAnim = null; S.toast = null; S.dialog = null; S.cal = null; S.settings = null; S.mode = null; S.shopFx = null; sfx('tap');
   if (screen === 'map') { S.mapScroll = autoMapScroll(); maybeShowCalendar(); }
   // keep one history entry while away from the map so the Android back button maps to in-game "back"
   try {
@@ -768,8 +768,8 @@ function renderMapScreen() {
   const hintW = C.WORLDS.map((x) => x.id).filter((id) => id >= 2).find((id) => gateY(id) + sc < MAPVIEW.top - 10);
   if (hintW) {
     const a = 0.75 + 0.25 * Math.sin(S.t * 4);
-    ctx.save(); ctx.globalAlpha = a; A.rr(ctx, 128, MAPVIEW.top + 4, 144, 26, 13); ctx.fillStyle = 'rgba(90,64,88,0.85)'; ctx.fill();
-    plainText(`\u25B2 World ${hintW} - scroll up`, 200, MAPVIEW.top + 17.5, 12, '#ffffff', 'center', '700'); ctx.restore();
+    ctx.save(); ctx.globalAlpha = a; A.rr(ctx, 128, MAPVIEW.top - 30, 144, 24, 12); ctx.fillStyle = 'rgba(90,64,88,0.85)'; ctx.fill(); // v0.7.8 P2-4: the pill sits in the free band ABOVE the map window (y 164-188), so it never covers a node label
+    plainText(`\u25B2 World ${hintW} - scroll up`, 200, MAPVIEW.top - 17.5, 12, '#ffffff', 'center', '700'); ctx.restore();
   }
   // v0.7.2 C16: the bottom buttons moved into the fixed tab bar (renderTabBar); Snd / Reset live in the settings panel behind the gear
   updateCardsBlink();
@@ -990,6 +990,7 @@ function renderPrep() {
       const rk = C.rarityRank(t) + 1, cols = ['#b9a8b0', '#5fbf7a', '#4a90e2', '#a05ad8'];
       if (rk <= 4) for (let q = 0; q < rk; q++) { ctx.beginPath(); ctx.arc(x + (q - (rk - 1) / 2) * 6, 148, 2.2, 0, Math.PI * 2); ctx.fillStyle = cols[rk - 1]; ctx.fill(); ctx.lineWidth = 0.8; ctx.strokeStyle = 'rgba(70,40,55,.55)'; ctx.stroke(); }
     }
+    button('ant' + t, x - slot / 2, 104, slot, 66, () => { S.prepTip = { type: t, until: S.t + 3.4 }; sfx('tap'); }); // v0.7.8 P2-2: tap an ant -> its rarity + the dot legend
     { // v0.7.6 V3: ant names stay 12 px - a name wider than its slot wraps to two lines (words, or after a hyphen)
       const nm = C.ANTS[t].name.replace(' Ant', ''); ctx.font = `bold 12px ${A.FONT}`;
       if (ctx.measureText(nm).width <= slot - 2) A.text(ctx, nm, x, 161, 12, '#7a5a6a');
@@ -1014,6 +1015,13 @@ function renderPrep() {
       sfx('tap');
     });
   });
+  if (S.prepTip && S.t < S.prepTip.until) { // v0.7.8 P2-2: rarity legend tooltip (2 lines, drawn below the ant names, over the deck title; tap it to close)
+    const tp = S.prepTip.type, rk = C.rarityRank(tp) + 1, tier = C.rarityOf(tp), nm = C.ANTS[tp].name;
+    panel(20, 179, 360, 40, '#5a4058', 14);
+    plainFit(rk <= 4 ? `${nm}: ${tier} (${rk} dot${rk > 1 ? 's' : ''})` : `${nm}: ${tier} (no dots)`, 200, 192, 336, 12, '#ffe39a', 'center', '800');
+    plainFit('Dots: 1 common, 2 uncommon, 3 rare, 4 elite', 200, 208, 336, 12, '#ffffff', 'center', '600');
+    button('antTip', 20, 175, 360, 48, () => { S.prepTip = null; }); // touch target 48 px (the pill itself is 40)
+  } else S.prepTip = null;
   // bonuses
   const by = 510; // v0.7.7 P1-1: >= 8 px below the cap line (its text ends at y 494; the Boosters title starts at 503)
   A.text(ctx, `Boosters (bring ${C.BATTLE.bonusTypesToBring}, max ${C.BATTLE.maxBonusUses} uses)`, 30, by, 14, '#7a5a6a', 'left', null);
@@ -1834,15 +1842,17 @@ function cardInfoPanel(id, x, y, w, h, opt = {}) {
   plainFit(own ? (capCard && capCard < c.level ? `Card L${c.level} - fights as L${capCard}` : `Card L${c.level} (used in battle)`) : 'Not owned yet', x + w - 12, y + 16, 150, 12, INFO_SOFT, 'right', '700');
   const cmp = h < 108; // v0.7.2: the Cards / card screens give the panel less height (the tab bar took the bottom) -> a tighter layout
   plainFit(T.desc, x + 12, y + (cmp ? 33 : 37), w - 24, 12, INFO_INK, 'left', '500');
-  const next = cardUpgradeDiff(id, L); const nk = new Set(next.map((d) => d.key));
+  const Le = capCard ? Math.min(L, capCard) : L; // v0.7.8 P2-1: the stats are the EFFECTIVE (capped) numbers - what the card does in battle in the highest unlocked world
+  const atCap = !!(own && capCard && L >= capCard); // at/above the cap a further card level adds nothing yet -> no 'next level' preview or highlight
+  const next = atCap ? [] : cardUpgradeDiff(id, L); const nk = new Set(next.map((d) => d.key));
   const keys = cardStatKeys(id), bw = (w - 24 - 12) / 3;
   keys.forEach((k, i) => {
     const bx = x + 12 + i * (bw + 6), by = y + (cmp ? 44 : 50), bh = cmp ? 36 : 38;
     A.rr(ctx, bx, by, bw, bh, 9); ctx.fillStyle = nk.has(k) ? '#eefbe9' : '#f7efeb'; ctx.fill(); ctx.lineWidth = nk.has(k) ? 2 : 1.2; ctx.strokeStyle = nk.has(k) ? '#8fd18f' : '#e0cfd4'; ctx.stroke();
     plainFit(k === 'scoop' ? 'Scoops' : statLabel(id, k), bx + 7, by + (cmp ? 9.5 : 10), bw - 12, 12, INFO_SOFT, 'left', '600');
-    plainFit(k === 'scoop' ? '1 trail tile' : formatStat(id, k, towerStat(id, k, 1, L)), bx + bw / 2, by + (cmp ? 24.5 : 26), bw - 10, 13.5, INFO_INK, 'center', '700');
+    plainFit(k === 'scoop' ? '1 trail tile' : formatStat(id, k, towerStat(id, k, 1, Le)), bx + bw / 2, by + (cmp ? 24.5 : 26), bw - 10, 13.5, INFO_INK, 'center', '700');
   });
-  const line = next.length ? `Next card level L${L + 1}: ` + next.map((d) => diffText(id, d)).join(' + ') : 'Top card level (L10)!';
+  const line = atCap ? `At the world cap (L${capCard}): higher cards add nothing yet` : next.length ? `Next card level L${L + 1}: ` + next.map((d) => diffText(id, d)).join(' + ') : 'Top card level (L10)!';
   plainFit(line, x + w / 2, y + (cmp ? h - 9 : 102), w - 20, 12, next.length ? '#2f8a36' : '#c9962a', 'center', '700');
   if (h > 118 && !opt.noFoot) plainFit(opt.foot || (own ? 'Merge cards on its own screen to reach the next level.' : `Get it in the Shop (${M.unlockPrice(id)}c) or as a prize.`), x + w / 2, y + h - 13, w - 20, 12, '#a08090', 'center', '600');
 }

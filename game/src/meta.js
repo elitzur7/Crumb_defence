@@ -316,7 +316,7 @@ export function grantPerfectPrize(save, rng = Math.random, table = C.ECONOMY.per
 }
 
 // v0.7.7 S1 boss gift: the first clear of a world's queen pays ONE extra card, deterministic (no rng): the cheapest locked tower as an L1 card (ties: card order),
-// otherwise one card of level max(2, cap - 2) of the owned tower with the most cards (ties: card order). It lands in the inventory, marked fresh.
+// otherwise one card of level max(2, cap - 2) (v0.7.8: cap - 1 from World 3 on) of the owned tower with the most cards (ties: card order). It lands in the inventory, marked fresh.
 export function grantBossGift(save, levelIndex) {
   let id, level;
   const locked = lockedCards(save);
@@ -324,7 +324,7 @@ export function grantBossGift(save, levelIndex) {
   else {
     const W = C.WORLDS.find((x) => x.id === C.worldOf(levelIndex)); const cap = (W && W.cardLevelCap) || C.MAX_CARD_LEVEL;
     let best = -1; for (const x of C.ALL_CARDS) { const n = totalCards(save.cards[x]); if (n > best) { best = n; id = x; } }
-    level = Math.min(C.MAX_CARD_LEVEL, Math.max(2, cap - 2));
+    level = Math.min(C.MAX_CARD_LEVEL, Math.max(2, cap - (C.worldOf(levelIndex) >= 3 ? 1 : 2))); // v0.7.8 P2-5: from W3 on the gift is a cap-1 card (W3: L4); W1/W2 keep cap-2
   }
   const got = addCards(save, id, level, 1); save.cards[id].fresh = true;
   return { kind: 'cards', id, level, count: 1, newCard: got.newType, newLevel: got.newLevel, reveal: got.newType || got.newLevel, boss: true };

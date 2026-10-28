@@ -13,10 +13,10 @@ const src = (f) => rd(`src/${f}`);
 const tuning = JSON.parse(readFileSync(new URL('../../tuning/tuning.json', import.meta.url), 'utf8'));
 const W3_FIRST = 20, W3_QUEEN = 29;
 
-test('version 0.7.7 / versionCode 22', () => {
-  assert.equal(C.VERSION, '0.7.7');
-  assert.match(rd('android/app/build.gradle'), /versionCode 22\b/); assert.match(rd('android/app/build.gradle'), /versionName "0\.7\.7"/);
-  assert.equal(JSON.parse(rd('package.json')).version, '0.7.7');
+test('version 0.7.7 or later (the current release, 0.7.8 / versionCode 23, is asserted in v078.test.js)', () => {
+  assert.match(C.VERSION, /^0\.7\.[78]$/);
+  assert.match(rd('android/app/build.gradle'), /versionCode 2[23]\b/); assert.match(rd('android/app/build.gradle'), /versionName "0\.7\.[78]"/);
+  assert.match(JSON.parse(rd('package.json')).version, /^0\.7\.[78]$/);
 });
 
 // ---------- splitInto ----------
@@ -114,7 +114,7 @@ test('W3 ants: Greasy hp 24 slowResist 0.75; Mama hp 60; Pie Queen hp 2300 steal
   for (const id of ['greasy', 'mama', 'queen3']) assert.ok(C.ANTS[id].name && C.ANTS[id].desc && C.ANTS[id].name !== id, `text for ${id}`);
 });
 test('W3 hpMuls and wave counts follow the design table (hp77.json; L30 eased 1.2 -> 1.15 after the 1000-seed sims, see JOB-v0.7.7.md); Mama debuts in L25, Greasy in L22', () => {
-  const hp = [3, 4, 4.5, 3.2, 4.5, 6, 6, 4, 6, 1.15], wv = [6, 7, 7, 7, 7, 6, 8, 8, 9, 9];
+  const hp = [3.3, 4.3, 5.2, 4.9, 8, 6, 8, 6, 8.8, 1.45] /* v0.7.8 re-tune; v0.7.7 was [3, 4, 4.5, 3.2, 4.5, 6, 6, 4, 6, 1.15] */, wv = [6, 7, 7, 7, 7, 6, 8, 8, 9, 9];
   C.LEVELS.slice(W3_FIRST).forEach((L, k) => { assert.equal(L.hpMul, hp[k], `L${21 + k} hpMul`); assert.equal(L.waveCount, wv[k], `L${21 + k} waves`); });
   const first = (t) => 1 + C.LEVELS.findIndex((_, i) => S.levelAntTypes(i).includes(t));
   assert.equal(first('greasy'), 22); assert.equal(first('mama'), 25);
@@ -166,11 +166,11 @@ test('boss gift: the first clear of a world queen pays ONE card - the cheapest l
   assert.equal(winBoss(s, 9).bossGift, null, 'repeat clear'); assert.equal(winBoss(s, 0).bossGift, null, 'normal level');
   const w3 = winBoss(s, W3_QUEEN); assert.ok(w3.bossGift && w3.bossGift.id !== out.bossGift.id);
 });
-test('boss gift: with every tower unlocked, one card of level max(2, cap - 2) of the owned tower with the most cards', () => {
+test('boss gift: with every tower unlocked, one card of level max(2, cap - 2) (cap - 1 from W3) of the owned tower with the most cards', () => {
   const s = M.newSave(); for (const id of C.ALL_CARDS) M.unlockCard(s, id); M.addCards(s, 'laser', 1, 3);
   const g1 = winBoss(s, 9).bossGift; assert.equal(g1.id, 'laser'); assert.equal(g1.level, 2, 'W1 cap 4 -> L2'); assert.ok(g1.newLevel);
   const g2 = winBoss(s, 19).bossGift; assert.equal(g2.level, 3, 'W2 cap 5 -> L3'); assert.equal(M.countAt(s.cards.laser, 3), 1);
-  const g3 = winBoss(s, W3_QUEEN).bossGift; assert.equal(g3.level, 3, 'W3 cap 5 -> L3');
+  const g3 = winBoss(s, W3_QUEEN).bossGift; assert.equal(g3.level, 4, 'W3 cap 5 -> L4 (v0.7.8 P2-5: cap-1 from W3 on)');
   assert.equal(s.cards.laser.fresh, true);
 });
 test('boss gift: deterministic (consumes no rng) and persists through writeSave/loadSave', () => {

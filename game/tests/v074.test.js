@@ -17,14 +17,14 @@ const mk = (o = {}) => { const b = new Battle({ levelIndex: 0, deck: DECK, seed:
 const still = (a) => { a.speed = 0; return a; };
 
 test('v0.7.4 version + versionCode (>= 18; the hotfix v0.7.4.1 is asserted in v0741.test.js)', () => {
-  assert.match(C.VERSION, /^0\.7\.[4567](\.\d+)?$/); // v0.7.6 keeps this passing
+  assert.match(C.VERSION, /^0\.7\.[45678](\.\d+)?$/); // v0.7.6 keeps this passing
   assert.ok(+/versionCode (\d+)/.exec(readFileSync(new URL('../android/app/build.gradle', import.meta.url), 'utf8'))[1] >= 18);
   assert.equal(JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version, C.VERSION);
 });
 
 // ---------------- M-1 ----------------
 test('M-1: hpMul L10 2.373 and L17 2.38 (all other levels as in v0.7.3); L20 stays 1.6; Sprinter HP stays 10', () => {
-  const want = [1, 1.56, 3, 6.6, 2.803, 4.321, 2.225, 3.72, 4.8, 2.373, 3.054, 3.387, 2.875, 3.6, 5.304, 4.213, 2.38, 3.557, 4.065, 1.6];
+  const want = [1, 1.56, 3, 6.6, 2.803, 4.321, 2.225, 3.72, 4.8, 2.373, 3.665, 4.064, 3.45, 4.32, 6.365, 5.056, 2.856, 4.268, 4.878, 1.92];
   C.LEVELS.slice(0, 20).forEach((L, i) => assert.equal(L.hpMul, want[i], `L${i + 1}`));
   assert.equal(C.ANTS.sprinter.hp, 10);
   const b = new Battle({ levelIndex: 9, deck: DECK, seed: 1 });
@@ -32,7 +32,7 @@ test('M-1: hpMul L10 2.373 and L17 2.38 (all other levels as in v0.7.3); L20 sta
 });
 test('M-1: the sim harness copy defaults to DT=60, and the tuning CSVs carry the new values', () => {
   const csv = readFileSync(new URL('../../tuning/csv/levels.csv', import.meta.url), 'utf8').split('\n');
-  assert.match(csv[10], /^10,1,Her Majesty,cross,9,2\.373,/); assert.match(csv[17], /^17,2,Heavy Icing,snake,8,2\.38,/);
+  assert.match(csv[10], /^10,1,Her Majesty,cross,9,2\.373,/); assert.match(csv[17], /^17,2,Heavy Icing,snake,8,2\.856,/) /* v0.7.8: W2 x1.2 */;
 });
 
 // ---------------- M0: the loop ----------------

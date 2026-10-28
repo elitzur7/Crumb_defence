@@ -1,5 +1,5 @@
 // v0.7.6: V1 (small ant colour), V2 (contact ring), V3 (12 px floor), V4/V5, E1 star coins, E2 calendar ladder, E3 boss gems, E4 W2 cap, E5 tuning hooks,
-// and the guarantee that the battle simulation did not change. Browser-level checks (contrast on the real renderer, ring pixels, runtime fillText scan) are in tools/qa-v076.mjs.
+// and the guarantee that the battle simulation did not change. Browser-level checks (contrast on the real renderer, ring pixels, runtime fillText scan) were in tools/qa-v076.mjs (retired in v0.7.8; see tag v0.7.7).
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -16,10 +16,10 @@ const lin = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0
 const Lm = (h) => { const n = parseInt(h.slice(1), 16); return 0.2126 * lin((n >> 16) & 255) + 0.7152 * lin((n >> 8) & 255) + 0.0722 * lin(n & 255); };
 const ratio = (a, b) => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
 
-test('version 0.7.6 or later (the current release, 0.7.7 / versionCode 22, is asserted in v077.test.js)', () => {
-  assert.match(C.VERSION, /^0\.7\.[67]$/);
-  assert.match(rd('android/app/build.gradle'), /versionCode 2[12]/); assert.match(rd('android/app/build.gradle'), /versionName "0\.7\.[67]"/);
-  assert.match(JSON.parse(rd('package.json')).version, /^0\.7\.[67]$/);
+test('version 0.7.6 or later (the current release, 0.7.8 / versionCode 23, is asserted in v078.test.js)', () => {
+  assert.match(C.VERSION, /^0\.7\.[678]$/);
+  assert.match(rd('android/app/build.gradle'), /versionCode 2[123]/); assert.match(rd('android/app/build.gradle'), /versionName "0\.7\.[678]"/);
+  assert.match(JSON.parse(rd('package.json')).version, /^0\.7\.[678]$/);
 });
 test('V1: small ant #f8c07e; ladder stays >= 1.30 and small keeps its distance from worker', () => {
   assert.equal(A.ANT_COL.small, '#f8c07e');
@@ -36,7 +36,7 @@ test('V2: one ring sprite, drawn first for side towers only (9 of them); spec 19
   assert.match(a, /#a67c5c/);
   assert.ok(a.indexOf("'ring76'") < a.indexOf("baked(ctx, 'plinth'"), 'the ring is drawn before the level plinth/trim');
   assert.equal((a.match(/ring76/g) || []).length, 1, 'one ring sprite, no per-tower copies');
-  assert.ok(Lm('#a67c5c') < 0.25); // L 0.233; the real-renderer contrast vs the 20 grounds (min 1.91) is measured in tools/qa-v076.mjs
+  assert.ok(Lm('#a67c5c') < 0.25); // L 0.233; the real-renderer contrast vs the 20 grounds (min 1.91) was measured in tools/qa-v076.mjs (retired in v0.7.8; tag v0.7.7)
 });
 test('V3: static scan - no text/fit/wrap/plain call below 12 px except the tower tags and the L badges (11 bold)', async () => {
   const { execFileSync } = await import('node:child_process');
