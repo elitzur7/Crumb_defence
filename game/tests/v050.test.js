@@ -88,7 +88,7 @@ test('items 6/7 (+ v0.6 item 4): v0.4 save migrates: a level-L card = one L-L ca
   for (const id of C.ALL_CARDS) v04.cards[id] = { unlocked: id === 'slingshot' || id === 'laser', level: id === 'slingshot' ? 4 : id === 'laser' ? 1 : 0, copies: id === 'slingshot' ? 5 : 0 };
   const store = new Map([[M.SAVE_KEY, JSON.stringify(v04)]]); const st = { getItem: (k) => store.get(k) ?? null, setItem: (k, v) => store.set(k, v) };
   const s = M.loadSave(st);
-  assert.equal(s.version, M.SAVE_VERSION); assert.equal(s.levels.length, 20, 'world 2 levels added');
+  assert.equal(s.version, M.SAVE_VERSION); assert.equal(s.levels.length, C.LEVELS.length, 'worlds 2 and 3 levels added');
   assert.deepEqual(s.cards.slingshot.inv, { 1: 5, 4: 1 }); assert.equal(s.cards.slingshot.copies, undefined); assert.equal(s.cards.slingshot.level, 4);
   assert.deepEqual(s.cards.slingshot.seen, [1, 2, 3, 4]); assert.equal(s.cards.laser.level, 1);
   assert.equal(s.cards.spray.unlocked, false); assert.deepEqual(s.cards.spray.inv, {});
@@ -135,11 +135,11 @@ test('item 12: swapping two towers is free and only if both fit the other spot',
 
 // ---------- items 13 + 14: world 2 ----------
 test('items 13/14: world 2 = 10 levels, Cake, its own queen at level 20; maps valid', () => {
-  assert.deepEqual(C.WORLDS.map((w) => [w.id, w.treat, w.queen, w.levels]), [[1, 'cookie', 'queen', 10], [2, 'cake', 'queen2', 10]]);
+  assert.deepEqual(C.WORLDS.slice(0, 2).map((w) => [w.id, w.treat, w.queen, w.levels]), [[1, 'cookie', 'queen', 10], [2, 'cake', 'queen2', 10]]); // v0.7.7: world 3 (pie) is asserted in v077.test.js
   for (let i = 10; i < 20; i++) { assert.equal(C.worldOf(i), 2); assert.equal(C.treatOf(i), 'cake'); }
   assert.equal(C.treatOf(0), 'cookie');
   assert.ok(levelAntTypes(19).includes('queen2')); assert.ok(!levelAntTypes(9).includes('queen2'));
-  for (const id of new Set(C.LEVELS.slice(10).map((L) => L.map))) assert.deepEqual(validateMap(id, C.MAPS[id]), [], id);
+  for (const id of new Set(C.LEVELS.slice(10, 20).map((L) => L.map))) assert.deepEqual(validateMap(id, C.MAPS[id]), [], id);
   // queen 2: same formula as queen 1 (50 + traits), slightly different: fast (takes 40), calls flyers, lavender
   assert.equal(C.ANTS.queen2.steal, 40); assert.equal(C.ANTS.queen.steal, 50);
   assert.ok(C.ANTS.queen2.speed > C.ANTS.queen.speed && C.ANTS.queen2.boss && C.ANTS.queen2.size === C.ANT_SIZES.queen);

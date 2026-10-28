@@ -6,298 +6,118 @@
     "cardUpgrades": "steps to card levels L2..L10, in order. power / rate / any other key: fraction (+0.10 = +10%); range: tiles (+0.2 tiles)",
     "battleUpgrades": "in-battle levels 2-6 (five upgrades; drop the same card on the tower): multipliers",
     "speed": "px per second",
-    "queenTake": "a queen takes 50 + the sum of her trait modifiers (queenTraitMods) from the treat"
+    "queenTake": "a queen takes 50 + the sum of her trait modifiers (queenTraitMods) from the treat",
+    "rarity": "common | uncommon | rare | elite | boss (v0.7.7). Checked by tests/v077.test.js for worlds >= 3: >= 2 common types per non-boss level, <= 2 rare-or-higher types, a rare first appears at wave >= 2 (never wave 1). W1/W2 only report."
   },
   "shop": {
     "_about": "v0.6.2 items 12/13. unlockPrice: coins to unlock a locked tower in the Shop (tiered by base power, approved by Yair). packNewTowerChance: chance that a card pack holds ONE new (locked) tower card (L1) as one of its cards.",
-    "unlockPrice": {
-      "sound": 100,
-      "pheromone": 100,
-      "lava": 100,
-      "lizard": 200,
-      "gate": 200,
-      "zapper": 200,
-      "laser": 400,
-      "tractor": 400
-    },
+    "unlockPrice": {"sound":100,"pheromone":100,"lava":100,"lizard":200,"gate":200,"zapper":200,"laser":400,"tractor":400},
     "unlockPriceDefault": 200,
     "packNewTowerChance": 0.1
   },
   "economy": {
     "_about": "v0.7.6 E1/E2/E3/E5. starBonus: coins paid ONCE per level the first time it reaches 2 (key 2) and 3 (key 3) stars (a 1 -> 3 star jump pays both; stored stars count as already paid, no retroactive grant). bossGems: diamonds on the FIRST clear of a world's last level (its queen) and on the first 3 stars there. calendar.coinsByStreak: coins of the 1st, 2nd, 3rd, 4th+ coin prize of a streak, multiplied by 1 + worldStep x (highest unlocked world - 1), rounded to a multiple of roundTo. worlds[].coinMul (default 1) multiplies the win coins of that world's levels (not the first-clear bonus, not loss coins).",
-    "starBonus": {
-      "2": 15,
-      "3": 25
-    },
-    "bossGems": {
-      "firstClear": 10,
-      "firstThreeStars": 5
-    },
-    "calendar": {
-      "coinsByStreak": [
-        30,
-        60,
-        90,
-        120
-      ],
-      "worldStep": 0.5,
-      "roundTo": 5
-    }
+    "starBonus": {"2":15,"3":25},
+    "bossGems": {"firstClear":10,"firstThreeStars":5},
+    "calendar": {"coinsByStreak":[30,60,90,120],"worldStep":0.5,"roundTo":5}
   },
-  "queenTraitMods": {
-    "fast": -10,
-    "flying": -15,
-    "slow": 0,
-    "slower": 5,
-    "slowest": 10,
-    "vulnerable": 5,
-    "veryVulnerable": 10
-  },
-  "antSizes": {
-    "small": 0.7,
-    "regular": 1,
-    "large": 1.12,
-    "queen": 2.1
-  },
+  "queenTraitMods": {"fast":-10,"flying":-15,"slow":0,"slower":5,"slowest":10,"vulnerable":5,"veryVulnerable":10},
+  "antSizes": {"small":0.7,"regular":1,"large":1.12,"queen":2.1},
   "towers": {
     "slingshot": {
       "power": 6,
       "rate": 1.1,
       "rangeTiles": 1.5,
-      "params": {
-        "projSpeed": 380
-      },
+      "params": {"projSpeed":380},
       "battleUpgrades": [
-        {
-          "power": 2
-        },
-        {
-          "rate": 1.3,
-          "range": 1.1,
-          "power": 1.154
-        },
-        {
-          "power": 1.333
-        },
-        {
-          "rate": 1.15,
-          "power": 1.087
-        },
-        {
-          "range": 1.1,
-          "power": 1.2
-        }
+        {"power":2},
+        {"rate":1.3,"range":1.1,"power":1.154},
+        {"power":1.333},
+        {"rate":1.15,"power":1.087},
+        {"range":1.1,"power":1.2}
       ],
       "cardUpgrades": [
-        {
-          "range": 0.2
-        },
-        {
-          "power": 0.1
-        },
-        {
-          "range": 0.2
-        },
-        {
-          "rate": 0.1
-        },
-        {
-          "power": 0.1
-        },
-        {
-          "power": 0.12
-        },
-        {
-          "rate": 0.1
-        },
-        {
-          "range": 0.2
-        },
-        {
-          "range": 0.2,
-          "power": 0.1
-        }
+        {"range":0.2},
+        {"power":0.1},
+        {"range":0.2},
+        {"rate":0.1},
+        {"power":0.1},
+        {"power":0.12},
+        {"rate":0.1},
+        {"range":0.2},
+        {"range":0.2,"power":0.1}
       ]
     },
     "spray": {
       "power": 6,
       "rate": 0.42,
       "rangeTiles": 1.5,
-      "params": {
-        "cloudTime": 2.6,
-        "cloudRadius": 42
-      },
+      "params": {"cloudTime":2.6,"cloudRadius":42},
       "battleUpgrades": [
-        {
-          "power": 2,
-          "cloudRadius": 1.2
-        },
-        {
-          "rate": 1.3,
-          "power": 1.154
-        },
-        {
-          "cloudRadius": 1.15,
-          "range": 1.1,
-          "power": 1.333
-        },
-        {
-          "power": 1.25
-        },
-        {
-          "rate": 1.2
-        }
+        {"power":2,"cloudRadius":1.2},
+        {"rate":1.3,"power":1.154},
+        {"cloudRadius":1.15,"range":1.1,"power":1.333},
+        {"power":1.25},
+        {"rate":1.2}
       ],
       "cardUpgrades": [
-        {
-          "power": 0.1
-        },
-        {
-          "rate": 0.08
-        },
-        {
-          "range": 0.2
-        },
-        {
-          "power": 0.12
-        },
-        {
-          "range": 0.15
-        },
-        {
-          "rate": 0.1
-        },
-        {
-          "power": 0.1
-        },
-        {
-          "range": 0.2
-        },
-        {
-          "power": 0.1,
-          "rate": 0.1
-        }
+        {"power":0.1},
+        {"rate":0.08},
+        {"range":0.2},
+        {"power":0.12},
+        {"range":0.15},
+        {"rate":0.1},
+        {"power":0.1},
+        {"range":0.2},
+        {"power":0.1,"rate":0.1}
       ]
     },
     "sound": {
       "power": 4,
       "rate": 0.75,
       "rangeTiles": 1.5,
-      "params": {
-        "ignoreArmor": true,
-        "stagger": 0.18
-      },
+      "params": {"ignoreArmor":true,"stagger":0.18},
       "battleUpgrades": [
-        {
-          "power": 2
-        },
-        {
-          "range": 1.15,
-          "rate": 1.2,
-          "power": 1.25
-        },
-        {
-          "stagger": 1.3,
-          "power": 1.333
-        },
-        {
-          "power": 1.25
-        },
-        {
-          "rate": 1.15,
-          "stagger": 1.25,
-          "power": 1.043
-        }
+        {"power":2},
+        {"range":1.15,"rate":1.2,"power":1.25},
+        {"stagger":1.3,"power":1.333},
+        {"power":1.25},
+        {"rate":1.15,"stagger":1.25,"power":1.043}
       ],
       "cardUpgrades": [
-        {
-          "rate": 0.1
-        },
-        {
-          "range": 0.2
-        },
-        {
-          "power": 0.1
-        },
-        {
-          "power": 0.1
-        },
-        {
-          "range": 0.2
-        },
-        {
-          "rate": 0.08
-        },
-        {
-          "range": 0.15
-        },
-        {
-          "power": 0.12
-        },
-        {
-          "rate": 0.1,
-          "range": 0.2
-        }
+        {"rate":0.1},
+        {"range":0.2},
+        {"power":0.1},
+        {"power":0.1},
+        {"range":0.2},
+        {"rate":0.08},
+        {"range":0.15},
+        {"power":0.12},
+        {"rate":0.1,"range":0.2}
       ]
     },
     "ball": {
       "power": 16,
       "rate": 0.16,
       "rangeTiles": null,
-      "params": {
-        "ballRadius": 13,
-        "rollSpeed": 230,
-        "maxBalls": 1
-      },
+      "params": {"ballRadius":13,"rollSpeed":230,"maxBalls":1},
       "battleUpgrades": [
-        {
-          "power": 2,
-          "ballRadius": 1.2
-        },
-        {
-          "rate": 1.3,
-          "power": 1.154
-        },
-        {
-          "ballRadius": 1.1,
-          "power": 1.333
-        },
-        {
-          "power": 1.25
-        },
-        {
-          "rate": 1.2
-        }
+        {"power":2,"ballRadius":1.2},
+        {"rate":1.3,"power":1.154},
+        {"ballRadius":1.1,"power":1.333},
+        {"power":1.25},
+        {"rate":1.2}
       ],
       "cardUpgrades": [
-        {
-          "power": 0.1
-        },
-        {
-          "rate": 0.1
-        },
-        {
-          "ballRadius": 0.1
-        },
-        {
-          "power": 0.12
-        },
-        {
-          "rate": 0.08
-        },
-        {
-          "power": 0.1
-        },
-        {
-          "ballRadius": 0.1
-        },
-        {
-          "rate": 0.1
-        },
-        {
-          "power": 0.1,
-          "rate": 0.1
-        }
+        {"power":0.1},
+        {"rate":0.1},
+        {"ballRadius":0.1},
+        {"power":0.12},
+        {"rate":0.08},
+        {"power":0.1},
+        {"ballRadius":0.1},
+        {"rate":0.1},
+        {"power":0.1,"rate":0.1}
       ]
     },
     "fan": {
@@ -305,549 +125,186 @@
       "rate": 0.36,
       "rangeTiles": 1.5,
       "params": {},
-      "battleUpgrades": [
-        {
-          "power": 1.3
-        },
-        {
-          "rate": 1.25,
-          "range": 1.1
-        },
-        {
-          "power": 1.15
-        },
-        {
-          "range": 1.1
-        },
-        {
-          "rate": 1.15
-        }
-      ],
+      "battleUpgrades": [{"power":1.3},{"rate":1.25,"range":1.1},{"power":1.15},{"range":1.1},{"rate":1.15}],
       "cardUpgrades": [
-        {
-          "range": 0.2
-        },
-        {
-          "rate": 0.1
-        },
-        {
-          "power": 0.1
-        },
-        {
-          "range": 0.2
-        },
-        {
-          "range": 0.15
-        },
-        {
-          "power": 0.1
-        },
-        {
-          "rate": 0.1
-        },
-        {
-          "power": 0.12
-        },
-        {
-          "range": 0.2,
-          "rate": 0.1
-        }
+        {"range":0.2},
+        {"rate":0.1},
+        {"power":0.1},
+        {"range":0.2},
+        {"range":0.15},
+        {"power":0.1},
+        {"rate":0.1},
+        {"power":0.12},
+        {"range":0.2,"rate":0.1}
       ]
     },
     "pheromone": {
       "power": 2.5,
       "rate": null,
       "rangeTiles": 1,
-      "params": {
-        "ignoreArmor": true,
-        "slow": 0.35,
-        "charmTime": 1.6
-      },
-      "battleUpgrades": [
-        {
-          "power": 1.5
-        },
-        {
-          "charmTime": 1.4,
-          "slow": 1.25
-        },
-        {
-          "power": 1.2
-        },
-        {
-          "charmTime": 1.2
-        },
-        {
-          "slow": 1.15
-        }
-      ],
+      "params": {"ignoreArmor":true,"slow":0.35,"charmTime":1.6},
+      "battleUpgrades": [{"power":1.5},{"charmTime":1.4,"slow":1.25},{"power":1.2},{"charmTime":1.2},{"slow":1.15}],
       "cardUpgrades": [
-        {
-          "power": 0.12
-        },
-        {
-          "slow": 0.1
-        },
-        {
-          "charmTime": 0.1
-        },
-        {
-          "power": 0.1
-        },
-        {
-          "slow": 0.08
-        },
-        {
-          "power": 0.1
-        },
-        {
-          "charmTime": 0.1
-        },
-        {
-          "charmTime": 0.12
-        },
-        {
-          "power": 0.1,
-          "slow": 0.08
-        }
+        {"power":0.12},
+        {"slow":0.1},
+        {"charmTime":0.1},
+        {"power":0.1},
+        {"slow":0.08},
+        {"power":0.1},
+        {"charmTime":0.1},
+        {"charmTime":0.12},
+        {"power":0.1,"slow":0.08}
       ]
     },
     "lizard": {
       "power": 38,
       "rate": 0.42,
       "rangeTiles": 1.5,
-      "params": {
-        "chewTime": 1.4
-      },
+      "params": {"chewTime":1.4},
       "battleUpgrades": [
-        {
-          "power": 2
-        },
-        {
-          "chewTime": 0.6,
-          "range": 1.1,
-          "power": 1.5
-        },
-        {
-          "rate": 1.2,
-          "power": 1.111
-        },
-        {
-          "power": 1.25
-        },
-        {
-          "chewTime": 0.75,
-          "power": 1.2
-        }
+        {"power":2},
+        {"chewTime":0.6,"range":1.1,"power":1.5},
+        {"rate":1.2,"power":1.111},
+        {"power":1.25},
+        {"chewTime":0.75,"power":1.2}
       ],
       "cardUpgrades": [
-        {
-          "power": 0.12
-        },
-        {
-          "rate": 0.08
-        },
-        {
-          "range": 0.2
-        },
-        {
-          "power": 0.1
-        },
-        {
-          "range": 0.2
-        },
-        {
-          "rate": 0.1
-        },
-        {
-          "power": 0.1
-        },
-        {
-          "power": 0.12
-        },
-        {
-          "range": 0.2,
-          "power": 0.1
-        }
+        {"power":0.12},
+        {"rate":0.08},
+        {"range":0.2},
+        {"power":0.1},
+        {"range":0.2},
+        {"rate":0.1},
+        {"power":0.1},
+        {"power":0.12},
+        {"range":0.2,"power":0.1}
       ]
     },
     "laser": {
       "power": 3,
       "rate": 3.2,
       "rangeTiles": 2.5,
-      "params": {
-        "heatPerHit": 0.1,
-        "heatMax": 1
-      },
+      "params": {"heatPerHit":0.1,"heatMax":1},
       "battleUpgrades": [
-        {
-          "power": 1.7
-        },
-        {
-          "rate": 1.15,
-          "power": 1.228
-        },
-        {
-          "range": 1.1,
-          "power": 1.292
-        },
-        {
-          "power": 1.15,
-          "heatMax": 1.5
-        },
-        {
-          "rate": 1.2,
-          "heatMax": 1.3
-        }
+        {"power":1.7},
+        {"rate":1.15,"power":1.228},
+        {"range":1.1,"power":1.292},
+        {"power":1.15,"heatMax":1.5},
+        {"rate":1.2,"heatMax":1.3}
       ],
       "cardUpgrades": [
-        {
-          "rate": 0.08
-        },
-        {
-          "power": 0.1
-        },
-        {
-          "range": 0.2
-        },
-        {
-          "rate": 0.1
-        },
-        {
-          "power": 0.1
-        },
-        {
-          "range": 0.2
-        },
-        {
-          "power": 0.12
-        },
-        {
-          "rate": 0.1
-        },
-        {
-          "power": 0.1,
-          "rate": 0.1
-        }
+        {"rate":0.08},
+        {"power":0.1},
+        {"range":0.2},
+        {"rate":0.1},
+        {"power":0.1},
+        {"range":0.2},
+        {"power":0.12},
+        {"rate":0.1},
+        {"power":0.1,"rate":0.1}
       ]
     },
     "zapper": {
       "power": 10,
       "rate": 1.5,
       "rangeTiles": 2,
-      "params": {
-        "chain": 2,
-        "chainRange": 75,
-        "chainFalloff": 0.6
-      },
+      "params": {"chain":2,"chainRange":75,"chainFalloff":0.6},
       "battleUpgrades": [
-        {
-          "power": 2
-        },
-        {
-          "chain": 1.5,
-          "range": 1.1,
-          "power": 1.5
-        },
-        {
-          "rate": 1.2,
-          "power": 1.111
-        },
-        {
-          "power": 1.25
-        },
-        {
-          "rate": 1.15,
-          "chain": 1.34,
-          "power": 1.043
-        }
+        {"power":2},
+        {"chain":1.5,"range":1.1,"power":1.5},
+        {"rate":1.2,"power":1.111},
+        {"power":1.25},
+        {"rate":1.15,"chain":1.34,"power":1.043}
       ],
       "cardUpgrades": [
-        {
-          "range": 0.2
-        },
-        {
-          "power": 0.1
-        },
-        {
-          "rate": 0.1
-        },
-        {
-          "range": 0.2
-        },
-        {
-          "power": 0.12
-        },
-        {
-          "rate": 0.08
-        },
-        {
-          "power": 0.1
-        },
-        {
-          "range": 0.2
-        },
-        {
-          "power": 0.1,
-          "range": 0.15
-        }
+        {"range":0.2},
+        {"power":0.1},
+        {"rate":0.1},
+        {"range":0.2},
+        {"power":0.12},
+        {"rate":0.08},
+        {"power":0.1},
+        {"range":0.2},
+        {"power":0.1,"range":0.15}
       ]
     },
     "glue": {
       "power": 0.55,
       "rate": null,
       "rangeTiles": 1,
-      "params": {
-        "stickTime": 0.5
-      },
-      "battleUpgrades": [
-        {
-          "power": 1.15
-        },
-        {
-          "stickTime": 2
-        },
-        {
-          "stickTime": 1.25
-        },
-        {
-          "power": 1.1
-        },
-        {
-          "stickTime": 1.2
-        }
-      ],
+      "params": {"stickTime":0.5},
+      "battleUpgrades": [{"power":1.15},{"stickTime":2},{"stickTime":1.25},{"power":1.1},{"stickTime":1.2}],
       "cardUpgrades": [
-        {
-          "stickTime": 0.12
-        },
-        {
-          "power": 0.08
-        },
-        {
-          "stickTime": 0.15
-        },
-        {
-          "power": 0.06
-        },
-        {
-          "power": 0.08
-        },
-        {
-          "stickTime": 0.1
-        },
-        {
-          "stickTime": 0.15
-        },
-        {
-          "power": 0.08
-        },
-        {
-          "stickTime": 0.12,
-          "power": 0.05
-        }
+        {"stickTime":0.12},
+        {"power":0.08},
+        {"stickTime":0.15},
+        {"power":0.06},
+        {"power":0.08},
+        {"stickTime":0.1},
+        {"stickTime":0.15},
+        {"power":0.08},
+        {"stickTime":0.12,"power":0.05}
       ]
     },
     "gate": {
       "power": 4.5,
       "rate": 2.85,
       "rangeTiles": 1,
-      "params": {
-        "ignoreArmor": true
-      },
-      "battleUpgrades": [
-        {
-          "power": 2
-        },
-        {
-          "rate": 1.3,
-          "power": 1.154
-        },
-        {
-          "rate": 1.15,
-          "power": 1.159
-        },
-        {
-          "power": 1.25
-        },
-        {
-          "power": 1.1,
-          "rate": 1.1
-        }
-      ],
+      "params": {"ignoreArmor":true},
+      "battleUpgrades": [{"power":2},{"rate":1.3,"power":1.154},{"rate":1.15,"power":1.159},{"power":1.25},{"power":1.1,"rate":1.1}],
       "cardUpgrades": [
-        {
-          "rate": 0.1
-        },
-        {
-          "power": 0.1
-        },
-        {
-          "power": 0.12
-        },
-        {
-          "rate": 0.08
-        },
-        {
-          "rate": 0.08
-        },
-        {
-          "power": 0.1
-        },
-        {
-          "power": 0.08
-        },
-        {
-          "rate": 0.1
-        },
-        {
-          "power": 0.1,
-          "rate": 0.06
-        }
+        {"rate":0.1},
+        {"power":0.1},
+        {"power":0.12},
+        {"rate":0.08},
+        {"rate":0.08},
+        {"power":0.1},
+        {"power":0.08},
+        {"rate":0.1},
+        {"power":0.1,"rate":0.06}
       ]
     },
     "lava": {
       "power": 6,
       "rate": null,
       "rangeTiles": 1,
-      "params": {
-        "ignoreArmor": true,
-        "slow": 0.2
-      },
-      "battleUpgrades": [
-        {
-          "power": 2
-        },
-        {
-          "slow": 1.25,
-          "power": 1.5
-        },
-        {
-          "power": 1.333
-        },
-        {
-          "slow": 1.15,
-          "power": 1.25
-        },
-        {
-          "power": 1.2
-        }
-      ],
+      "params": {"ignoreArmor":true,"slow":0.2},
+      "battleUpgrades": [{"power":2},{"slow":1.25,"power":1.5},{"power":1.333},{"slow":1.15,"power":1.25},{"power":1.2}],
       "cardUpgrades": [
-        {
-          "power": 0.1
-        },
-        {
-          "slow": 0.08
-        },
-        {
-          "power": 0.1
-        },
-        {
-          "slow": 0.1
-        },
-        {
-          "power": 0.08
-        },
-        {
-          "power": 0.12
-        },
-        {
-          "slow": 0.08
-        },
-        {
-          "power": 0.1
-        },
-        {
-          "slow": 0.1,
-          "power": 0.1
-        }
+        {"power":0.1},
+        {"slow":0.08},
+        {"power":0.1},
+        {"slow":0.1},
+        {"power":0.08},
+        {"power":0.12},
+        {"slow":0.08},
+        {"power":0.1},
+        {"slow":0.1,"power":0.1}
       ]
     },
     "tractor": {
       "power": null,
       "rate": 0.13,
       "rangeTiles": null,
-      "params": {
-        "liftSize": 1
-      },
-      "battleUpgrades": [
-        {
-          "rate": 1.12
-        },
-        {
-          "rate": 1.1
-        },
-        {
-          "rate": 1.12
-        },
-        {
-          "liftSize": 1,
-          "rateIfMaxLift": 1.15
-        },
-        {
-          "rate": 1.1
-        }
-      ],
+      "params": {"liftSize":1},
+      "battleUpgrades": [{"rate":1.12},{"rate":1.1},{"rate":1.12},{"liftSize":1,"rateIfMaxLift":1.15},{"rate":1.1}],
       "cardUpgrades": [
-        {
-          "rate": 0.05
-        },
-        {
-          "liftSize": 1
-        },
-        {
-          "rate": 0.06
-        },
-        {
-          "rate": 0.05
-        },
-        {
-          "rate": 0.07
-        },
-        {
-          "rate": 0.05
-        },
-        {
-          "liftSize": 1
-        },
-        {
-          "rate": 0.06
-        },
-        {
-          "rate": 0.07
-        }
+        {"rate":0.05},
+        {"liftSize":1},
+        {"rate":0.06},
+        {"rate":0.05},
+        {"rate":0.07},
+        {"rate":0.05},
+        {"liftSize":1},
+        {"rate":0.06},
+        {"rate":0.07}
       ]
     }
   },
   "ants": {
-    "small": {
-      "hp": 4,
-      "speed": 60,
-      "armor": 0,
-      "steal": 0.9,
-      "weight": 1.2,
-      "size": "small",
-      "crumbs": 1
-    },
-    "worker": {
-      "hp": 20,
-      "speed": 40,
-      "armor": 0,
-      "steal": 0.9,
-      "weight": 1,
-      "size": "regular",
-      "crumbs": 1
-    },
-    "big": {
-      "hp": 100,
-      "speed": 27,
-      "armor": 2,
-      "steal": 1.8,
-      "weight": 0.5,
-      "size": "large",
-      "crumbs": 4
-    },
+    "small": {"hp":4,"speed":60,"armor":0,"steal":0.9,"weight":1.2,"size":"small","crumbs":1,"rarity":"common"},
+    "worker": {"hp":20,"speed":40,"armor":0,"steal":0.9,"weight":1,"size":"regular","crumbs":1,"rarity":"common"},
+    "big": {"hp":100,"speed":27,"armor":2,"steal":1.8,"weight":0.5,"size":"large","crumbs":4,"rarity":"rare"},
     "gasmask": {
       "hp": 16,
       "speed": 40,
@@ -855,18 +312,11 @@
       "steal": 0.9,
       "weight": 1,
       "size": "regular",
-      "gasImmune": true,
-      "crumbs": 2
+      "crumbs": 2,
+      "rarity": "uncommon",
+      "gasImmune": true
     },
-    "armored": {
-      "hp": 40,
-      "speed": 30,
-      "armor": 6,
-      "steal": 1.8,
-      "weight": 0.6,
-      "size": "regular",
-      "crumbs": 4
-    },
+    "armored": {"hp":40,"speed":30,"armor":6,"steal":1.8,"weight":0.6,"size":"regular","crumbs":4,"rarity":"rare"},
     "flyer": {
       "hp": 12,
       "speed": 62,
@@ -874,8 +324,9 @@
       "steal": 0.9,
       "weight": 1.3,
       "size": "regular",
-      "flying": true,
-      "crumbs": 2
+      "crumbs": 2,
+      "rarity": "common",
+      "flying": true
     },
     "sprinter": {
       "hp": 10,
@@ -884,8 +335,9 @@
       "steal": 0.9,
       "weight": 0.8,
       "size": "regular",
-      "lateGame": true,
-      "crumbs": 3
+      "crumbs": 3,
+      "rarity": "uncommon",
+      "lateGame": true
     },
     "heavy": {
       "hp": 80,
@@ -894,8 +346,9 @@
       "steal": 1.8,
       "weight": 0.35,
       "size": "large",
-      "lateGame": true,
-      "crumbs": 8
+      "crumbs": 8,
+      "rarity": "elite",
+      "lateGame": true
     },
     "queen": {
       "hp": 1200,
@@ -903,17 +356,12 @@
       "armor": 6,
       "weight": 0,
       "size": "queen",
+      "crumbs": 93,
+      "rarity": "boss",
       "slowResist": 0.5,
       "boss": true,
-      "spawn": {
-        "type": "small",
-        "every": 5,
-        "count": 1
-      },
-      "queenTraits": [
-        "slow"
-      ],
-      "crumbs": 93
+      "spawn": {"type":"small","every":5,"count":1},
+      "queenTraits": ["slow"]
     },
     "queen2": {
       "hp": 2000,
@@ -921,17 +369,12 @@
       "armor": 5,
       "weight": 0,
       "size": "queen",
+      "crumbs": 141,
+      "rarity": "boss",
       "slowResist": 0.4,
       "boss": true,
-      "spawn": {
-        "type": "flyer",
-        "every": 6,
-        "count": 1
-      },
-      "queenTraits": [
-        "fast"
-      ],
-      "crumbs": 141
+      "spawn": {"type":"flyer","every":6,"count":1},
+      "queenTraits": ["fast"]
     },
     "small_gasmask": {
       "hp": 4,
@@ -940,18 +383,11 @@
       "steal": 0.9,
       "weight": 1.2,
       "size": "small",
-      "gasImmune": true,
-      "crumbs": 1
+      "crumbs": 1,
+      "rarity": "uncommon",
+      "gasImmune": true
     },
-    "small_armed": {
-      "hp": 10,
-      "speed": 45,
-      "armor": 4,
-      "steal": 0.9,
-      "weight": 1,
-      "size": "small",
-      "crumbs": 1
-    },
+    "small_armed": {"hp":10,"speed":45,"armor":4,"steal":0.9,"weight":1,"size":"small","crumbs":1,"rarity":"uncommon"},
     "small_fly": {
       "hp": 3,
       "speed": 70,
@@ -959,8 +395,44 @@
       "steal": 0.9,
       "weight": 1.5,
       "size": "small",
-      "flying": true,
-      "crumbs": 1
+      "crumbs": 1,
+      "rarity": "common",
+      "flying": true
+    },
+    "greasy": {
+      "hp": 24,
+      "speed": 40,
+      "armor": 0,
+      "steal": 0.9,
+      "weight": 1,
+      "size": "regular",
+      "crumbs": 2,
+      "rarity": "uncommon",
+      "slowResist": 0.75
+    },
+    "mama": {
+      "hp": 60,
+      "speed": 28,
+      "armor": 2,
+      "steal": 1.8,
+      "weight": 0.5,
+      "size": "large",
+      "crumbs": 3,
+      "rarity": "rare",
+      "splitInto": {"type":"small","count":3}
+    },
+    "queen3": {
+      "hp": 2300,
+      "speed": 14,
+      "armor": 6,
+      "weight": 0,
+      "size": "queen",
+      "crumbs": 160,
+      "rarity": "boss",
+      "slowResist": 0.7,
+      "boss": true,
+      "spawn": {"type":"greasy","every":7,"count":1},
+      "queenTraits": ["slower"]
     }
   },
   "worlds": [
@@ -980,12 +452,19 @@
       "treat": "cake",
       "queen": "queen2",
       "levels": 10,
-      "unlock": {
-        "allLevelsWonInWorld": 1,
-        "minStarsInWorld": 18
-      },
+      "unlock": {"allLevelsWonInWorld":1,"minStarsInWorld":18},
       "cardLevelCap": 5,
       "coinMul": 1
+    },
+    {
+      "id": 3,
+      "name": "Pie Pantry",
+      "treat": "pie",
+      "queen": "queen3",
+      "levels": 10,
+      "unlock": {"allLevelsWonInWorld":2,"minStarsInWorld":18},
+      "cardLevelCap": 5,
+      "coinMul": 1.25
     }
   ],
   "levels": [
@@ -998,17 +477,7 @@
       "base": 8.1,
       "growth": 1.44,
       "interval": 1.1,
-      "mix": [
-        {
-          "type": "worker",
-          "w": 4
-        },
-        {
-          "type": "small",
-          "w": 3,
-          "from": 2
-        }
-      ]
+      "mix": [{"type":"worker","w":4},{"type":"small","w":3,"from":2}]
     },
     {
       "world": 1,
@@ -1019,21 +488,7 @@
       "base": 7,
       "growth": 1.8,
       "interval": 1,
-      "mix": [
-        {
-          "type": "worker",
-          "w": 4
-        },
-        {
-          "type": "small",
-          "w": 3
-        },
-        {
-          "type": "small_gasmask",
-          "w": 1,
-          "from": 3
-        }
-      ]
+      "mix": [{"type":"worker","w":4},{"type":"small","w":3},{"type":"small_gasmask","w":1,"from":3}]
     },
     {
       "world": 1,
@@ -1045,28 +500,11 @@
       "growth": 1.75,
       "interval": 1,
       "mix": [
-        {
-          "type": "worker",
-          "w": 3
-        },
-        {
-          "type": "small",
-          "w": 3
-        },
-        {
-          "type": "gasmask",
-          "w": 2,
-          "from": 2
-        },
-        {
-          "type": "small_gasmask",
-          "w": 2
-        },
-        {
-          "type": "small_fly",
-          "w": 1,
-          "from": 3
-        }
+        {"type":"worker","w":3},
+        {"type":"small","w":3},
+        {"type":"gasmask","w":2,"from":2},
+        {"type":"small_gasmask","w":2},
+        {"type":"small_fly","w":1,"from":3}
       ]
     },
     {
@@ -1078,25 +516,7 @@
       "base": 7.2,
       "growth": 1.8,
       "interval": 0.95,
-      "mix": [
-        {
-          "type": "worker",
-          "w": 3
-        },
-        {
-          "type": "small",
-          "w": 2
-        },
-        {
-          "type": "flyer",
-          "w": 2,
-          "from": 2
-        },
-        {
-          "type": "small_fly",
-          "w": 3
-        }
-      ]
+      "mix": [{"type":"worker","w":3},{"type":"small","w":2},{"type":"flyer","w":2,"from":2},{"type":"small_fly","w":3}]
     },
     {
       "world": 1,
@@ -1108,34 +528,12 @@
       "growth": 1.96,
       "interval": 0.95,
       "mix": [
-        {
-          "type": "worker",
-          "w": 3
-        },
-        {
-          "type": "small",
-          "w": 2
-        },
-        {
-          "type": "armored",
-          "w": 2,
-          "from": 2
-        },
-        {
-          "type": "small_armed",
-          "w": 3,
-          "from": 2
-        }
+        {"type":"worker","w":3},
+        {"type":"small","w":2},
+        {"type":"armored","w":2,"from":2},
+        {"type":"small_armed","w":3,"from":2}
       ],
-      "special": {
-        "6": [
-          {
-            "type": "big",
-            "count": 2,
-            "interval": 1.6
-          }
-        ]
-      }
+      "special": {"6":[{"type":"big","count":2,"interval":1.6}]}
     },
     {
       "world": 1,
@@ -1147,26 +545,11 @@
       "growth": 2,
       "interval": 0.9,
       "mix": [
-        {
-          "type": "worker",
-          "w": 2
-        },
-        {
-          "type": "small",
-          "w": 3
-        },
-        {
-          "type": "flyer",
-          "w": 3
-        },
-        {
-          "type": "small_fly",
-          "w": 2
-        },
-        {
-          "type": "gasmask",
-          "w": 1
-        }
+        {"type":"worker","w":2},
+        {"type":"small","w":3},
+        {"type":"flyer","w":3},
+        {"type":"small_fly","w":2},
+        {"type":"gasmask","w":1}
       ]
     },
     {
@@ -1179,27 +562,11 @@
       "growth": 2.07,
       "interval": 0.9,
       "mix": [
-        {
-          "type": "worker",
-          "w": 2
-        },
-        {
-          "type": "small",
-          "w": 2
-        },
-        {
-          "type": "big",
-          "w": 2,
-          "from": 3
-        },
-        {
-          "type": "armored",
-          "w": 2
-        },
-        {
-          "type": "small_armed",
-          "w": 2
-        }
+        {"type":"worker","w":2},
+        {"type":"small","w":2},
+        {"type":"big","w":2,"from":3},
+        {"type":"armored","w":2},
+        {"type":"small_armed","w":2}
       ]
     },
     {
@@ -1212,27 +579,11 @@
       "growth": 2.2,
       "interval": 0.85,
       "mix": [
-        {
-          "type": "worker",
-          "w": 2
-        },
-        {
-          "type": "small",
-          "w": 2
-        },
-        {
-          "type": "gasmask",
-          "w": 3
-        },
-        {
-          "type": "small_gasmask",
-          "w": 3
-        },
-        {
-          "type": "flyer",
-          "w": 2,
-          "from": 2
-        }
+        {"type":"worker","w":2},
+        {"type":"small","w":2},
+        {"type":"gasmask","w":3},
+        {"type":"small_gasmask","w":3},
+        {"type":"flyer","w":2,"from":2}
       ]
     },
     {
@@ -1245,27 +596,11 @@
       "growth": 2.28,
       "interval": 0.75,
       "mix": [
-        {
-          "type": "small",
-          "w": 4
-        },
-        {
-          "type": "worker",
-          "w": 2
-        },
-        {
-          "type": "small_fly",
-          "w": 2
-        },
-        {
-          "type": "sprinter",
-          "w": 1,
-          "from": 2
-        },
-        {
-          "type": "small_armed",
-          "w": 1
-        }
+        {"type":"small","w":4},
+        {"type":"worker","w":2},
+        {"type":"small_fly","w":2},
+        {"type":"sprinter","w":1,"from":2},
+        {"type":"small_armed","w":1}
       ]
     },
     {
@@ -1277,35 +612,8 @@
       "base": 12,
       "growth": 2.4,
       "interval": 0.8,
-      "mix": [
-        {
-          "type": "worker",
-          "w": 2
-        },
-        {
-          "type": "small",
-          "w": 2
-        },
-        {
-          "type": "heavy",
-          "w": 2,
-          "from": 3
-        },
-        {
-          "type": "flyer",
-          "w": 2
-        }
-      ],
-      "special": {
-        "9": [
-          {
-            "type": "queen",
-            "count": 1,
-            "interval": 1,
-            "delay": 4
-          }
-        ]
-      }
+      "mix": [{"type":"worker","w":2},{"type":"small","w":2},{"type":"heavy","w":2,"from":3},{"type":"flyer","w":2}],
+      "special": {"9":[{"type":"queen","count":1,"interval":1,"delay":4}]}
     },
     {
       "world": 2,
@@ -1317,24 +625,10 @@
       "growth": 1.8,
       "interval": 1,
       "mix": [
-        {
-          "type": "worker",
-          "w": 3
-        },
-        {
-          "type": "small",
-          "w": 3
-        },
-        {
-          "type": "small_fly",
-          "w": 1,
-          "from": 2
-        },
-        {
-          "type": "gasmask",
-          "w": 2,
-          "from": 2
-        }
+        {"type":"worker","w":3},
+        {"type":"small","w":3},
+        {"type":"small_fly","w":1,"from":2},
+        {"type":"gasmask","w":2,"from":2}
       ]
     },
     {
@@ -1347,29 +641,11 @@
       "growth": 2,
       "interval": 0.95,
       "mix": [
-        {
-          "type": "worker",
-          "w": 3
-        },
-        {
-          "type": "small",
-          "w": 2
-        },
-        {
-          "type": "small_armed",
-          "w": 2,
-          "from": 2
-        },
-        {
-          "type": "armored",
-          "w": 1,
-          "from": 3
-        },
-        {
-          "type": "big",
-          "w": 1,
-          "from": 4
-        }
+        {"type":"worker","w":3},
+        {"type":"small","w":2},
+        {"type":"small_armed","w":2,"from":2},
+        {"type":"armored","w":1,"from":3},
+        {"type":"big","w":1,"from":4}
       ]
     },
     {
@@ -1382,28 +658,11 @@
       "growth": 2,
       "interval": 0.95,
       "mix": [
-        {
-          "type": "worker",
-          "w": 3
-        },
-        {
-          "type": "small",
-          "w": 2
-        },
-        {
-          "type": "flyer",
-          "w": 2,
-          "from": 2
-        },
-        {
-          "type": "small_gasmask",
-          "w": 2
-        },
-        {
-          "type": "gasmask",
-          "w": 1,
-          "from": 3
-        }
+        {"type":"worker","w":3},
+        {"type":"small","w":2},
+        {"type":"flyer","w":2,"from":2},
+        {"type":"small_gasmask","w":2},
+        {"type":"gasmask","w":1,"from":3}
       ]
     },
     {
@@ -1416,27 +675,11 @@
       "growth": 2.1,
       "interval": 0.9,
       "mix": [
-        {
-          "type": "worker",
-          "w": 2
-        },
-        {
-          "type": "small",
-          "w": 2
-        },
-        {
-          "type": "armored",
-          "w": 2
-        },
-        {
-          "type": "small_armed",
-          "w": 2
-        },
-        {
-          "type": "sprinter",
-          "w": 1,
-          "from": 3
-        }
+        {"type":"worker","w":2},
+        {"type":"small","w":2},
+        {"type":"armored","w":2},
+        {"type":"small_armed","w":2},
+        {"type":"sprinter","w":1,"from":3}
       ]
     },
     {
@@ -1449,26 +692,11 @@
       "growth": 2.1,
       "interval": 0.9,
       "mix": [
-        {
-          "type": "worker",
-          "w": 2
-        },
-        {
-          "type": "small",
-          "w": 3
-        },
-        {
-          "type": "small_fly",
-          "w": 2
-        },
-        {
-          "type": "flyer",
-          "w": 2
-        },
-        {
-          "type": "gasmask",
-          "w": 1
-        }
+        {"type":"worker","w":2},
+        {"type":"small","w":3},
+        {"type":"small_fly","w":2},
+        {"type":"flyer","w":2},
+        {"type":"gasmask","w":1}
       ]
     },
     {
@@ -1481,26 +709,11 @@
       "growth": 2.2,
       "interval": 0.85,
       "mix": [
-        {
-          "type": "small",
-          "w": 3
-        },
-        {
-          "type": "worker",
-          "w": 2
-        },
-        {
-          "type": "sprinter",
-          "w": 3
-        },
-        {
-          "type": "small_armed",
-          "w": 1
-        },
-        {
-          "type": "flyer",
-          "w": 1
-        }
+        {"type":"small","w":3},
+        {"type":"worker","w":2},
+        {"type":"sprinter","w":3},
+        {"type":"small_armed","w":1},
+        {"type":"flyer","w":1}
       ]
     },
     {
@@ -1513,27 +726,11 @@
       "growth": 2.2,
       "interval": 0.9,
       "mix": [
-        {
-          "type": "worker",
-          "w": 2
-        },
-        {
-          "type": "big",
-          "w": 2
-        },
-        {
-          "type": "heavy",
-          "w": 1,
-          "from": 3
-        },
-        {
-          "type": "armored",
-          "w": 2
-        },
-        {
-          "type": "small",
-          "w": 2
-        }
+        {"type":"worker","w":2},
+        {"type":"big","w":2},
+        {"type":"heavy","w":1,"from":3},
+        {"type":"armored","w":2},
+        {"type":"small","w":2}
       ]
     },
     {
@@ -1546,26 +743,11 @@
       "growth": 2.3,
       "interval": 0.85,
       "mix": [
-        {
-          "type": "small",
-          "w": 3
-        },
-        {
-          "type": "flyer",
-          "w": 2
-        },
-        {
-          "type": "small_fly",
-          "w": 3
-        },
-        {
-          "type": "worker",
-          "w": 2
-        },
-        {
-          "type": "small_gasmask",
-          "w": 2
-        }
+        {"type":"small","w":3},
+        {"type":"flyer","w":2},
+        {"type":"small_fly","w":3},
+        {"type":"worker","w":2},
+        {"type":"small_gasmask","w":2}
       ]
     },
     {
@@ -1578,26 +760,11 @@
       "growth": 2.4,
       "interval": 0.8,
       "mix": [
-        {
-          "type": "worker",
-          "w": 2
-        },
-        {
-          "type": "small",
-          "w": 3
-        },
-        {
-          "type": "heavy",
-          "w": 1
-        },
-        {
-          "type": "sprinter",
-          "w": 2
-        },
-        {
-          "type": "small_fly",
-          "w": 2
-        }
+        {"type":"worker","w":2},
+        {"type":"small","w":3},
+        {"type":"heavy","w":1},
+        {"type":"sprinter","w":2},
+        {"type":"small_fly","w":2}
       ]
     },
     {
@@ -1609,186 +776,443 @@
       "base": 12,
       "growth": 2.4,
       "interval": 0.8,
-      "mix": [
-        {
-          "type": "worker",
-          "w": 2
-        },
-        {
-          "type": "small",
-          "w": 2
-        },
-        {
-          "type": "sprinter",
-          "w": 2
-        },
-        {
-          "type": "flyer",
-          "w": 2
-        }
-      ],
-      "special": {
-        "9": [
-          {
-            "type": "queen2",
-            "count": 1,
-            "interval": 1,
-            "delay": 4
-          }
+      "mix": [{"type":"worker","w":2},{"type":"small","w":2},{"type":"sprinter","w":2},{"type":"flyer","w":2}],
+      "special": {"9":[{"type":"queen2","count":1,"interval":1,"delay":4}]}
+    },
+    {
+      "world": 3,
+      "name": "Pantry Door",
+      "map": "w3_shelves",
+      "waveCount": 6,
+      "hpMul": 3,
+      "interval": 1,
+      "waves": [
+        [{"type":"worker","count":6,"interval":1.1,"delay":0}],
+        [{"type":"small","count":8,"interval":0.45,"delay":0},{"type":"worker","count":4,"interval":1.1,"delay":1}],
+        [
+          {"type":"worker","count":6,"interval":1,"delay":0},
+          {"type":"flyer","count":2,"interval":0.8,"delay":1},
+          {"type":"small","count":8,"interval":0.45,"delay":1}
+        ],
+        [{"type":"flyer","count":4,"interval":0.8,"delay":0},{"type":"worker","count":6,"interval":1,"delay":0}],
+        [
+          {"type":"small","count":10,"interval":0.45,"delay":0},
+          {"type":"worker","count":6,"interval":1,"delay":0},
+          {"type":"flyer","count":3,"interval":0.8,"delay":1}
+        ],
+        [
+          {"type":"worker","count":8,"interval":0.9,"delay":0},
+          {"type":"small","count":10,"interval":0.45,"delay":1},
+          {"type":"flyer","count":4,"interval":0.8,"delay":1}
         ]
-      }
+      ]
+    },
+    {
+      "world": 3,
+      "name": "Butter Fingers",
+      "map": "w3_butter",
+      "waveCount": 7,
+      "hpMul": 4,
+      "interval": 1,
+      "waves": [
+        [{"type":"worker","count":5,"interval":1,"delay":0},{"type":"small","count":6,"interval":0.45,"delay":1}],
+        [
+          {"type":"worker","count":4,"interval":1,"delay":0},
+          {"type":"greasy","count":2,"interval":1.2,"delay":2},
+          {"type":"small","count":6,"interval":0.45,"delay":1}
+        ],
+        [{"type":"small","count":10,"interval":0.45,"delay":0},{"type":"greasy","count":3,"interval":1.1,"delay":2}],
+        [
+          {"type":"worker","count":6,"interval":1,"delay":0},
+          {"type":"small_fly","count":6,"interval":0.5,"delay":1},
+          {"type":"greasy","count":3,"interval":1.1,"delay":1}
+        ],
+        [
+          {"type":"greasy","count":4,"interval":1,"delay":0},
+          {"type":"small","count":10,"interval":0.45,"delay":0},
+          {"type":"worker","count":4,"interval":1,"delay":0}
+        ],
+        [
+          {"type":"small_fly","count":8,"interval":0.5,"delay":0},
+          {"type":"greasy","count":5,"interval":1,"delay":1},
+          {"type":"worker","count":5,"interval":1,"delay":0}
+        ],
+        [
+          {"type":"greasy","count":6,"interval":0.9,"delay":0},
+          {"type":"worker","count":6,"interval":1,"delay":1},
+          {"type":"small","count":12,"interval":0.45,"delay":1}
+        ]
+      ]
+    },
+    {
+      "world": 3,
+      "name": "Lattice",
+      "map": "w3_lattice",
+      "waveCount": 7,
+      "hpMul": 4.5,
+      "interval": 1,
+      "waves": [
+        [{"type":"worker","count":6,"interval":1,"delay":0},{"type":"small","count":8,"interval":0.45,"delay":1}],
+        [{"type":"flyer","count":4,"interval":0.8,"delay":0},{"type":"worker","count":5,"interval":1,"delay":1}],
+        [
+          {"type":"small_fly","count":8,"interval":0.5,"delay":0},
+          {"type":"worker","count":6,"interval":1,"delay":1},
+          {"type":"small","count":8,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"flyer","count":5,"interval":0.8,"delay":0},
+          {"type":"worker","count":6,"interval":1,"delay":1},
+          {"type":"small","count":10,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"small_fly","count":10,"interval":0.5,"delay":0},
+          {"type":"flyer","count":4,"interval":0.8,"delay":1},
+          {"type":"worker","count":6,"interval":1,"delay":1}
+        ],
+        [
+          {"type":"worker","count":8,"interval":0.9,"delay":0},
+          {"type":"flyer","count":6,"interval":0.8,"delay":1},
+          {"type":"small","count":12,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"small_fly","count":12,"interval":0.5,"delay":0},
+          {"type":"flyer","count":6,"interval":0.75,"delay":1},
+          {"type":"worker","count":8,"interval":0.9,"delay":1}
+        ]
+      ]
+    },
+    {
+      "world": 3,
+      "name": "Spice Rack",
+      "map": "w3_spice",
+      "waveCount": 7,
+      "hpMul": 3.2,
+      "interval": 1,
+      "waves": [
+        [{"type":"worker","count":5,"interval":1,"delay":0},{"type":"small","count":8,"interval":0.45,"delay":1}],
+        [{"type":"small_armed","count":6,"interval":0.6,"delay":0},{"type":"worker","count":4,"interval":1,"delay":1}],
+        [
+          {"type":"worker","count":6,"interval":1,"delay":0},
+          {"type":"armored","count":1,"interval":1.5,"delay":2},
+          {"type":"small","count":8,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"small_armed","count":8,"interval":0.6,"delay":0},
+          {"type":"small","count":8,"interval":0.45,"delay":1},
+          {"type":"armored","count":2,"interval":1.5,"delay":2}
+        ],
+        [
+          {"type":"worker","count":8,"interval":0.9,"delay":0},
+          {"type":"small_armed","count":6,"interval":0.6,"delay":1},
+          {"type":"armored","count":2,"interval":1.5,"delay":1}
+        ],
+        [
+          {"type":"small","count":12,"interval":0.45,"delay":0},
+          {"type":"armored","count":3,"interval":1.5,"delay":1},
+          {"type":"small_armed","count":6,"interval":0.6,"delay":1}
+        ],
+        [
+          {"type":"armored","count":4,"interval":1.4,"delay":0},
+          {"type":"worker","count":8,"interval":0.9,"delay":1},
+          {"type":"small_armed","count":8,"interval":0.6,"delay":1},
+          {"type":"small","count":10,"interval":0.45,"delay":1}
+        ]
+      ]
+    },
+    {
+      "world": 3,
+      "name": "Brood Nest",
+      "map": "w3_jar",
+      "waveCount": 7,
+      "hpMul": 4.5,
+      "interval": 1,
+      "waves": [
+        [{"type":"worker","count":6,"interval":1,"delay":0},{"type":"small","count":8,"interval":0.45,"delay":1}],
+        [
+          {"type":"worker","count":6,"interval":1,"delay":0},
+          {"type":"mama","count":1,"interval":1.6,"delay":2},
+          {"type":"small","count":8,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"small_gasmask","count":8,"interval":0.45,"delay":0},
+          {"type":"worker","count":6,"interval":1,"delay":1},
+          {"type":"mama","count":1,"interval":1.6,"delay":2}
+        ],
+        [
+          {"type":"small","count":10,"interval":0.45,"delay":0},
+          {"type":"mama","count":2,"interval":1.6,"delay":1},
+          {"type":"worker","count":5,"interval":1,"delay":1}
+        ],
+        [
+          {"type":"small_gasmask","count":10,"interval":0.45,"delay":0},
+          {"type":"worker","count":6,"interval":1,"delay":0},
+          {"type":"mama","count":2,"interval":1.6,"delay":2}
+        ],
+        [
+          {"type":"worker","count":8,"interval":0.9,"delay":0},
+          {"type":"mama","count":3,"interval":1.6,"delay":1},
+          {"type":"small","count":12,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"mama","count":3,"interval":1.5,"delay":0},
+          {"type":"small_gasmask","count":12,"interval":0.45,"delay":1},
+          {"type":"worker","count":8,"interval":0.9,"delay":1}
+        ]
+      ]
+    },
+    {
+      "world": 3,
+      "name": "Fruit Bowl",
+      "map": "w3_fruit",
+      "waveCount": 6,
+      "hpMul": 6,
+      "interval": 1,
+      "waves": [
+        [{"type":"flyer","count":4,"interval":0.8,"delay":0},{"type":"worker","count":5,"interval":1,"delay":1}],
+        [{"type":"small_fly","count":8,"interval":0.5,"delay":0},{"type":"worker","count":5,"interval":1,"delay":1}],
+        [{"type":"flyer","count":6,"interval":0.8,"delay":0},{"type":"small","count":8,"interval":0.45,"delay":1}],
+        [
+          {"type":"small_fly","count":10,"interval":0.5,"delay":0},
+          {"type":"flyer","count":4,"interval":0.8,"delay":1},
+          {"type":"worker","count":4,"interval":1,"delay":1}
+        ],
+        [
+          {"type":"flyer","count":8,"interval":0.75,"delay":0},
+          {"type":"small","count":10,"interval":0.45,"delay":1},
+          {"type":"worker","count":5,"interval":1,"delay":0}
+        ],
+        [
+          {"type":"small_fly","count":12,"interval":0.5,"delay":0},
+          {"type":"flyer","count":8,"interval":0.7,"delay":1},
+          {"type":"worker","count":6,"interval":0.9,"delay":1}
+        ]
+      ]
+    },
+    {
+      "world": 3,
+      "name": "Gas Mask Gala",
+      "map": "w3_gala",
+      "waveCount": 8,
+      "hpMul": 6,
+      "interval": 1,
+      "waves": [
+        [
+          {"type":"worker","count":5,"interval":1,"delay":0},
+          {"type":"small_gasmask","count":8,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"gasmask","count":4,"interval":1,"delay":0},
+          {"type":"worker","count":4,"interval":1,"delay":1},
+          {"type":"small_gasmask","count":6,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"greasy","count":3,"interval":1.1,"delay":0},
+          {"type":"gasmask","count":4,"interval":1,"delay":1},
+          {"type":"small_gasmask","count":8,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"flyer","count":5,"interval":0.8,"delay":0},
+          {"type":"gasmask","count":5,"interval":1,"delay":1},
+          {"type":"greasy","count":3,"interval":1.1,"delay":1}
+        ],
+        [
+          {"type":"small_gasmask","count":12,"interval":0.45,"delay":0},
+          {"type":"greasy","count":4,"interval":1,"delay":1},
+          {"type":"gasmask","count":4,"interval":1,"delay":1}
+        ],
+        [
+          {"type":"gasmask","count":6,"interval":0.9,"delay":0},
+          {"type":"greasy","count":5,"interval":1,"delay":1},
+          {"type":"flyer","count":4,"interval":0.8,"delay":1}
+        ],
+        [
+          {"type":"small_gasmask","count":14,"interval":0.45,"delay":0},
+          {"type":"gasmask","count":6,"interval":0.9,"delay":1},
+          {"type":"greasy","count":5,"interval":1,"delay":1}
+        ],
+        [
+          {"type":"gasmask","count":8,"interval":0.85,"delay":0},
+          {"type":"greasy","count":6,"interval":0.95,"delay":1},
+          {"type":"flyer","count":5,"interval":0.8,"delay":1},
+          {"type":"small_gasmask","count":12,"interval":0.45,"delay":1}
+        ]
+      ]
+    },
+    {
+      "world": 3,
+      "name": "Heavy Pastry",
+      "map": "w3_cloud",
+      "waveCount": 8,
+      "hpMul": 4,
+      "interval": 1,
+      "waves": [
+        [{"type":"worker","count":6,"interval":1,"delay":0},{"type":"small","count":8,"interval":0.45,"delay":1}],
+        [
+          {"type":"flyer","count":4,"interval":0.8,"delay":0},
+          {"type":"worker","count":6,"interval":1,"delay":1},
+          {"type":"small","count":8,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"big","count":2,"interval":1.6,"delay":1},
+          {"type":"worker","count":6,"interval":1,"delay":1},
+          {"type":"small","count":10,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"flyer","count":5,"interval":0.8,"delay":0},
+          {"type":"big","count":3,"interval":1.6,"delay":1},
+          {"type":"small","count":10,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"heavy","count":1,"interval":1.7,"delay":2},
+          {"type":"big","count":2,"interval":1.6,"delay":0},
+          {"type":"worker","count":6,"interval":1,"delay":1},
+          {"type":"small","count":10,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"big","count":4,"interval":1.5,"delay":0},
+          {"type":"flyer","count":5,"interval":0.8,"delay":1},
+          {"type":"small","count":12,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"heavy","count":2,"interval":1.7,"delay":2},
+          {"type":"big","count":3,"interval":1.5,"delay":0},
+          {"type":"worker","count":8,"interval":0.9,"delay":1},
+          {"type":"small","count":10,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"heavy","count":3,"interval":1.6,"delay":1},
+          {"type":"big","count":4,"interval":1.5,"delay":1},
+          {"type":"flyer","count":5,"interval":0.8,"delay":1},
+          {"type":"worker","count":6,"interval":0.9,"delay":1}
+        ]
+      ]
+    },
+    {
+      "world": 3,
+      "name": "Everything Pie",
+      "map": "w3_every",
+      "waveCount": 9,
+      "hpMul": 6,
+      "interval": 1,
+      "waves": [
+        [{"type":"worker","count":6,"interval":1,"delay":0},{"type":"small","count":8,"interval":0.45,"delay":1}],
+        [
+          {"type":"greasy","count":3,"interval":1.1,"delay":0},
+          {"type":"small","count":8,"interval":0.45,"delay":0},
+          {"type":"worker","count":4,"interval":1,"delay":1}
+        ],
+        [
+          {"type":"sprinter","count":4,"interval":0.9,"delay":1},
+          {"type":"worker","count":6,"interval":1,"delay":1},
+          {"type":"small","count":8,"interval":0.45,"delay":0}
+        ],
+        [
+          {"type":"mama","count":1,"interval":1.6,"delay":2},
+          {"type":"greasy","count":4,"interval":1,"delay":0},
+          {"type":"small","count":10,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"sprinter","count":6,"interval":0.9,"delay":0},
+          {"type":"worker","count":6,"interval":1,"delay":1},
+          {"type":"greasy","count":4,"interval":1,"delay":1}
+        ],
+        [
+          {"type":"mama","count":2,"interval":1.6,"delay":0},
+          {"type":"small","count":12,"interval":0.45,"delay":1},
+          {"type":"sprinter","count":4,"interval":0.9,"delay":1}
+        ],
+        [
+          {"type":"greasy","count":6,"interval":0.95,"delay":0},
+          {"type":"sprinter","count":6,"interval":0.9,"delay":1},
+          {"type":"worker","count":8,"interval":0.9,"delay":1}
+        ],
+        [
+          {"type":"mama","count":3,"interval":1.5,"delay":0},
+          {"type":"small","count":14,"interval":0.45,"delay":1},
+          {"type":"greasy","count":5,"interval":1,"delay":1}
+        ],
+        [
+          {"type":"sprinter","count":8,"interval":0.85,"delay":0},
+          {"type":"mama","count":3,"interval":1.5,"delay":1},
+          {"type":"greasy","count":6,"interval":0.95,"delay":1},
+          {"type":"worker","count":8,"interval":0.9,"delay":1},
+          {"type":"small","count":10,"interval":0.45,"delay":1}
+        ]
+      ]
+    },
+    {
+      "world": 3,
+      "name": "Pie Queen",
+      "map": "w3_tin",
+      "waveCount": 9,
+      "hpMul": 1.15,
+      "interval": 1,
+      "waves": [
+        [{"type":"worker","count":6,"interval":1,"delay":0},{"type":"small","count":8,"interval":0.45,"delay":1}],
+        [
+          {"type":"flyer","count":4,"interval":0.8,"delay":0},
+          {"type":"worker","count":5,"interval":1,"delay":1},
+          {"type":"small","count":8,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"greasy","count":3,"interval":1.1,"delay":0},
+          {"type":"worker","count":6,"interval":1,"delay":1},
+          {"type":"small","count":10,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"flyer","count":5,"interval":0.8,"delay":0},
+          {"type":"greasy","count":4,"interval":1,"delay":1},
+          {"type":"small","count":10,"interval":0.45,"delay":0}
+        ],
+        [
+          {"type":"worker","count":8,"interval":0.9,"delay":0},
+          {"type":"greasy","count":4,"interval":1,"delay":1},
+          {"type":"flyer","count":4,"interval":0.8,"delay":1}
+        ],
+        [
+          {"type":"small","count":14,"interval":0.45,"delay":0},
+          {"type":"flyer","count":6,"interval":0.8,"delay":1},
+          {"type":"greasy","count":4,"interval":1,"delay":1}
+        ],
+        [
+          {"type":"greasy","count":6,"interval":0.95,"delay":0},
+          {"type":"worker","count":8,"interval":0.9,"delay":0},
+          {"type":"flyer","count":6,"interval":0.8,"delay":1}
+        ],
+        [
+          {"type":"small","count":14,"interval":0.45,"delay":0},
+          {"type":"greasy","count":6,"interval":0.95,"delay":1},
+          {"type":"worker","count":8,"interval":0.9,"delay":1},
+          {"type":"flyer","count":5,"interval":0.8,"delay":1}
+        ],
+        [
+          {"type":"worker","count":8,"interval":0.9,"delay":0},
+          {"type":"greasy","count":5,"interval":1,"delay":1},
+          {"type":"flyer","count":5,"interval":0.8,"delay":1},
+          {"type":"small","count":10,"interval":0.45,"delay":1},
+          {"type":"queen3","count":1,"interval":1,"delay":4}
+        ]
+      ]
     }
   ],
   "maps": {
     "zigzag": {
       "name": "Breakfast Counter",
       "theme": 0,
-      "path": [
-        [
-          1,
-          -0.6
-        ],
-        [
-          1,
-          2
-        ],
-        [
-          8,
-          2
-        ],
-        [
-          8,
-          5
-        ],
-        [
-          1,
-          5
-        ],
-        [
-          1,
-          8
-        ],
-        [
-          8,
-          8
-        ],
-        [
-          8,
-          10
-        ]
-      ],
-      "props": [
-        {
-          "k": "sugar",
-          "c": 5,
-          "r": 10
-        },
-        {
-          "k": "mug",
-          "c": 9,
-          "r": 6
-        }
-      ]
+      "path": [[1,-0.6],[1,2],[8,2],[8,5],[1,5],[1,8],[8,8],[8,10]],
+      "props": [{"k":"sugar","c":5,"r":10},{"k":"mug","c":9,"r":6}]
     },
     "hook": {
       "name": "Baking Table",
       "theme": 1,
-      "path": [
-        [
-          8,
-          -0.6
-        ],
-        [
-          8,
-          1
-        ],
-        [
-          2,
-          1
-        ],
-        [
-          2,
-          4
-        ],
-        [
-          7,
-          4
-        ],
-        [
-          7,
-          7
-        ],
-        [
-          2,
-          7
-        ],
-        [
-          2,
-          10
-        ],
-        [
-          6,
-          10
-        ]
-      ],
-      "props": [
-        {
-          "k": "jam",
-          "c": 0,
-          "r": 11
-        },
-        {
-          "k": "plant",
-          "c": 9,
-          "r": 9
-        }
-      ]
+      "path": [[8,-0.6],[8,1],[2,1],[2,4],[7,4],[7,7],[2,7],[2,10],[6,10]],
+      "props": [{"k":"jam","c":0,"r":11},{"k":"plant","c":9,"r":9}]
     },
     "spiral": {
       "name": "Midnight Snack",
       "theme": 2,
-      "path": [
-        [
-          -0.6,
-          1
-        ],
-        [
-          8,
-          1
-        ],
-        [
-          8,
-          10
-        ],
-        [
-          1,
-          10
-        ],
-        [
-          1,
-          4
-        ],
-        [
-          5,
-          4
-        ],
-        [
-          5,
-          7
-        ]
-      ],
-      "props": [
-        {
-          "k": "mug",
-          "c": 3,
-          "r": 7
-        },
-        {
-          "k": "spoon",
-          "c": 9,
-          "r": 11
-        }
-      ]
+      "path": [[-0.6,1],[8,1],[8,10],[1,10],[1,4],[5,4],[5,7]],
+      "props": [{"k":"mug","c":3,"r":7},{"k":"spoon","c":9,"r":11}]
     },
     "fork": {
       "name": "Sugar Bowl Split",
@@ -1950,6 +1374,174 @@
         "........#.",
         "...J....#.",
         "........C."
+      ]
+    },
+    "w3_shelves": {
+      "name": "Pantry Shelves",
+      "theme": 5,
+      "grid": [
+        ".N........",
+        ".#........",
+        ".#######..",
+        ".......#..",
+        ".......#..",
+        "..######..",
+        "..#.....P.",
+        "..#.......",
+        "..######..",
+        ".......#.J",
+        ".......#..",
+        ".......C.."
+      ]
+    },
+    "w3_butter": {
+      "name": "Butter Dish",
+      "theme": 4,
+      "path": [[1,-0.6],[1,1],[7,1],[7,4],[2,4],[2,7],[7,7],[7,10],[3,10]],
+      "props": [{"k":"jam","c":9,"r":11},{"k":"plant","c":0,"r":9}]
+    },
+    "w3_lattice": {
+      "name": "Lattice Crust",
+      "theme": 6,
+      "grid": [
+        "....N.....",
+        "....#.....",
+        "..#####...",
+        "..#...#...",
+        "..#.M.#...",
+        "..#...#...",
+        "..#...#...",
+        "..#####...",
+        "....#.....",
+        "....#..J..",
+        "....#.....",
+        "....C....."
+      ]
+    },
+    "w3_spice": {
+      "name": "Spice Rack",
+      "theme": 5,
+      "grid": [
+        ".........N",
+        "........##",
+        ".M.....##.",
+        "......##..",
+        ".....##...",
+        "....##....",
+        "...##.....",
+        "..##......",
+        ".##.....B.",
+        ".#........",
+        ".#....J...",
+        ".C........"
+      ]
+    },
+    "w3_jar": {
+      "name": "Jam Jar Run",
+      "theme": 4,
+      "grid": [
+        ".N......N.",
+        ".#......#.",
+        ".#......#.",
+        ".###..###.",
+        "...#..#...",
+        "...####...",
+        "......#...",
+        "......#.B.",
+        ".######...",
+        ".#........",
+        ".#######..",
+        ".......C.."
+      ]
+    },
+    "w3_fruit": {
+      "name": "Fruit Bowl",
+      "theme": 6,
+      "grid": [
+        "........N.",
+        "........#.",
+        "...####.#.",
+        ".M.#..#.#.",
+        "...#..#.#.",
+        "...#..###.",
+        "...#......",
+        "...###..S.",
+        ".....#....",
+        "..P..####.",
+        "........#.",
+        "..C######."
+      ]
+    },
+    "w3_gala": {
+      "name": "Gala Hall",
+      "theme": 5,
+      "grid": [
+        "........N.",
+        "..####..#.",
+        "..#..#..#.",
+        "P.#..#..#.",
+        "..#..####.",
+        "..#.......",
+        "..#####.M.",
+        ".J....#...",
+        ".####.#...",
+        ".#..#.#.B.",
+        ".#..###...",
+        ".C........"
+      ]
+    },
+    "w3_cloud": {
+      "name": "Flour Cloud",
+      "theme": 4,
+      "grid": [
+        "N.........",
+        "#.#######.",
+        "#.#.....#.",
+        "#.#.....#.",
+        "#.#.###.#.",
+        "#.#.C.#.#.",
+        "#.#...#.#.",
+        "#.#...#.#.",
+        "#.#####.#.",
+        "#.......#.",
+        "#########.",
+        "..M....B.."
+      ]
+    },
+    "w3_every": {
+      "name": "Everything Shelf",
+      "theme": 5,
+      "grid": [
+        ".........N",
+        "...#######",
+        "...#......",
+        ".M.#.####.",
+        "...#.#..#.",
+        "...#.#..#.",
+        "...###..#.",
+        "........#.",
+        "...######.",
+        ".B.#......",
+        ".###....P.",
+        ".C........"
+      ]
+    },
+    "w3_tin": {
+      "name": "Pie Tin",
+      "theme": 6,
+      "grid": [
+        "....N.....",
+        "....#.....",
+        "....#.....",
+        ".###+###..",
+        ".#..#..#..",
+        ".#..####..",
+        ".#........",
+        ".#......M.",
+        ".####.....",
+        "....#.....",
+        "....#.....",
+        "....C....."
       ]
     }
   }

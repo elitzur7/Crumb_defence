@@ -178,14 +178,14 @@ test('win: clearing all waves without losing the cookie', () => {
 
 // ---------- waves ----------
 test('v0.5: 2 worlds x 10 levels, 4-9 waves each, rising wave counts per world, a queen only in each world\'s level 10', () => {
-  assert.equal(C.LEVELS.length, 20);
+  assert.equal(C.LEVELS.length, 30); assert.equal(C.WORLDS.length, 3); // v0.7.7: world 3
   for (const W of C.WORLDS) {
     let prev = 0; const s0 = C.WORLD_START[W.id];
     for (let i = s0; i < s0 + 10; i++) {
       assert.equal(C.LEVELS[i].world, W.id);
       const w = generateWaves(i);
       assert.ok(w.length >= 4 && w.length <= 9, `level ${i + 1}: ${w.length}`);
-      assert.ok(w.length >= prev); prev = w.length;
+      assert.ok(w.length >= prev - (W.id >= 3 ? 1 : 0), `level ${i + 1} waves ${w.length} after ${prev}`); prev = w.length; // v0.7.7: the design plan's W3 L26 'Fruit Bowl' is a 6-wave burst level after 7 (never drops by more than 1)
       assert.equal(levelAntTypes(i).some((t) => C.ANTS[t].boss), i === s0 + 9, `level ${i + 1}`);
     }
     assert.ok(generateWaves(s0 + 9).at(-1).some((e) => e.type === W.queen));
@@ -205,7 +205,7 @@ test('wave spawning is deterministic and follows the schedule', () => {
   assert.ok(b.nextWave >= 1);
 });
 test('all ant types exist with their traits (v0.4: + Sprint Knight, Heavy Knight; v0.7: + 3 small variants)', () => {
-  assert.deepEqual(Object.keys(C.ANTS).sort(), ['armored', 'big', 'flyer', 'gasmask', 'heavy', 'queen', 'queen2', 'small', 'small_armed', 'small_fly', 'small_gasmask', 'sprinter', 'worker']); // v0.5: + world 2's Swift Queen
+  assert.deepEqual(Object.keys(C.ANTS).sort(), ['armored', 'big', 'flyer', 'gasmask', 'greasy', 'heavy', 'mama', 'queen', 'queen2', 'queen3', 'small', 'small_armed', 'small_fly', 'small_gasmask', 'sprinter', 'worker']); // v0.5: + world 2's Swift Queen
   assert.equal(C.ANTS.worker.hp, 20); // v0.7 (Yair ANT-STATS-v0.6.3)
   assert.ok(C.ANTS.small.speed > C.ANTS.worker.speed && C.ANTS.small.hp < C.ANTS.worker.hp);
   assert.ok(C.ANTS.big.speed < C.ANTS.worker.speed && C.ANTS.big.armor > 0);

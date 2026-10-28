@@ -154,7 +154,7 @@ export const TARGET_MODE_TEXT = {
   laser: { carrier: 'Aims at ants carrying food first, then fewest HP. Heat: +12% per hit on the same ant.', front: 'Aims at the walking ant closest to the cookie. Heat: +12% per hit on the same ant.' },
   zapper: { carrier: 'First zap: food carriers first, then fewest HP. Chains to the nearest flyers (60% each jump).', front: 'First zap: the flyer closest to the cookie. Chains to the nearest flyers (60% each jump).' },
 };
-export const VERSION = '0.7.6'; // v0.7: shown on the map screen (keep in step with package.json + android versionName)
+export const VERSION = '0.7.7'; // v0.7: shown on the map screen (keep in step with package.json + android versionName)
 export const ANT_SIZES = { ...TUNING.antSizes };
 const ANT_TEXT = {
   small: { name: 'Scout Ant', desc: 'Tiny, fast, comes in swarms.' },
@@ -171,6 +171,10 @@ const ANT_TEXT = {
   small_armed: { name: 'Armored Scout', desc: 'A tiny scout in armour. Slower, shrugs off weak hits.' },
   small_fly: { name: 'Flying Scout', desc: 'A tiny flying scout. Laser or zapper!' },
   queen2: { name: 'Swift Queen', desc: 'BOSS of world 2. Fast, calls flying ants. Takes 40 of the cake.' },
+  // v0.7.7 world 3 (Pie Pantry)
+  greasy: { name: 'Buttery Ant', desc: 'Slippery! Slowing barely works. Hit it hard.' },
+  mama: { name: 'Brood Ant', desc: 'Drops 3 baby ants when she falls.' },
+  queen3: { name: 'Pie Queen', desc: 'BOSS of world 3. Calls buttery ants. Takes 55 of the pie. Ignores most slowing.' },
 };
 // ---------------- Queens (v0.4 item 19) ----------------
 // One queen per world, each a bit different. What a queen takes from the treat when she reaches it (`steal`) follows ONE formula:
@@ -188,6 +192,10 @@ for (const [id, a] of Object.entries(TUNING.ants)) {
   if (a.boss) ANTS[id].steal = queenTake(a.queenTraits || []);
 }
 export const isQueen = (type) => !!(ANTS[type] && ANTS[type].boss);
+// v0.7.7 rarity tiers (tuning.json ants[].rarity; default common). Used by the level checker test and the prep 'Incoming ants' pips.
+export const RARITY_TIERS = ['common', 'uncommon', 'rare', 'elite', 'boss'];
+export const rarityOf = (type) => (ANTS[type] && ANTS[type].rarity) || 'common';
+export const rarityRank = (type) => Math.max(0, RARITY_TIERS.indexOf(rarityOf(type)));
 // ---------------- Worlds (v0.5 items 13/14) ----------------
 // tuning.json "worlds": each world = 10 levels ending with its queen, its own treat. World 2 unlocks when every level of
 // world 1 is won AND the player has >= minStarsInWorld (v0.7: 18, was 20) of its 30 stars.

@@ -4,7 +4,7 @@
 import puppeteer from 'puppeteer-core';
 import fs from 'node:fs';
 import { serve } from './serve.mjs';
-const OUT = '/workspace/ant-td/qa/v0.7.6/qa-v075-suite'; fs.mkdirSync(`${OUT}/shots`, { recursive: true });
+const OUT = '/workspace/ant-td/qa/v0.7.7/qa-v075-suite'; fs.mkdirSync(`${OUT}/shots`, { recursive: true });
 const SH = `${OUT}/shots`;
 await serve(8891, 'www-test');
 const browser = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: true, args: ['--no-sandbox'] });
@@ -64,7 +64,7 @@ const cont = [];
     await G((li) => { const g = window.__game; g.go('map'); g.startBattle(li, ['slingshot'], [], 1); }, li); await sleep(120);
     cont.push(await G(`${FN}(${li})`));
   }
-  ok(n === 20, `A15 ${n} maps measured`);
+  ok(n === 30, `A15 ${n} maps measured`);
   const byTheme = {};
   for (const c of cont) (byTheme[c.theme] ||= []).push(c);
   for (const [t, a] of Object.entries(byTheme)) {

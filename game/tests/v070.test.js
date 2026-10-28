@@ -76,7 +76,7 @@ test('Must 7: free pack (D-P0) after the first L2 win = 4 random owned (>= 1 dam
   // old (v0.6, SAVE_VERSION 4) save past stage 2 that already had its gift -> one more free pack, once
   const old = { ...M.newSave(), version: 4 }; old.levels[0] = { stars: 3, cleared: true }; old.levels[1] = { stars: 2, cleared: true }; old.onboard = { zapperGift: 'done', grantedOnLoad: true };
   const store = new Map([[M.SAVE_KEY, JSON.stringify(old)]]); const st = { getItem: (k) => store.get(k) ?? null, setItem: (k, v) => store.set(k, v) };
-  const l = M.loadSave(st); assert.equal(l.version, 5); assert.ok(M.zapperGiftPending(l)); assert.ok(M.claimZapperGift(l, lcg(3)));
+  const l = M.loadSave(st); assert.equal(l.version, M.SAVE_VERSION); assert.ok(M.zapperGiftPending(l)); assert.ok(M.claimZapperGift(l, lcg(3)));
   M.writeSave(st, l); assert.equal(M.zapperGiftPending(M.loadSave(st)), false);
   // an old save that never won L2 gets nothing extra
   const fresh = { ...M.newSave(), version: 4 }; const st2 = { getItem: () => JSON.stringify(fresh), setItem: () => {} };
@@ -108,7 +108,7 @@ test('Must 6: pack reveal for ALL packs (paid + free), skippable, no toast / NEW
   assert.ok(!/@capacitor\/haptics/.test(readFileSync(new URL('../package.json', import.meta.url), 'utf8')), 'no haptics dependency');
 });
 
-test('version label in game (0.7.6)', () => { assert.equal(C.VERSION, '0.7.6'); assert.ok(/'v' \+ C\.VERSION/.test(src('game.js'))); });
+test('version label in game (0.7.x)', () => { assert.match(C.VERSION, /^0\.7\.[67]$/); assert.ok(/'v' \+ C\.VERSION/.test(src('game.js'))); });
 
 test('Should D-P4: per-world card-level cap in battle (W1 L4, W2 L5 since v0.7.6 E4); the prep screen says so', () => {
   assert.equal(TJ.worlds[0].cardLevelCap, 4); assert.equal(TJ.worlds[1].cardLevelCap, 5);

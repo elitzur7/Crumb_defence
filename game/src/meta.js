@@ -12,7 +12,7 @@ export function newSave() {
   return { version: SAVE_VERSION, coins: C.ECONOMY.startCoins, diamonds: C.ECONOMY.diamonds.start, cards, bonusStock, levels: C.LEVELS.map(() => ({ stars: 0, cleared: false })),
     lastDeck: C.STARTER_CARDS.slice(), lastBonuses: C.BONUS_TYPES.slice(0, 2), calendar: newCalendarState(), cardBlink: newCardBlinkState(), onboard: newOnboardState(), packsSinceNew: 0 };
 }
-export const SAVE_VERSION = 5; // v0.7: paid-pack pity counter + one-time free pack for saves past stage 2 (D-P0)
+export const SAVE_VERSION = 6; // v0.7: paid-pack pity counter + one-time free pack for saves past stage 2 (D-P0); v0.7.7: world 3 levels (loadSave pads `levels`; boss gifts are never granted retroactively)
 // v0.6 item 5: the one-time Zapper onboarding. zapperGift: 'none' -> 'pending' (first win of stage 2) -> 'done' (free gift taken).
 // grantedOnLoad: an existing player past stage 2 without a Zapper got one when this version loaded (the game shows the reveal once).
 export function newOnboardState() { return { zapperGift: 'none', grantedOnLoad: false }; }
@@ -315,11 +315,25 @@ export function grantPerfectPrize(save, rng = Math.random, table = C.ECONOMY.per
   return grantBooster(save, pick.id, pick.count);
 }
 
+// v0.7.7 S1 boss gift: the first clear of a world's queen pays ONE extra card, deterministic (no rng): the cheapest locked tower as an L1 card (ties: card order),
+// otherwise one card of level max(2, cap - 2) of the owned tower with the most cards (ties: card order). It lands in the inventory, marked fresh.
+export function grantBossGift(save, levelIndex) {
+  let id, level;
+  const locked = lockedCards(save);
+  if (locked.length) { const min = Math.min(...locked.map((x) => unlockPrice(x))); id = locked.find((x) => unlockPrice(x) === min); level = 1; }
+  else {
+    const W = C.WORLDS.find((x) => x.id === C.worldOf(levelIndex)); const cap = (W && W.cardLevelCap) || C.MAX_CARD_LEVEL;
+    let best = -1; for (const x of C.ALL_CARDS) { const n = totalCards(save.cards[x]); if (n > best) { best = n; id = x; } }
+    level = Math.min(C.MAX_CARD_LEVEL, Math.max(2, cap - 2));
+  }
+  const got = addCards(save, id, level, 1); save.cards[id].fresh = true;
+  return { kind: 'cards', id, level, count: 1, newCard: got.newType, newLevel: got.newLevel, reveal: got.newType || got.newLevel, boss: true };
+}
 // Apply the outcome of a battle. Crumbs are NOT carried over (battle-only currency); only coins/unlocks/prizes persist.
 // info: { kills, foodLeft, perfect, time }. Cards and prizes are granted ONLY on a win (prize only on a perfect win).
 export function applyBattleResult(save, levelIndex, result, stars, info = {}, rng = Math.random) {
   const E = C.ECONOMY;
-  const out = { coins: 0, parts: {}, unlocked: null, bonusReward: null, booster: null, prize: null, firstClear: false, perfect: false, starCoins: 0, gems: 0 };
+  const out = { coins: 0, parts: {}, unlocked: null, bonusReward: null, booster: null, prize: null, bossGift: null, firstClear: false, perfect: false, starCoins: 0, gems: 0 };
   if (result === 'win') {
     const lv = save.levels[levelIndex];
     out.firstClear = !lv.cleared;
@@ -342,6 +356,7 @@ export function applyBattleResult(save, levelIndex, result, stars, info = {}, rn
       if (fb) out.booster = grantBooster(save, fb, 1);
       if (E.bonusRewardOnFirstClear && !out.booster) { const b = C.BONUS_TYPES[Math.floor(rng() * C.BONUS_TYPES.length)]; out.booster = grantBooster(save, b, 1); out.bonusReward = b; }
     }
+    if (out.firstClear && C.isBossLevel(levelIndex)) out.bossGift = grantBossGift(save, levelIndex); // v0.7.7 S1
     if (info.perfect) { out.perfect = true; out.prize = grantPerfectPrize(save, rng, undefined, { noBooster: !!out.booster }); }
     lv.cleared = true; lv.stars = Math.max(lv.stars, stars);
     if (info.perfect) lv.perfect = true;

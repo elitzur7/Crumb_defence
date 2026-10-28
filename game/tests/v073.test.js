@@ -15,12 +15,12 @@ test('version is >= v0.7.3 (versionCode 17+; the current release is asserted in 
   assert.equal(JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version, C.VERSION);
 });
 test('C17: hpMul table for all 20 levels replaces the v0.7.2 refit (L3 3.0, L17 2.38 since v0.7.4 M-1; L10 2.373)', () => {
-  assert.equal(C.LEVELS.length, 20);
-  C.LEVELS.forEach((L, i) => assert.equal(L.hpMul, HP[i], `L${i + 1}`));
+  assert.equal(C.LEVELS.length, 30); // v0.7.7: + 10 world 3 levels (their hpMul is asserted in v077.test.js)
+  C.LEVELS.slice(0, 20).forEach((L, i) => assert.equal(L.hpMul, HP[i], `L${i + 1}`));
   assert.equal(C.LEVELS[2].hpMul, 3); assert.equal(C.LEVELS[16].hpMul, 2.38);
 });
 test('C17: mixes - at most 5 types per level, L1 clean, sprinter HP 10, Laser power <= 3', () => {
-  C.LEVELS.forEach((L, i) => assert.ok(L.mix.length <= 5, `L${i + 1} mix size`));
+  C.LEVELS.forEach((L, i) => assert.ok((L.mix || []).length <= 5, `L${i + 1} mix size`)); // v0.7.7: W3 levels have explicit waves, no mix
   assert.deepEqual(C.LEVELS[0].mix.map((m) => m.type), ['worker', 'small']);
   assert.equal(C.ANTS.sprinter.hp, 10);
   assert.equal(C.TOWERS.laser.stats.power, 3); assert.ok(C.TOWERS.laser.stats.power <= 3, 'Laser power <= 3');

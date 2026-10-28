@@ -7,298 +7,118 @@ var tuning_default = {
     cardUpgrades: "steps to card levels L2..L10, in order. power / rate / any other key: fraction (+0.10 = +10%); range: tiles (+0.2 tiles)",
     battleUpgrades: "in-battle levels 2-6 (five upgrades; drop the same card on the tower): multipliers",
     speed: "px per second",
-    queenTake: "a queen takes 50 + the sum of her trait modifiers (queenTraitMods) from the treat"
+    queenTake: "a queen takes 50 + the sum of her trait modifiers (queenTraitMods) from the treat",
+    rarity: "common | uncommon | rare | elite | boss (v0.7.7). Checked by tests/v077.test.js for worlds >= 3: >= 2 common types per non-boss level, <= 2 rare-or-higher types, a rare first appears at wave >= 2 (never wave 1). W1/W2 only report."
   },
   shop: {
     _about: "v0.6.2 items 12/13. unlockPrice: coins to unlock a locked tower in the Shop (tiered by base power, approved by Yair). packNewTowerChance: chance that a card pack holds ONE new (locked) tower card (L1) as one of its cards.",
-    unlockPrice: {
-      sound: 100,
-      pheromone: 100,
-      lava: 100,
-      lizard: 200,
-      gate: 200,
-      zapper: 200,
-      laser: 400,
-      tractor: 400
-    },
+    unlockPrice: { sound: 100, pheromone: 100, lava: 100, lizard: 200, gate: 200, zapper: 200, laser: 400, tractor: 400 },
     unlockPriceDefault: 200,
     packNewTowerChance: 0.1
   },
   economy: {
     _about: "v0.7.6 E1/E2/E3/E5. starBonus: coins paid ONCE per level the first time it reaches 2 (key 2) and 3 (key 3) stars (a 1 -> 3 star jump pays both; stored stars count as already paid, no retroactive grant). bossGems: diamonds on the FIRST clear of a world's last level (its queen) and on the first 3 stars there. calendar.coinsByStreak: coins of the 1st, 2nd, 3rd, 4th+ coin prize of a streak, multiplied by 1 + worldStep x (highest unlocked world - 1), rounded to a multiple of roundTo. worlds[].coinMul (default 1) multiplies the win coins of that world's levels (not the first-clear bonus, not loss coins).",
-    starBonus: {
-      "2": 15,
-      "3": 25
-    },
-    bossGems: {
-      firstClear: 10,
-      firstThreeStars: 5
-    },
-    calendar: {
-      coinsByStreak: [
-        30,
-        60,
-        90,
-        120
-      ],
-      worldStep: 0.5,
-      roundTo: 5
-    }
+    starBonus: { "2": 15, "3": 25 },
+    bossGems: { firstClear: 10, firstThreeStars: 5 },
+    calendar: { coinsByStreak: [30, 60, 90, 120], worldStep: 0.5, roundTo: 5 }
   },
-  queenTraitMods: {
-    fast: -10,
-    flying: -15,
-    slow: 0,
-    slower: 5,
-    slowest: 10,
-    vulnerable: 5,
-    veryVulnerable: 10
-  },
-  antSizes: {
-    small: 0.7,
-    regular: 1,
-    large: 1.12,
-    queen: 2.1
-  },
+  queenTraitMods: { fast: -10, flying: -15, slow: 0, slower: 5, slowest: 10, vulnerable: 5, veryVulnerable: 10 },
+  antSizes: { small: 0.7, regular: 1, large: 1.12, queen: 2.1 },
   towers: {
     slingshot: {
       power: 6,
       rate: 1.1,
       rangeTiles: 1.5,
-      params: {
-        projSpeed: 380
-      },
+      params: { projSpeed: 380 },
       battleUpgrades: [
-        {
-          power: 2
-        },
-        {
-          rate: 1.3,
-          range: 1.1,
-          power: 1.154
-        },
-        {
-          power: 1.333
-        },
-        {
-          rate: 1.15,
-          power: 1.087
-        },
-        {
-          range: 1.1,
-          power: 1.2
-        }
+        { power: 2 },
+        { rate: 1.3, range: 1.1, power: 1.154 },
+        { power: 1.333 },
+        { rate: 1.15, power: 1.087 },
+        { range: 1.1, power: 1.2 }
       ],
       cardUpgrades: [
-        {
-          range: 0.2
-        },
-        {
-          power: 0.1
-        },
-        {
-          range: 0.2
-        },
-        {
-          rate: 0.1
-        },
-        {
-          power: 0.1
-        },
-        {
-          power: 0.12
-        },
-        {
-          rate: 0.1
-        },
-        {
-          range: 0.2
-        },
-        {
-          range: 0.2,
-          power: 0.1
-        }
+        { range: 0.2 },
+        { power: 0.1 },
+        { range: 0.2 },
+        { rate: 0.1 },
+        { power: 0.1 },
+        { power: 0.12 },
+        { rate: 0.1 },
+        { range: 0.2 },
+        { range: 0.2, power: 0.1 }
       ]
     },
     spray: {
       power: 6,
       rate: 0.42,
       rangeTiles: 1.5,
-      params: {
-        cloudTime: 2.6,
-        cloudRadius: 42
-      },
+      params: { cloudTime: 2.6, cloudRadius: 42 },
       battleUpgrades: [
-        {
-          power: 2,
-          cloudRadius: 1.2
-        },
-        {
-          rate: 1.3,
-          power: 1.154
-        },
-        {
-          cloudRadius: 1.15,
-          range: 1.1,
-          power: 1.333
-        },
-        {
-          power: 1.25
-        },
-        {
-          rate: 1.2
-        }
+        { power: 2, cloudRadius: 1.2 },
+        { rate: 1.3, power: 1.154 },
+        { cloudRadius: 1.15, range: 1.1, power: 1.333 },
+        { power: 1.25 },
+        { rate: 1.2 }
       ],
       cardUpgrades: [
-        {
-          power: 0.1
-        },
-        {
-          rate: 0.08
-        },
-        {
-          range: 0.2
-        },
-        {
-          power: 0.12
-        },
-        {
-          range: 0.15
-        },
-        {
-          rate: 0.1
-        },
-        {
-          power: 0.1
-        },
-        {
-          range: 0.2
-        },
-        {
-          power: 0.1,
-          rate: 0.1
-        }
+        { power: 0.1 },
+        { rate: 0.08 },
+        { range: 0.2 },
+        { power: 0.12 },
+        { range: 0.15 },
+        { rate: 0.1 },
+        { power: 0.1 },
+        { range: 0.2 },
+        { power: 0.1, rate: 0.1 }
       ]
     },
     sound: {
       power: 4,
       rate: 0.75,
       rangeTiles: 1.5,
-      params: {
-        ignoreArmor: !0,
-        stagger: 0.18
-      },
+      params: { ignoreArmor: !0, stagger: 0.18 },
       battleUpgrades: [
-        {
-          power: 2
-        },
-        {
-          range: 1.15,
-          rate: 1.2,
-          power: 1.25
-        },
-        {
-          stagger: 1.3,
-          power: 1.333
-        },
-        {
-          power: 1.25
-        },
-        {
-          rate: 1.15,
-          stagger: 1.25,
-          power: 1.043
-        }
+        { power: 2 },
+        { range: 1.15, rate: 1.2, power: 1.25 },
+        { stagger: 1.3, power: 1.333 },
+        { power: 1.25 },
+        { rate: 1.15, stagger: 1.25, power: 1.043 }
       ],
       cardUpgrades: [
-        {
-          rate: 0.1
-        },
-        {
-          range: 0.2
-        },
-        {
-          power: 0.1
-        },
-        {
-          power: 0.1
-        },
-        {
-          range: 0.2
-        },
-        {
-          rate: 0.08
-        },
-        {
-          range: 0.15
-        },
-        {
-          power: 0.12
-        },
-        {
-          rate: 0.1,
-          range: 0.2
-        }
+        { rate: 0.1 },
+        { range: 0.2 },
+        { power: 0.1 },
+        { power: 0.1 },
+        { range: 0.2 },
+        { rate: 0.08 },
+        { range: 0.15 },
+        { power: 0.12 },
+        { rate: 0.1, range: 0.2 }
       ]
     },
     ball: {
       power: 16,
       rate: 0.16,
       rangeTiles: null,
-      params: {
-        ballRadius: 13,
-        rollSpeed: 230,
-        maxBalls: 1
-      },
+      params: { ballRadius: 13, rollSpeed: 230, maxBalls: 1 },
       battleUpgrades: [
-        {
-          power: 2,
-          ballRadius: 1.2
-        },
-        {
-          rate: 1.3,
-          power: 1.154
-        },
-        {
-          ballRadius: 1.1,
-          power: 1.333
-        },
-        {
-          power: 1.25
-        },
-        {
-          rate: 1.2
-        }
+        { power: 2, ballRadius: 1.2 },
+        { rate: 1.3, power: 1.154 },
+        { ballRadius: 1.1, power: 1.333 },
+        { power: 1.25 },
+        { rate: 1.2 }
       ],
       cardUpgrades: [
-        {
-          power: 0.1
-        },
-        {
-          rate: 0.1
-        },
-        {
-          ballRadius: 0.1
-        },
-        {
-          power: 0.12
-        },
-        {
-          rate: 0.08
-        },
-        {
-          power: 0.1
-        },
-        {
-          ballRadius: 0.1
-        },
-        {
-          rate: 0.1
-        },
-        {
-          power: 0.1,
-          rate: 0.1
-        }
+        { power: 0.1 },
+        { rate: 0.1 },
+        { ballRadius: 0.1 },
+        { power: 0.12 },
+        { rate: 0.08 },
+        { power: 0.1 },
+        { ballRadius: 0.1 },
+        { rate: 0.1 },
+        { power: 0.1, rate: 0.1 }
       ]
     },
     fan: {
@@ -306,549 +126,186 @@ var tuning_default = {
       rate: 0.36,
       rangeTiles: 1.5,
       params: {},
-      battleUpgrades: [
-        {
-          power: 1.3
-        },
-        {
-          rate: 1.25,
-          range: 1.1
-        },
-        {
-          power: 1.15
-        },
-        {
-          range: 1.1
-        },
-        {
-          rate: 1.15
-        }
-      ],
+      battleUpgrades: [{ power: 1.3 }, { rate: 1.25, range: 1.1 }, { power: 1.15 }, { range: 1.1 }, { rate: 1.15 }],
       cardUpgrades: [
-        {
-          range: 0.2
-        },
-        {
-          rate: 0.1
-        },
-        {
-          power: 0.1
-        },
-        {
-          range: 0.2
-        },
-        {
-          range: 0.15
-        },
-        {
-          power: 0.1
-        },
-        {
-          rate: 0.1
-        },
-        {
-          power: 0.12
-        },
-        {
-          range: 0.2,
-          rate: 0.1
-        }
+        { range: 0.2 },
+        { rate: 0.1 },
+        { power: 0.1 },
+        { range: 0.2 },
+        { range: 0.15 },
+        { power: 0.1 },
+        { rate: 0.1 },
+        { power: 0.12 },
+        { range: 0.2, rate: 0.1 }
       ]
     },
     pheromone: {
       power: 2.5,
       rate: null,
       rangeTiles: 1,
-      params: {
-        ignoreArmor: !0,
-        slow: 0.35,
-        charmTime: 1.6
-      },
-      battleUpgrades: [
-        {
-          power: 1.5
-        },
-        {
-          charmTime: 1.4,
-          slow: 1.25
-        },
-        {
-          power: 1.2
-        },
-        {
-          charmTime: 1.2
-        },
-        {
-          slow: 1.15
-        }
-      ],
+      params: { ignoreArmor: !0, slow: 0.35, charmTime: 1.6 },
+      battleUpgrades: [{ power: 1.5 }, { charmTime: 1.4, slow: 1.25 }, { power: 1.2 }, { charmTime: 1.2 }, { slow: 1.15 }],
       cardUpgrades: [
-        {
-          power: 0.12
-        },
-        {
-          slow: 0.1
-        },
-        {
-          charmTime: 0.1
-        },
-        {
-          power: 0.1
-        },
-        {
-          slow: 0.08
-        },
-        {
-          power: 0.1
-        },
-        {
-          charmTime: 0.1
-        },
-        {
-          charmTime: 0.12
-        },
-        {
-          power: 0.1,
-          slow: 0.08
-        }
+        { power: 0.12 },
+        { slow: 0.1 },
+        { charmTime: 0.1 },
+        { power: 0.1 },
+        { slow: 0.08 },
+        { power: 0.1 },
+        { charmTime: 0.1 },
+        { charmTime: 0.12 },
+        { power: 0.1, slow: 0.08 }
       ]
     },
     lizard: {
       power: 38,
       rate: 0.42,
       rangeTiles: 1.5,
-      params: {
-        chewTime: 1.4
-      },
+      params: { chewTime: 1.4 },
       battleUpgrades: [
-        {
-          power: 2
-        },
-        {
-          chewTime: 0.6,
-          range: 1.1,
-          power: 1.5
-        },
-        {
-          rate: 1.2,
-          power: 1.111
-        },
-        {
-          power: 1.25
-        },
-        {
-          chewTime: 0.75,
-          power: 1.2
-        }
+        { power: 2 },
+        { chewTime: 0.6, range: 1.1, power: 1.5 },
+        { rate: 1.2, power: 1.111 },
+        { power: 1.25 },
+        { chewTime: 0.75, power: 1.2 }
       ],
       cardUpgrades: [
-        {
-          power: 0.12
-        },
-        {
-          rate: 0.08
-        },
-        {
-          range: 0.2
-        },
-        {
-          power: 0.1
-        },
-        {
-          range: 0.2
-        },
-        {
-          rate: 0.1
-        },
-        {
-          power: 0.1
-        },
-        {
-          power: 0.12
-        },
-        {
-          range: 0.2,
-          power: 0.1
-        }
+        { power: 0.12 },
+        { rate: 0.08 },
+        { range: 0.2 },
+        { power: 0.1 },
+        { range: 0.2 },
+        { rate: 0.1 },
+        { power: 0.1 },
+        { power: 0.12 },
+        { range: 0.2, power: 0.1 }
       ]
     },
     laser: {
       power: 3,
       rate: 3.2,
       rangeTiles: 2.5,
-      params: {
-        heatPerHit: 0.1,
-        heatMax: 1
-      },
+      params: { heatPerHit: 0.1, heatMax: 1 },
       battleUpgrades: [
-        {
-          power: 1.7
-        },
-        {
-          rate: 1.15,
-          power: 1.228
-        },
-        {
-          range: 1.1,
-          power: 1.292
-        },
-        {
-          power: 1.15,
-          heatMax: 1.5
-        },
-        {
-          rate: 1.2,
-          heatMax: 1.3
-        }
+        { power: 1.7 },
+        { rate: 1.15, power: 1.228 },
+        { range: 1.1, power: 1.292 },
+        { power: 1.15, heatMax: 1.5 },
+        { rate: 1.2, heatMax: 1.3 }
       ],
       cardUpgrades: [
-        {
-          rate: 0.08
-        },
-        {
-          power: 0.1
-        },
-        {
-          range: 0.2
-        },
-        {
-          rate: 0.1
-        },
-        {
-          power: 0.1
-        },
-        {
-          range: 0.2
-        },
-        {
-          power: 0.12
-        },
-        {
-          rate: 0.1
-        },
-        {
-          power: 0.1,
-          rate: 0.1
-        }
+        { rate: 0.08 },
+        { power: 0.1 },
+        { range: 0.2 },
+        { rate: 0.1 },
+        { power: 0.1 },
+        { range: 0.2 },
+        { power: 0.12 },
+        { rate: 0.1 },
+        { power: 0.1, rate: 0.1 }
       ]
     },
     zapper: {
       power: 10,
       rate: 1.5,
       rangeTiles: 2,
-      params: {
-        chain: 2,
-        chainRange: 75,
-        chainFalloff: 0.6
-      },
+      params: { chain: 2, chainRange: 75, chainFalloff: 0.6 },
       battleUpgrades: [
-        {
-          power: 2
-        },
-        {
-          chain: 1.5,
-          range: 1.1,
-          power: 1.5
-        },
-        {
-          rate: 1.2,
-          power: 1.111
-        },
-        {
-          power: 1.25
-        },
-        {
-          rate: 1.15,
-          chain: 1.34,
-          power: 1.043
-        }
+        { power: 2 },
+        { chain: 1.5, range: 1.1, power: 1.5 },
+        { rate: 1.2, power: 1.111 },
+        { power: 1.25 },
+        { rate: 1.15, chain: 1.34, power: 1.043 }
       ],
       cardUpgrades: [
-        {
-          range: 0.2
-        },
-        {
-          power: 0.1
-        },
-        {
-          rate: 0.1
-        },
-        {
-          range: 0.2
-        },
-        {
-          power: 0.12
-        },
-        {
-          rate: 0.08
-        },
-        {
-          power: 0.1
-        },
-        {
-          range: 0.2
-        },
-        {
-          power: 0.1,
-          range: 0.15
-        }
+        { range: 0.2 },
+        { power: 0.1 },
+        { rate: 0.1 },
+        { range: 0.2 },
+        { power: 0.12 },
+        { rate: 0.08 },
+        { power: 0.1 },
+        { range: 0.2 },
+        { power: 0.1, range: 0.15 }
       ]
     },
     glue: {
       power: 0.55,
       rate: null,
       rangeTiles: 1,
-      params: {
-        stickTime: 0.5
-      },
-      battleUpgrades: [
-        {
-          power: 1.15
-        },
-        {
-          stickTime: 2
-        },
-        {
-          stickTime: 1.25
-        },
-        {
-          power: 1.1
-        },
-        {
-          stickTime: 1.2
-        }
-      ],
+      params: { stickTime: 0.5 },
+      battleUpgrades: [{ power: 1.15 }, { stickTime: 2 }, { stickTime: 1.25 }, { power: 1.1 }, { stickTime: 1.2 }],
       cardUpgrades: [
-        {
-          stickTime: 0.12
-        },
-        {
-          power: 0.08
-        },
-        {
-          stickTime: 0.15
-        },
-        {
-          power: 0.06
-        },
-        {
-          power: 0.08
-        },
-        {
-          stickTime: 0.1
-        },
-        {
-          stickTime: 0.15
-        },
-        {
-          power: 0.08
-        },
-        {
-          stickTime: 0.12,
-          power: 0.05
-        }
+        { stickTime: 0.12 },
+        { power: 0.08 },
+        { stickTime: 0.15 },
+        { power: 0.06 },
+        { power: 0.08 },
+        { stickTime: 0.1 },
+        { stickTime: 0.15 },
+        { power: 0.08 },
+        { stickTime: 0.12, power: 0.05 }
       ]
     },
     gate: {
       power: 4.5,
       rate: 2.85,
       rangeTiles: 1,
-      params: {
-        ignoreArmor: !0
-      },
-      battleUpgrades: [
-        {
-          power: 2
-        },
-        {
-          rate: 1.3,
-          power: 1.154
-        },
-        {
-          rate: 1.15,
-          power: 1.159
-        },
-        {
-          power: 1.25
-        },
-        {
-          power: 1.1,
-          rate: 1.1
-        }
-      ],
+      params: { ignoreArmor: !0 },
+      battleUpgrades: [{ power: 2 }, { rate: 1.3, power: 1.154 }, { rate: 1.15, power: 1.159 }, { power: 1.25 }, { power: 1.1, rate: 1.1 }],
       cardUpgrades: [
-        {
-          rate: 0.1
-        },
-        {
-          power: 0.1
-        },
-        {
-          power: 0.12
-        },
-        {
-          rate: 0.08
-        },
-        {
-          rate: 0.08
-        },
-        {
-          power: 0.1
-        },
-        {
-          power: 0.08
-        },
-        {
-          rate: 0.1
-        },
-        {
-          power: 0.1,
-          rate: 0.06
-        }
+        { rate: 0.1 },
+        { power: 0.1 },
+        { power: 0.12 },
+        { rate: 0.08 },
+        { rate: 0.08 },
+        { power: 0.1 },
+        { power: 0.08 },
+        { rate: 0.1 },
+        { power: 0.1, rate: 0.06 }
       ]
     },
     lava: {
       power: 6,
       rate: null,
       rangeTiles: 1,
-      params: {
-        ignoreArmor: !0,
-        slow: 0.2
-      },
-      battleUpgrades: [
-        {
-          power: 2
-        },
-        {
-          slow: 1.25,
-          power: 1.5
-        },
-        {
-          power: 1.333
-        },
-        {
-          slow: 1.15,
-          power: 1.25
-        },
-        {
-          power: 1.2
-        }
-      ],
+      params: { ignoreArmor: !0, slow: 0.2 },
+      battleUpgrades: [{ power: 2 }, { slow: 1.25, power: 1.5 }, { power: 1.333 }, { slow: 1.15, power: 1.25 }, { power: 1.2 }],
       cardUpgrades: [
-        {
-          power: 0.1
-        },
-        {
-          slow: 0.08
-        },
-        {
-          power: 0.1
-        },
-        {
-          slow: 0.1
-        },
-        {
-          power: 0.08
-        },
-        {
-          power: 0.12
-        },
-        {
-          slow: 0.08
-        },
-        {
-          power: 0.1
-        },
-        {
-          slow: 0.1,
-          power: 0.1
-        }
+        { power: 0.1 },
+        { slow: 0.08 },
+        { power: 0.1 },
+        { slow: 0.1 },
+        { power: 0.08 },
+        { power: 0.12 },
+        { slow: 0.08 },
+        { power: 0.1 },
+        { slow: 0.1, power: 0.1 }
       ]
     },
     tractor: {
       power: null,
       rate: 0.13,
       rangeTiles: null,
-      params: {
-        liftSize: 1
-      },
-      battleUpgrades: [
-        {
-          rate: 1.12
-        },
-        {
-          rate: 1.1
-        },
-        {
-          rate: 1.12
-        },
-        {
-          liftSize: 1,
-          rateIfMaxLift: 1.15
-        },
-        {
-          rate: 1.1
-        }
-      ],
+      params: { liftSize: 1 },
+      battleUpgrades: [{ rate: 1.12 }, { rate: 1.1 }, { rate: 1.12 }, { liftSize: 1, rateIfMaxLift: 1.15 }, { rate: 1.1 }],
       cardUpgrades: [
-        {
-          rate: 0.05
-        },
-        {
-          liftSize: 1
-        },
-        {
-          rate: 0.06
-        },
-        {
-          rate: 0.05
-        },
-        {
-          rate: 0.07
-        },
-        {
-          rate: 0.05
-        },
-        {
-          liftSize: 1
-        },
-        {
-          rate: 0.06
-        },
-        {
-          rate: 0.07
-        }
+        { rate: 0.05 },
+        { liftSize: 1 },
+        { rate: 0.06 },
+        { rate: 0.05 },
+        { rate: 0.07 },
+        { rate: 0.05 },
+        { liftSize: 1 },
+        { rate: 0.06 },
+        { rate: 0.07 }
       ]
     }
   },
   ants: {
-    small: {
-      hp: 4,
-      speed: 60,
-      armor: 0,
-      steal: 0.9,
-      weight: 1.2,
-      size: "small",
-      crumbs: 1
-    },
-    worker: {
-      hp: 20,
-      speed: 40,
-      armor: 0,
-      steal: 0.9,
-      weight: 1,
-      size: "regular",
-      crumbs: 1
-    },
-    big: {
-      hp: 100,
-      speed: 27,
-      armor: 2,
-      steal: 1.8,
-      weight: 0.5,
-      size: "large",
-      crumbs: 4
-    },
+    small: { hp: 4, speed: 60, armor: 0, steal: 0.9, weight: 1.2, size: "small", crumbs: 1, rarity: "common" },
+    worker: { hp: 20, speed: 40, armor: 0, steal: 0.9, weight: 1, size: "regular", crumbs: 1, rarity: "common" },
+    big: { hp: 100, speed: 27, armor: 2, steal: 1.8, weight: 0.5, size: "large", crumbs: 4, rarity: "rare" },
     gasmask: {
       hp: 16,
       speed: 40,
@@ -856,18 +313,11 @@ var tuning_default = {
       steal: 0.9,
       weight: 1,
       size: "regular",
-      gasImmune: !0,
-      crumbs: 2
+      crumbs: 2,
+      rarity: "uncommon",
+      gasImmune: !0
     },
-    armored: {
-      hp: 40,
-      speed: 30,
-      armor: 6,
-      steal: 1.8,
-      weight: 0.6,
-      size: "regular",
-      crumbs: 4
-    },
+    armored: { hp: 40, speed: 30, armor: 6, steal: 1.8, weight: 0.6, size: "regular", crumbs: 4, rarity: "rare" },
     flyer: {
       hp: 12,
       speed: 62,
@@ -875,8 +325,9 @@ var tuning_default = {
       steal: 0.9,
       weight: 1.3,
       size: "regular",
-      flying: !0,
-      crumbs: 2
+      crumbs: 2,
+      rarity: "common",
+      flying: !0
     },
     sprinter: {
       hp: 10,
@@ -885,8 +336,9 @@ var tuning_default = {
       steal: 0.9,
       weight: 0.8,
       size: "regular",
-      lateGame: !0,
-      crumbs: 3
+      crumbs: 3,
+      rarity: "uncommon",
+      lateGame: !0
     },
     heavy: {
       hp: 80,
@@ -895,8 +347,9 @@ var tuning_default = {
       steal: 1.8,
       weight: 0.35,
       size: "large",
-      lateGame: !0,
-      crumbs: 8
+      crumbs: 8,
+      rarity: "elite",
+      lateGame: !0
     },
     queen: {
       hp: 1200,
@@ -904,17 +357,12 @@ var tuning_default = {
       armor: 6,
       weight: 0,
       size: "queen",
+      crumbs: 93,
+      rarity: "boss",
       slowResist: 0.5,
       boss: !0,
-      spawn: {
-        type: "small",
-        every: 5,
-        count: 1
-      },
-      queenTraits: [
-        "slow"
-      ],
-      crumbs: 93
+      spawn: { type: "small", every: 5, count: 1 },
+      queenTraits: ["slow"]
     },
     queen2: {
       hp: 2e3,
@@ -922,17 +370,12 @@ var tuning_default = {
       armor: 5,
       weight: 0,
       size: "queen",
+      crumbs: 141,
+      rarity: "boss",
       slowResist: 0.4,
       boss: !0,
-      spawn: {
-        type: "flyer",
-        every: 6,
-        count: 1
-      },
-      queenTraits: [
-        "fast"
-      ],
-      crumbs: 141
+      spawn: { type: "flyer", every: 6, count: 1 },
+      queenTraits: ["fast"]
     },
     small_gasmask: {
       hp: 4,
@@ -941,18 +384,11 @@ var tuning_default = {
       steal: 0.9,
       weight: 1.2,
       size: "small",
-      gasImmune: !0,
-      crumbs: 1
+      crumbs: 1,
+      rarity: "uncommon",
+      gasImmune: !0
     },
-    small_armed: {
-      hp: 10,
-      speed: 45,
-      armor: 4,
-      steal: 0.9,
-      weight: 1,
-      size: "small",
-      crumbs: 1
-    },
+    small_armed: { hp: 10, speed: 45, armor: 4, steal: 0.9, weight: 1, size: "small", crumbs: 1, rarity: "uncommon" },
     small_fly: {
       hp: 3,
       speed: 70,
@@ -960,8 +396,44 @@ var tuning_default = {
       steal: 0.9,
       weight: 1.5,
       size: "small",
-      flying: !0,
-      crumbs: 1
+      crumbs: 1,
+      rarity: "common",
+      flying: !0
+    },
+    greasy: {
+      hp: 24,
+      speed: 40,
+      armor: 0,
+      steal: 0.9,
+      weight: 1,
+      size: "regular",
+      crumbs: 2,
+      rarity: "uncommon",
+      slowResist: 0.75
+    },
+    mama: {
+      hp: 60,
+      speed: 28,
+      armor: 2,
+      steal: 1.8,
+      weight: 0.5,
+      size: "large",
+      crumbs: 3,
+      rarity: "rare",
+      splitInto: { type: "small", count: 3 }
+    },
+    queen3: {
+      hp: 2300,
+      speed: 14,
+      armor: 6,
+      weight: 0,
+      size: "queen",
+      crumbs: 160,
+      rarity: "boss",
+      slowResist: 0.7,
+      boss: !0,
+      spawn: { type: "greasy", every: 7, count: 1 },
+      queenTraits: ["slower"]
     }
   },
   worlds: [
@@ -981,12 +453,19 @@ var tuning_default = {
       treat: "cake",
       queen: "queen2",
       levels: 10,
-      unlock: {
-        allLevelsWonInWorld: 1,
-        minStarsInWorld: 18
-      },
+      unlock: { allLevelsWonInWorld: 1, minStarsInWorld: 18 },
       cardLevelCap: 5,
       coinMul: 1
+    },
+    {
+      id: 3,
+      name: "Pie Pantry",
+      treat: "pie",
+      queen: "queen3",
+      levels: 10,
+      unlock: { allLevelsWonInWorld: 2, minStarsInWorld: 18 },
+      cardLevelCap: 5,
+      coinMul: 1.25
     }
   ],
   levels: [
@@ -999,17 +478,7 @@ var tuning_default = {
       base: 8.1,
       growth: 1.44,
       interval: 1.1,
-      mix: [
-        {
-          type: "worker",
-          w: 4
-        },
-        {
-          type: "small",
-          w: 3,
-          from: 2
-        }
-      ]
+      mix: [{ type: "worker", w: 4 }, { type: "small", w: 3, from: 2 }]
     },
     {
       world: 1,
@@ -1020,21 +489,7 @@ var tuning_default = {
       base: 7,
       growth: 1.8,
       interval: 1,
-      mix: [
-        {
-          type: "worker",
-          w: 4
-        },
-        {
-          type: "small",
-          w: 3
-        },
-        {
-          type: "small_gasmask",
-          w: 1,
-          from: 3
-        }
-      ]
+      mix: [{ type: "worker", w: 4 }, { type: "small", w: 3 }, { type: "small_gasmask", w: 1, from: 3 }]
     },
     {
       world: 1,
@@ -1046,28 +501,11 @@ var tuning_default = {
       growth: 1.75,
       interval: 1,
       mix: [
-        {
-          type: "worker",
-          w: 3
-        },
-        {
-          type: "small",
-          w: 3
-        },
-        {
-          type: "gasmask",
-          w: 2,
-          from: 2
-        },
-        {
-          type: "small_gasmask",
-          w: 2
-        },
-        {
-          type: "small_fly",
-          w: 1,
-          from: 3
-        }
+        { type: "worker", w: 3 },
+        { type: "small", w: 3 },
+        { type: "gasmask", w: 2, from: 2 },
+        { type: "small_gasmask", w: 2 },
+        { type: "small_fly", w: 1, from: 3 }
       ]
     },
     {
@@ -1079,25 +517,7 @@ var tuning_default = {
       base: 7.2,
       growth: 1.8,
       interval: 0.95,
-      mix: [
-        {
-          type: "worker",
-          w: 3
-        },
-        {
-          type: "small",
-          w: 2
-        },
-        {
-          type: "flyer",
-          w: 2,
-          from: 2
-        },
-        {
-          type: "small_fly",
-          w: 3
-        }
-      ]
+      mix: [{ type: "worker", w: 3 }, { type: "small", w: 2 }, { type: "flyer", w: 2, from: 2 }, { type: "small_fly", w: 3 }]
     },
     {
       world: 1,
@@ -1109,34 +529,12 @@ var tuning_default = {
       growth: 1.96,
       interval: 0.95,
       mix: [
-        {
-          type: "worker",
-          w: 3
-        },
-        {
-          type: "small",
-          w: 2
-        },
-        {
-          type: "armored",
-          w: 2,
-          from: 2
-        },
-        {
-          type: "small_armed",
-          w: 3,
-          from: 2
-        }
+        { type: "worker", w: 3 },
+        { type: "small", w: 2 },
+        { type: "armored", w: 2, from: 2 },
+        { type: "small_armed", w: 3, from: 2 }
       ],
-      special: {
-        "6": [
-          {
-            type: "big",
-            count: 2,
-            interval: 1.6
-          }
-        ]
-      }
+      special: { "6": [{ type: "big", count: 2, interval: 1.6 }] }
     },
     {
       world: 1,
@@ -1148,26 +546,11 @@ var tuning_default = {
       growth: 2,
       interval: 0.9,
       mix: [
-        {
-          type: "worker",
-          w: 2
-        },
-        {
-          type: "small",
-          w: 3
-        },
-        {
-          type: "flyer",
-          w: 3
-        },
-        {
-          type: "small_fly",
-          w: 2
-        },
-        {
-          type: "gasmask",
-          w: 1
-        }
+        { type: "worker", w: 2 },
+        { type: "small", w: 3 },
+        { type: "flyer", w: 3 },
+        { type: "small_fly", w: 2 },
+        { type: "gasmask", w: 1 }
       ]
     },
     {
@@ -1180,27 +563,11 @@ var tuning_default = {
       growth: 2.07,
       interval: 0.9,
       mix: [
-        {
-          type: "worker",
-          w: 2
-        },
-        {
-          type: "small",
-          w: 2
-        },
-        {
-          type: "big",
-          w: 2,
-          from: 3
-        },
-        {
-          type: "armored",
-          w: 2
-        },
-        {
-          type: "small_armed",
-          w: 2
-        }
+        { type: "worker", w: 2 },
+        { type: "small", w: 2 },
+        { type: "big", w: 2, from: 3 },
+        { type: "armored", w: 2 },
+        { type: "small_armed", w: 2 }
       ]
     },
     {
@@ -1213,27 +580,11 @@ var tuning_default = {
       growth: 2.2,
       interval: 0.85,
       mix: [
-        {
-          type: "worker",
-          w: 2
-        },
-        {
-          type: "small",
-          w: 2
-        },
-        {
-          type: "gasmask",
-          w: 3
-        },
-        {
-          type: "small_gasmask",
-          w: 3
-        },
-        {
-          type: "flyer",
-          w: 2,
-          from: 2
-        }
+        { type: "worker", w: 2 },
+        { type: "small", w: 2 },
+        { type: "gasmask", w: 3 },
+        { type: "small_gasmask", w: 3 },
+        { type: "flyer", w: 2, from: 2 }
       ]
     },
     {
@@ -1246,27 +597,11 @@ var tuning_default = {
       growth: 2.28,
       interval: 0.75,
       mix: [
-        {
-          type: "small",
-          w: 4
-        },
-        {
-          type: "worker",
-          w: 2
-        },
-        {
-          type: "small_fly",
-          w: 2
-        },
-        {
-          type: "sprinter",
-          w: 1,
-          from: 2
-        },
-        {
-          type: "small_armed",
-          w: 1
-        }
+        { type: "small", w: 4 },
+        { type: "worker", w: 2 },
+        { type: "small_fly", w: 2 },
+        { type: "sprinter", w: 1, from: 2 },
+        { type: "small_armed", w: 1 }
       ]
     },
     {
@@ -1278,35 +613,8 @@ var tuning_default = {
       base: 12,
       growth: 2.4,
       interval: 0.8,
-      mix: [
-        {
-          type: "worker",
-          w: 2
-        },
-        {
-          type: "small",
-          w: 2
-        },
-        {
-          type: "heavy",
-          w: 2,
-          from: 3
-        },
-        {
-          type: "flyer",
-          w: 2
-        }
-      ],
-      special: {
-        "9": [
-          {
-            type: "queen",
-            count: 1,
-            interval: 1,
-            delay: 4
-          }
-        ]
-      }
+      mix: [{ type: "worker", w: 2 }, { type: "small", w: 2 }, { type: "heavy", w: 2, from: 3 }, { type: "flyer", w: 2 }],
+      special: { "9": [{ type: "queen", count: 1, interval: 1, delay: 4 }] }
     },
     {
       world: 2,
@@ -1318,24 +626,10 @@ var tuning_default = {
       growth: 1.8,
       interval: 1,
       mix: [
-        {
-          type: "worker",
-          w: 3
-        },
-        {
-          type: "small",
-          w: 3
-        },
-        {
-          type: "small_fly",
-          w: 1,
-          from: 2
-        },
-        {
-          type: "gasmask",
-          w: 2,
-          from: 2
-        }
+        { type: "worker", w: 3 },
+        { type: "small", w: 3 },
+        { type: "small_fly", w: 1, from: 2 },
+        { type: "gasmask", w: 2, from: 2 }
       ]
     },
     {
@@ -1348,29 +642,11 @@ var tuning_default = {
       growth: 2,
       interval: 0.95,
       mix: [
-        {
-          type: "worker",
-          w: 3
-        },
-        {
-          type: "small",
-          w: 2
-        },
-        {
-          type: "small_armed",
-          w: 2,
-          from: 2
-        },
-        {
-          type: "armored",
-          w: 1,
-          from: 3
-        },
-        {
-          type: "big",
-          w: 1,
-          from: 4
-        }
+        { type: "worker", w: 3 },
+        { type: "small", w: 2 },
+        { type: "small_armed", w: 2, from: 2 },
+        { type: "armored", w: 1, from: 3 },
+        { type: "big", w: 1, from: 4 }
       ]
     },
     {
@@ -1383,28 +659,11 @@ var tuning_default = {
       growth: 2,
       interval: 0.95,
       mix: [
-        {
-          type: "worker",
-          w: 3
-        },
-        {
-          type: "small",
-          w: 2
-        },
-        {
-          type: "flyer",
-          w: 2,
-          from: 2
-        },
-        {
-          type: "small_gasmask",
-          w: 2
-        },
-        {
-          type: "gasmask",
-          w: 1,
-          from: 3
-        }
+        { type: "worker", w: 3 },
+        { type: "small", w: 2 },
+        { type: "flyer", w: 2, from: 2 },
+        { type: "small_gasmask", w: 2 },
+        { type: "gasmask", w: 1, from: 3 }
       ]
     },
     {
@@ -1417,27 +676,11 @@ var tuning_default = {
       growth: 2.1,
       interval: 0.9,
       mix: [
-        {
-          type: "worker",
-          w: 2
-        },
-        {
-          type: "small",
-          w: 2
-        },
-        {
-          type: "armored",
-          w: 2
-        },
-        {
-          type: "small_armed",
-          w: 2
-        },
-        {
-          type: "sprinter",
-          w: 1,
-          from: 3
-        }
+        { type: "worker", w: 2 },
+        { type: "small", w: 2 },
+        { type: "armored", w: 2 },
+        { type: "small_armed", w: 2 },
+        { type: "sprinter", w: 1, from: 3 }
       ]
     },
     {
@@ -1450,26 +693,11 @@ var tuning_default = {
       growth: 2.1,
       interval: 0.9,
       mix: [
-        {
-          type: "worker",
-          w: 2
-        },
-        {
-          type: "small",
-          w: 3
-        },
-        {
-          type: "small_fly",
-          w: 2
-        },
-        {
-          type: "flyer",
-          w: 2
-        },
-        {
-          type: "gasmask",
-          w: 1
-        }
+        { type: "worker", w: 2 },
+        { type: "small", w: 3 },
+        { type: "small_fly", w: 2 },
+        { type: "flyer", w: 2 },
+        { type: "gasmask", w: 1 }
       ]
     },
     {
@@ -1482,26 +710,11 @@ var tuning_default = {
       growth: 2.2,
       interval: 0.85,
       mix: [
-        {
-          type: "small",
-          w: 3
-        },
-        {
-          type: "worker",
-          w: 2
-        },
-        {
-          type: "sprinter",
-          w: 3
-        },
-        {
-          type: "small_armed",
-          w: 1
-        },
-        {
-          type: "flyer",
-          w: 1
-        }
+        { type: "small", w: 3 },
+        { type: "worker", w: 2 },
+        { type: "sprinter", w: 3 },
+        { type: "small_armed", w: 1 },
+        { type: "flyer", w: 1 }
       ]
     },
     {
@@ -1514,27 +727,11 @@ var tuning_default = {
       growth: 2.2,
       interval: 0.9,
       mix: [
-        {
-          type: "worker",
-          w: 2
-        },
-        {
-          type: "big",
-          w: 2
-        },
-        {
-          type: "heavy",
-          w: 1,
-          from: 3
-        },
-        {
-          type: "armored",
-          w: 2
-        },
-        {
-          type: "small",
-          w: 2
-        }
+        { type: "worker", w: 2 },
+        { type: "big", w: 2 },
+        { type: "heavy", w: 1, from: 3 },
+        { type: "armored", w: 2 },
+        { type: "small", w: 2 }
       ]
     },
     {
@@ -1547,26 +744,11 @@ var tuning_default = {
       growth: 2.3,
       interval: 0.85,
       mix: [
-        {
-          type: "small",
-          w: 3
-        },
-        {
-          type: "flyer",
-          w: 2
-        },
-        {
-          type: "small_fly",
-          w: 3
-        },
-        {
-          type: "worker",
-          w: 2
-        },
-        {
-          type: "small_gasmask",
-          w: 2
-        }
+        { type: "small", w: 3 },
+        { type: "flyer", w: 2 },
+        { type: "small_fly", w: 3 },
+        { type: "worker", w: 2 },
+        { type: "small_gasmask", w: 2 }
       ]
     },
     {
@@ -1579,26 +761,11 @@ var tuning_default = {
       growth: 2.4,
       interval: 0.8,
       mix: [
-        {
-          type: "worker",
-          w: 2
-        },
-        {
-          type: "small",
-          w: 3
-        },
-        {
-          type: "heavy",
-          w: 1
-        },
-        {
-          type: "sprinter",
-          w: 2
-        },
-        {
-          type: "small_fly",
-          w: 2
-        }
+        { type: "worker", w: 2 },
+        { type: "small", w: 3 },
+        { type: "heavy", w: 1 },
+        { type: "sprinter", w: 2 },
+        { type: "small_fly", w: 2 }
       ]
     },
     {
@@ -1610,186 +777,443 @@ var tuning_default = {
       base: 12,
       growth: 2.4,
       interval: 0.8,
-      mix: [
-        {
-          type: "worker",
-          w: 2
-        },
-        {
-          type: "small",
-          w: 2
-        },
-        {
-          type: "sprinter",
-          w: 2
-        },
-        {
-          type: "flyer",
-          w: 2
-        }
-      ],
-      special: {
-        "9": [
-          {
-            type: "queen2",
-            count: 1,
-            interval: 1,
-            delay: 4
-          }
+      mix: [{ type: "worker", w: 2 }, { type: "small", w: 2 }, { type: "sprinter", w: 2 }, { type: "flyer", w: 2 }],
+      special: { "9": [{ type: "queen2", count: 1, interval: 1, delay: 4 }] }
+    },
+    {
+      world: 3,
+      name: "Pantry Door",
+      map: "w3_shelves",
+      waveCount: 6,
+      hpMul: 3,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1.1, delay: 0 }],
+        [{ type: "small", count: 8, interval: 0.45, delay: 0 }, { type: "worker", count: 4, interval: 1.1, delay: 1 }],
+        [
+          { type: "worker", count: 6, interval: 1, delay: 0 },
+          { type: "flyer", count: 2, interval: 0.8, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [{ type: "flyer", count: 4, interval: 0.8, delay: 0 }, { type: "worker", count: 6, interval: 1, delay: 0 }],
+        [
+          { type: "small", count: 10, interval: 0.45, delay: 0 },
+          { type: "worker", count: 6, interval: 1, delay: 0 },
+          { type: "flyer", count: 3, interval: 0.8, delay: 1 }
+        ],
+        [
+          { type: "worker", count: 8, interval: 0.9, delay: 0 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 },
+          { type: "flyer", count: 4, interval: 0.8, delay: 1 }
         ]
-      }
+      ]
+    },
+    {
+      world: 3,
+      name: "Butter Fingers",
+      map: "w3_butter",
+      waveCount: 7,
+      hpMul: 4,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 5, interval: 1, delay: 0 }, { type: "small", count: 6, interval: 0.45, delay: 1 }],
+        [
+          { type: "worker", count: 4, interval: 1, delay: 0 },
+          { type: "greasy", count: 2, interval: 1.2, delay: 2 },
+          { type: "small", count: 6, interval: 0.45, delay: 1 }
+        ],
+        [{ type: "small", count: 10, interval: 0.45, delay: 0 }, { type: "greasy", count: 3, interval: 1.1, delay: 2 }],
+        [
+          { type: "worker", count: 6, interval: 1, delay: 0 },
+          { type: "small_fly", count: 6, interval: 0.5, delay: 1 },
+          { type: "greasy", count: 3, interval: 1.1, delay: 1 }
+        ],
+        [
+          { type: "greasy", count: 4, interval: 1, delay: 0 },
+          { type: "small", count: 10, interval: 0.45, delay: 0 },
+          { type: "worker", count: 4, interval: 1, delay: 0 }
+        ],
+        [
+          { type: "small_fly", count: 8, interval: 0.5, delay: 0 },
+          { type: "greasy", count: 5, interval: 1, delay: 1 },
+          { type: "worker", count: 5, interval: 1, delay: 0 }
+        ],
+        [
+          { type: "greasy", count: 6, interval: 0.9, delay: 0 },
+          { type: "worker", count: 6, interval: 1, delay: 1 },
+          { type: "small", count: 12, interval: 0.45, delay: 1 }
+        ]
+      ]
+    },
+    {
+      world: 3,
+      name: "Lattice",
+      map: "w3_lattice",
+      waveCount: 7,
+      hpMul: 4.5,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [{ type: "flyer", count: 4, interval: 0.8, delay: 0 }, { type: "worker", count: 5, interval: 1, delay: 1 }],
+        [
+          { type: "small_fly", count: 8, interval: 0.5, delay: 0 },
+          { type: "worker", count: 6, interval: 1, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "flyer", count: 5, interval: 0.8, delay: 0 },
+          { type: "worker", count: 6, interval: 1, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "small_fly", count: 10, interval: 0.5, delay: 0 },
+          { type: "flyer", count: 4, interval: 0.8, delay: 1 },
+          { type: "worker", count: 6, interval: 1, delay: 1 }
+        ],
+        [
+          { type: "worker", count: 8, interval: 0.9, delay: 0 },
+          { type: "flyer", count: 6, interval: 0.8, delay: 1 },
+          { type: "small", count: 12, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "small_fly", count: 12, interval: 0.5, delay: 0 },
+          { type: "flyer", count: 6, interval: 0.75, delay: 1 },
+          { type: "worker", count: 8, interval: 0.9, delay: 1 }
+        ]
+      ]
+    },
+    {
+      world: 3,
+      name: "Spice Rack",
+      map: "w3_spice",
+      waveCount: 7,
+      hpMul: 3.2,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 5, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [{ type: "small_armed", count: 6, interval: 0.6, delay: 0 }, { type: "worker", count: 4, interval: 1, delay: 1 }],
+        [
+          { type: "worker", count: 6, interval: 1, delay: 0 },
+          { type: "armored", count: 1, interval: 1.5, delay: 2 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "small_armed", count: 8, interval: 0.6, delay: 0 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 },
+          { type: "armored", count: 2, interval: 1.5, delay: 2 }
+        ],
+        [
+          { type: "worker", count: 8, interval: 0.9, delay: 0 },
+          { type: "small_armed", count: 6, interval: 0.6, delay: 1 },
+          { type: "armored", count: 2, interval: 1.5, delay: 1 }
+        ],
+        [
+          { type: "small", count: 12, interval: 0.45, delay: 0 },
+          { type: "armored", count: 3, interval: 1.5, delay: 1 },
+          { type: "small_armed", count: 6, interval: 0.6, delay: 1 }
+        ],
+        [
+          { type: "armored", count: 4, interval: 1.4, delay: 0 },
+          { type: "worker", count: 8, interval: 0.9, delay: 1 },
+          { type: "small_armed", count: 8, interval: 0.6, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ]
+      ]
+    },
+    {
+      world: 3,
+      name: "Brood Nest",
+      map: "w3_jar",
+      waveCount: 7,
+      hpMul: 4.5,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [
+          { type: "worker", count: 6, interval: 1, delay: 0 },
+          { type: "mama", count: 1, interval: 1.6, delay: 2 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "small_gasmask", count: 8, interval: 0.45, delay: 0 },
+          { type: "worker", count: 6, interval: 1, delay: 1 },
+          { type: "mama", count: 1, interval: 1.6, delay: 2 }
+        ],
+        [
+          { type: "small", count: 10, interval: 0.45, delay: 0 },
+          { type: "mama", count: 2, interval: 1.6, delay: 1 },
+          { type: "worker", count: 5, interval: 1, delay: 1 }
+        ],
+        [
+          { type: "small_gasmask", count: 10, interval: 0.45, delay: 0 },
+          { type: "worker", count: 6, interval: 1, delay: 0 },
+          { type: "mama", count: 2, interval: 1.6, delay: 2 }
+        ],
+        [
+          { type: "worker", count: 8, interval: 0.9, delay: 0 },
+          { type: "mama", count: 3, interval: 1.6, delay: 1 },
+          { type: "small", count: 12, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "mama", count: 3, interval: 1.5, delay: 0 },
+          { type: "small_gasmask", count: 12, interval: 0.45, delay: 1 },
+          { type: "worker", count: 8, interval: 0.9, delay: 1 }
+        ]
+      ]
+    },
+    {
+      world: 3,
+      name: "Fruit Bowl",
+      map: "w3_fruit",
+      waveCount: 6,
+      hpMul: 6,
+      interval: 1,
+      waves: [
+        [{ type: "flyer", count: 4, interval: 0.8, delay: 0 }, { type: "worker", count: 5, interval: 1, delay: 1 }],
+        [{ type: "small_fly", count: 8, interval: 0.5, delay: 0 }, { type: "worker", count: 5, interval: 1, delay: 1 }],
+        [{ type: "flyer", count: 6, interval: 0.8, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [
+          { type: "small_fly", count: 10, interval: 0.5, delay: 0 },
+          { type: "flyer", count: 4, interval: 0.8, delay: 1 },
+          { type: "worker", count: 4, interval: 1, delay: 1 }
+        ],
+        [
+          { type: "flyer", count: 8, interval: 0.75, delay: 0 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 },
+          { type: "worker", count: 5, interval: 1, delay: 0 }
+        ],
+        [
+          { type: "small_fly", count: 12, interval: 0.5, delay: 0 },
+          { type: "flyer", count: 8, interval: 0.7, delay: 1 },
+          { type: "worker", count: 6, interval: 0.9, delay: 1 }
+        ]
+      ]
+    },
+    {
+      world: 3,
+      name: "Gas Mask Gala",
+      map: "w3_gala",
+      waveCount: 8,
+      hpMul: 6,
+      interval: 1,
+      waves: [
+        [
+          { type: "worker", count: 5, interval: 1, delay: 0 },
+          { type: "small_gasmask", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "gasmask", count: 4, interval: 1, delay: 0 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small_gasmask", count: 6, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "greasy", count: 3, interval: 1.1, delay: 0 },
+          { type: "gasmask", count: 4, interval: 1, delay: 1 },
+          { type: "small_gasmask", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "flyer", count: 5, interval: 0.8, delay: 0 },
+          { type: "gasmask", count: 5, interval: 1, delay: 1 },
+          { type: "greasy", count: 3, interval: 1.1, delay: 1 }
+        ],
+        [
+          { type: "small_gasmask", count: 12, interval: 0.45, delay: 0 },
+          { type: "greasy", count: 4, interval: 1, delay: 1 },
+          { type: "gasmask", count: 4, interval: 1, delay: 1 }
+        ],
+        [
+          { type: "gasmask", count: 6, interval: 0.9, delay: 0 },
+          { type: "greasy", count: 5, interval: 1, delay: 1 },
+          { type: "flyer", count: 4, interval: 0.8, delay: 1 }
+        ],
+        [
+          { type: "small_gasmask", count: 14, interval: 0.45, delay: 0 },
+          { type: "gasmask", count: 6, interval: 0.9, delay: 1 },
+          { type: "greasy", count: 5, interval: 1, delay: 1 }
+        ],
+        [
+          { type: "gasmask", count: 8, interval: 0.85, delay: 0 },
+          { type: "greasy", count: 6, interval: 0.95, delay: 1 },
+          { type: "flyer", count: 5, interval: 0.8, delay: 1 },
+          { type: "small_gasmask", count: 12, interval: 0.45, delay: 1 }
+        ]
+      ]
+    },
+    {
+      world: 3,
+      name: "Heavy Pastry",
+      map: "w3_cloud",
+      waveCount: 8,
+      hpMul: 4,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [
+          { type: "flyer", count: 4, interval: 0.8, delay: 0 },
+          { type: "worker", count: 6, interval: 1, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "big", count: 2, interval: 1.6, delay: 1 },
+          { type: "worker", count: 6, interval: 1, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "flyer", count: 5, interval: 0.8, delay: 0 },
+          { type: "big", count: 3, interval: 1.6, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "heavy", count: 1, interval: 1.7, delay: 2 },
+          { type: "big", count: 2, interval: 1.6, delay: 0 },
+          { type: "worker", count: 6, interval: 1, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "big", count: 4, interval: 1.5, delay: 0 },
+          { type: "flyer", count: 5, interval: 0.8, delay: 1 },
+          { type: "small", count: 12, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "heavy", count: 2, interval: 1.7, delay: 2 },
+          { type: "big", count: 3, interval: 1.5, delay: 0 },
+          { type: "worker", count: 8, interval: 0.9, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "heavy", count: 3, interval: 1.6, delay: 1 },
+          { type: "big", count: 4, interval: 1.5, delay: 1 },
+          { type: "flyer", count: 5, interval: 0.8, delay: 1 },
+          { type: "worker", count: 6, interval: 0.9, delay: 1 }
+        ]
+      ]
+    },
+    {
+      world: 3,
+      name: "Everything Pie",
+      map: "w3_every",
+      waveCount: 9,
+      hpMul: 6,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [
+          { type: "greasy", count: 3, interval: 1.1, delay: 0 },
+          { type: "small", count: 8, interval: 0.45, delay: 0 },
+          { type: "worker", count: 4, interval: 1, delay: 1 }
+        ],
+        [
+          { type: "sprinter", count: 4, interval: 0.9, delay: 1 },
+          { type: "worker", count: 6, interval: 1, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 0 }
+        ],
+        [
+          { type: "mama", count: 1, interval: 1.6, delay: 2 },
+          { type: "greasy", count: 4, interval: 1, delay: 0 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "sprinter", count: 6, interval: 0.9, delay: 0 },
+          { type: "worker", count: 6, interval: 1, delay: 1 },
+          { type: "greasy", count: 4, interval: 1, delay: 1 }
+        ],
+        [
+          { type: "mama", count: 2, interval: 1.6, delay: 0 },
+          { type: "small", count: 12, interval: 0.45, delay: 1 },
+          { type: "sprinter", count: 4, interval: 0.9, delay: 1 }
+        ],
+        [
+          { type: "greasy", count: 6, interval: 0.95, delay: 0 },
+          { type: "sprinter", count: 6, interval: 0.9, delay: 1 },
+          { type: "worker", count: 8, interval: 0.9, delay: 1 }
+        ],
+        [
+          { type: "mama", count: 3, interval: 1.5, delay: 0 },
+          { type: "small", count: 14, interval: 0.45, delay: 1 },
+          { type: "greasy", count: 5, interval: 1, delay: 1 }
+        ],
+        [
+          { type: "sprinter", count: 8, interval: 0.85, delay: 0 },
+          { type: "mama", count: 3, interval: 1.5, delay: 1 },
+          { type: "greasy", count: 6, interval: 0.95, delay: 1 },
+          { type: "worker", count: 8, interval: 0.9, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ]
+      ]
+    },
+    {
+      world: 3,
+      name: "Pie Queen",
+      map: "w3_tin",
+      waveCount: 9,
+      hpMul: 1.15,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [
+          { type: "flyer", count: 4, interval: 0.8, delay: 0 },
+          { type: "worker", count: 5, interval: 1, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "greasy", count: 3, interval: 1.1, delay: 0 },
+          { type: "worker", count: 6, interval: 1, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "flyer", count: 5, interval: 0.8, delay: 0 },
+          { type: "greasy", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 0 }
+        ],
+        [
+          { type: "worker", count: 8, interval: 0.9, delay: 0 },
+          { type: "greasy", count: 4, interval: 1, delay: 1 },
+          { type: "flyer", count: 4, interval: 0.8, delay: 1 }
+        ],
+        [
+          { type: "small", count: 14, interval: 0.45, delay: 0 },
+          { type: "flyer", count: 6, interval: 0.8, delay: 1 },
+          { type: "greasy", count: 4, interval: 1, delay: 1 }
+        ],
+        [
+          { type: "greasy", count: 6, interval: 0.95, delay: 0 },
+          { type: "worker", count: 8, interval: 0.9, delay: 0 },
+          { type: "flyer", count: 6, interval: 0.8, delay: 1 }
+        ],
+        [
+          { type: "small", count: 14, interval: 0.45, delay: 0 },
+          { type: "greasy", count: 6, interval: 0.95, delay: 1 },
+          { type: "worker", count: 8, interval: 0.9, delay: 1 },
+          { type: "flyer", count: 5, interval: 0.8, delay: 1 }
+        ],
+        [
+          { type: "worker", count: 8, interval: 0.9, delay: 0 },
+          { type: "greasy", count: 5, interval: 1, delay: 1 },
+          { type: "flyer", count: 5, interval: 0.8, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 },
+          { type: "queen3", count: 1, interval: 1, delay: 4 }
+        ]
+      ]
     }
   ],
   maps: {
     zigzag: {
       name: "Breakfast Counter",
       theme: 0,
-      path: [
-        [
-          1,
-          -0.6
-        ],
-        [
-          1,
-          2
-        ],
-        [
-          8,
-          2
-        ],
-        [
-          8,
-          5
-        ],
-        [
-          1,
-          5
-        ],
-        [
-          1,
-          8
-        ],
-        [
-          8,
-          8
-        ],
-        [
-          8,
-          10
-        ]
-      ],
-      props: [
-        {
-          k: "sugar",
-          c: 5,
-          r: 10
-        },
-        {
-          k: "mug",
-          c: 9,
-          r: 6
-        }
-      ]
+      path: [[1, -0.6], [1, 2], [8, 2], [8, 5], [1, 5], [1, 8], [8, 8], [8, 10]],
+      props: [{ k: "sugar", c: 5, r: 10 }, { k: "mug", c: 9, r: 6 }]
     },
     hook: {
       name: "Baking Table",
       theme: 1,
-      path: [
-        [
-          8,
-          -0.6
-        ],
-        [
-          8,
-          1
-        ],
-        [
-          2,
-          1
-        ],
-        [
-          2,
-          4
-        ],
-        [
-          7,
-          4
-        ],
-        [
-          7,
-          7
-        ],
-        [
-          2,
-          7
-        ],
-        [
-          2,
-          10
-        ],
-        [
-          6,
-          10
-        ]
-      ],
-      props: [
-        {
-          k: "jam",
-          c: 0,
-          r: 11
-        },
-        {
-          k: "plant",
-          c: 9,
-          r: 9
-        }
-      ]
+      path: [[8, -0.6], [8, 1], [2, 1], [2, 4], [7, 4], [7, 7], [2, 7], [2, 10], [6, 10]],
+      props: [{ k: "jam", c: 0, r: 11 }, { k: "plant", c: 9, r: 9 }]
     },
     spiral: {
       name: "Midnight Snack",
       theme: 2,
-      path: [
-        [
-          -0.6,
-          1
-        ],
-        [
-          8,
-          1
-        ],
-        [
-          8,
-          10
-        ],
-        [
-          1,
-          10
-        ],
-        [
-          1,
-          4
-        ],
-        [
-          5,
-          4
-        ],
-        [
-          5,
-          7
-        ]
-      ],
-      props: [
-        {
-          k: "mug",
-          c: 3,
-          r: 7
-        },
-        {
-          k: "spoon",
-          c: 9,
-          r: 11
-        }
-      ]
+      path: [[-0.6, 1], [8, 1], [8, 10], [1, 10], [1, 4], [5, 4], [5, 7]],
+      props: [{ k: "mug", c: 3, r: 7 }, { k: "spoon", c: 9, r: 11 }]
     },
     fork: {
       name: "Sugar Bowl Split",
@@ -1951,6 +1375,174 @@ var tuning_default = {
         "........#.",
         "...J....#.",
         "........C."
+      ]
+    },
+    w3_shelves: {
+      name: "Pantry Shelves",
+      theme: 5,
+      grid: [
+        ".N........",
+        ".#........",
+        ".#######..",
+        ".......#..",
+        ".......#..",
+        "..######..",
+        "..#.....P.",
+        "..#.......",
+        "..######..",
+        ".......#.J",
+        ".......#..",
+        ".......C.."
+      ]
+    },
+    w3_butter: {
+      name: "Butter Dish",
+      theme: 4,
+      path: [[1, -0.6], [1, 1], [7, 1], [7, 4], [2, 4], [2, 7], [7, 7], [7, 10], [3, 10]],
+      props: [{ k: "jam", c: 9, r: 11 }, { k: "plant", c: 0, r: 9 }]
+    },
+    w3_lattice: {
+      name: "Lattice Crust",
+      theme: 6,
+      grid: [
+        "....N.....",
+        "....#.....",
+        "..#####...",
+        "..#...#...",
+        "..#.M.#...",
+        "..#...#...",
+        "..#...#...",
+        "..#####...",
+        "....#.....",
+        "....#..J..",
+        "....#.....",
+        "....C....."
+      ]
+    },
+    w3_spice: {
+      name: "Spice Rack",
+      theme: 5,
+      grid: [
+        ".........N",
+        "........##",
+        ".M.....##.",
+        "......##..",
+        ".....##...",
+        "....##....",
+        "...##.....",
+        "..##......",
+        ".##.....B.",
+        ".#........",
+        ".#....J...",
+        ".C........"
+      ]
+    },
+    w3_jar: {
+      name: "Jam Jar Run",
+      theme: 4,
+      grid: [
+        ".N......N.",
+        ".#......#.",
+        ".#......#.",
+        ".###..###.",
+        "...#..#...",
+        "...####...",
+        "......#...",
+        "......#.B.",
+        ".######...",
+        ".#........",
+        ".#######..",
+        ".......C.."
+      ]
+    },
+    w3_fruit: {
+      name: "Fruit Bowl",
+      theme: 6,
+      grid: [
+        "........N.",
+        "........#.",
+        "...####.#.",
+        ".M.#..#.#.",
+        "...#..#.#.",
+        "...#..###.",
+        "...#......",
+        "...###..S.",
+        ".....#....",
+        "..P..####.",
+        "........#.",
+        "..C######."
+      ]
+    },
+    w3_gala: {
+      name: "Gala Hall",
+      theme: 5,
+      grid: [
+        "........N.",
+        "..####..#.",
+        "..#..#..#.",
+        "P.#..#..#.",
+        "..#..####.",
+        "..#.......",
+        "..#####.M.",
+        ".J....#...",
+        ".####.#...",
+        ".#..#.#.B.",
+        ".#..###...",
+        ".C........"
+      ]
+    },
+    w3_cloud: {
+      name: "Flour Cloud",
+      theme: 4,
+      grid: [
+        "N.........",
+        "#.#######.",
+        "#.#.....#.",
+        "#.#.....#.",
+        "#.#.###.#.",
+        "#.#.C.#.#.",
+        "#.#...#.#.",
+        "#.#...#.#.",
+        "#.#####.#.",
+        "#.......#.",
+        "#########.",
+        "..M....B.."
+      ]
+    },
+    w3_every: {
+      name: "Everything Shelf",
+      theme: 5,
+      grid: [
+        ".........N",
+        "...#######",
+        "...#......",
+        ".M.#.####.",
+        "...#.#..#.",
+        "...#.#..#.",
+        "...###..#.",
+        "........#.",
+        "...######.",
+        ".B.#......",
+        ".###....P.",
+        ".C........"
+      ]
+    },
+    w3_tin: {
+      name: "Pie Tin",
+      theme: 6,
+      grid: [
+        "....N.....",
+        "....#.....",
+        "....#.....",
+        ".###+###..",
+        ".#..#..#..",
+        ".#..####..",
+        ".#........",
+        ".#......M.",
+        ".####.....",
+        "....#.....",
+        "....#.....",
+        "....C....."
       ]
     }
   }
@@ -2250,7 +1842,7 @@ var AIR_COUNTERS = ["laser", "zapper"], TARGET_MODE_TEXT = {
   lizard: { carrier: "Targets ants carrying food first, then fewest HP left; chews after kills.", front: "Targets the walking ant closest to the cookie; chews after kills." },
   laser: { carrier: "Aims at ants carrying food first, then fewest HP. Heat: +12% per hit on the same ant.", front: "Aims at the walking ant closest to the cookie. Heat: +12% per hit on the same ant." },
   zapper: { carrier: "First zap: food carriers first, then fewest HP. Chains to the nearest flyers (60% each jump).", front: "First zap: the flyer closest to the cookie. Chains to the nearest flyers (60% each jump)." }
-}, VERSION = "0.7.6", ANT_SIZES = { ...tuning_default.antSizes }, ANT_TEXT = {
+}, VERSION = "0.7.7", ANT_SIZES = { ...tuning_default.antSizes }, ANT_TEXT = {
   small: { name: "Scout Ant", desc: "Tiny, fast, comes in swarms." },
   worker: { name: "Worker Ant", desc: "The regular. Hard hat included." },
   big: { name: "Big Ant", desc: "Slow, chunky, a bit of armor." },
@@ -2264,7 +1856,11 @@ var AIR_COUNTERS = ["laser", "zapper"], TARGET_MODE_TEXT = {
   small_gasmask: { name: "Masked Scout", desc: "A tiny scout with a gas mask - spray does nothing." },
   small_armed: { name: "Armored Scout", desc: "A tiny scout in armour. Slower, shrugs off weak hits." },
   small_fly: { name: "Flying Scout", desc: "A tiny flying scout. Laser or zapper!" },
-  queen2: { name: "Swift Queen", desc: "BOSS of world 2. Fast, calls flying ants. Takes 40 of the cake." }
+  queen2: { name: "Swift Queen", desc: "BOSS of world 2. Fast, calls flying ants. Takes 40 of the cake." },
+  // v0.7.7 world 3 (Pie Pantry)
+  greasy: { name: "Buttery Ant", desc: "Slippery! Slowing barely works. Hit it hard." },
+  mama: { name: "Brood Ant", desc: "Drops 3 baby ants when she falls." },
+  queen3: { name: "Pie Queen", desc: "BOSS of world 3. Calls buttery ants. Takes 55 of the pie. Ignores most slowing." }
 }, QUEEN_TRAITS = { ...tuning_default.queenTraitMods };
 function queenTake(traits = [], T = QUEEN_TRAITS) {
   return 50 + traits.reduce((s, t) => s + (T[t] || 0), 0);
@@ -2272,7 +1868,7 @@ function queenTake(traits = [], T = QUEEN_TRAITS) {
 var ANTS = {};
 for (let [id, a] of Object.entries(tuning_default.ants))
   ANTS[id] = { ...ANT_TEXT[id] || { name: id, desc: "" }, ...a, size: ANT_SIZES[a.size] ?? a.size, sizeClass: a.size }, a.boss && (ANTS[id].steal = queenTake(a.queenTraits || []));
-var isQueen = (type) => !!(ANTS[type] && ANTS[type].boss), WORLDS = tuning_default.worlds.map((w) => ({ coinMul: 1, ...w })), QUEENS = Object.fromEntries(WORLDS.map((w) => [w.id, { type: w.queen, traits: tuning_default.ants[w.queen].queenTraits }]));
+var isQueen = (type) => !!(ANTS[type] && ANTS[type].boss), RARITY_TIERS = ["common", "uncommon", "rare", "elite", "boss"], rarityOf = (type) => ANTS[type] && ANTS[type].rarity || "common", rarityRank = (type) => Math.max(0, RARITY_TIERS.indexOf(rarityOf(type))), WORLDS = tuning_default.worlds.map((w) => ({ coinMul: 1, ...w })), QUEENS = Object.fromEntries(WORLDS.map((w) => [w.id, { type: w.queen, traits: tuning_default.ants[w.queen].queenTraits }]));
 function antPower(a) {
   return a.hp * (1 + 0.12 * a.armor) * (a.gasImmune ? 1.15 : 1) * (a.flying ? 1.4 : 1) * Math.sqrt(a.speed / ANTS.worker.speed);
 }
@@ -2576,7 +2172,7 @@ var Path = class {
   isPathTile(c, r) {
     return this.tiles.has(c + "," + r);
   }
-}, SPACING = {
+}, SPLIT_BACK = 3, SPLIT_STEP = 7, MAX_SPLIT_DEPTH = 1, SPACING = {
   small: 0.45,
   worker: 1,
   big: 1.6,
@@ -2589,7 +2185,10 @@ var Path = class {
   queen2: 1,
   small_gasmask: 0.45,
   small_armed: 0.6,
-  small_fly: 0.5
+  small_fly: 0.5,
+  greasy: 1.1,
+  mama: 1.6,
+  queen3: 1
 };
 function generateWaves(levelIndex, levels = LEVELS) {
   let L = levels[levelIndex];
@@ -2794,15 +2393,31 @@ var NEXT_ID = 1, Battle = class {
   }
   kill(ant, src) {
     ant.dead = !0;
-    let crumbs = crumbsFor(ant.type);
-    if (this.addCrumbs(crumbs), this.stats.kills++, this.stats.byType[ant.type] = (this.stats.byType[ant.type] || 0) + 1, ant.carrying > 0 && this.cfg.rescue && this.cfg.rescue.on) {
+    let crumbs = ant.child ? 0 : crumbsFor(ant.type);
+    if (this.addCrumbs(crumbs), ant.child ? this.stats.childKills = (this.stats.childKills || 0) + 1 : (this.stats.kills++, this.stats.byType[ant.type] = (this.stats.byType[ant.type] || 0) + 1), ant.carrying > 0 && this.cfg.rescue && this.cfg.rescue.on) {
       let R = this.cfg.rescue, auto = Math.round(ant.carrying * R.auto * 1e3) / 1e3, bonus = Math.round(ant.carrying * (R.tap - R.auto) * 1e3) / 1e3;
       this.stats.lostOnWay += ant.carrying - auto, auto > 0 && (this.foodStored = Math.min(this.cfg.foodHP, this.foodStored + auto), this.stats.returned += auto, this.emit({ type: "foodReturn", x: ant.x, y: ant.y, n: auto, of: ant.carrying })), bonus > 0 && this.dropPiece(ant.x, ant.y, bonus), ant.carrying = 0;
     } else if (ant.carrying > 0) {
       let rt = this.route(ant), back = foodReturned(ant.carrying, ant.d / rt.length, this.cfg.foodReturn);
       this.stats.lostOnWay += ant.carrying - back, back > 0 && (this.foodStored = Math.min(this.cfg.foodHP, this.foodStored + back), this.stats.returned += back, this.emit({ type: "foodReturn", x: ant.x, y: ant.y, n: back, of: ant.carrying })), ant.carrying = 0;
     }
-    this.emit({ type: "kill", x: ant.x, y: ant.y, ant: ant.type, crumbs, src: src && src.type, ...src && src.type === "swatter" ? { ref: ant } : {} }), src && src.type === "lizard" && (src.chew = src.stat("chewTime"));
+    this.emit({ type: "kill", x: ant.x, y: ant.y, ant: ant.type, crumbs, src: src && src.type, ...src && src.type === "swatter" ? { ref: ant } : {} }), src && src.type === "lizard" && (src.chew = src.stat("chewTime")), this.splitAnt(ant);
+  }
+  // v0.7.7 splitInto (tuning.json ants[].splitInto = { type, count }): a dying ant drops `count` children of `type` on its own route, behind it
+  // (d - 3 - 7k, k = 0..count-1; where that would fall off the nest end the child goes the same distance AHEAD instead, so no two children stack).
+  // Children pay 0 crumbs (kill()), do not count as kills, start at full hp x hpMul, walk the normal 'go' state, and NEVER split (child flag + MAX_SPLIT_DEPTH).
+  splitAnt(ant) {
+    let SP = ANTS[ant.type].splitInto;
+    if (!SP || ant.child || (ant.gen || 0) >= MAX_SPLIT_DEPTH || !(SP.count > 0) || !ANTS[SP.type] || ant.splitDone) return [];
+    ant.splitDone = !0;
+    let len = this.routes[ant.ri].length, kids = [];
+    for (let k = 0; k < SP.count; k++) {
+      let off = SPLIT_BACK + k * SPLIT_STEP, d = ant.d - off;
+      d < 0 && (d = Math.min(len - 0.01, ant.d + off));
+      let c = this.spawn(SP.type, Math.max(0, d), ant.ri);
+      c.child = !0, c.gen = (ant.gen || 0) + 1, c.parentId = ant.id, kids.push(c);
+    }
+    return this.stats.splitSpawned = (this.stats.splitSpawned || 0) + kids.length, this.emit({ type: "split", x: ant.x, y: ant.y, ant: ant.type, kids: kids.map((c) => ({ id: c.id, x: c.x, y: c.y })) }), kids;
   }
   // ----- v0.7.4 M2: rescue the crumb (flag cfg.rescue.on; default off = v0.7.3's automatic 40%) -----
   dropPiece(x, y, bonus) {
@@ -3315,7 +2930,7 @@ function newSave() {
     packsSinceNew: 0
   };
 }
-var SAVE_VERSION = 5;
+var SAVE_VERSION = 6;
 function newOnboardState() {
   return { zapperGift: "none", grantedOnLoad: !1 };
 }
@@ -3573,8 +3188,24 @@ function grantPerfectPrize(save, rng = Math.random, table = ECONOMY.perfectPrize
   }
   return grantBooster(save, pick.id, pick.count);
 }
+function grantBossGift(save, levelIndex) {
+  let id, level, locked = lockedCards(save);
+  if (locked.length) {
+    let min = Math.min(...locked.map((x) => unlockPrice(x)));
+    id = locked.find((x) => unlockPrice(x) === min), level = 1;
+  } else {
+    let W2 = WORLDS.find((x) => x.id === worldOf(levelIndex)), cap = W2 && W2.cardLevelCap || MAX_CARD_LEVEL, best = -1;
+    for (let x of ALL_CARDS) {
+      let n = totalCards(save.cards[x]);
+      n > best && (best = n, id = x);
+    }
+    level = Math.min(MAX_CARD_LEVEL, Math.max(2, cap - 2));
+  }
+  let got = addCards(save, id, level, 1);
+  return save.cards[id].fresh = !0, { kind: "cards", id, level, count: 1, newCard: got.newType, newLevel: got.newLevel, reveal: got.newType || got.newLevel, boss: !0 };
+}
 function applyBattleResult(save, levelIndex, result, stars, info = {}, rng = Math.random) {
-  let E = ECONOMY, out = { coins: 0, parts: {}, unlocked: null, bonusReward: null, booster: null, prize: null, firstClear: !1, perfect: !1, starCoins: 0, gems: 0 };
+  let E = ECONOMY, out = { coins: 0, parts: {}, unlocked: null, bonusReward: null, booster: null, prize: null, bossGift: null, firstClear: !1, perfect: !1, starCoins: 0, gems: 0 };
   if (result === "win") {
     let lv = save.levels[levelIndex];
     out.firstClear = !lv.cleared;
@@ -3588,7 +3219,7 @@ function applyBattleResult(save, levelIndex, result, stars, info = {}, rng = Mat
         out.booster = grantBooster(save, b, 1), out.bonusReward = b;
       }
     }
-    info.perfect && (out.perfect = !0, out.prize = grantPerfectPrize(save, rng, void 0, { noBooster: !!out.booster })), lv.cleared = !0, lv.stars = Math.max(lv.stars, stars), info.perfect && (lv.perfect = !0), save.onboard = save.onboard || newOnboardState(), levelIndex === ZAPPER_STAGE && out.firstClear && save.onboard.zapperGift === "none" && (save.onboard.zapperGift = "pending", out.zapperGift = !0);
+    out.firstClear && isBossLevel(levelIndex) && (out.bossGift = grantBossGift(save, levelIndex)), info.perfect && (out.perfect = !0, out.prize = grantPerfectPrize(save, rng, void 0, { noBooster: !!out.booster })), lv.cleared = !0, lv.stars = Math.max(lv.stars, stars), info.perfect && (lv.perfect = !0), save.onboard = save.onboard || newOnboardState(), levelIndex === ZAPPER_STAGE && out.firstClear && save.onboard.zapperGift === "none" && (save.onboard.zapperGift = "pending", out.zapperGift = !0);
   } else {
     let c = battleCoins("lose", { kills: info.kills || 0, time: info.time || 0 });
     out.coins = c.total, out.parts = c.parts;
@@ -3866,7 +3497,7 @@ function starShape(ctx2, x, y, r, fill, lw = 2) {
   }
   ctx2.closePath(), ctx2.fillStyle = fill, ctx2.fill(), ctx2.lineJoin = "round", ctx2.lineWidth = lw, ctx2.strokeStyle = INK, ctx2.stroke();
 }
-var ANT_COL = { small: "#f8c07e", worker: "#f0994d", big: "#d97a3f", gasmask: "#f0994d", armored: "#e48a47", flyer: "#f9b878", queen: "#f59b9b", queen2: "#c7a6f5", sprinter: "#f0994d", heavy: "#b95b34" }, ALW = 2.4;
+var ANT_COL = { small: "#f8c07e", worker: "#f0994d", big: "#d97a3f", gasmask: "#f0994d", armored: "#e48a47", flyer: "#f9b878", queen: "#f59b9b", queen2: "#c7a6f5", sprinter: "#f0994d", heavy: "#b95b34", greasy: "#ee9f45", mama: "#d9774a", queen3: "#e9b05c" }, ALW = 2.4;
 function softBlob(ctx2, x, y, rx, ry, col, lw = ALW) {
   blob(ctx2, x, y, rx, ry, col, lw), ctx2.beginPath(), ctx2.ellipse(x - rx * 0.28, y - ry * 0.46, rx * 0.4, ry * 0.22, -0.35, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.5)", ctx2.fill();
 }
@@ -3892,7 +3523,7 @@ var ANT_LOOK = { small_gasmask: "gasmask", small_armed: "armored", small_fly: "f
 function drawAnt(ctx2, type, phase = 0, opt = {}) {
   let S2 = ANTS[type].size;
   type = ANT_LOOK[type] || type;
-  let col = ANT_COL[type], legCol = shade(col, -0.18), farCol = shade(col, -0.32), P = phase * Math.PI * 2, step = Math.sin(P), hop = Math.abs(Math.sin(P)), flying = type === "flyer", queen = type === "queen" || type === "queen2", swiftQueen = type === "queen2", big = type === "big" || type === "heavy", shell = type === "armored" || type === "heavy" || type === "sprinter", sprinter = type === "sprinter", heavy = type === "heavy";
+  let col = ANT_COL[type], legCol = shade(col, -0.18), farCol = shade(col, -0.32), P = phase * Math.PI * 2, step = Math.sin(P), hop = Math.abs(Math.sin(P)), flying = type === "flyer", queen = type === "queen" || type === "queen2" || type === "queen3", swiftQueen = type === "queen2", mama = type === "mama", greasy = type === "greasy", pieQueen = type === "queen3", big = type === "big" || type === "heavy" || mama, shell = type === "armored" || type === "heavy" || type === "sprinter", sprinter = type === "sprinter", heavy = type === "heavy";
   ctx2.save(), ctx2.scale(S2, S2), ctx2.lineJoin = "round", ctx2.lineCap = "round", flying ? shadow(ctx2, 0, 21, 10, 3, 0.13) : shadow(ctx2, 0, 10.5, 15 - hop * 2, 4, 0.2);
   let lift = flying ? 9 + Math.sin(P * 2) * 2 : big ? hop * 1.8 : hop * 3.2;
   if (big && !flying && (ctx2.translate(0, 10), ctx2.rotate(Math.sin(P) * 0.06), ctx2.translate(0, -10), hop < 0.18)) {
@@ -3922,7 +3553,7 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
     let sw = Math.sin(P) * 1.5;
     ctx2.beginPath(), ctx2.moveTo(3, -8), ctx2.quadraticCurveTo(-14, -12 + sw, -24, 7), ctx2.quadraticCurveTo(-11, 11, 2, 5), ctx2.closePath();
     let g = ctx2.createLinearGradient(0, -10, 0, 10);
-    g.addColorStop(0, "#b597f0"), g.addColorStop(1, "#8a68d8"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = ALW, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(-22, 6.5), ctx2.quadraticCurveTo(-10, 10, 1.5, 4.5), ctx2.lineWidth = 3.4, ctx2.strokeStyle = "#ffffff", ctx2.stroke(), ctx2.fillStyle = INK;
+    g.addColorStop(0, pieQueen ? "#7f9be6" : "#b597f0"), g.addColorStop(1, pieQueen ? "#4f69b8" : "#8a68d8"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = ALW, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(-22, 6.5), ctx2.quadraticCurveTo(-10, 10, 1.5, 4.5), ctx2.lineWidth = 3.4, ctx2.strokeStyle = "#ffffff", ctx2.stroke(), ctx2.fillStyle = INK;
     for (let [a, b] of [[-17, 6.8], [-10, 8], [-4, 6.6]])
       ctx2.beginPath(), ctx2.arc(a, b, 0.9, 0, 7), ctx2.fill();
   }
@@ -3935,7 +3566,10 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
   softBlob(ctx2, -10, 0.5, abRx, abRy, col), ctx2.save(), ctx2.beginPath(), ctx2.ellipse(-10, 0.5, abRx - 1, abRy - 1, 0, 0, 7), ctx2.clip(), ctx2.strokeStyle = shade(col, -0.14), ctx2.lineWidth = 2;
   for (let sx of [-15, -10.5])
     ctx2.beginPath(), ctx2.ellipse(sx - (big ? 1.5 : 0), 0.5, 2, abRy + 2, 0, -1.3, 1.3), ctx2.stroke();
-  if (ctx2.restore(), shell) {
+  if (ctx2.restore(), mama)
+    for (let [ex, ey2, er] of [[-16.5, -2.2, 2.9], [-10.5, -4.6, 3.1], [-5.2, -1.4, 2.7]])
+      ctx2.beginPath(), ctx2.ellipse(ex, ey2, er, er * 1.2, 0.2, 0, 7), ctx2.fillStyle = "#fffaf0", ctx2.fill(), ctx2.lineWidth = 1.7, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.arc(ex - 0.7, ey2 - 0.8, 0.8, 0, 7), ctx2.fillStyle = "#f2a0b0", ctx2.fill();
+  if (shell) {
     ctx2.save(), ctx2.beginPath(), ctx2.ellipse(-10, 0, abRx + 1.2, abRy + 0.8, 0, Math.PI * 1.02, Math.PI * 1.98), ctx2.quadraticCurveTo(-10, 3, -10 - abRx - 1, 0), ctx2.closePath();
     let g = ctx2.createLinearGradient(0, -9, 0, 2);
     g.addColorStop(0, "#ffffff"), g.addColorStop(1, heavy ? "#9aa3ba" : sprinter ? "#bfe3ff" : "#b4bdd0"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = 2.4, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.fillStyle = heavy ? "#f4b632" : "#8992aa";
@@ -3965,7 +3599,7 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
     for (let dx of [-1.8, 0.4, 2.6])
       ctx2.beginPath(), ctx2.arc(hx + 5 + dx, hy + 7.6, 0.8, 0, 7), ctx2.fill();
     blob(ctx2, hx + 10.5, hy + 9.2, 2.8, 3.1, "#7fd3ad", 2.2);
-  } else if (glossyEye(ctx2, e1x, ey, 3.1, 3.9, blink), glossyEye(ctx2, e2x, ey - 0.3, 2.7, 3.6, blink), cheek(ctx2, hx - 3, hy + 5.6), cheek(ctx2, hx + 10, hy + 5.2, 2), big ? (ctx2.beginPath(), ctx2.moveTo(hx + 1, hy + 6.2), ctx2.quadraticCurveTo(hx + 4, hy + 3.6, hx + 4.2, hy + 5.4), ctx2.quadraticCurveTo(hx + 4.6, hy + 3.6, hx + 8, hy + 6.2), ctx2.quadraticCurveTo(hx + 4.4, hy + 8, hx + 1, hy + 6.2), ctx2.fillStyle = "#8a4b33", ctx2.fill(), ctx2.lineWidth = 1.3, ctx2.strokeStyle = INK, ctx2.stroke()) : (ctx2.beginPath(), ctx2.moveTo(hx + 2.6, hy + 5.6), ctx2.quadraticCurveTo(hx + 4.3, hy + 8.4, hx + 6, hy + 5.6), ctx2.lineWidth = 1.8, ctx2.strokeStyle = INK, ctx2.stroke(), queen && (ctx2.beginPath(), ctx2.ellipse(hx + 4.3, hy + 6.6, 1.3, 0.8, 0, 0, 7), ctx2.fillStyle = "#ff6f91", ctx2.fill())), queen) {
+  } else if (glossyEye(ctx2, e1x, ey, 3.1, 3.9, blink), glossyEye(ctx2, e2x, ey - 0.3, 2.7, 3.6, blink), cheek(ctx2, hx - 3, hy + 5.6), cheek(ctx2, hx + 10, hy + 5.2, 2), big && !mama ? (ctx2.beginPath(), ctx2.moveTo(hx + 1, hy + 6.2), ctx2.quadraticCurveTo(hx + 4, hy + 3.6, hx + 4.2, hy + 5.4), ctx2.quadraticCurveTo(hx + 4.6, hy + 3.6, hx + 8, hy + 6.2), ctx2.quadraticCurveTo(hx + 4.4, hy + 8, hx + 1, hy + 6.2), ctx2.fillStyle = "#8a4b33", ctx2.fill(), ctx2.lineWidth = 1.3, ctx2.strokeStyle = INK, ctx2.stroke()) : (ctx2.beginPath(), ctx2.moveTo(hx + 2.6, hy + 5.6), ctx2.quadraticCurveTo(hx + 4.3, hy + 8.4, hx + 6, hy + 5.6), ctx2.lineWidth = 1.8, ctx2.strokeStyle = INK, ctx2.stroke(), queen && (ctx2.beginPath(), ctx2.ellipse(hx + 4.3, hy + 6.6, 1.3, 0.8, 0, 0, 7), ctx2.fillStyle = "#ff6f91", ctx2.fill())), queen) {
     ctx2.lineWidth = 1.5, ctx2.strokeStyle = INK;
     for (let [ex, k] of [[e1x - 2.4, 0], [e1x - 1, 1], [e2x + 1.8, 2]])
       ctx2.beginPath(), ctx2.moveTo(ex, ey - 3), ctx2.lineTo(ex + (k === 2 ? 1.6 : -1.2), ey - 5.2), ctx2.stroke();
@@ -3979,6 +3613,16 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
     ctx2.beginPath(), ctx2.ellipse(hx - 0.5, hy - 4.2, hr * 0.92, hr * 0.7, 0, Math.PI, 0), ctx2.closePath(), ctx2.fillStyle = "#8fd0f7", ctx2.fill(), ctx2.lineWidth = 2.4, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.save(), ctx2.beginPath(), ctx2.ellipse(hx - 0.5, hy - 4.2, hr * 0.92, hr * 0.7, 0, Math.PI, 0), ctx2.clip(), ctx2.fillStyle = "#ff9fb8", ctx2.fillRect(hx - 4, top - 4, 3.2, 14), ctx2.fillStyle = "#ffe27a", ctx2.fillRect(hx + 3, top - 4, 3.2, 14), ctx2.restore(), ctx2.beginPath(), ctx2.ellipse(hx - 0.5, hy - 4.2, hr * 0.92, hr * 0.7, 0, Math.PI, 0), ctx2.lineWidth = 2.4, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(hx - 0.5, top + 1.5), ctx2.lineTo(hx - 0.5, top - 3), ctx2.lineWidth = 2, ctx2.stroke();
     let sp = Math.cos(P * 3);
     ctx2.beginPath(), ctx2.ellipse(hx - 0.5 - 3.6 * sp, top - 3.5, 3.8 * Math.abs(sp) + 0.8, 1.5, 0, 0, 7), ctx2.ellipse(hx - 0.5 + 3.6 * sp, top - 3.5, 3.8 * Math.abs(sp) + 0.8, 1.5, 0, 0, 7), ctx2.fillStyle = "#ff7f9e", ctx2.fill(), ctx2.lineWidth = 1.5, ctx2.stroke(), blob(ctx2, hx - 0.5, top - 3.5, 1.4, 1.4, "#ffe27a", 1.2);
+  } else if (greasy) {
+    let ty = top + 1.5;
+    ctx2.beginPath(), ctx2.moveTo(hx - 6.5, ty), ctx2.lineTo(hx + 7.5, ty), ctx2.lineTo(hx + 7.5, ty - 6.5), ctx2.lineTo(hx - 6.5, ty - 6.5), ctx2.closePath(), ctx2.fillStyle = "#fff3a8", ctx2.fill(), ctx2.lineWidth = 2.2, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(hx + 7.5, ty - 1), ctx2.quadraticCurveTo(hx + 11, ty + 1, hx + 9.6, ty + 5 + Math.abs(step) * 0.8), ctx2.quadraticCurveTo(hx + 8, ty + 6, hx + 7.5, ty + 2.5), ctx2.fillStyle = "#ffe36a", ctx2.fill(), ctx2.lineWidth = 1.8, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(hx - 4.5, ty - 4.6), ctx2.lineTo(hx + 1.5, ty - 4.6), ctx2.lineWidth = 1.6, ctx2.strokeStyle = "#ffffff", ctx2.stroke(), ctx2.fillStyle = "rgba(255,255,255,0.8)";
+    for (let [gx, gy, gr] of [[-8, 1, 1.5], [-3, 6, 1.1], [-12, -3, 1]])
+      ctx2.beginPath(), ctx2.arc(hx + gx + 2, hy + gy, gr, 0, 7), ctx2.fill();
+  } else if (mama) {
+    ctx2.beginPath(), ctx2.ellipse(hx, hy - 3.4, hr * 1, hr * 0.8, 0, Math.PI, 0), ctx2.closePath(), ctx2.fillStyle = "#ff8fb0", ctx2.fill(), ctx2.lineWidth = 2.5, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.fillStyle = "#ffffff";
+    for (let [dx, dy] of [[-6, -9], [0, -11.5], [6, -9], [-2, -6.2], [4, -5.6]])
+      ctx2.beginPath(), ctx2.arc(hx + dx, hy + dy + 1, 1.15, 0, 7), ctx2.fill();
+    ctx2.beginPath(), ctx2.moveTo(hx - hr + 1, hy - 4.5), ctx2.quadraticCurveTo(hx - hr - 6, hy - 9, hx - hr - 7, hy - 3 + step), ctx2.quadraticCurveTo(hx - hr - 3, hy - 4, hx - hr + 1, hy - 1.6), ctx2.fillStyle = "#ff8fb0", ctx2.fill(), ctx2.lineWidth = 2, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(hx - 4, top + 3.2, 2.4, 1.2, -0.4, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.75)", ctx2.fill();
   } else if (type === "big")
     ctx2.save(), ctx2.beginPath(), ctx2.ellipse(hx, hy, hr, hr * 0.94, 0, 0, 7), ctx2.clip(), ctx2.fillStyle = "#ff6f91", ctx2.fillRect(hx - hr - 1, hy - 7.5, hr * 2 + 2, 4), ctx2.fillStyle = "#ffffff", ctx2.fillRect(hx - hr - 1, hy - 6.2, hr * 2 + 2, 1.2), ctx2.restore(), ctx2.beginPath(), ctx2.ellipse(hx, hy, hr, hr * 0.94, 0, 0, 7), ctx2.lineWidth = ALW, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(hx - hr + 0.5, hy - 5.5), ctx2.quadraticCurveTo(hx - hr - 4, hy - 4 + step, hx - hr - 5, hy + 0.5), ctx2.lineWidth = 3, ctx2.strokeStyle = "#ff6f91", ctx2.stroke();
   else if (sprinter) {
@@ -4003,7 +3647,7 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
     let cy = top + 3;
     ctx2.beginPath(), ctx2.moveTo(hx - 7, cy), ctx2.lineTo(hx - 8, cy - 9), ctx2.lineTo(hx - 3.5, cy - 4.5), ctx2.lineTo(hx, cy - 11), ctx2.lineTo(hx + 3.5, cy - 4.5), ctx2.lineTo(hx + 8, cy - 9), ctx2.lineTo(hx + 7, cy), ctx2.closePath();
     let g = ctx2.createLinearGradient(0, cy - 11, 0, cy);
-    g.addColorStop(0, "#fff5ad"), g.addColorStop(1, "#f4b632"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = 2.3, ctx2.strokeStyle = INK, ctx2.stroke(), blob(ctx2, hx, cy - 2.6, 1.8, 1.8, "#ff6f91", 1.2), blob(ctx2, hx - 5, cy - 2.2, 1.2, 1.2, "#7cc6f2", 1), blob(ctx2, hx + 5, cy - 2.2, 1.2, 1.2, "#7cc6f2", 1);
+    g.addColorStop(0, pieQueen ? "#ff8aa0" : "#fff5ad"), g.addColorStop(1, pieQueen ? "#d93a5c" : "#f4b632"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = 2.3, ctx2.strokeStyle = INK, ctx2.stroke(), blob(ctx2, hx, cy - 2.6, 1.8, 1.8, "#ff6f91", 1.2), blob(ctx2, hx - 5, cy - 2.2, 1.2, 1.2, "#7cc6f2", 1), blob(ctx2, hx + 5, cy - 2.2, 1.2, 1.2, "#7cc6f2", 1);
     for (let [x, y] of [[hx - 8, cy - 9], [hx, cy - 11], [hx + 8, cy - 9]]) blob(ctx2, x, y, 1.4, 1.4, "#fff5ad", 1.2);
   }
   ctx2.restore();
@@ -4013,7 +3657,7 @@ function antSprite(type, frame2, carrying, dpr2) {
   let key = type + frame2 + (carrying ? "c" : "") + dpr2, s = spriteCache.get(key);
   if (s) return s;
   let S2 = ANTS[type].size, w = Math.ceil(80 * S2), h = Math.ceil(84 * S2), cv = makeCanvas(Math.ceil(w * dpr2), Math.ceil(h * dpr2)), g = cv.getContext("2d");
-  return g.scale(dpr2, dpr2), g.translate(w / 2, h * 0.66), drawAnt(g, type, frame2 / ANT_FRAMES, { carrying, blink: frame2 === 7 && type !== "queen" && type !== "queen2" }), s = { cv, w, h, ox: w / 2, oy: h * 0.66 }, spriteCache.set(key, s), s;
+  return g.scale(dpr2, dpr2), g.translate(w / 2, h * 0.66), drawAnt(g, type, frame2 / ANT_FRAMES, { carrying, blink: frame2 === 7 && !isQueen(type) }), s = { cv, w, h, ox: w / 2, oy: h * 0.66 }, spriteCache.set(key, s), s;
 }
 function makeCanvas(w, h) {
   if (typeof OffscreenCanvas < "u") return new OffscreenCanvas(w, h);
@@ -4554,7 +4198,39 @@ function cakeBody(ctx2, r, pct) {
   for (let k = 0; k <= 8; k++) ctx2.quadraticCurveTo(-w + (k - 0.5) * w / 4, -h * 0.5 + 8, -w + k * w / 4, -h * 0.5);
   ctx2.lineTo(w, -h * 0.62), ctx2.lineTo(-w, -h * 0.62), ctx2.fillStyle = "#fffaf2", ctx2.fill(), ctx2.beginPath(), ctx2.roundRect(-w, -h * 0.55, w * 2, h * 1.35, 6), ctx2.lineWidth = 3, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.restore(), ctx2.beginPath(), ctx2.arc(0, -h * 0.75, 4.5, 0, 7), ctx2.fillStyle = "#e8304e", ctx2.fill(), ctx2.lineWidth = 1.6, ctx2.strokeStyle = INK, ctx2.stroke();
 }
-var TREAT_BODIES = { cookie: cookieBody, cake: cakeBody };
+function pieBody(ctx2, r, pct) {
+  let bites = Math.round((1 - pct) * 9), bAt = (k) => {
+    let a = -0.6 + k * 0.72;
+    return [Math.cos(a) * r * 0.98, Math.sin(a) * r * 0.98];
+  };
+  ctx2.save(), ctx2.beginPath(), ctx2.arc(0, 0, r, 0, Math.PI * 2);
+  for (let k = 0; k < bites; k++) {
+    let [bx, by] = bAt(k);
+    ctx2.moveTo(bx + 9, by), ctx2.arc(bx, by, 9, 0, Math.PI * 2, !0);
+  }
+  ctx2.clip("evenodd");
+  let g = ctx2.createRadialGradient(-8, -10, 4, 0, 0, r * 1.1);
+  g.addColorStop(0, "#fff0c4"), g.addColorStop(0.7, "#f3c878"), g.addColorStop(1, "#d99a4a"), ctx2.beginPath(), ctx2.arc(0, 0, r, 0, 7), ctx2.fillStyle = g, ctx2.fill(), ctx2.beginPath(), ctx2.arc(0, 0, r - 1, 0, 7), ctx2.lineWidth = 7, ctx2.strokeStyle = "#e2a65c", ctx2.stroke(), ctx2.fillStyle = "#c98a3e";
+  for (let k = 0; k < 18; k++) {
+    let a = k * Math.PI / 9;
+    ctx2.beginPath(), ctx2.arc(Math.cos(a) * (r - 3.4), Math.sin(a) * (r - 3.4), 1.7, 0, 7), ctx2.fill();
+  }
+  ctx2.save(), ctx2.beginPath(), ctx2.arc(0, 0, r - 7, 0, 7), ctx2.clip(), ctx2.fillStyle = "#f0a58f", ctx2.fillRect(-r, -r, r * 2, r * 2), ctx2.lineWidth = 4.2, ctx2.strokeStyle = "#fbe0a0", ctx2.lineCap = "butt";
+  for (let k = -3; k <= 3; k++)
+    ctx2.beginPath(), ctx2.moveTo(-r, -r + k * 12 + 4), ctx2.lineTo(r, r + k * 12 + 4), ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(r, -r + k * 12 + 4), ctx2.lineTo(-r, r + k * 12 + 4), ctx2.stroke();
+  ctx2.restore(), ctx2.beginPath(), ctx2.arc(0, 0, r - 7, 0, 7), ctx2.lineWidth = 1.6, ctx2.strokeStyle = "rgba(122,70,30,0.7)", ctx2.stroke(), ctx2.restore(), ctx2.save(), ctx2.beginPath(), ctx2.rect(-r - 12, -r - 12, r * 2 + 24, r * 2 + 24);
+  for (let k = 0; k < bites; k++) {
+    let [bx, by] = bAt(k);
+    ctx2.moveTo(bx + 9, by), ctx2.arc(bx, by, 9, 0, Math.PI * 2, !0);
+  }
+  ctx2.clip("evenodd"), ctx2.beginPath(), ctx2.arc(0, 0, r, 0, 7), ctx2.lineWidth = 3, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.restore(), ctx2.save(), ctx2.beginPath(), ctx2.arc(0, 0, r + 1, 0, 7), ctx2.clip();
+  for (let k = 0; k < bites; k++) {
+    let [bx, by] = bAt(k);
+    ctx2.beginPath(), ctx2.arc(bx, by, 9, 0, 7), ctx2.lineWidth = 3, ctx2.strokeStyle = INK, ctx2.stroke();
+  }
+  ctx2.restore();
+}
+var TREAT_BODIES = { cookie: cookieBody, cake: cakeBody, pie: pieBody };
 function reactMotion(react, t) {
   if (!react) return { dx: 0, dy: 0, sx: 1, sy: 1 };
   let a = react.age, e = Math.max(0, 1 - a / 1.6);
@@ -4722,7 +4398,11 @@ var THEMES = [
   { name: "gingham", a: "#f7d3ca", b: "#f1c7bd", check: "rgba(222,112,122,0.10)", grout: "rgba(200,160,130,0.18)", trail: "#fff8ec", edge: "#d9a08c", dot: "#e7a3a3" },
   { name: "wood", a: "#ead1a8", b: "#e1c49b", grain: "rgba(120,80,40,0.16)", grout: "rgba(120,80,45,0.3)", trail: "#fffaf0", edge: "#c49766", dot: "#c9a074" },
   { name: "midnight", a: "#d2cbee", b: "#c7bfe7", grout: "rgba(120,110,175,0.3)", trail: "#fffaf2", edge: "#a89fd8", dot: "#b9aee6", moon: !0 },
-  { name: "picnic", a: "#c9e6b2", b: "#bddca3", check: "rgba(80,160,100,0.19)", grout: "rgba(100,150,90,0.2)", trail: "#fffdf2", edge: "#98c283", dot: "#a6d18c" }
+  { name: "picnic", a: "#c9e6b2", b: "#bddca3", check: "rgba(80,160,100,0.19)", grout: "rgba(100,150,90,0.2)", trail: "#fffdf2", edge: "#98c283", dot: "#a6d18c" },
+  // v0.7.7 world 3 (Crumb Design palettes-W3-W10.json, the first three): butter, blueberry, crust. Checked by the A1-A7/A10 contrast pass on every W3 map.
+  { name: "W3 butter", a: "#ecd37f", b: "#e5c974", grout: "rgba(160,130,50,0.25)", trail: "#fffaf0", edge: "#c9a64f", dot: "#d9bb60" },
+  { name: "W3 blueberry", a: "#bcd5ef", b: "#b0cbea", check: "rgba(90,130,200,0.14)", grout: "rgba(90,120,170,0.22)", trail: "#fffaf2", edge: "#86a9d6", dot: "#9dbde4" },
+  { name: "W3 crust", a: "#e4bf92", b: "#deb88a", grain: "rgba(130,80,40,0.14)", grout: "rgba(130,85,45,0.28)", trail: "#fffaf0", edge: "#b98a57", dot: "#c99c6a" }
 ];
 function renderMapBackground(routes, theme, w, h, dpr2, props = []) {
   Array.isArray(routes) || (routes = [routes]);
@@ -5393,7 +5073,7 @@ function finishBattle() {
   b.result === "lose" && noteLossForCardBlink(S.save), persist();
   let win = b.result === "win", fullFood = b.foodStored >= b.cfg.foodHP - 1e-6, queenKilled = win && Object.keys(b.stats.byType).some((t) => isQueen(t)), hold = queenKilled ? UI.queenCheerHold : 0;
   if (S.result = { win, stars: b.stars, out, t: 0, hold, crumbsLeft: b.crumbs, perfect: out.perfect, kills: b.stats.kills, confetti: [], fullFood, queenKilled }, win && (b.stars >= 3 || fullFood || out.perfect)) for (let i = 0; i < 90; i++) S.result.confetti.push({ x: 200 + (Math.random() - 0.5) * 60, y: 230, vx: (Math.random() - 0.5) * 420, vy: -150 - Math.random() * 320, r: Math.random() * 6, c: ["#ff8fab", "#ffd45e", "#8fe388", "#9fd3f2", "#c9b6f2"][i % 5] });
-  win && fullFood && launchFireworks(9, 2.6), queenKilled && (launchFireworks(10, 3), S.queenDown = { t: S.t, world: worldOf(b.levelIndex) }), out.prize && out.prize.kind === "cards" && out.prize.reveal && queueReveal(out.prize.id, out.prize.level, out.prize.newCard, S.t + hold + UI.perfectAnimTime + 0.4), sfx(win ? "win" : "lose");
+  win && fullFood && launchFireworks(9, 2.6), queenKilled && (launchFireworks(10, 3), S.queenDown = { t: S.t, world: worldOf(b.levelIndex) }), out.prize && out.prize.kind === "cards" && out.prize.reveal && queueReveal(out.prize.id, out.prize.level, out.prize.newCard, S.t + hold + UI.perfectAnimTime + 0.4), out.bossGift && out.bossGift.reveal && queueReveal(out.bossGift.id, out.bossGift.level, out.bossGift.newCard, S.t + hold + UI.perfectAnimTime + (out.prize && out.prize.reveal ? 2.4 : 0.4)), sfx(win ? "win" : "lose");
 }
 function tileAt(p) {
   let x = p.x, y = p.y - MAP_Y;
@@ -5451,7 +5131,7 @@ function mapTap(p) {
   }
   S.info = tw ? { tower: tw, t: 0 } : null;
 }
-var HINT_ANTS = /* @__PURE__ */ new Set(["armored", "big", "heavy", "queen", "queen2"]);
+var TREAT_NAME = { cookie: "Cookie", cake: "Cake", pie: "Pie" }, HINT_ANTS = /* @__PURE__ */ new Set(["armored", "big", "heavy", "queen", "queen2", "greasy", "mama", "queen3"]);
 function maybeModeHint(b, e) {
   S.modeHint || S.paused || !e.ant || !HINT_ANTS.has(e.ant) || !(e.n > 0) || b.towers.some((q) => hasTargetModes(q.type)) && (S.modeHint = !0, toast("Tip: tap a tower, then pick who it shoots", "#ffe39a"), S.toast.hint = !0);
 }
@@ -5518,14 +5198,14 @@ function swatHitTime(b) {
 }
 function killFx(e) {
   if (e.src === "tractor") {
-    addFloatText(S.fx, { k: "crumbTxt", key: "crumb", x: e.x, y: e.y - 14, n: e.crumbs, fmt: (n) => n, life: 0.9 });
+    e.crumbs > 0 && addFloatText(S.fx, { k: "crumbTxt", key: "crumb", x: e.x, y: e.y - 14, n: e.crumbs, fmt: (n) => n, life: 0.9 });
     return;
   }
   let fast = S.speed >= 4;
   for (let i = 0; i < (fast ? 1 : 4); i++) addFx({ k: "crumbBit", x: e.x, y: e.y - 6, vx: (Math.random() - 0.5) * 90, vy: -40 - Math.random() * 60, life: 0.6, max: 0.6 });
   addFx({ k: "ko", x: e.x, y: e.y, ant: e.ant, life: 0.32, max: 0.32, face: Math.random() < 0.5 ? 1 : -1 });
   for (let i = 0; i < (fast ? 2 : 5); i++) addFx({ k: "puff", x: e.x + (Math.random() - 0.5) * 10, y: e.y + (Math.random() - 0.5) * 6, vx: (Math.random() - 0.5) * 40, vy: -Math.random() * 30, r: 4 + Math.random() * 4, life: 0.5, max: 0.5 });
-  addFloatText(S.fx, { k: "crumbTxt", key: "crumb", x: e.x, y: e.y - 14, n: e.crumbs, fmt: (n) => n, life: 0.9 }), sfx("pop");
+  e.crumbs > 0 && addFloatText(S.fx, { k: "crumbTxt", key: "crumb", x: e.x, y: e.y - 14, n: e.crumbs, fmt: (n) => n, life: 0.9 }), sfx("pop");
 }
 function swatHitFx(e) {
   addFx({ k: "spark", x: e.x, y: e.y - 4, life: 0.2, max: 0.2, col: "#fff7b0" }), addFx({ k: "ring2", x: e.x, y: e.y - 2, life: 0.3, max: 0.3 }), sfx("swat");
@@ -5677,8 +5357,14 @@ function consumeEvents() {
         addFx({ k: "banner", s: `Wave ${e.n}`, life: 1.4, max: 1.4 }), sfx("wave");
         break;
       case "queenCall":
-        addFloatText(S.fx, { key: "queen", x: e.x, y: e.y - 40, n: 1, fmt: () => e.calls === "flyer" ? "Wings, go!" : "Scouts, go!", col: "#ffb3e0", life: 1 });
+        addFloatText(S.fx, { key: "queen", x: e.x, y: e.y - 40, n: 1, fmt: () => e.calls === "flyer" ? "Wings, go!" : e.calls === "greasy" ? "Butter up!" : "Scouts, go!", col: "#ffb3e0", life: 1 });
         break;
+      case "split": {
+        let fast = S.speed >= 4;
+        for (let k of e.kids) for (let i = 0; i < (fast ? 1 : 3); i++) addFx({ k: "puff", x: k.x + (Math.random() - 0.5) * 8, y: k.y + (Math.random() - 0.5) * 5, vx: (Math.random() - 0.5) * 50, vy: -Math.random() * 34, r: 3 + Math.random() * 3, life: 0.45, max: 0.45 });
+        addFloatText(S.fx, { key: "split", x: e.x, y: e.y - 26, n: 1, fmt: () => "Babies!", col: "#ffd0e0", life: 0.9 });
+        break;
+      }
       case "immune":
         addFloatText(S.fx, { key: "immune", x: e.x, y: e.y - 22, n: 1, fmt: () => "immune!", col: "#c9f5c0", life: 0.8 });
         break;
@@ -5869,7 +5555,7 @@ function drawWorldGate(w) {
   if (panel(40, y - 30, 320, 60, open ? "#fff1f6" : "#efe7ec", 18), ctx.save(), ctx.translate(76, y + 2), ctx.scale(0.62, 0.62), drawTreat(ctx, W2.treat, 0, 0, 1, S.t, { face: open ? "happy" : "content" }), ctx.restore(), text(ctx, `World ${w}: ${W2.name}`, 214, y - 12, 17, open ? "#ff8fab" : "#b9a6b2"), open) plainText("Open! Beat the queen at the top.", 214, y + 12, 12, "#6b5562", "center", "600");
   else {
     let won = LEVELS.filter((L, i) => L.world === prev && S.save.levels[i].cleared).length, total = LEVELS.filter((L) => L.world === prev).length;
-    plainFit(`Locked: all ${total} levels (${won}/${total}) + ${W2.unlock.minStarsInWorld} stars (${worldStars(S.save, prev)}/${total * 3})`, 214, y + 12, 262, 12, "#a0607e", "center", "700"), ctx.save(), ctx.translate(346, y - 22), rr(ctx, -8, -3, 16, 13, 3), ctx.fillStyle = "#8c8090", ctx.fill(), ctx.beginPath(), ctx.arc(0, -4, 5.5, Math.PI, 0), ctx.lineWidth = 3, ctx.strokeStyle = "#8c8090", ctx.stroke(), ctx.restore();
+    plainFit(`Win all ${total} levels (${won}/${total}) + ${W2.unlock.minStarsInWorld} stars (${worldStars(S.save, prev)}/${total * 3})`, 214, y + 12, 262, 12, "#a0607e", "center", "700"), ctx.save(), ctx.translate(346, y - 22), rr(ctx, -8, -3, 16, 13, 3), ctx.fillStyle = "#8c8090", ctx.fill(), ctx.beginPath(), ctx.arc(0, -4, 5.5, Math.PI, 0), ctx.lineWidth = 3, ctx.strokeStyle = "#8c8090", ctx.stroke(), ctx.restore();
   }
 }
 function updateCardsBlink() {
@@ -5896,9 +5582,11 @@ function renderMapScreen() {
     let sy = p.y + sc;
     S.layoutNodes.push({ i, x: p.x, y: sy }), open && sy > MAPVIEW.top + 10 && sy < MAPVIEW.bottom - 10 && button("lvl" + i, p.x - 30, sy - 30, 60, 60, () => openPrep(i));
   }
-  if (ctx.restore(), gateY(2) + sc < MAPVIEW.top - 10) {
+  ctx.restore();
+  let hintW = WORLDS.map((x) => x.id).filter((id) => id >= 2).find((id) => gateY(id) + sc < MAPVIEW.top - 10);
+  if (hintW) {
     let a = 0.75 + 0.25 * Math.sin(S.t * 4);
-    ctx.save(), ctx.globalAlpha = a, rr(ctx, 128, MAPVIEW.top + 4, 144, 26, 13), ctx.fillStyle = "rgba(90,64,88,0.85)", ctx.fill(), plainText("\u25B2 World 2 - scroll up", 200, MAPVIEW.top + 17.5, 12, "#ffffff", "center", "700"), ctx.restore();
+    ctx.save(), ctx.globalAlpha = a, rr(ctx, 128, MAPVIEW.top + 4, 144, 26, 13), ctx.fillStyle = "rgba(90,64,88,0.85)", ctx.fill(), plainText(`\u25B2 World ${hintW} - scroll up`, 200, MAPVIEW.top + 17.5, 12, "#ffffff", "center", "700"), ctx.restore();
   }
   updateCardsBlink(), blob(ctx, 363, 22, 19, 19, "#fff6ee", 2.2), drawGearIcon(363, 22, 12), button("gear", 337, 0, 52, 52, () => openSettings());
   let shopHint = !S.cal && !S.settings && zapperGiftPending(S.save) && !S.reveal.length;
@@ -6024,13 +5712,18 @@ function renderPrep() {
   let n = ants.length, slot = Math.min(76, 340 / n), x0 = 200 - slot * (n - 1) / 2;
   ants.forEach((t, k) => {
     let x = x0 + k * slot, sz = ANTS[t].size, sc = Math.min(1.15, (slot - 6) / (40 * sz), 30 / (34 * sz));
-    antIcon(t, x, 136, sc), S.layoutPrepAnts.push({ type: t, x: x - 20 * sz * sc, y: 136 - 34 * sz * sc, w: 40 * sz * sc, h: 46 * sz * sc });
+    antIcon(t, x, 133, sc), S.layoutPrepAnts.push({ type: t, x: x - 20 * sz * sc, y: 133 - 34 * sz * sc, w: 40 * sz * sc, h: 46 * sz * sc });
+    {
+      let rk = rarityRank(t) + 1, cols = ["#b9a8b0", "#5fbf7a", "#4a90e2", "#a05ad8"];
+      if (rk <= 4) for (let q = 0; q < rk; q++)
+        ctx.beginPath(), ctx.arc(x + (q - (rk - 1) / 2) * 6, 148, 2.2, 0, Math.PI * 2), ctx.fillStyle = cols[rk - 1], ctx.fill(), ctx.lineWidth = 0.8, ctx.strokeStyle = "rgba(70,40,55,.55)", ctx.stroke();
+    }
     {
       let nm = ANTS[t].name.replace(" Ant", "");
-      if (ctx.font = `bold 12px ${FONT}`, ctx.measureText(nm).width <= slot - 2) text(ctx, nm, x, 160, 12, "#7a5a6a");
+      if (ctx.font = `bold 12px ${FONT}`, ctx.measureText(nm).width <= slot - 2) text(ctx, nm, x, 161, 12, "#7a5a6a");
       else {
         let parts = nm.includes(" ") ? nm.split(" ") : nm.split(/(?<=-)/);
-        (parts.length > 2 ? [parts[0], parts.slice(1).join(" ")] : parts).forEach((q, qi) => text(ctx, q, x, 154.5 + qi * 12.5, 12, "#7a5a6a"));
+        (parts.length > 2 ? [parts[0], parts.slice(1).join(" ")] : parts).forEach((q, qi) => text(ctx, q, x, 156.5 + qi * 12.5, 12, "#7a5a6a"));
       }
     }
   });
@@ -6039,15 +5732,15 @@ function renderPrep() {
   let capW = worldCardLevelCap(i), overCap = (id) => !!capW && unlocked.includes(id) && S.save.cards[id].level > capW;
   capW && unlocked.some(overCap) && plainText(`A card above L${capW} acts as L${capW} in this world`, 200, 488, 12, "#b0506a", "center", "800"), ALL_CARDS.forEach((id, k) => {
     let col = k % 5, row = Math.floor(k / 5), x = 22 + col * 72, y = 196 + row * 98, w = 66, h = 90, isU = unlocked.includes(id), di = S.prep.deck.indexOf(id);
-    drawCardPic(x, y, w, h, id, { locked: !isU, lockText: "Shop or prize", selected: di >= 0, selCol: "#111111", badge: di >= 0 ? String(di + 1) : null, tag: !0, level: isU ? S.save.cards[id].level : 0, capNote: overCap(id) ? capW : 0, dim: isU && di < 0 && S.prep.deck.length >= BATTLE.deckSize }), isU && button("deck" + id, x, y, w, h, () => {
+    drawCardPic(x, y, w, h, id, { locked: !isU, lockText: "Shop or prize", selected: di >= 0, selCol: "#111111", badge: di >= 0 ? String(di + 1) : null, tag: !0, level: isU ? S.save.cards[id].level : 0, cap: capW || 0, dim: isU && di < 0 && S.prep.deck.length >= BATTLE.deckSize }), isU && button("deck" + id, x, y, w, h, () => {
       let d = S.prep.deck, j = d.indexOf(id);
       j >= 0 ? d.splice(j, 1) : d.length < BATTLE.deckSize ? d.push(id) : toast("Deck is full (5). Tap a card to remove it."), sfx("tap");
     });
   });
-  let by = 500;
+  let by = 510;
   text(ctx, `Boosters (bring ${BATTLE.bonusTypesToBring}, max ${BATTLE.maxBonusUses} uses)`, 30, by, 14, "#7a5a6a", "left", null), BONUS_TYPES.forEach((bt, k) => {
-    let x = 26 + k * 88, y = by + 14, w = 80, h = 74, sel = S.prep.bonuses.includes(bt), stock = S.save.bonusStock[bt] || 0;
-    rr(ctx, x, y, w, h, 14), ctx.fillStyle = sel ? shade(BONUSES[bt].color, 0.2) : "#f3ebee", ctx.fill(), sel && stock <= 0 ? lavaBorder(ctx, x, y, w, h, 14, S.t) : (ctx.lineWidth = sel ? 4.5 : 2.5, ctx.strokeStyle = sel ? "#111111" : INK, ctx.stroke()), ctx.save(), ctx.translate(x + w / 2, y + 28), ctx.scale(1.3, 1.3), drawBonusIcon(ctx, bt, S.t), ctx.restore(), text(ctx, BONUSES[bt].name, x + w / 2, y + 54, 12, "#fff"), text(ctx, "x" + stock, x + w - 12, y + 12, 12, stock ? "#fff" : "#ff9a9a"), button("bon" + bt, x, y, w, h, () => {
+    let x = 26 + k * 88, y = by + 14, w = 80, h = 64, sel = S.prep.bonuses.includes(bt), stock = S.save.bonusStock[bt] || 0;
+    rr(ctx, x, y, w, h, 14), ctx.fillStyle = sel ? shade(BONUSES[bt].color, 0.2) : "#f3ebee", ctx.fill(), sel && stock <= 0 ? lavaBorder(ctx, x, y, w, h, 14, S.t) : (ctx.lineWidth = sel ? 4.5 : 2.5, ctx.strokeStyle = sel ? "#111111" : INK, ctx.stroke()), ctx.save(), ctx.translate(x + w / 2, y + 25), ctx.scale(1.3, 1.3), drawBonusIcon(ctx, bt, S.t), ctx.restore(), text(ctx, BONUSES[bt].name, x + w / 2, y + 51, 12, "#fff"), text(ctx, "x" + stock, x + w - 12, y + 12, 12, stock ? "#fff" : "#ff9a9a"), button("bon" + bt, x, y, w, h, () => {
       let b = S.prep.bonuses, j = b.indexOf(bt);
       j >= 0 ? b.splice(j, 1) : (b.push(bt), b.length > BATTLE.bonusTypesToBring && b.shift(), stock <= 0 && zeroBonusAlert(bt)), sfx("tap");
     });
@@ -6319,7 +6012,7 @@ function renderTowerInfo(b, info) {
   drawButton(256, py + 5, 62, 24, "", "#9fd8ff", { r: 10, disabled: !canMove }), text(ctx, "Move", 280, py + 17, 12), diamondIcon(ctx, 305, py + 17, 0.55), text(ctx, String(ECONOMY.diamonds.moveTower), 312, py + 17.5, 12), drawButton(322, py + 5, 58, 24, "Swap", "#c9b6f2", { r: 10, size: 12, disabled: b.towers.length < 2 }), button("infoMove", 252, py, 68, 40, () => startMode("move", tw)), button("infoSwap", 320, py, 64, 40, () => startMode("swap", tw));
 }
 function drawQueenCheer(age, world) {
-  let k = Math.min(1, age / 0.35), fade = age > 3.8 ? Math.max(0, 1 - (age - 3.8) / 0.7) : 1, msg = world === 2 ? ["Way to go,", "you saved the cake!"] : ["Way to go,", "you saved the cookies!"];
+  let k = Math.min(1, age / 0.35), fade = age > 3.8 ? Math.max(0, 1 - (age - 3.8) / 0.7) : 1, msg = world === 3 ? ["Way to go,", "you saved the pie!"] : world === 2 ? ["Way to go,", "you saved the cake!"] : ["Way to go,", "you saved the cookies!"];
   ctx.save(), ctx.globalAlpha = fade, ctx.translate(200, MAP_Y + 210);
   let sc = 0.6 + 0.4 * k + Math.sin(age * 5) * 0.03;
   ctx.scale(sc, sc), rr(ctx, -170, -48, 340, 96, 24), ctx.fillStyle = "rgba(90,64,88,0.82)", ctx.fill(), ctx.lineWidth = 3, ctx.strokeStyle = "#ffd45e", ctx.stroke(), text(ctx, msg[0], 0, -18, 26, "#ffe36e"), text(ctx, msg[1], 0, 16, 24, "#ffffff"), ctx.restore();
@@ -6380,7 +6073,7 @@ function drawAntObj(a, ghost = !1) {
     ctx.scale(1 + sq, 1 - sq);
   }
   if (ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h), a.hitFlash > 0.04 && (ctx.globalCompositeOperation = "lighter", ctx.globalAlpha = 0.6, ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h)), ctx.restore(), frozen && (ctx.save(), ctx.globalAlpha = 0.55, rr(ctx, x - 17 * a.size, y - 24 * a.size, 34 * a.size, 32 * a.size, 7), ctx.fillStyle = "#d6f3ff", ctx.fill(), ctx.lineWidth = 1.5, ctx.strokeStyle = "#8fd0f5", ctx.stroke(), ctx.restore()), a.slow > 0.01 && !frozen && (ctx.fillStyle = "rgba(255,240,160,0.8)", ctx.beginPath(), ctx.ellipse(x, y + 8, 9 * a.size, 2.5, 0, 0, 7), ctx.fill()), a.stunT > 0 && !frozen && stunStars(ctx, x, y - 30 * a.size, S.t + a.id, a.size), a.charmT > 0 && heart(ctx, x + Math.sin(S.t * 4 + a.id) * 4, y - 32 * a.size - Math.abs(Math.sin(S.t * 3)) * 4, 3, "#ff8fbf"), a.hp < a.maxHp && !ghost) {
-    let w = a.type === "queen" ? 60 : 22, hy = y - (a.flying ? 44 : 33) * a.size;
+    let w = a.type === "queen" || a.type === "queen3" ? 60 : 22, hy = y - (a.flying ? 44 : 33) * a.size;
     rr(ctx, x - w / 2 - 1, hy - 1, w + 2, 6, 3), ctx.fillStyle = INK, ctx.fill();
     let f = Math.max(0, a.hp / a.maxHp);
     rr(ctx, x - w / 2, hy, w * f, 4, 2), ctx.fillStyle = f > 0.5 ? "#8fe388" : f > 0.25 ? "#ffd45e" : "#ff7a7a", ctx.fill();
@@ -6628,7 +6321,7 @@ function renderTray(b) {
     let x = 12 + i * 94, y = y0 + L.cardY, w = 88, h = L.cardH, selected = S.sel && S.sel.kind === "card" && S.sel.i === i || S.drag && S.drag.i === i;
     S.slotFlip[i] = Math.max(0, (S.slotFlip[i] || 0) - 1 / 60);
     let shake = !afford && S.crumbShake > 0 ? Math.sin(S.t * 60) * 3 : 0;
-    ctx.save(), ctx.translate(x + w / 2 + shake, y + h / 2), ctx.scale(Math.max(0.05, S.slotFlip[i] > 0 ? 1 - Math.sin(S.slotFlip[i] / 0.3 * Math.PI) : 1), 1), ctx.translate(-(x + w / 2), -(y + h / 2)), drawCard(x, y, w, h, b.picks[i], { cost, afford, selected, lift: selected ? 4 : 0, level: S.save.cards[b.picks[i]].level }), ctx.restore(), button("pick" + i, x - 3, y0 + 2, w + 6, L.cardH + 8, () => {
+    ctx.save(), ctx.translate(x + w / 2 + shake, y + h / 2), ctx.scale(Math.max(0.05, S.slotFlip[i] > 0 ? 1 - Math.sin(S.slotFlip[i] / 0.3 * Math.PI) : 1), 1), ctx.translate(-(x + w / 2), -(y + h / 2)), drawCard(x, y, w, h, b.picks[i], { cost, afford, selected, lift: selected ? 4 : 0, level: Math.min(S.save.cards[b.picks[i]].level, b.cardLevelCap || 1 / 0) }), ctx.restore(), button("pick" + i, x - 3, y0 + 2, w + 6, L.cardH + 8, () => {
       S.sel && S.sel.kind === "card" && S.sel.i === i ? S.sel = null : (S.sel = { kind: "card", i }, S.info = null, afford || needCrumbs(cost)), sfx("tap");
     }, { onDown: (p) => {
       S.drag = { i, x: p.x, y: p.y, moved: !1 };
@@ -6696,7 +6389,7 @@ function renderResult(dt) {
   });
   let celebrating = R.perfect && R.t < UI.perfectAnimTime, pop = Math.min(1, R.t * 4);
   ctx.save(), ctx.translate(200, 360), ctx.scale(0.7 + pop * 0.3, 0.7 + pop * 0.3), ctx.translate(-200, -360), panel(36, 120, 328, 480, "#fff6ee");
-  let tk = treatOf(S.battle.levelIndex), TN = tk === "cake" ? "Cake" : "Cookie", title = R.perfect ? `Perfect ${TN}!` : R.win ? `${TN} saved!` : `${TN} eaten!`, ts = R.perfect ? 30 + Math.max(0, 0.3 - R.t) * 30 + Math.sin(R.t * 6) * 1.5 : 28;
+  let tk = treatOf(S.battle.levelIndex), TN = TREAT_NAME[tk] || "Cookie", title = R.perfect ? `Perfect ${TN}!` : R.win ? `${TN} saved!` : `${TN} eaten!`, ts = R.perfect ? 30 + Math.max(0, 0.3 - R.t) * 30 + Math.sin(R.t * 6) * 1.5 : 28;
   if (text(ctx, title, 200, 156, ts, R.perfect ? "#ffd45e" : R.win ? "#9fe0b5" : "#ff9a9a"), R.perfect) {
     ctx.save(), ctx.globalAlpha = 0.35 + Math.sin(R.t * 4) * 0.15;
     let g = ctx.createRadialGradient(200, 212, 10, 200, 212, 70);
@@ -6706,7 +6399,7 @@ function renderResult(dt) {
       starShape(ctx, 200 + Math.cos(a) * 52, 212 + Math.sin(a) * 40, 4, "#ffe36e", 1);
     }
   }
-  drawTreat(ctx, tk, 200, 212, R.win ? S.battle.foodStored / S.battle.cfg.foodHP : 0.05, S.t, R.win ? { face: "happy" } : {}), R.queenKilled && plainFit(tk === "cake" ? "Way to go, you saved the cake!" : "Way to go, you saved the cookies!", 200, 180, 300, 13, "#e0607e", "center", "800");
+  drawTreat(ctx, tk, 200, 212, R.win ? S.battle.foodStored / S.battle.cfg.foodHP : 0.05, S.t, R.win ? { face: "happy" } : {}), R.queenKilled && plainFit(tk === "cake" ? "Way to go, you saved the cake!" : tk === "pie" ? "Way to go, you saved the pie!" : "Way to go, you saved the cookies!", 200, 180, 300, 13, "#e0607e", "center", "800");
   for (let s = 0; s < 3; s++) {
     let on = s < R.stars && R.t > 0.3 + s * 0.25, sc = on ? 1 + Math.max(0, 0.2 - (R.t - 0.3 - s * 0.25)) * 3 : 1;
     starShape(ctx, 140 + s * 60, 270, 18 * sc, on ? "#ffd45e" : "#e8dde4", 2.5);
@@ -6719,17 +6412,25 @@ function renderResult(dt) {
     text(ctx, l, 84, 330 + i * RS, 12, "#7a5a6a", "left", null), text(ctx, `+${v}`, 316, 330 + i * RS, 12, "#c9962a", "right", null);
   });
   let yy = 330 + rows.length * RS + 18;
-  if (out.gems ? (coinIcon(ctx, 92, yy, 1.3), text(ctx, `+${out.coins} coins`, 146, yy + 1, 18, "#ffd45e", "center"), diamondIcon(ctx, 226, yy, 0.8), text(ctx, `+${out.gems} gems`, 240, yy + 1, 18, "#8fd0ff", "left")) : (coinIcon(ctx, 150, yy, 1.3), text(ctx, `+${out.coins} coins`, 208, yy + 1, 18, "#ffd45e")), yy += 20, text(ctx, `(${R.crumbsLeft} unspent crumbs vanish)`, 200, yy, 12, "#a08090", "center", null), yy += 20, R.win || text(ctx, "Win to earn cards and prizes!", 200, yy, 12, "#a08090", "center", null), out.booster && (rr(ctx, 70, yy - 12, 260, 26, 12), ctx.fillStyle = "#ffe9f0", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = "#ff9ab0", ctx.stroke(), ctx.save(), ctx.translate(92, yy + 1), ctx.scale(0.62, 0.62), drawBonusIcon(ctx, out.booster.id, S.t), ctx.restore(), text(ctx, `First clear: +1 ${BONUSES[out.booster.id].name} booster`, 210, yy + 1, 12.5, "#e0607e", "center", null), yy += 30), out.prize && !celebrating) {
+  out.gems ? (coinIcon(ctx, 92, yy, 1.3), text(ctx, `+${out.coins} coins`, 146, yy + 1, 18, "#ffd45e", "center"), diamondIcon(ctx, 226, yy, 0.8), text(ctx, `+${out.gems} gems`, 240, yy + 1, 18, "#8fd0ff", "left")) : (coinIcon(ctx, 150, yy, 1.3), text(ctx, `+${out.coins} coins`, 208, yy + 1, 18, "#ffd45e"));
+  let gift = out.bossGift && !celebrating, twin = gift && out.prize;
+  yy += 20, twin || (text(ctx, `(${R.crumbsLeft} unspent crumbs vanish)`, 200, yy, 12, "#a08090", "center", null), yy += 20), R.win || text(ctx, "Win to earn cards and prizes!", 200, yy, 12, "#a08090", "center", null), out.booster && (rr(ctx, 70, yy - 12, 260, 26, 12), ctx.fillStyle = "#ffe9f0", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = "#ff9ab0", ctx.stroke(), ctx.save(), ctx.translate(92, yy + 1), ctx.scale(0.62, 0.62), drawBonusIcon(ctx, out.booster.id, S.t), ctx.restore(), text(ctx, `First clear: +1 ${BONUSES[out.booster.id].name} booster`, 210, yy + 1, 12.5, "#e0607e", "center", null), yy += 30);
+  let strip = (cy, pz, label, k) => {
+    ctx.save(), ctx.translate(200, cy), ctx.scale(0.5 + k * 0.5, 0.5 + k * 0.5), rr(ctx, -130, -15, 260, 30, 14), ctx.fillStyle = "#fff2b8", ctx.fill(), ctx.lineWidth = 2.4, ctx.strokeStyle = "#e0a830", ctx.stroke(), pz.kind === "bonus" ? (ctx.save(), ctx.translate(-108, 0), ctx.scale(0.8, 0.8), drawBonusIcon(ctx, pz.id, S.t), ctx.restore()) : (ctx.save(), ctx.translate(-108, 6), ctx.scale(0.42, 0.42), drawTower(ctx, pz.id, S.t, null), ctx.restore()), text(ctx, label, 10, 1, 13, "#c47a12"), ctx.restore();
+  }, cardLabel = (pz, head) => pz.newCard ? `${head}: new tower - ${TOWERS[pz.id].short}!` : `${head === "Prize" ? "You won a card" : head}: ${TOWERS[pz.id].short} L${pz.level}`;
+  if (out.prize && !celebrating) {
+    let k = Math.min(1, (R.t - UI.perfectAnimTime) * 4), pz = out.prize;
+    strip(yy + 12, pz, pz.kind === "cards" ? cardLabel(pz, "Prize") : `Prize: +${pz.count} ${BONUSES[pz.id].name} booster`, k);
+  }
+  if (gift) {
     let k = Math.min(1, (R.t - UI.perfectAnimTime) * 4);
-    ctx.save(), ctx.translate(200, yy + 12), ctx.scale(0.5 + k * 0.5, 0.5 + k * 0.5), rr(ctx, -130, -16, 260, 32, 14), ctx.fillStyle = "#fff2b8", ctx.fill(), ctx.lineWidth = 2.4, ctx.strokeStyle = "#e0a830", ctx.stroke();
-    let pz = out.prize, label = pz.kind === "cards" ? pz.newCard ? `Prize: new tower - ${TOWERS[pz.id].short}!` : `You won a card: ${TOWERS[pz.id].short} L${pz.level}` : `Prize: +${pz.count} ${BONUSES[pz.id].name} booster`;
-    pz.kind === "bonus" ? (ctx.save(), ctx.translate(-108, 0), ctx.scale(0.8, 0.8), drawBonusIcon(ctx, pz.id, S.t), ctx.restore()) : (ctx.save(), ctx.translate(-108, 6), ctx.scale(0.42, 0.42), drawTower(ctx, pz.id, S.t, null), ctx.restore()), text(ctx, label, 10, 1, 13, "#c47a12"), ctx.restore();
-  } else R.win && !R.perfect && S.battle.stats.stolen > 0 && text(ctx, "Tip: lose no food at all for a Perfect prize", 200, yy + 10, 12, "#a08090", "center", null);
-  ctx.restore();
+    strip(yy + 12 + (out.prize ? 34 : 0), out.bossGift, cardLabel(out.bossGift, "Boss gift"), k);
+  }
+  !(out.prize && !celebrating) && !gift && R.win && !R.perfect && S.battle.stats.stolen > 0 && text(ctx, "Tip: lose no food at all for a Perfect prize", 200, yy + 10, 12, "#a08090", "center", null), ctx.restore();
   for (let c of R.confetti)
     c.vy += 420 * dt, c.x += c.vx * dt, c.y += c.vy * dt, c.r += dt * 8, c.y < 760 && (ctx.save(), ctx.translate(c.x, c.y), ctx.rotate(c.r), ctx.fillStyle = c.c, ctx.fillRect(-4, -2.5, 8, 5), ctx.restore());
   if (celebrating) return;
-  let by = 532;
+  let by = 540;
   if (out.zapperGift && zapperGiftPending(S.save)) {
     drawButton(100, by, 200, 50, "Continue", "#9fe0b5"), button("rcontinue", 100, by, 200, 50, () => {
       S.battle = null, go("map");
@@ -6750,8 +6451,8 @@ function cardInfoPanel(id, x, y, w, h, opt = {}) {
     plainText(opt.hint || "Tap a card to see its stats.", x + w / 2, y + h / 2, 12.5, "#a08090", "center", "600");
     return;
   }
-  let T = TOWERS[id], c = S.save.cards[id], own = c.unlocked, L = Math.max(1, c.level);
-  fitText(T.name, x + 12 + Math.min(170, 9 * T.name.length) / 2, y + 16, 170, 14.5, "#ff8fab"), plainFit(own ? `Card L${c.level} (used in battle)` : "Not owned yet", x + w - 12, y + 16, 150, 12, INFO_SOFT, "right", "700");
+  let T = TOWERS[id], c = S.save.cards[id], own = c.unlocked, L = Math.max(1, c.level), capCard = highestWorldCap();
+  fitText(T.name, x + 12 + Math.min(170, 9 * T.name.length) / 2, y + 16, 170, 14.5, "#ff8fab"), plainFit(own ? capCard && capCard < c.level ? `Card L${c.level} - fights as L${capCard}` : `Card L${c.level} (used in battle)` : "Not owned yet", x + w - 12, y + 16, 150, 12, INFO_SOFT, "right", "700");
   let cmp = h < 108;
   plainFit(T.desc, x + 12, y + (cmp ? 33 : 37), w - 24, 12, INFO_INK, "left", "500");
   let next = cardUpgradeDiff(id, L), nk = new Set(next.map((d) => d.key)), keys = cardStatKeys(id), bw = (w - 24 - 12) / 3;
@@ -6767,7 +6468,7 @@ function cardBand(L) {
   return CARD_BANDS.find((b) => L <= b[0]) || CARD_BANDS[0];
 }
 function drawCardPic(x, y, w, h, type, opt = {}) {
-  let T = TOWERS[type], L = opt.level || 1, [, frame2, frameLt] = cardBand(L);
+  let T = TOWERS[type], L = opt.level || 1, [, frame2, frameLt] = cardBand(L), Le = opt.cap ? Math.min(L, opt.cap) : L;
   ctx.save(), opt.dim && (ctx.globalAlpha = 0.42);
   let r = Math.max(7, w * 0.12);
   if (rr(ctx, x, y + 3, w, h, r), ctx.fillStyle = "rgba(74,52,66,0.25)", ctx.fill(), rr(ctx, x, y, w, h, r), opt.locked) {
@@ -6789,11 +6490,11 @@ function drawCardPic(x, y, w, h, type, opt = {}) {
   rr(ctx, x + m * 0.6, by, w - m * 1.2, bh, bh * 0.4), ctx.fillStyle = shade(T.color, -0.15), ctx.fill(), ctx.lineWidth = 1.6, ctx.strokeStyle = INK, ctx.stroke(), fitText(T.short || T.name, x + w / 2, by + bh / 2 + 0.5, w - m * 1.2 - 3.4, Math.min(14, Math.max(12, bh * 0.78)), "#fff");
   let py = by + bh + (y + h - by - bh) / 2, n = MAX_CARD_LEVEL, gap = Math.min(7, (w - 2 * m - 6) / n);
   if (!compact) for (let i = 0; i < n; i++)
-    ctx.beginPath(), ctx.arc(x + w / 2 - (n - 1) * gap / 2 + i * gap, py, Math.max(1.6, gap * 0.32), 0, 7), ctx.fillStyle = i < L ? "#fff6c0" : "rgba(74,52,66,0.25)", ctx.fill();
-  let bs = Math.max(11, w * 0.15);
-  if (blob(ctx, x + bs * 0.75, y + bs * 0.75, bs, bs * 0.92, "#ffe36e", 2), text(ctx, "L" + L, x + bs * 0.75, y + bs * 0.75 + 0.5, 11, "#7a4a2a", "center", null), opt.capNote) {
-    let pw = Math.min(w - 6, 62), ph = 17, pyy = ay + ah - ph - 3;
-    rr(ctx, x + (w - pw) / 2, pyy, pw, ph, 8), ctx.fillStyle = "#b0506a", ctx.fill(), ctx.lineWidth = 1.6, ctx.strokeStyle = INK, ctx.stroke(), plainText(`acts as L${opt.capNote}`, x + w / 2, pyy + ph / 2 + 0.5, 12, "#ffffff", "center", "800");
+    ctx.beginPath(), ctx.arc(x + w / 2 - (n - 1) * gap / 2 + i * gap, py, Math.max(1.6, gap * 0.32), 0, 7), ctx.fillStyle = i < Le ? "#fff6c0" : "rgba(74,52,66,0.25)", ctx.fill();
+  let bs = Math.max(11, w * 0.15), capped = Le < L, bcx = x + bs * 0.75, bcy = y + bs * 0.75;
+  if (blob(ctx, bcx, bcy, bs, bs * 0.92, capped ? "#ffc2d4" : "#ffe36e", 2), text(ctx, "L" + Le, bcx, bcy + 0.5, 11, "#7a4a2a", "center", null), capped) {
+    let tx = bcx + bs * 0.62, ty = bcy + bs * 0.66;
+    ctx.beginPath(), ctx.moveTo(tx - 4, ty - 3), ctx.lineTo(tx + 4, ty - 3), ctx.lineTo(tx, ty + 3.4), ctx.closePath(), ctx.fillStyle = "#b0506a", ctx.fill(), ctx.lineWidth = 1.5, ctx.lineJoin = "round", ctx.strokeStyle = INK, ctx.stroke();
   }
   if (opt.tag && !opt.badge) {
     let tag = T.place === "path" ? "on trail" : T.targets === "air" ? "air only" : type === "laser" ? "gnd+air" : "";
@@ -6852,9 +6553,19 @@ function openCardView(id) {
   let c = S.save.cards[id];
   c.fresh && (c.fresh = !1, persist()), go("card");
 }
+function highestWorldCap() {
+  let W2 = WORLDS.find((x) => x.id === highestWorld(S.save));
+  return W2 && W2.cardLevelCap || null;
+}
+function worldCapLine() {
+  let top = Math.max(2, highestWorld(S.save));
+  return WORLDS.filter((W2) => W2.id <= top && W2.cardLevelCap).map((W2, k) => k === 0 ? `W${W2.id} acts as L${W2.cardLevelCap}` : `W${W2.id} as L${W2.cardLevelCap}`).join(", ");
+}
 function renderCardView() {
   let id = S.cardView, T = TOWERS[id], c = S.save.cards[id];
-  panel(12, 12, 376, 636, "#fff6ee"), text(ctx, T.name, 200, 36, 24, "#b5d8ff"), drawButton(22, 18, 66, 28, "Back", "#d9cfe0", { size: 13, r: 10 }), button("cvBack", 14, 8, 84, 48, () => go("cards")), drawCardPic(28, 58, 104, 136, id, { level: c.level, locked: !c.unlocked }), plainText(c.unlocked ? `In battle: level ${c.level}` : "Not unlocked yet", 146, 76, 15, INFO_INK, "left", "800"), plainText("3 cards of a level \u2192 1 of the next", 146, 102, 12, INFO_SOFT, "left", "600"), plainText("Your highest level fights.", 146, 120, 12, INFO_SOFT, "left", "600"), plainText(`Cards held: ${totalCards(c)}`, 146, 138, 12, INFO_SOFT, "left", "600"), coinIcon(ctx, 158, 170, 1), text(ctx, String(S.save.coins), 190, 171, 15, "#ffd45e");
+  panel(12, 12, 376, 636, "#fff6ee"), text(ctx, T.name, 200, 36, 24, "#b5d8ff"), drawButton(22, 18, 66, 28, "Back", "#d9cfe0", { size: 13, r: 10 }), button("cvBack", 14, 8, 84, 48, () => go("cards")), drawCardPic(28, 58, 104, 136, id, { level: c.level, locked: !c.unlocked });
+  let capNow = highestWorldCap();
+  plainText(c.unlocked ? `Fights as L${capNow ? Math.min(c.level, capNow) : c.level}` : "Not unlocked yet", 146, 76, 15, INFO_INK, "left", "800"), plainText("3 cards of a level \u2192 1 of the next", 146, 98, 12, INFO_SOFT, "left", "600"), plainText("Your highest level fights.", 146, 114, 12, INFO_SOFT, "left", "600"), c.unlocked && plainFit(worldCapLine(), 146, 130, 236, 12, INFO_SOFT, "left", "700"), plainText(`Cards held: ${totalCards(c)}`, 146, 146, 12, INFO_SOFT, "left", "600"), coinIcon(ctx, 158, 170, 1), text(ctx, String(S.save.coins), 190, 171, 15, "#ffd45e");
   let rows = mergeRows(S.save, id);
   plainText("Your cards by level", 28, 212, 12, "#3d2a36", "left", "800"), rows.forEach((r, k) => {
     let col = k % 5, row = Math.floor(k / 5), x = 26 + col * 70, y = 224 + row * 138, w = 62, h = 80;

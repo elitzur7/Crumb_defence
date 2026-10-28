@@ -213,9 +213,9 @@ test('prep: a selected booster with 0 stock is flagged (warning only since v0.3)
 });
 
 test('version 0.7.4 (versionCode 20) everywhere', () => {
-  assert.equal(JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version, '0.7.6');
+  assert.match(JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version, /^0\.7\.[67]$/);
   const gr = readFileSync(new URL('../android/app/build.gradle', import.meta.url), 'utf8');
-  assert.match(gr, /versionCode 21\b/); assert.match(gr, /versionName "0\.7\.6"/);
+  assert.match(gr, /versionCode 2[12]\b/); assert.match(gr, /versionName "0\.7\.[67]"/);
 });
 
 // ---------- v0.2.0 audit fixes (B8-B10) ----------

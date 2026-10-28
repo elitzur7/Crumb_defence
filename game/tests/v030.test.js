@@ -106,9 +106,12 @@ test('diamonds persist in the save; crumbs do not', () => {
 // ---------- item 10: card acquisition (no unlock by level) ----------
 test('cards are obtained by buying (Shop) or as prizes - never by clearing levels; starters kept', () => {
   const s = M.newSave(); assert.deepEqual(M.unlockedCards(s).sort(), [...C.STARTER_CARDS].sort());
-  for (let i = 0; i < C.LEVELS.length; i++) M.applyBattleResult(s, i, 'win', 3, { kills: 1, foodLeft: 50 });
-  assert.equal(M.unlockedCards(s).length, C.STARTER_CARDS.length, 'clearing every level unlocks nothing');
-  const locked = M.lockedCards(s); assert.equal(locked.length, C.ALL_CARDS.length - C.STARTER_CARDS.length);
+  for (let i = 0; i < C.LEVELS.length; i++) if (!C.isBossLevel(i)) M.applyBattleResult(s, i, 'win', 3, { kills: 1, foodLeft: 50 });
+  assert.equal(M.unlockedCards(s).length, C.STARTER_CARDS.length, 'clearing every normal level unlocks nothing');
+  // v0.7.7 S1: only a world's queen pays one boss-gift card on its first clear (tests/v077.test.js)
+  for (let i = 0; i < C.LEVELS.length; i++) if (C.isBossLevel(i)) M.applyBattleResult(s, i, 'win', 3, { kills: 1, foodLeft: 50 });
+  assert.equal(M.unlockedCards(s).length, C.STARTER_CARDS.length + C.WORLDS.length, 'one boss gift per world');
+  const locked = M.lockedCards(s); assert.equal(locked.length, C.ALL_CARDS.length - C.STARTER_CARDS.length - C.WORLDS.length);
   const id = locked[0]; const coins = s.coins;
   assert.ok(M.buyCardUnlock(s, id)); assert.ok(s.cards[id].unlocked); assert.equal(s.coins, coins - M.unlockPrice(id)); // v0.6.2 item 12: tiered price
   assert.equal(M.buyCardUnlock(s, id), false, 'already owned');

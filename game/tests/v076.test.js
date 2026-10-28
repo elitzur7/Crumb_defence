@@ -16,10 +16,10 @@ const lin = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0
 const Lm = (h) => { const n = parseInt(h.slice(1), 16); return 0.2126 * lin((n >> 16) & 255) + 0.7152 * lin((n >> 8) & 255) + 0.0722 * lin(n & 255); };
 const ratio = (a, b) => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
 
-test('version 0.7.6 / versionCode 21', () => {
-  assert.equal(C.VERSION, '0.7.6');
-  assert.match(rd('android/app/build.gradle'), /versionCode 21/); assert.match(rd('android/app/build.gradle'), /versionName "0.7.6"/);
-  assert.equal(JSON.parse(rd('package.json')).version, '0.7.6');
+test('version 0.7.6 or later (the current release, 0.7.7 / versionCode 22, is asserted in v077.test.js)', () => {
+  assert.match(C.VERSION, /^0\.7\.[67]$/);
+  assert.match(rd('android/app/build.gradle'), /versionCode 2[12]/); assert.match(rd('android/app/build.gradle'), /versionName "0\.7\.[67]"/);
+  assert.match(JSON.parse(rd('package.json')).version, /^0\.7\.[67]$/);
 });
 test('V1: small ant #f8c07e; ladder stays >= 1.30 and small keeps its distance from worker', () => {
   assert.equal(A.ANT_COL.small, '#f8c07e');
@@ -42,9 +42,9 @@ test('V3: static scan - no text/fit/wrap/plain call below 12 px except the tower
   const { execFileSync } = await import('node:child_process');
   const out = execFileSync('node', ['tools/a11-static-scan.mjs'], { cwd: new URL('..', import.meta.url).pathname, encoding: 'utf8' });
   const rows = out.split('\n').filter((l) => /^game\.js:\d+/.test(l));
-  const bad = rows.filter((l) => !/text=(tag|'L' \+ (opt\.level|L)|'BOOM!')$/.test(l));
+  const bad = rows.filter((l) => !/text=(tag|'L' \+ (opt\.level|L|Le)|'BOOM!')$/.test(l));
   assert.deepEqual(bad, [], out);
-  assert.equal(rows.filter((l) => /size=11 /.test(l)).length, 4, 'tags (2) + L badges (2) at 11');
+  assert.equal(rows.filter((l) => /size=11 /.test(l)).length, 4, 'tags (2) + L badges (2) at 11'); // v0.7.7: the prep/cards badge text is `L${effective level}`
 });
 test('V3: fitText / plainFit have a 12 px floor; NEW pill 38 px; Crop Duster width 70; battle tags 11 bold', () => {
   const g = src('game.js');
@@ -105,17 +105,17 @@ test('E3: +10 gems on a boss first clear, +5 on its first 3 stars; none on repla
   assert.equal(M.applyBattleResult(M.newSave(), 9, 'lose', 0, {}, () => 0).gems, 0);
   assert.equal(C.ECONOMY.bossGems.firstClear, 10); assert.equal(C.ECONOMY.bossGems.firstThreeStars, 5);
 });
-test('E4: W1 cap 4, W2 cap 5; the prep screen has the cap line and the per-card "acts as L" pill', () => {
+test('E4: W1 cap 4, W2 cap 5; the prep screen has the cap line (v0.7.7 P1-1: the per-card pill is gone, the badge shows the capped level)', () => {
   assert.equal(C.WORLDS[0].cardLevelCap, 4); assert.equal(C.WORLDS[1].cardLevelCap, 5);
   const g = src('game.js');
-  assert.match(g, /acts as L\$\{capW\} in this world/); assert.match(g, /acts as L\$\{opt\.capNote\}/);
+  assert.match(g, /acts as L\$\{capW\} in this world/); assert.doesNotMatch(g, /acts as L\$\{opt\.capNote\}/);
 });
 test('E5: tuning.json carries the star bonus, calendar ladder, boss gems and worlds[].coinMul; coinMul scales win coins only', () => {
   assert.deepEqual(tuning.economy.starBonus, { 2: 15, 3: 25 });
   assert.deepEqual(tuning.economy.calendar.coinsByStreak, [30, 60, 90, 120]); assert.equal(tuning.economy.calendar.worldStep, 0.5);
   assert.deepEqual(tuning.economy.bossGems, { firstClear: 10, firstThreeStars: 5 });
-  assert.ok(tuning.worlds.every((w) => w.coinMul === 1));
-  assert.ok(C.WORLDS.every((w) => w.coinMul === 1));
+  assert.ok(tuning.worlds.slice(0, 2).every((w) => w.coinMul === 1));
+  assert.ok(C.WORLDS.slice(0, 2).every((w) => w.coinMul === 1)); // v0.7.7: world 3 = 1.25 (v077.test.js)
   const f = { kills: 20, foodLeft: 80, levelIndex: 4, firstClear: true, time: 100 };
   const one = M.battleCoins('win', f), two = M.battleCoins('win', { ...f, coinMul: 2 });
   assert.deepEqual(M.battleCoins('win', { ...f, coinMul: 1 }), one, 'coinMul 1 is the identity');

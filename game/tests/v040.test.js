@@ -30,9 +30,10 @@ test('items 12+13: every stage has 30-50% fewer waves; stage count unchanged', (
 });
 // v0.7.4 P2: the loosened 0.42-0.65 ratio bound is replaced by a GOLDEN table (ants per level from generateWaves; the tuning mixes are unchanged since v0.7.3).
 // Any change to a level's wave mix or count now has to update this table on purpose. Ratios to v0.3 for levels 1-10 stay in the message (about half, 0.46-0.62).
-const GOLDEN_ANTS = [53, 58, 86, 105, 102, 161, 151, 209, 290, 244, 126, 105, 128, 114, 179, 151, 181, 258, 302, 245];
-test('item 12 (golden table, v0.7.4 P2): the number of ants in each of the 20 levels is exactly the golden table', () => {
-  assert.equal(C.LEVELS.length, 20);
+const GOLDEN_ANTS = [53, 58, 86, 105, 102, 161, 151, 209, 290, 244, 126, 105, 128, 114, 179, 151, 181, 258, 302, 245,
+  85, 111, 138, 123, 125, 103, 146, 149, 173, 191]; // v0.7.7: world 3 (L21-L30)
+test('item 12 (golden table, v0.7.4 P2): the number of ants in each of the 30 levels is exactly the golden table', () => {
+  assert.equal(C.LEVELS.length, 30);
   C.LEVELS.forEach((L, i) => {
     const n = generateWaves(i).flat().length;
     assert.equal(n, GOLDEN_ANTS[i], `level ${i + 1}: ${n} ants, golden ${GOLDEN_ANTS[i]}${i < 10 ? ` (${(n / V03_ANTS[i]).toFixed(2)} of v0.3's ${V03_ANTS[i]})` : ''}`);
@@ -196,7 +197,7 @@ test('item 18: treat reactions - first bite surprised, fast bites "oy oy oy", bi
 test('item 18: one face scheme for every treat (cookie now, cake later)', () => {
   const a = src('art.js');
   for (const f of Treat.TREAT_REACTIONS) assert.ok(a.includes(`case '${f}'`), f);
-  assert.ok(a.includes('export const TREAT_BODIES = { cookie: cookieBody, cake: cakeBody }'));
+  assert.ok(a.includes('export const TREAT_BODIES = { cookie: cookieBody, cake: cakeBody, pie: pieBody }')); // v0.7.7: world 3's pie
   assert.equal(C.TREATS[1], 'cookie');
 });
 
@@ -218,7 +219,7 @@ test('v0.3 save loads: fields kept, card-blink flags + Roasted Lava card added, 
   M.writeSave(st, s); const again = M.loadSave(st); assert.equal(again.coins, 321); assert.deepEqual(again.cardBlink, s.cardBlink);
 });
 test('versions: package 0.7.4, Android versionCode 20 / versionName 0.7.4', () => {
-  const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')); assert.equal(pkg.version, '0.7.6');
+  const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')); assert.match(pkg.version, /^0\.7\.[67]$/); // v0.7.7 asserted in v077.test.js
   const gradle = readFileSync(new URL('../android/app/build.gradle', import.meta.url), 'utf8');
-  assert.match(gradle, /versionCode 21\b/); assert.match(gradle, /versionName "0\.7\.6"/);
+  assert.match(gradle, /versionCode 2[12]\b/); assert.match(gradle, /versionName "0\.7\.[67]"/);
 });

@@ -189,9 +189,11 @@ export class Path {
   isPathTile(c, r) { return this.tiles.has(c + ',' + r); }
 }
 
+// v0.7.7 splitInto geometry / guard (see Battle.splitAnt)
+export const SPLIT_BACK = 3, SPLIT_STEP = 7, MAX_SPLIT_DEPTH = 1;
 // ---------- waves ----------
 const SPACING = { small: 0.45, worker: 1, big: 1.6, gasmask: 1, armored: 1.5, flyer: 0.8, sprinter: 0.9, heavy: 1.7, queen: 1, queen2: 1,
-  small_gasmask: 0.45, small_armed: 0.6, small_fly: 0.5 }; // v0.7: small variants (Yair ANT-STATS-v0.6.3)
+  small_gasmask: 0.45, small_armed: 0.6, small_fly: 0.5, greasy: 1.1, mama: 1.6, queen3: 1 }; // v0.7: small variants (Yair ANT-STATS-v0.6.3); v0.7.7: W3 ants (only used by the random-mix generator; W3 levels have explicit waves)
 export function generateWaves(levelIndex, levels = C.LEVELS) {
   const L = levels[levelIndex];
   if (L.waves) return L.waves.map((groups) => expandGroups(groups, L.interval || 1));
@@ -395,10 +397,11 @@ export class Battle {
   }
   kill(ant, src) {
     ant.dead = true;
-    const crumbs = C.crumbsFor(ant.type);
+    // v0.7.7: a child dropped by a splitting ant (Brood Ant) pays 0 crumbs and is not an 'ant beaten' (no kills coin, no byType): anti-farming
+    const crumbs = ant.child ? 0 : C.crumbsFor(ant.type);
     this.addCrumbs(crumbs);
-    this.stats.kills++;
-    this.stats.byType[ant.type] = (this.stats.byType[ant.type] || 0) + 1;
+    if (ant.child) this.stats.childKills = (this.stats.childKills || 0) + 1;
+    else { this.stats.kills++; this.stats.byType[ant.type] = (this.stats.byType[ant.type] || 0) + 1; }
     if (ant.carrying > 0 && this.cfg.rescue && this.cfg.rescue.on) { // v0.7.4 M2: `auto` of the piece comes back at once, the rest (`tap - auto`) stays on the trail as a piece to tap
       const R = this.cfg.rescue, auto = Math.round(ant.carrying * R.auto * 1000) / 1000, bonus = Math.round(ant.carrying * (R.tap - R.auto) * 1000) / 1000;
       this.stats.lostOnWay += ant.carrying - auto;
@@ -414,6 +417,25 @@ export class Battle {
     }
     this.emit({ type: 'kill', x: ant.x, y: ant.y, ant: ant.type, crumbs, src: src && src.type, ...(src && src.type === 'swatter' ? { ref: ant } : {}) }); // ref: the view keeps the swatted ant visible until the slap frame (v0.7.3)
     if (src && src.type === 'lizard') src.chew = src.stat('chewTime');
+    this.splitAnt(ant);
+  }
+  // v0.7.7 splitInto (tuning.json ants[].splitInto = { type, count }): a dying ant drops `count` children of `type` on its own route, behind it
+  // (d - 3 - 7k, k = 0..count-1; where that would fall off the nest end the child goes the same distance AHEAD instead, so no two children stack).
+  // Children pay 0 crumbs (kill()), do not count as kills, start at full hp x hpMul, walk the normal 'go' state, and NEVER split (child flag + MAX_SPLIT_DEPTH).
+  splitAnt(ant) {
+    const SP = C.ANTS[ant.type].splitInto;
+    if (!SP || ant.child || (ant.gen || 0) >= MAX_SPLIT_DEPTH || !(SP.count > 0) || !C.ANTS[SP.type] || ant.splitDone) return [];
+    ant.splitDone = true; // at most once per ant, even if kill() ran twice
+    const len = this.routes[ant.ri].length, kids = [];
+    for (let k = 0; k < SP.count; k++) {
+      const off = SPLIT_BACK + k * SPLIT_STEP;
+      let d = ant.d - off; if (d < 0) d = Math.min(len - 0.01, ant.d + off);
+      const c = this.spawn(SP.type, Math.max(0, d), ant.ri);
+      c.child = true; c.gen = (ant.gen || 0) + 1; c.parentId = ant.id; kids.push(c);
+    }
+    this.stats.splitSpawned = (this.stats.splitSpawned || 0) + kids.length;
+    this.emit({ type: 'split', x: ant.x, y: ant.y, ant: ant.type, kids: kids.map((c) => ({ id: c.id, x: c.x, y: c.y })) });
+    return kids;
   }
   // ----- v0.7.4 M2: rescue the crumb (flag cfg.rescue.on; default off = v0.7.3's automatic 40%) -----
   dropPiece(x, y, bonus) {
