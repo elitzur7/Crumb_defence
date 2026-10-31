@@ -44,14 +44,14 @@ test('V3: static scan - no text/fit/wrap/plain call below 12 px except the tower
   const rows = out.split('\n').filter((l) => /^game\.js:\d+/.test(l));
   const bad = rows.filter((l) => !/text=(tag|'L' \+ (opt\.level|L|Le)|'BOOM!')$/.test(l));
   assert.deepEqual(bad, [], out);
-  assert.equal(rows.filter((l) => /size=11 /.test(l)).length, 4, 'tags (2) + L badges (2) at 11'); // v0.7.7: the prep/cards badge text is `L${effective level}`
+  assert.equal(rows.filter((l) => /size=11 /.test(l)).length, 0, 'v0.8.1 F2: the tower tags and L badges are 12 px now - nothing below 12'); // v0.7.7: the prep/cards badge text is `L${effective level}`
 });
 test('V3: fitText / plainFit have a 12 px floor; NEW pill 38 px; Crop Duster width 70; battle tags 11 bold', () => {
   const g = src('game.js');
   assert.match(g, /const MIN_FONT = 12;/); assert.match(g, /Math\.max\(MIN_FONT, s\)/);
   assert.equal((g.match(/x \+ w \/ 2 - 19, y - 9, 38, 17, 8/g) || []).length, 2, 'NEW pill 38 px (2 sites)');
   assert.match(g, /fitText\(C\.BONUSES\[bt\]\.name, x \+ 59, by \+ 15, 70, 12/);
-  assert.match(g, /A\.text\(ctx, tag, x \+ w - 7, y \+ 11, 11, '#fff', 'right'\)/);
+  assert.match(g, /A\.text\(ctx, tag, x \+ w - 7, y \+ 11, 12, '#fff', 'right'\)/); // v0.8.1 F2: 12 px
 });
 test('V4: KO life 0.32 s, pop in the first 25 %', () => {
   const g = src('game.js');

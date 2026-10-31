@@ -504,7 +504,7 @@ for (const [w, h, dpr] of VIEWPORTS) {
     // the bar never shows in battle / prep
     await G(() => window.__game.startBattle(0, ['slingshot', 'spray', 'glue', 'fan', 'ball'], ['bomb', 'freeze'], 5)); await sleep(300);
     ok((await tabs()).length === 0, `${vp} C16 no tab bar in battle`);
-    const lay = await G(() => window.__game.layout()); ok(Math.abs(lay.scale - Math.min(w / 400, h / 720)) < 1e-6, `${vp} C16 battle keeps the full-height 400x720 layout`);
+    const lay = await G(() => window.__game.layout()); ok(Math.abs(lay.scale - Math.min(w / 400, (h - 24) / 720)) < 1e-6, `${vp} C16 battle keeps the 400x720 layout clear of the 24 dp bottom inset (v0.8.1 U8)`);
     await G(() => { window.__game.setInset(0); window.__game.go('map'); }); await sleep(200);
   }
   ok(errors.length === 0, `${vp} no console errors ${errors.join(' | ')}`);

@@ -61,9 +61,8 @@ test('review finding 2: tapping the open panel no longer cycles the target mode;
 test('review finding 3: the info-panel description follows the selected mode (every mode of every mode-capable tower has its own line)', () => {
   for (const ty of ['slingshot', 'lizard', 'laser', 'zapper']) {
     const T = C.TARGET_MODE_TEXT[ty]; assert.ok(T, ty);
-    for (const m of ['carrier', 'front']) assert.ok(typeof T[m] === 'string' && T[m].length > 20 && T[m].length < 110, `${ty}/${m}`);
-    assert.notEqual(T.carrier, T.front);
-    assert.ok(!/fewest HP left\.?$/.test(T.front), `${ty}: the Front text must not describe Weakest`);
+    for (const m of ['carrier', 'healer', 'strong']) assert.ok(typeof T[m] === 'string' && T[m].length > 20 && T[m].length < 110, `${ty}/${m}`);
+    assert.notEqual(T.carrier, T.healer); assert.notEqual(T.healer, T.strong); assert.ok(!T.front, `${ty}: no Front text (v0.8.1 M3)`);
   }
   assert.match(src('game.js'), /TARGET_MODE_TEXT\[tw\.type\]\[tw\.mode\]/);
 });
@@ -77,7 +76,7 @@ test('review finding 4 / A11: the speed label and the carried / left / level cap
 
 test('mode chips: 34 px tall with an inactive outline; the badge pops for 0.5 s on a change', () => {
   const g = src('game.js');
-  assert.match(g, /y = py \+ 108, w = 114, h = 34/); assert.match(g, /_modeAt/); assert.match(g, /strokeStyle = on \? A\.INK : '#d9c5cc'/);
+  assert.match(g, /w = n4 \? 84 : 114, h = 34, x = 22 \+ i \* \(w \+ 6\), y = py \+ 108/); assert.match(g, /_modeAt/); assert.match(g, /strokeStyle = on \? A\.INK : '#d9c5cc'/);
 });
 
 test('juice table: hit squash 1.12/0.88 over 120 ms, number pop 0.6 -> 1.15 -> 1, death pop 1.25 in 80 ms then out in 120 ms, all gated by reducedMotion()', () => {

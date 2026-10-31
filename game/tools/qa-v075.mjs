@@ -4,7 +4,7 @@
 import puppeteer from 'puppeteer-core';
 import fs from 'node:fs';
 import { serve } from './serve.mjs';
-const OUT = '/workspace/ant-td/qa/v0.8.0/suites/v075'; fs.mkdirSync(`${OUT}/shots`, { recursive: true });
+const OUT = '/workspace/ant-td/qa/v0.8.1/suites/v075'; fs.mkdirSync(`${OUT}/shots`, { recursive: true });
 const SH = `${OUT}/shots`;
 await serve(8891, 'www-test');
 const browser = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: true, args: ['--no-sandbox'] });
@@ -64,7 +64,7 @@ const cont = [];
     await G((li) => { const g = window.__game; g.go('map'); g.startBattle(li, ['slingshot'], [], 1); }, li); await sleep(120);
     cont.push(await G(`${FN}(${li})`));
   }
-  ok(n === 40, `A15 ${n} maps measured`);
+  ok(n === 50, `A15 ${n} maps measured`);
   const byTheme = {};
   for (const c of cont) (byTheme[c.theme] ||= []).push(c);
   for (const [t, a] of Object.entries(byTheme)) {
@@ -116,17 +116,17 @@ const collect = (tx) => { for (const [t, s] of tx) if (s > 0 && s < 12) (SMALL[s
   const tp = await G(() => { const t = window.__game.S.battle.towers[0]; return { x: t.x, y: t.y }; });
   await tapAt(tp.x, tp.y + MAP_Y);
   const ids = (await btns()).map((b) => b.id).filter((i) => i.startsWith('mode_'));
-  ok(ids.join() === 'mode_weak,mode_carrier,mode_front', `chips present (${ids})`);
+  ok(ids.join() === 'mode_weak,mode_carrier', `chips present (${ids})`);
   const chipH = (await btns()).filter((b) => b.id.startsWith('mode_')).map((b) => Math.round(b.cssH));
   info(`chip hit heights (css px) ${chipH}`);
   const texts = {};
-  for (const m of ['weak', 'carrier', 'front']) {
+  for (const m of ['weak', 'carrier']) {
     const b = (await btns()).find((x) => x.id === 'mode_' + m); await page.touchscreen.tap(b.sx, b.sy); await sleep(200);
     const tx = await drawn(120); collect(tx); texts[m] = tx.map((t) => t[0]).filter((t) => /single target|walking ant|fewest/i.test(t)).join(' | ');
     await page.screenshot({ path: `${SH}/chips-info-${m}.png`, });
   }
-  ok(new Set(Object.values(texts)).size === 3 && Object.values(texts).every((t) => t), `review 3: the info text differs per mode: ${JSON.stringify(texts)}`);
-  ok(/closest to the cookie/.test(texts.front) && /carrying food/.test(texts.carrier), 'review 3: Front text says closest to the cookie, Carrier text says carrying food');
+  ok(new Set(Object.values(texts)).size === 2 && Object.values(texts).every((t) => t), `review 3: the info text differs per mode: ${JSON.stringify(texts)}`);
+  ok(/carrying food/.test(texts.carrier), 'review 3: Carrier text says carrying food');
   // review 2: tapping the tower with its panel open must not change the mode
   await G(() => { const b = window.__game.S.battle; b.setTargetMode(b.towers[0], 'weak'); }); await tapAt(tp.x, tp.y + MAP_Y); await tapAt(tp.x, tp.y + MAP_Y); await tapAt(tp.x, tp.y + MAP_Y);
   ok(await G(() => window.__game.S.battle.towers[0].mode === 'weak'), 'review 2: tapping the tower repeatedly never cycles the mode');

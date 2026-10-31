@@ -4,7 +4,7 @@
 import puppeteer from 'puppeteer-core';
 import fs from 'node:fs';
 import { serve } from './serve.mjs';
-const OUT = '/workspace/ant-td/qa/v0.8.0/suites/v079'; fs.mkdirSync(OUT, { recursive: true }); const SH = `${OUT}/shots`; fs.mkdirSync(SH, { recursive: true });
+const OUT = '/workspace/ant-td/qa/v0.8.1/suites/v079'; fs.mkdirSync(OUT, { recursive: true }); const SH = `${OUT}/shots`; fs.mkdirSync(SH, { recursive: true });
 await serve(8895, 'www-test');
 const browser = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: true, args: ['--no-sandbox'] });
 let fails = 0; const R = [];
@@ -57,9 +57,9 @@ const FN = `(function(li){
     await G((li) => { const g = window.__game; g.go('map'); g.startBattle(li, ['slingshot'], [], 1); }, li); await sleep(100);
     cont.push(await G(`${FN}(${li})`));
   }
-  ok(n === 40, `${n} maps measured (30 + the 10 W4 maps)`);
+  ok(n === 50, `${n} maps measured (30 + the 10 W4 maps + the 10 W5 maps)`);
   const mn = (k, a = cont) => Math.min(...a.map((c) => c[k])), mx = (k, a = cont) => Math.max(...a.map((c) => c[k]));
-  const w4 = cont.filter((c) => c.li >= 30), old = cont.filter((c) => c.li < 30);
+  const w4 = cont.filter((c) => c.li >= 30 && c.li < 40), old = cont.filter((c) => c.li < 30);
   ok(mn('trailVsGround') >= 1.40, `A1 trail vs ground mean >= 1.40 on all 40 (min ${mn('trailVsGround')}; W4 ${mn('trailVsGround', w4)}-${mx('trailVsGround', w4)}; design 1.71-1.76)`);
   ok(mn('trailVsLightest') >= 1.25 && mn('trailVsLightest', old) >= 1.27, `A2 trail vs lightest ground tile >= 1.25 (min ${mn('trailVsLightest')}; W4 ${mn('trailVsLightest', w4)}-${mx('trailVsLightest', w4)}; design 1.61-1.65; W1-W3 min ${mn('trailVsLightest', old)} not regressed >= 1.27)`);
   ok(mx('checker') <= 1.12, `A3 checker ratio <= 1.12 (max ${mx('checker')}; W4 ${mn('checker', w4)}-${mx('checker', w4)}; design 1.055-1.063)`);

@@ -151,36 +151,39 @@ export const AIR_COUNTERS = ['laser', 'zapper'];
 // Armored = regular size + armor/helmet only. Late-game exceptions (item 14d/e): Heavy Knight = LARGE armored,
 // Sprint Knight = FAST armored (regular body, sports shoes + jersey). Max 5 ant types per battle (item 15, see LEVELS).
 // v0.7.5 (review finding 3): the tower info panel's one-line description follows the selected target mode (text only; the sim's behaviour is in sim.js). 'weak' keeps TOWERS[id].ability.
-export const TARGET_MODE_TEXT = {
-  slingshot: { carrier: 'Single target: ants carrying food first, then the fewest HP left.', front: 'Single target: the walking ant closest to the cookie.' },
-  lizard: { carrier: 'Targets ants carrying food first, then fewest HP left; chews after kills.', front: 'Targets the walking ant closest to the cookie; chews after kills.' },
-  laser: { carrier: 'Aims at ants carrying food first, then fewest HP. Heat: +12% per hit on the same ant.', front: 'Aims at the walking ant closest to the cookie. Heat: +12% per hit on the same ant.' },
-  zapper: { carrier: 'First zap: food carriers first, then fewest HP. Chains to the nearest flyers (60% each jump).', front: 'First zap: the flyer closest to the cookie. Chains to the nearest flyers (60% each jump).' },
+export const TARGET_MODE_TEXT = { // v0.8.1: Front retired (M3); Healer (M1, levels with healer ants) and Heavy = 'strong' (M2, boss levels) added
+  slingshot: { carrier: 'Single target: ants carrying food first, then the fewest HP left.', healer: 'Single target: healer ants first, then the fewest HP left.', strong: 'Single target: the toughest ant first. For queen levels.' },
+  lizard: { carrier: 'Targets ants carrying food first, then fewest HP left; chews after kills.', healer: 'Targets healer ants first, then fewest HP left; chews after kills.', strong: 'Targets the toughest ant first; chews after kills. For queen levels.' },
+  laser: { carrier: 'Aims at ants carrying food first, then fewest HP. Heat: +12% per hit on the same ant.', healer: 'Aims at healer ants first, then fewest HP. Heat: +12% per hit on the same ant.', strong: 'Aims at the toughest ant first. Heat: +12% per hit. For queen levels.' },
+  zapper: { carrier: 'First zap: food carriers first, then fewest HP. Chains to the nearest flyers (60% each jump).', healer: 'First zap: healer flyers first, then fewest HP. Chains to the nearest flyers (60% each jump).', strong: 'First zap: the toughest flyer first. Chains to the nearest flyers. For queen levels.' },
 };
-export const VERSION = '0.8.0'; // v0.7: shown on the map screen (keep in step with package.json + android versionName)
+export const ART81 = !(typeof __TEST_HOOKS__ !== 'undefined' && __TEST_HOOKS__ && typeof location !== 'undefined' && /[?&]art81=0/.test(location.search)); // v0.8.1 RG1 kill-switch: every v0.8.1 art/UI/motion item is gated on it (the A13 identity batch runs with it on and off; test builds accept ?art81=0)
+export const VERSION = '0.8.1'; // v0.7: shown on the map screen (keep in step with package.json + android versionName)
 export const ANT_SIZES = { ...TUNING.antSizes };
 const ANT_TEXT = {
-  small: { name: 'Scout Ant', desc: 'Tiny, fast, comes in swarms.' },
-  worker: { name: 'Worker Ant', desc: 'The regular. Hard hat included.' },
-  big: { name: 'Big Ant', desc: 'Slow, chunky, a bit of armor.' },
-  gasmask: { name: 'Gas-Mask Ant', desc: 'Immune to bug spray.' },
-  armored: { name: 'Knight Ant', desc: 'Heavy armor. Use spray, boombox or gate.' },
-  flyer: { name: 'Flying Ant', desc: 'Flies over ground towers. Laser, zapper or plane!' },
-  sprinter: { name: 'Sprint Knight', desc: 'Armored AND fast - sneakers on. Late stages only.' },
-  heavy: { name: 'Heavy Knight', desc: 'A big ant in full armor. Late stages only.' },
-  queen: { name: 'Ant Queen', desc: 'BOSS. Marches in and calls her scouts. Takes HALF the cookie.' },
+  small: { name: 'Scout Ant', desc: 'Tiny, fast, comes in swarms.', intro: 'Tiny and fast. They come in swarms.' },
+  worker: { name: 'Worker Ant', desc: 'The regular. Hard hat included.', intro: 'The regular ant. Easy to stop.' },
+  big: { name: 'Big Ant', desc: 'Slow, chunky, a bit of armor.', intro: 'Slow and chunky, with a bit of armour.' },
+  gasmask: { name: 'Gas-Mask Ant', desc: 'Immune to bug spray.', intro: 'Wears a gas mask. Bug spray does nothing.' },
+  armored: { name: 'Knight Ant', desc: 'Heavy armor. Use spray, boombox or gate.', intro: 'Heavy armour. Use spray, boombox or the gate.' },
+  flyer: { name: 'Flying Ant', desc: 'Flies over ground towers. Laser, zapper or plane!', intro: 'Flies over ground towers. Use Laser or Zapper.' },
+  sprinter: { name: 'Sprint Knight', desc: 'Armored AND fast - sneakers on. Late stages only.', intro: 'Armoured AND fast. Hit it early.' },
+  heavy: { name: 'Heavy Knight', desc: 'A big ant in full armor. Late stages only.', intro: 'A big ant in full armour. Hit it hard.' },
+  queen: { name: 'Ant Queen', desc: 'BOSS. Marches in and calls her scouts. Takes HALF the cookie.', intro: 'BOSS. Calls her scouts. Takes half the cookie.' },
   // v0.7 (Yair ANT-STATS-v0.6.3): small variants - same tiny body as the Scout, with a gas mask / armour / wings
-  small_gasmask: { name: 'Masked Scout', desc: 'A tiny scout with a gas mask - spray does nothing.' },
-  small_armed: { name: 'Armored Scout', desc: 'A tiny scout in armour. Slower, shrugs off weak hits.' },
-  small_fly: { name: 'Flying Scout', desc: 'A tiny flying scout. Laser or zapper!' },
-  queen2: { name: 'Swift Queen', desc: 'BOSS of world 2. Fast, calls flying ants. Takes 40 of the cake.' },
+  small_gasmask: { name: 'Masked Scout', desc: 'A tiny scout with a gas mask - spray does nothing.', intro: 'A tiny scout in a gas mask. Spray does nothing.' },
+  small_armed: { name: 'Armored Scout', desc: 'A tiny scout in armour. Slower, shrugs off weak hits.', intro: 'A tiny armoured scout. Weak hits bounce off.' },
+  small_fly: { name: 'Flying Scout', desc: 'A tiny flying scout. Laser or zapper!', intro: 'A tiny flyer. Use Laser or Zapper.' },
+  queen2: { name: 'Swift Queen', desc: 'BOSS of world 2. Fast, calls flying ants. Takes 40 of the cake.', intro: 'BOSS. Fast, and she calls flying ants.' },
   // v0.7.7 world 3 (Pie Pantry)
-  greasy: { name: 'Buttery Ant', desc: 'Slippery! Slowing barely works. Hit it hard.' },
-  mama: { name: 'Brood Ant', desc: 'Drops 3 baby ants when she falls.' },
-  queen3: { name: 'Pie Queen', desc: 'BOSS of world 3. Calls buttery ants. Takes 55 of the pie. Ignores most slowing.' },
+  greasy: { name: 'Buttery Ant', desc: 'Slippery! Slowing barely works. Hit it hard.', intro: 'Slippery! Slowing barely works. Hit it hard.' },
+  mama: { name: 'Brood Ant', desc: 'Drops 3 baby ants when she falls.', intro: 'Drops 3 baby ants when she falls.' },
+  queen3: { name: 'Pie Queen', desc: 'BOSS of world 3. Calls buttery ants. Takes 55 of the pie. Ignores most slowing.', intro: 'BOSS. Calls buttery ants. Ignores most slowing.' },
   // v0.7.9 world 4 (Ice-Cream Parlour)
-  nurse: { name: 'Nurse Ant', desc: 'Heals hurt friends nearby every 3 seconds. Pop her first!' },
-  queen4: { name: 'Sundae Queen', desc: 'BOSS of world 4. Calls a nurse every 9 seconds, and the nurses heal her. Takes 50 of the sundae.' },
+  nurse: { name: 'Nurse Ant', desc: 'Heals hurt friends nearby every 3 seconds. Pop her first!', intro: 'Nurse Ant: heals friends nearby every 3 s. Pop her first!' },
+  glazed: { name: 'Glazed Ant', desc: 'Wears a sugar shield that soaks damage first, then grows back after a pause. Hit it hard and fast.', intro: 'Glazed Ant: a sugar shield soaks damage, then it grows back.' }, // v0.8.1 W2 / M4
+  queen5: { name: 'Glaze Queen', desc: 'BOSS of world 5. Shielded, and she keeps sending Glazed Ants. Takes 50 of the donut.', intro: 'Glaze Queen: shielded, and she keeps sending Glazed Ants.' }, // v0.8.1 M5
+  queen4: { name: 'Sundae Queen', desc: 'BOSS of world 4. Calls a nurse every 9 seconds, and the nurses heal her. Takes 50 of the sundae.', intro: 'BOSS. Calls nurses that heal her.' },
 };
 // ---------------- Queens (v0.4 item 19) ----------------
 // One queen per world, each a bit different. What a queen takes from the treat when she reaches it (`steal`) follows ONE formula:
@@ -189,6 +192,13 @@ const ANT_TEXT = {
 // World 1's queen is slow ('slow' = +0) -> takes 50 (Yair set 25 -> 50 on 2026-10-21).
 // IMPORTANT: the treat has foodHP 100, so a queen that reaches it takes HALF of it. 3 stars need >= 90% food left, so once the
 // queen gets a bite, 3 stars are no longer reachable in that battle (killing her on the way home returns only part of it).
+// v0.8.1 U2 / W9: the 'meet the new ant' card on the prep screen - only for ants whose rule cannot be guessed (shown once per save, tracked in save.seenAnts).
+export const ANT_CARD = {
+  glazed: 'Glazed Ant \u2014 sweet armor. Its glaze soaks up damage, then grows back. Hit it hard and fast, or use Spray and Bombs.',
+  queen5: 'Glaze Queen \u2014 shielded, and she keeps sending Glazed Ants. Break her glaze, then finish her.',
+  nurse: 'Nurse Ant \u2014 heals friends nearby every 3 seconds. Pop her first!',
+};
+export const L42_TIP = 'Glaze grows back. Focus fire.'; // v0.8.1 W9: the one-time level-42 tip toast
 export const QUEEN_TRAITS = { ...TUNING.queenTraitMods };
 export function queenTake(traits = [], T = QUEEN_TRAITS) { return 50 + traits.reduce((s, t) => s + (T[t] || 0), 0); }
 // ANTS: numbers from tuning.json "ants" (+ texts above). A queen's `steal` is ALWAYS computed by queenTake(her traits).
@@ -205,8 +215,8 @@ export const rarityRank = (type) => Math.max(0, RARITY_TIERS.indexOf(rarityOf(ty
 // ---------------- Worlds (v0.5 items 13/14) ----------------
 // tuning.json "worlds": each world = 10 levels ending with its queen, its own treat. World 2 unlocks when every level of
 // world 1 is won AND the player has >= minStarsInWorld (v0.7: 18, was 20) of its 30 stars.
-// Star gates (v0.7.9): W1->W2 18, W2->W3 18, W3->W4 14 (encoded in tuning.json worlds[3].unlock). W4->W5 = 12 stars in W4 (review v0.7.8 plan s7, first-attempt W4 star sum 11.7):
-// recorded here only; encode it as worlds[4].unlock {allLevelsWonInWorld: 4, minStarsInWorld: 12} when World 5 exists.
+// Star gates: W1->W2 18, W2->W3 18, W3->W4 14, W4->W5 14 (all encoded in tuning.json worlds[i].unlock {allLevelsWonInWorld, minStarsInWorld}).
+// v0.8.1 W1 / D7: the W4->W5 gate is 14 stars of W4's 30 (the older plan said 12; the typical bot collects 12.15, so 14 asks for about 2 more stars - a small deliberate replay).
 export const WORLDS = TUNING.worlds.map((w) => ({ coinMul: 1, ...w })); // v0.7.6 E5: coinMul (default 1) multiplies that world's win coins (not the first-clear bonus)
 export const QUEENS = Object.fromEntries(WORLDS.map((w) => [w.id, { type: w.queen, traits: TUNING.ants[w.queen].queenTraits }]));
 

@@ -4,7 +4,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import * as C from '../src/config.js';
-import { Battle, generateWaves, TARGET_MODES, hasTargetModes, nextTargetMode } from '../src/sim.js';
+import { Battle, generateWaves, TARGET_MODES, hasTargetModes, nextTargetMode, enableFrontForTests } from '../src/sim.js';
+enableFrontForTests(true); // v0.8.1 M3: Front is retired from the UI, the sim branch is kept for these tests (node --test runs each file in its own process)
 import { chooseDeck, smartBotStep, unlockedAt } from '../src/bot.js';
 import { STEP, SPEEDS, advanceFrame, newClock, nextSpeed, startSpeed } from '../src/loop.js';
 import { throttleMs } from '../src/audio.js';
@@ -94,10 +95,10 @@ test('M0: the speed button draws 1/2/3 vector chevrons 8 px wide with a 3 px gap
 });
 
 // ---------------- M1: target modes ----------------
-test('M1: only Slingshot, Laser, Zapper and Gecko have target modes; the default is Weakest; modes are Weakest / Carrier / Front (no Strongest)', () => {
-  assert.deepEqual(TARGET_MODES, ['weak', 'carrier', 'front']);
+test('M1: only Slingshot, Laser, Zapper and Gecko have target modes; the default is Weakest; modes are Weakest / Carrier (+ Healer and Heavy on the levels that need them, v0.8.1)', () => {
+  assert.deepEqual(TARGET_MODES, ['weak', 'carrier', 'healer', 'strong']);
   for (const t of Object.keys(C.TOWERS)) assert.equal(hasTargetModes(t), ['slingshot', 'laser', 'zapper', 'lizard'].includes(t), t);
-  assert.deepEqual(['weak', 'carrier', 'front', 'weak'].map(nextTargetMode), ['carrier', 'front', 'weak', 'carrier']);
+  assert.deepEqual(['weak', 'carrier', 'weak'].map((m) => nextTargetMode(m)), ['carrier', 'weak', 'carrier']);
   const b = mk(); const tw = b.addTower('slingshot', 3, 3); assert.equal(tw.mode, 'weak');
   assert.equal(b.setTargetMode(tw, 'strongest'), false); assert.equal(tw.mode, 'weak');
   const spray = b.addTower('spray', 5, 5); assert.equal(b.setTargetMode(spray, 'carrier'), false);
@@ -166,7 +167,7 @@ test('M1 #5: the mode survives upgrade and Move / Swap, is per tower, and a new 
 });
 test('M1: the panel has a chip per mode for mode-capable towers only (v0.7.5: height 176 vs 140, 34 px chips at py + 108, line at py + 160; the tap-to-cycle gesture is gone)', () => {
   const g = src('game.js');
-  assert.match(g, /H2 = modes \? 176 : 140/); assert.match(g, /y = py \+ 108, w = 114, h = 34/); assert.match(g, /py \+ \(modes \? 160 : 122\)/);
+  assert.match(g, /H2 = modes \? 176 : 140/); assert.match(g, /w = n4 \? 84 : 114, h = 34, x = 22 \+ i \* \(w \+ 6\), y = py \+ 108/); assert.match(g, /py \+ \(modes \? 160 : 122\)/);
   assert.ok(!/cycleMode/.test(g), 'review finding 2: no tap-to-cycle'); assert.match(g, /Tip: tap a tower, then pick who it shoots/);
 });
 

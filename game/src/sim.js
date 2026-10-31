@@ -29,10 +29,23 @@ const LOWEST_HP = new Set(['slingshot', 'laser', 'zapper', 'lizard']);
 // v0.7.4 M1: the single-target towers (Slingshot, Laser, Zapper's first zap, Gecko) have a target mode, per tower, default 'weak' (= v0.7.3 behaviour exactly).
 //   weak    fewest HP left (tie -> the ant nearest the cookie)
 //   carrier ants walking home with food first (the one nearest the nest = highest threat); none in range -> weak
-//   front   ants walking in, the one nearest the cookie first (highest threat); carriers only when no walker is in range
-export const TARGET_MODES = ['weak', 'carrier', 'front'];
+//   healer  (v0.8.1 M1) ants with a heal/aura rule first (highest threat); none in range -> weak. Offered only on levels whose waves contain such an ant
+//   strong  (v0.8.1 M2, the 'Heavy' chip) the ant with the most hp left first (ties by threat). Offered only on boss levels
+//   front   (v0.7.4, RETIRED in v0.8.1 M3 - a trap on L33-L38) not reachable from the UI; the pick branch below stays so the regression sims reproduce (test-only flag)
+// Modes are battle-only state (never saved), so retiring one needs no save migration.
+export const TARGET_MODES = ['weak', 'carrier', 'healer', 'strong'];
+export const BASE_MODES = ['weak', 'carrier'];
+let FRONT_FOR_TESTS = false; export function enableFrontForTests(v = true) { FRONT_FOR_TESTS = !!v; }
 export function hasTargetModes(type) { return LOWEST_HP.has(type); }
-export function nextTargetMode(mode) { return TARGET_MODES[(TARGET_MODES.indexOf(mode) + 1) % TARGET_MODES.length]; }
+export function isHealerType(type) { const A = C.ANTS[type]; return !!(A && (A.heal || A.aura)); }
+// the modes the chips offer on a level: Weakest + Carrier always, Healer when a healer/aura ant is in the waves, Heavy on boss levels (max 4)
+export function modesForLevel(levelIndex) {
+  const out = BASE_MODES.slice();
+  if (levelAntTypes(levelIndex).some(isHealerType)) out.push('healer');
+  if (C.isBossLevel(levelIndex)) out.push('strong');
+  return out;
+}
+export function nextTargetMode(mode, list = BASE_MODES) { const k = list.indexOf(mode); return list[(k + 1) % list.length]; }
 export function onTile(a, c, r) { return Math.floor(a.x / C.TILE) === c && Math.floor(a.y / C.TILE) === r; }
 // v0.6 item 6: a Tractor lifting `lift` size classes can lift this ant (never a queen, never a flyer in the air)
 export function liftable(a, lift) {
@@ -380,8 +393,9 @@ export class Battle {
     if (ri == null) ri = this.routeCounter++ % this.routes.length;
     const ant = { id: NEXT_ID++, type, ri, hp, maxHp: hp, armor: a.armor, d, speed: a.speed, flying: !!a.flying,
       gasImmune: !!a.gasImmune, weight: a.weight, size: a.size, state: 'go', carrying: 0, trips: 0, waitT: 0, slow: 0, stunT: 0, charmT: 0, charmD: 0,
-      plantSlow: 0, plantSlowT: 0, spawnT: a.spawn ? a.spawn.every : 0, healCd: 0, healFx: 0, dead: false, x: 0, y: 0, born: this.time, hitFlash: 0, dir: 1 };
+      plantSlow: 0, plantSlowT: 0, spawnT: a.spawn ? a.spawn.every : 0, healCd: 0, healFx: 0, shield: 0, shieldMax: 0, shieldT: 99, dead: false, x: 0, y: 0, born: this.time, hitFlash: 0, dir: 1 };
     const p = this.routes[ri].at(d); ant.x = p.x; ant.y = p.y;
+    if (a.shield && a.shield.pts > 0) { ant.shieldMax = ant.shield = Math.round(a.shield.pts * (this.level.hpMul || 1)); } // v0.8.1 M4: the glaze shield scales with hpMul exactly like hp; 'always' (D6)
     this.ants.push(ant);
     this.stats.spawned++;
     return ant;
@@ -391,8 +405,16 @@ export class Battle {
     if (ant.dead || dmg <= 0) return 0;
     if (opt.gas && ant.gasImmune) { if (opt.fx !== false && this.rng() < 0.05) this.emit({ type: 'immune', x: ant.x, y: ant.y }); return 0; }
     const real = applyArmor(dmg, ant.armor, opt.ignoreArmor);
-    ant.hp -= real; ant.hitFlash = 0.12;
-    if (ant.hp <= 0) this.kill(ant, opt.src);
+    let toHp = real;
+    if (ant.shieldMax > 0) { // v0.8.1 M4: armor first (above), then the shield absorbs, the rest hits hp. ANY damage call (even after the shield broke) restarts the regen timer
+      ant.shieldT = 0;
+      if (ant.shield > 0) {
+        const ab = Math.min(ant.shield, real); ant.shield -= ab; toHp -= ab; this.stats.shieldAbsorbed = (this.stats.shieldAbsorbed || 0) + ab;
+        if (ant.shield <= 1e-9) { ant.shield = 0; this.stats.shieldBreaks = (this.stats.shieldBreaks || 0) + 1; this.emit({ type: 'shieldBreak', x: ant.x, y: ant.y, id: ant.id, ant: ant.type }); }
+      }
+    }
+    ant.hitFlash = 0.12;
+    if (toHp > 1e-12) { ant.hp -= toHp; if (ant.hp <= 0) this.kill(ant, opt.src); }
     return real;
   }
   kill(ant, src) {
@@ -498,6 +520,12 @@ export class Battle {
     if (T.nearTrail && !this.touchesTrail(c, r)) return { ok: false, why: 'needNearTrail' };
     return { ok: true, upgrade: false };
   }
+  // v0.8.1 M8: how far the in-battle upgrades reach this battle (towers on the board now by level, highest level per tower type, crumbs spent placing vs upgrading)
+  upgradeReach() {
+    const byType = {}; let l1 = 0, l2 = 0, l3 = 0;
+    for (const t of this.towers) { byType[t.type] = Math.max(byType[t.type] || 0, t.lvl); if (t.lvl <= 1) l1++; else if (t.lvl === 2) l2++; else l3++; }
+    return { towers: this.towers.length, l1, l2, l3p: l3, byType, placed: this.stats.placed || 0, upgrades: this.stats.upgrades || 0, crumbsPlace: this.stats.crumbsPlace || 0, crumbsUpgrade: this.stats.crumbsUpgrade || 0 };
+  }
   playCard(pickIndex, c, r) {
     const chk = this.canPlay(pickIndex, c, r);
     if (!chk.ok) return chk;
@@ -509,8 +537,9 @@ export class Battle {
     if (chk.upgrade) {
       tower = chk.tower; diff = upgradeDiff(tower.type, tower.lvl, tower.cardLevel);
       tower.lvl++; if (C.TOWERS[tower.type].directional) this.computeRun(tower);
+      this.stats.upgrades = (this.stats.upgrades || 0) + 1; this.stats.crumbsUpgrade = (this.stats.crumbsUpgrade || 0) + cost; // v0.8.1 M8: measurement only (no RNG)
       this.emit({ type: 'upgrade', x: tower.x, y: tower.y, lvl: tower.lvl, card, pick: pickIndex, cost, id: tower.id, diff });
-    } else { tower = this.addTower(card, c, r); this.emit({ type: 'place', x: tower.x, y: tower.y, card, pick: pickIndex, cost, id: tower.id }); }
+    } else { tower = this.addTower(card, c, r); this.stats.placed = (this.stats.placed || 0) + 1; this.stats.crumbsPlace = (this.stats.crumbsPlace || 0) + cost; this.emit({ type: 'place', x: tower.x, y: tower.y, card, pick: pickIndex, cost, id: tower.id }); }
     this.picks[pickIndex] = this.drawReplacement(pickIndex);
     return { ok: true, upgrade: chk.upgrade, tower, cost, diff };
   }
@@ -541,8 +570,9 @@ export class Battle {
     return this.placeRuleOk(tw.type, c, r);
   }
   // v0.7.4 M1: set / cycle a single-target tower's target mode (instant, free; per tower; not saved)
-  setTargetMode(tw, mode) { if (!hasTargetModes(tw.type) || !TARGET_MODES.includes(mode)) return false; tw.mode = mode; this.emit({ type: 'mode', id: tw.id, x: tw.x, y: tw.y, mode }); return true; }
-  cycleTargetMode(tw) { return hasTargetModes(tw.type) && this.setTargetMode(tw, nextTargetMode(tw.mode)) ? tw.mode : null; }
+  get modeList() { return this._modeList || (this._modeList = modesForLevel(this.levelIndex)); }
+  setTargetMode(tw, mode) { if (!hasTargetModes(tw.type) || !(this.modeList.includes(mode) || (mode === 'front' && FRONT_FOR_TESTS))) return false; tw.mode = mode; this.emit({ type: 'mode', id: tw.id, x: tw.x, y: tw.y, mode }); return true; }
+  cycleTargetMode(tw) { return hasTargetModes(tw.type) && this.setTargetMode(tw, nextTargetMode(tw.mode, this.modeList)) ? tw.mode : null; }
   moveTower(tw, c, r) {
     if (!this.canMoveTower(tw, c, r)) return false;
     const from = { x: tw.x, y: tw.y };
@@ -704,7 +734,7 @@ export class Battle {
           a.slow = Math.max(a.slow, tw.stat('slow'));
           this.damage(a, tw.stat('power') * dt, { ignoreArmor: true, src: tw });
           const rd = tw.routeD[a.ri];
-          if (!boss && rd != null && !tw.charmSet.has(a.id) && a.state === 'go') { tw.charmSet.add(a.id); a.charmT = tw.stat('charmTime'); a.charmD = rd; this.emit({ type: 'charm', x: a.x, y: a.y }); }
+          if (!boss && rd != null && !tw.charmSet.has(a.id) && a.state === 'go') { tw.charmSet.add(a.id); a.charmT = tw.stat('charmTime'); a.charmD = rd; this.emit({ type: 'charm', x: a.x, y: a.y, tx: tw.x, ty: tw.y }); }
         } else if (tw.type === 'lava') {
           // v0.4 item 7: Roasted Lava - slight slow + continuous damage for as long as the ant is on it
           a.slow = Math.max(a.slow, tw.stat('slow'));
@@ -719,6 +749,7 @@ export class Battle {
       if (a.dead) continue;
       const rt = this.route(a); const L = rt.length;
       a.hitFlash = Math.max(0, a.hitFlash - dt);
+      if (a.shieldMax > 0) { a.shieldT += dt; const SH = C.ANTS[a.type].shield; if (a.shieldT >= SH.regenDelay && a.shield < a.shieldMax) { const was = a.shield; a.shield = Math.min(a.shieldMax, a.shield + a.shieldMax * SH.regenRate * dt); if (a.shield >= a.shieldMax) this.emit({ type: 'shieldFull', x: a.x, y: a.y, id: a.id }); if (was <= 0) this.emit({ type: 'shieldBack', x: a.x, y: a.y, id: a.id }); } } // v0.8.1 M4 regen
       if (a.plantSlowT > 0) { a.plantSlowT -= dt; a.slow = Math.max(a.slow, a.plantSlow); }
       const A = C.ANTS[a.type];
       const slow = a.slow * (1 - (A.slowResist || 0));
@@ -837,7 +868,7 @@ export class Battle {
       const tg = p.target;
       const dx = tg.x - p.x, dy = tg.y - p.y, dist = Math.hypot(dx, dy);
       const step = p.speed * dt;
-      if (dist <= step || tg.dead) { if (!tg.dead) this.damage(tg, p.dmg, { src: p.src }); p.done = true; this.emit({ type: 'hit', x: tg.x, y: tg.y }); }
+      if (dist <= step || tg.dead) { if (!tg.dead) this.damage(tg, p.dmg, { src: p.src }); p.done = true; this.emit({ type: 'hit', x: tg.x, y: tg.y, src: p.src && p.src.type }); } // v0.8.1 J1: src = payload only (the view picks the slingshot burst)
       else { p.x += (dx / dist) * step; p.y += (dy / dist) * step; }
     }
     this.projectiles = this.projectiles.filter((p) => !p.done);
@@ -905,6 +936,8 @@ export class Battle {
       if (mode === 'carrier') { const cs = pool.filter((a) => a.state !== 'go'); if (cs.length) return maxThreat(cs); } // none carrying: falls through to Weakest
       else { const ws = pool.filter((a) => a.state === 'go'); return maxThreat(ws.length ? ws : pool); }
     }
+    if (mode === 'healer') { const hs = pool.filter((a) => isHealerType(a.type)); if (hs.length) return hs.reduce((b, a) => (this.threat(a) > this.threat(b) ? a : b)); } // v0.8.1 M1; none in range -> Weakest for this shot
+    if (mode === 'strong') return pool.reduce((b, a) => (a.hp > b.hp + 1e-9 || (Math.abs(a.hp - b.hp) <= 1e-9 && this.threat(a) > this.threat(b)) ? a : b)); // v0.8.1 M2 (Heavy)
     return pool.reduce((b, a) => (a.hp < b.hp - 1e-9 || (Math.abs(a.hp - b.hp) <= 1e-9 && this.threat(a) > this.threat(b)) ? a : b));
   }
   // v0.6 item 6: the Tractor lowers its bucket onto the trail tile next to it (trailDirection, like the marble / fan) and lifts
@@ -936,6 +969,7 @@ export class Battle {
     const steal = Math.min(C.ANTS[a.type].steal, this.foodStored);
     this.foodStored -= steal;               // the cookie loses the piece immediately
     this.stats.stolen += steal;
+    if (a.flying) this.stats.flyLeak = (this.stats.flyLeak || 0) + steal; // v0.8.1 U7: visual-only counter (feeds the defeat hint; never read by the sim)
     this.emit({ type: 'steal', x: a.x, y: a.y, n: steal, ant: a.type });
     if (this.cfg.carryBack && steal > 0) {
       a.state = 'back'; a.carrying = steal; a.d = this.route(a).length - 0.01;
@@ -953,4 +987,18 @@ function segDist(px, py, ax, ay, bx, by) {
   const vx = bx - ax, vy = by - ay, l2 = vx * vx + vy * vy || 1;
   const t = Math.max(0, Math.min(1, ((px - ax) * vx + (py - ay) * vy) / l2));
   return Math.hypot(px - (ax + vx * t), py - (ay + vy * t));
+}
+
+// v0.8.1 U7: the one-line "why did I lose?" hint (<= 60 chars). First matching rule; reads only (no RNG, no state change). null = no hint.
+//  1. most of the stolen food left the cookie with escaping carriers and a single-target tower is not on Carrier mode -> "Try Carrier mode on a tower"
+//  2. a healer-type ant is still alive at the end -> pop it first
+//  3. a flyer reached the cookie and the deck has no Laser / Zapper
+export const LOSS_HINTS = { carrier: 'Try Carrier mode on a tower', healer: 'Healer ants keep others alive - pop them first', flyer: 'Bring a Laser or Zapper for flyers' };
+export function lossHint(b) {
+  if (!b || b.result !== 'lose') return null;
+  const st = b.stats, stolen = st.stolen || 0;
+  if (stolen > 0 && (st.lostOnWay || 0) >= 0.5 * stolen && b.towers.some((t) => hasTargetModes(t.type) && t.mode !== 'carrier')) return LOSS_HINTS.carrier;
+  if (b.ants.some((a) => !a.dead && isHealerType(a.type))) return LOSS_HINTS.healer;
+  if ((st.flyLeak || 0) > 0 && !b.deck.some((id) => id === 'laser' || id === 'zapper')) return LOSS_HINTS.flyer;
+  return null;
 }

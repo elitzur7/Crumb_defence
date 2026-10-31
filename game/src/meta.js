@@ -1,5 +1,6 @@
 // Out-of-battle progression: coins + diamonds (persistent), cards by level, merge, shop, boosters, save/load.
 import * as C from './config.js';
+import { levelAntTypes } from './sim.js';
 
 export const SAVE_KEY = 'crumbdefense.save.v1';
 
@@ -10,12 +11,15 @@ export function newSave() {
   const bonusStock = {};
   for (const b of C.BONUS_TYPES) bonusStock[b] = C.ECONOMY.startBonusStock;
   return { version: SAVE_VERSION, coins: C.ECONOMY.startCoins, diamonds: C.ECONOMY.diamonds.start, cards, bonusStock, levels: C.LEVELS.map(() => ({ stars: 0, cleared: false })),
-    lastDeck: C.STARTER_CARDS.slice(), lastBonuses: C.BONUS_TYPES.slice(0, 2), calendar: newCalendarState(), cardBlink: newCardBlinkState(), onboard: newOnboardState(), packsSinceNew: 0 };
+    lastDeck: C.STARTER_CARDS.slice(), lastBonuses: C.BONUS_TYPES.slice(0, 2), calendar: newCalendarState(), cardBlink: newCardBlinkState(), onboard: newOnboardState(), packsSinceNew: 0, settings: defaultSettings(), debug: { reach: [] }, seenAnts: [] };
 }
+// v0.8.1 J12: reduceMotion 'auto' (follows the OS) | 'on' | 'off'; haptics on/off (J10). muted is added by the Sound switch.
+export function defaultSettings() { return { reduceMotion: 'auto', haptics: true }; }
 export const SAVE_VERSION = 6; // v0.7: paid-pack pity counter + one-time free pack for saves past stage 2 (D-P0); v0.7.7: world 3 levels (loadSave pads `levels`; boss gifts are never granted retroactively)
 // v0.6 item 5: the one-time Zapper onboarding. zapperGift: 'none' -> 'pending' (first win of stage 2) -> 'done' (free gift taken).
 // grantedOnLoad: an existing player past stage 2 without a Zapper got one when this version loaded (the game shows the reveal once).
-export function newOnboardState() { return { zapperGift: 'none', grantedOnLoad: false }; }
+// v0.8.1 U1: firstBattle 'pending' -> 'done' (the 3-step first-battle guide). Every save that already exists when v0.8.1 loads is set to 'done' by loadSave.
+export function newOnboardState() { return { zapperGift: 'none', grantedOnLoad: false, firstBattle: 'pending' }; }
 export const ZAPPER_STAGE = 1; // level index of stage 2
 // v0.4 item 17: the Cards button blinks for 5 s exactly twice in the player's life (each trigger fires once, ever).
 export function newCardBlinkState() { return { affordShown: false, afterLossShown: false, lossPending: false }; }
@@ -269,6 +273,22 @@ export function worldStars(save, w) { let s = 0; C.LEVELS.forEach((L, i) => { if
 export function worldCleared(save, w) { return C.LEVELS.every((L, i) => L.world !== w || (save.levels[i] && save.levels[i].cleared)); }
 // v0.7.6 E2: the highest world the player has unlocked (the calendar coin prizes scale with it)
 export function highestWorld(save) { let h = 1; for (const W of C.WORLDS) if (worldUnlocked(save, W.id)) h = Math.max(h, W.id); return h; }
+// v0.8.1 U2: the first ant on this level with an intro card that the player has not met (never on a cleared level), or null
+export function nextAntCard(save, levelIndex) {
+  if (!save || !C.LEVELS[levelIndex] || (save.levels[levelIndex] && save.levels[levelIndex].cleared)) return null;
+  const seen = save.seenAnts || [];
+  for (const t of levelAntTypes(levelIndex)) if (C.ANT_CARD[t] && !seen.includes(t)) return t;
+  return null;
+}
+export function markAntSeen(save, key) { if (!Array.isArray(save.seenAnts)) save.seenAnts = []; if (!save.seenAnts.includes(key)) { save.seenAnts.push(key); return true; } return false; }
+// v0.8.1 U6: the levels of the world before `w` that could still give stars, lowest first (ties by level order). add = stars one more star there adds (always 1; an unwon level: 'win it').
+export function lowestStarLevels(save, w) {
+  const W = C.WORLDS.find((x) => x.id === w); if (!W || !W.unlock) return [];
+  const prev = W.unlock.allLevelsWonInWorld ?? w - 1; const out = [];
+  C.LEVELS.forEach((L, i) => { if (L.world !== prev) return; const lv = save.levels[i] || { stars: 0, cleared: false }; if ((lv.stars || 0) < 3) out.push({ i, n: i + 1, stars: lv.stars || 0, cleared: !!lv.cleared }); });
+  out.sort((a, b) => a.stars - b.stars || a.i - b.i);
+  return out;
+}
 export function worldUnlocked(save, w) {
   const W = C.WORLDS.find((x) => x.id === w); if (!W || !W.unlock) return true;
   const u = W.unlock; const prev = u.allLevelsWonInWorld ?? w - 1;
@@ -417,11 +437,14 @@ export function loadSave(storage) {
         // v0.7: no direct Zapper grant any more - the one-time free pack below (D-P0) always holds the Zapper card
       }
     }
+    if (s.onboard.firstBattle !== 'pending' && s.onboard.firstBattle !== 'done') s.onboard.firstBattle = 'done'; // v0.8.1 U1: a save from before the guide never sees it
     // v0.7 D-P0: saves from before v0.7 that are past stage 2 get the free pack ONCE (claimed in the Shop, map finger guides there).
     // A v0.6 save cannot tell "claimed" from "skipped on load" (both are 'done'), so every such save gets it once.
     if ((s.version || 1) < 5 && s.levels[ZAPPER_STAGE] && s.levels[ZAPPER_STAGE].cleared && s.onboard.zapperGift === 'done' && !s.onboard.legacyPack) {
       s.onboard.zapperGift = 'pending'; s.onboard.legacyPack = true; s.onboard.grantedOnLoad = false;
     }
+    // v0.8.1 U2: seenAnts = ants (and tips) the player has been introduced to. A save from before it pre-marks every ant of every level already cleared, so no card ever opens on a cleared level.
+    if (!Array.isArray(s.seenAnts)) { s.seenAnts = []; s.levels.forEach((lv, i) => { if (lv && lv.cleared && C.LEVELS[i]) for (const t of levelAntTypes(i)) if (!s.seenAnts.includes(t)) s.seenAnts.push(t); }); }
     if (typeof s.packsSinceNew !== 'number') s.packsSinceNew = 0;
     for (const b of C.BONUS_TYPES) if (s.bonusStock[b] == null) s.bonusStock[b] = 0;
     while (s.levels.length < C.LEVELS.length) s.levels.push({ stars: 0, cleared: false });
@@ -434,6 +457,10 @@ export function loadSave(storage) {
     if (!s.lastBonuses) s.lastBonuses = base.lastBonuses.slice();
     s.version = Math.max(s.version || 1, SAVE_VERSION);
     delete s.crumbs; // crumbs never persist
+    s.settings = { ...defaultSettings(), ...(s.settings && typeof s.settings === 'object' ? s.settings : {}) }; // v0.8.1 J12: forward-compatible settings merge
+    if (!['auto', 'on', 'off'].includes(s.settings.reduceMotion)) s.settings.reduceMotion = 'auto';
+    if (typeof s.settings.haptics !== 'boolean') s.settings.haptics = true;
+    s.debug = { reach: Array.isArray(s.debug && s.debug.reach) ? s.debug.reach.filter((x) => x && typeof x === 'object').slice(-20) : [] }; // v0.8.1 M8: local-only upgrade-reach log (last 20 battles), never sent anywhere
     return s;
   } catch (e) { return newSave(); }
 }
@@ -441,3 +468,16 @@ export function writeSave(storage, save) {
   const copy = { ...save }; delete copy.crumbs;
   storage.setItem(SAVE_KEY, JSON.stringify(copy));
 }
+
+// v0.8.1 U7: consecutive losses on the same level (a win on it, or a loss on another level, restarts the count). Returns the run length after this result.
+export function noteLossRun(save, li, won) {
+  const r = save.lossRun;
+  if (won) { if (r && r.li === li) save.lossRun = null; return 0; }
+  if (r && r.li === li) r.n += 1; else save.lossRun = { li, n: 1 };
+  return save.lossRun.n;
+}
+// v0.8.1 U9: the "next step" nudge (a pulsing ring + finger on the next unplayed level). Armed once after the Cards hint ('card') and once after the first L1 win ('l1');
+// shown at most twice per save (onboard.nextHint = { shown, armed, done }).
+export function nextHintState(save) { const o = save.onboard; if (!o || typeof o !== 'object') return { shown: 2, armed: '', done: [] }; /* no onboarding object (never in a loaded save): the nudge stays off */ if (!o.nextHint || typeof o.nextHint !== 'object') o.nextHint = { shown: 0, armed: '', done: [] }; return o.nextHint; }
+export function armNextHint(save, kind) { const h = nextHintState(save); if (h.shown >= 2 || h.armed || h.done.includes(kind)) return false; h.armed = kind; return true; }
+export function nextUnplayedLevel(save) { for (let i = 0; i < C.LEVELS.length; i++) if (!save.levels[i].cleared && levelUnlocked(save, i)) return i; return -1; }

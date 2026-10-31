@@ -14,14 +14,14 @@ const TJ = JSON.parse(readFileSync(new URL('../../tuning/tuning.json', import.me
 const DECK = ['slingshot', 'spray', 'glue', 'fan', 'ball'];
 const win = (s, i, st) => M.applyBattleResult(s, i, 'win', st, {}, () => 0);
 
-test('version 0.8.0 / versionCode 25', () => {
-  assert.equal(C.VERSION, '0.8.0');
-  assert.match(rd('android/app/build.gradle'), /versionCode 25\b/); assert.match(rd('android/app/build.gradle'), /versionName "0\.8\.0"/);
-  assert.equal(JSON.parse(rd('package.json')).version, '0.8.0');
+test('version 0.8.0 or later (the current release, 0.8.1 / versionCode 26, is asserted in v081.test.js)', () => {
+  assert.ok(C.VERSION >= '0.8.0');
+  assert.match(rd('android/app/build.gradle'), /versionCode (2[5-9]|[3-9]\d)\b/);
+  assert.ok(JSON.parse(rd('package.json')).version >= '0.8.0');
 });
 
 test('no INTERNET permission, no purchase code, CSP still offline', () => {
-  assert.doesNotMatch(rd('android/app/src/main/AndroidManifest.xml'), /uses-permission/);
+  { const perms = [...rd('android/app/src/main/AndroidManifest.xml').matchAll(/<uses-permission[^>]*android:name="([^"]+)"/g)].map((q) => q[1]); assert.deepEqual(perms, ['android.permission.VIBRATE'].slice(0, perms.length)); assert.ok(perms.length <= 1); } // v0.8.1 J10: VIBRATE (normal permission) is the only one allowed
   assert.match(rd('index.html'), /connect-src 'none'/);
   for (const f of ['src/game.js', 'src/art.js', 'src/recipes.js']) assert.doesNotMatch(rd(f), /XMLHttpRequest|fetch\(|https?:\/\/fonts\./);
 });
@@ -83,7 +83,7 @@ test('3-star bonus: 75 x coinMul rounded to 5 (W1 75, W2 75, W3 95, W4 115); 2-s
   assert.equal(win(M.newSave(), 0, 3).starCoins, 90); // jump 1 -> 3 in W1
 });
 
-test('prep header dedupe: when the map name equals the level name it is shown once (all 40 levels, never "X - X")', () => {
+test('prep header dedupe: when the map name equals the level name it is shown once (all 50 levels, never "X - X")', () => {
   assert.equal(levelHeaderLine({ name: 'Sunny Table' }, [{ name: 'Sunny Table' }].reduce((m, x) => ({ ...m, a: x }), {})), 'Sunny Table');
   let same = 0, diff = 0;
   for (const L of C.LEVELS) {
@@ -93,7 +93,7 @@ test('prep header dedupe: when the map name equals the level name it is shown on
     else { same++; assert.equal(line, L.name); }
     const parts = line.split('  -  '); assert.ok(parts.length === 1 || parts[0] !== parts[1], line);
   }
-  assert.equal(same + diff, 40);
+  assert.equal(same + diff, 50);
 });
 
 test('font: Lilita One is bundled locally with its OFL license; the app never loads it from the net', () => {
@@ -101,7 +101,8 @@ test('font: Lilita One is bundled locally with its OFL license; the app never lo
   assert.match(rd('fonts/OFL.txt'), /SIL OPEN FONT LICENSE/i);
   assert.match(rd('index.html'), /@font-face\s*\{[^}]*font-family:\s*'Lilita One'[^}]*src:\s*url\('\.\/fonts\/LilitaOne-Regular\.ttf'\)/);
   assert.match(rd('tools/build.mjs'), /fonts/);
-  assert.match(A.FONT, /Lilita One/); assert.match(A.FONT, /sans-serif/, 'a system fallback stays in the stack');
+  assert.match(A.FONT_DISPLAY, /Lilita One/); assert.match(A.FONT_DISPLAY, /sans-serif/, 'a system fallback stays in the stack'); // v0.8.1 F1: Lilita One is the DISPLAY face only
+  assert.doesNotMatch(A.FONT, /Lilita One/, 'v0.8.1 F1: A.text defaults to the body stack'); assert.match(A.FONT, /Roboto/);
 });
 
 test('recipes: pure helpers behave (ramp, mixHex, palette, coin pile size, easing)', () => {

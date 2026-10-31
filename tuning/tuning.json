@@ -459,6 +459,31 @@
       "boss": true,
       "spawn": {"type":"nurse","every":9,"count":1},
       "queenTraits": ["slow"]
+    },
+    "glazed": {
+      "hp": 24,
+      "speed": 38,
+      "armor": 0,
+      "steal": 1,
+      "weight": 0.8,
+      "size": "regular",
+      "crumbs": 3,
+      "rarity": "uncommon",
+      "shield": {"pts":30,"regenDelay":2.5,"regenRate":0.3,"when":"always"}
+    },
+    "queen5": {
+      "hp": 2400,
+      "speed": 15,
+      "armor": 6,
+      "weight": 0,
+      "size": "queen",
+      "crumbs": 200,
+      "rarity": "boss",
+      "slowResist": 0.6,
+      "boss": true,
+      "spawn": {"type":"glazed","every":10,"count":1},
+      "shield": {"pts":600,"regenDelay":4,"regenRate":0.25,"when":"always"},
+      "queenTraits": ["slow"]
     }
   },
   "worlds": [
@@ -501,6 +526,16 @@
       "unlock": {"allLevelsWonInWorld":3,"minStarsInWorld":14},
       "cardLevelCap": 6,
       "coinMul": 1.5
+    },
+    {
+      "id": 5,
+      "name": "Donut Diner",
+      "treat": "donut",
+      "queen": "queen5",
+      "levels": 10,
+      "unlock": {"allLevelsWonInWorld":4,"minStarsInWorld":14},
+      "cardLevelCap": 6,
+      "coinMul": 1.75
     }
   ],
   "levels": [
@@ -1494,7 +1529,10 @@
       "hpMul": 5.9,
       "interval": 1,
       "waves": [
-        [{"type":"worker","count":5,"interval":1,"delay":0},{"type":"small_gasmask","count":8,"interval":0.45,"delay":1}],
+        [
+          {"type":"worker","count":5,"interval":1,"delay":0},
+          {"type":"small_gasmask","count":8,"interval":0.45,"delay":1}
+        ],
         [
           {"type":"gasmask","count":4,"interval":1,"delay":0},
           {"type":"worker","count":4,"interval":1,"delay":1},
@@ -1698,6 +1736,427 @@
           {"type":"flyer","count":5,"interval":0.8,"delay":1},
           {"type":"small","count":10,"interval":0.45,"delay":1},
           {"type":"queen4","count":1,"interval":1,"delay":4}
+        ]
+      ]
+    },
+    {
+      "world": 5,
+      "name": "Donut Counter",
+      "map": "w5_counter",
+      "waveCount": 6,
+      "hpMul": 4.2,
+      "interval": 1,
+      "waves": [
+        [{"type":"worker","count":6,"interval":1,"delay":0},{"type":"small","count":8,"interval":0.45,"delay":1}],
+        [{"type":"small","count":8,"interval":0.45,"delay":0},{"type":"worker","count":4,"interval":1,"delay":1}],
+        [
+          {"type":"worker","count":6,"interval":1,"delay":0},
+          {"type":"flyer","count":3,"interval":0.8,"delay":1},
+          {"type":"small","count":8,"interval":0.45,"delay":1}
+        ],
+        [{"type":"flyer","count":4,"interval":0.8,"delay":0},{"type":"worker","count":6,"interval":1,"delay":0}],
+        [
+          {"type":"small","count":10,"interval":0.45,"delay":0},
+          {"type":"worker","count":6,"interval":1,"delay":0},
+          {"type":"flyer","count":4,"interval":0.8,"delay":1}
+        ],
+        [
+          {"type":"worker","count":8,"interval":0.9,"delay":0},
+          {"type":"small","count":12,"interval":0.45,"delay":1},
+          {"type":"flyer","count":4,"interval":0.8,"delay":1}
+        ]
+      ]
+    },
+    {
+      "world": 5,
+      "name": "Sprinkle Stool",
+      "map": "w5_stool",
+      "waveCount": 6,
+      "hpMul": 4.5,
+      "interval": 1,
+      "waves": [
+        [{"type":"worker","count":6,"interval":1,"delay":0},{"type":"small","count":8,"interval":0.45,"delay":1}],
+        [
+          {"type":"worker","count":5,"interval":1,"delay":0},
+          {"type":"glazed","count":2,"interval":1.5,"delay":2},
+          {"type":"small","count":6,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"small","count":10,"interval":0.45,"delay":0},
+          {"type":"glazed","count":2,"interval":1.5,"delay":1},
+          {"type":"worker","count":5,"interval":1,"delay":1}
+        ],
+        [
+          {"type":"worker","count":6,"interval":1,"delay":0},
+          {"type":"glazed","count":3,"interval":1.4,"delay":1},
+          {"type":"small","count":8,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"small","count":12,"interval":0.45,"delay":0},
+          {"type":"glazed","count":3,"interval":1.4,"delay":2},
+          {"type":"worker","count":6,"interval":1,"delay":1}
+        ],
+        [
+          {"type":"worker","count":8,"interval":0.9,"delay":0},
+          {"type":"glazed","count":4,"interval":1.3,"delay":1},
+          {"type":"small","count":10,"interval":0.45,"delay":1}
+        ]
+      ]
+    },
+    {
+      "world": 5,
+      "name": "Jelly Booth",
+      "map": "w5_jelly",
+      "waveCount": 7,
+      "hpMul": 9.3,
+      "interval": 1,
+      "waves": [
+        [{"type":"worker","count":6,"interval":1,"delay":0},{"type":"small","count":8,"interval":0.45,"delay":1}],
+        [{"type":"flyer","count":4,"interval":0.8,"delay":0},{"type":"worker","count":5,"interval":1,"delay":1}],
+        [
+          {"type":"small_fly","count":8,"interval":0.5,"delay":0},
+          {"type":"glazed","count":2,"interval":1.5,"delay":1},
+          {"type":"worker","count":6,"interval":1,"delay":1}
+        ],
+        [
+          {"type":"flyer","count":5,"interval":0.8,"delay":0},
+          {"type":"glazed","count":3,"interval":1.4,"delay":1},
+          {"type":"small","count":10,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"small_fly","count":10,"interval":0.5,"delay":0},
+          {"type":"flyer","count":4,"interval":0.8,"delay":1},
+          {"type":"glazed","count":3,"interval":1.4,"delay":1},
+          {"type":"worker","count":6,"interval":1,"delay":1}
+        ],
+        [
+          {"type":"worker","count":8,"interval":0.9,"delay":0},
+          {"type":"flyer","count":6,"interval":0.8,"delay":1},
+          {"type":"glazed","count":4,"interval":1.3,"delay":1}
+        ],
+        [
+          {"type":"small_fly","count":12,"interval":0.5,"delay":0},
+          {"type":"flyer","count":6,"interval":0.75,"delay":1},
+          {"type":"glazed","count":4,"interval":1.3,"delay":1},
+          {"type":"worker","count":8,"interval":0.9,"delay":1}
+        ]
+      ]
+    },
+    {
+      "world": 5,
+      "name": "Cruller Corner",
+      "map": "w5_cruller",
+      "waveCount": 7,
+      "hpMul": 8.35,
+      "interval": 1,
+      "waves": [
+        [{"type":"worker","count":6,"interval":1,"delay":0},{"type":"small","count":8,"interval":0.45,"delay":1}],
+        [
+          {"type":"small_armed","count":4,"interval":0.6,"delay":0},
+          {"type":"worker","count":4,"interval":1,"delay":1},
+          {"type":"small","count":6,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"armored","count":2,"interval":1.5,"delay":1},
+          {"type":"worker","count":4,"interval":1,"delay":0},
+          {"type":"small","count":8,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"glazed","count":3,"interval":1.4,"delay":0},
+          {"type":"armored","count":2,"interval":1.5,"delay":1},
+          {"type":"worker","count":4,"interval":1,"delay":1},
+          {"type":"small","count":8,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"glazed","count":3,"interval":1.4,"delay":0},
+          {"type":"armored","count":3,"interval":1.4,"delay":1},
+          {"type":"small_armed","count":4,"interval":0.6,"delay":1},
+          {"type":"small","count":8,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"glazed","count":4,"interval":1.3,"delay":0},
+          {"type":"armored","count":3,"interval":1.4,"delay":1},
+          {"type":"worker","count":6,"interval":1,"delay":1},
+          {"type":"small","count":10,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"glazed","count":4,"interval":1.3,"delay":0},
+          {"type":"armored","count":4,"interval":1.3,"delay":1},
+          {"type":"worker","count":6,"interval":1,"delay":1},
+          {"type":"small","count":10,"interval":0.45,"delay":1}
+        ]
+      ]
+    },
+    {
+      "world": 5,
+      "name": "Glaze Line",
+      "map": "w5_glaze",
+      "waveCount": 7,
+      "hpMul": 5.4,
+      "interval": 1,
+      "waves": [
+        [{"type":"worker","count":6,"interval":1,"delay":0},{"type":"small","count":8,"interval":0.45,"delay":1}],
+        [
+          {"type":"greasy","count":3,"interval":1.1,"delay":0},
+          {"type":"worker","count":4,"interval":1,"delay":1},
+          {"type":"small","count":8,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"glazed","count":3,"interval":1.4,"delay":0},
+          {"type":"mama","count":1,"interval":1.6,"delay":1},
+          {"type":"small","count":8,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"glazed","count":3,"interval":1.3,"delay":0},
+          {"type":"mama","count":1,"interval":1.6,"delay":1},
+          {"type":"greasy","count":3,"interval":1,"delay":1},
+          {"type":"small","count":8,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"glazed","count":3,"interval":1.3,"delay":0},
+          {"type":"mama","count":1,"interval":1.6,"delay":1},
+          {"type":"greasy","count":3,"interval":1,"delay":1},
+          {"type":"small","count":10,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"glazed","count":3,"interval":1.2,"delay":0},
+          {"type":"mama","count":2,"interval":1.5,"delay":1},
+          {"type":"greasy","count":4,"interval":1,"delay":1},
+          {"type":"small","count":10,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"glazed","count":3,"interval":1.2,"delay":0},
+          {"type":"mama","count":2,"interval":1.5,"delay":1},
+          {"type":"worker","count":4,"interval":1,"delay":1},
+          {"type":"small","count":12,"interval":0.45,"delay":1}
+        ]
+      ]
+    },
+    {
+      "world": 5,
+      "name": "Coffee Break",
+      "map": "w5_coffee",
+      "waveCount": 6,
+      "hpMul": 8.8,
+      "interval": 1,
+      "waves": [
+        [{"type":"worker","count":6,"interval":1,"delay":0},{"type":"small","count":8,"interval":0.45,"delay":1}],
+        [{"type":"flyer","count":4,"interval":0.8,"delay":0},{"type":"worker","count":5,"interval":1,"delay":1}],
+        [
+          {"type":"small_fly","count":8,"interval":0.5,"delay":0},
+          {"type":"glazed","count":2,"interval":1.5,"delay":1},
+          {"type":"small","count":8,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"worker","count":6,"interval":1,"delay":0},
+          {"type":"flyer","count":5,"interval":0.8,"delay":1},
+          {"type":"glazed","count":2,"interval":1.5,"delay":1}
+        ],
+        [
+          {"type":"small_fly","count":10,"interval":0.5,"delay":0},
+          {"type":"glazed","count":3,"interval":1.4,"delay":1},
+          {"type":"worker","count":6,"interval":1,"delay":1}
+        ],
+        [
+          {"type":"worker","count":8,"interval":0.9,"delay":0},
+          {"type":"flyer","count":6,"interval":0.8,"delay":1},
+          {"type":"glazed","count":3,"interval":1.4,"delay":1},
+          {"type":"small","count":12,"interval":0.45,"delay":1}
+        ]
+      ]
+    },
+    {
+      "world": 5,
+      "name": "Maple Bar",
+      "map": "w5_maple",
+      "waveCount": 7,
+      "hpMul": 6.25,
+      "interval": 1,
+      "waves": [
+        [
+          {"type":"worker","count":5,"interval":1,"delay":0},
+          {"type":"small_gasmask","count":8,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"gasmask","count":4,"interval":1,"delay":0},
+          {"type":"worker","count":4,"interval":1,"delay":1},
+          {"type":"small_gasmask","count":6,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"flyer","count":4,"interval":0.8,"delay":0},
+          {"type":"gasmask","count":4,"interval":1,"delay":1},
+          {"type":"small_gasmask","count":8,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"gasmask","count":5,"interval":1,"delay":0},
+          {"type":"glazed","count":3,"interval":1.4,"delay":1},
+          {"type":"worker","count":4,"interval":1,"delay":1}
+        ],
+        [
+          {"type":"small_gasmask","count":12,"interval":0.45,"delay":0},
+          {"type":"glazed","count":3,"interval":1.4,"delay":1},
+          {"type":"gasmask","count":4,"interval":1,"delay":1}
+        ],
+        [
+          {"type":"gasmask","count":6,"interval":0.9,"delay":0},
+          {"type":"glazed","count":4,"interval":1.3,"delay":1},
+          {"type":"flyer","count":5,"interval":0.8,"delay":1}
+        ],
+        [
+          {"type":"small_gasmask","count":14,"interval":0.45,"delay":0},
+          {"type":"gasmask","count":6,"interval":0.9,"delay":1},
+          {"type":"glazed","count":4,"interval":1.3,"delay":1},
+          {"type":"flyer","count":5,"interval":0.8,"delay":1}
+        ]
+      ]
+    },
+    {
+      "world": 5,
+      "name": "Boston Cream",
+      "map": "w5_boston",
+      "waveCount": 8,
+      "hpMul": 6.75,
+      "interval": 1,
+      "waves": [
+        [{"type":"worker","count":6,"interval":1,"delay":0},{"type":"small","count":8,"interval":0.45,"delay":1}],
+        [
+          {"type":"flyer","count":4,"interval":0.8,"delay":0},
+          {"type":"worker","count":4,"interval":1,"delay":1},
+          {"type":"small","count":8,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"glazed","count":3,"interval":1.4,"delay":0},
+          {"type":"worker","count":4,"interval":1,"delay":1},
+          {"type":"small","count":8,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"glazed","count":4,"interval":1.3,"delay":0},
+          {"type":"flyer","count":4,"interval":0.8,"delay":1},
+          {"type":"worker","count":4,"interval":1,"delay":1},
+          {"type":"small","count":10,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"heavy","count":1,"interval":1.7,"delay":1},
+          {"type":"glazed","count":3,"interval":1.4,"delay":1},
+          {"type":"worker","count":4,"interval":1,"delay":1},
+          {"type":"small","count":8,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"heavy","count":1,"interval":1.7,"delay":0.5},
+          {"type":"glazed","count":4,"interval":1.3,"delay":0},
+          {"type":"worker","count":4,"interval":1,"delay":1},
+          {"type":"small","count":10,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"heavy","count":2,"interval":1.7,"delay":0.5},
+          {"type":"glazed","count":4,"interval":1.3,"delay":0},
+          {"type":"flyer","count":4,"interval":0.8,"delay":1},
+          {"type":"small","count":10,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"heavy","count":3,"interval":1.6,"delay":0.5},
+          {"type":"glazed","count":5,"interval":1.2,"delay":0},
+          {"type":"worker","count":4,"interval":1,"delay":1},
+          {"type":"small","count":12,"interval":0.45,"delay":1}
+        ]
+      ]
+    },
+    {
+      "world": 5,
+      "name": "Baker's Dozen",
+      "map": "w5_dozen",
+      "waveCount": 7,
+      "hpMul": 5.45,
+      "interval": 1,
+      "waves": [
+        [{"type":"worker","count":6,"interval":1,"delay":0},{"type":"small","count":8,"interval":0.45,"delay":1}],
+        [
+          {"type":"sprinter","count":4,"interval":0.9,"delay":1},
+          {"type":"worker","count":5,"interval":1,"delay":1},
+          {"type":"small","count":8,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"glazed","count":3,"interval":1.4,"delay":0},
+          {"type":"sprinter","count":4,"interval":0.9,"delay":1},
+          {"type":"worker","count":5,"interval":1,"delay":1}
+        ],
+        [
+          {"type":"glazed","count":4,"interval":1.3,"delay":0},
+          {"type":"nurse","count":1,"interval":1.5,"delay":1},
+          {"type":"small","count":10,"interval":0.45,"delay":1},
+          {"type":"sprinter","count":4,"interval":0.9,"delay":1}
+        ],
+        [
+          {"type":"glazed","count":4,"interval":1.3,"delay":0},
+          {"type":"sprinter","count":6,"interval":0.9,"delay":1},
+          {"type":"nurse","count":1,"interval":1.5,"delay":1},
+          {"type":"worker","count":6,"interval":1,"delay":1}
+        ],
+        [
+          {"type":"glazed","count":5,"interval":1.2,"delay":0},
+          {"type":"nurse","count":2,"interval":1.4,"delay":1},
+          {"type":"small","count":14,"interval":0.45,"delay":1},
+          {"type":"sprinter","count":4,"interval":0.9,"delay":1}
+        ],
+        [
+          {"type":"glazed","count":5,"interval":1.2,"delay":0},
+          {"type":"sprinter","count":6,"interval":0.85,"delay":1},
+          {"type":"nurse","count":2,"interval":1.4,"delay":1},
+          {"type":"worker","count":8,"interval":0.9,"delay":1}
+        ]
+      ]
+    },
+    {
+      "world": 5,
+      "name": "Glaze Counter",
+      "map": "w5_diner",
+      "waveCount": 9,
+      "hpMul": 0.87,
+      "interval": 1,
+      "waves": [
+        [{"type":"worker","count":6,"interval":1,"delay":0},{"type":"small","count":8,"interval":0.45,"delay":1}],
+        [
+          {"type":"flyer","count":4,"interval":0.8,"delay":0},
+          {"type":"worker","count":5,"interval":1,"delay":1},
+          {"type":"small","count":8,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"glazed","count":2,"interval":1.5,"delay":2},
+          {"type":"worker","count":6,"interval":1,"delay":1},
+          {"type":"small","count":10,"interval":0.45,"delay":1}
+        ],
+        [
+          {"type":"flyer","count":5,"interval":0.8,"delay":0},
+          {"type":"glazed","count":2,"interval":1.5,"delay":1},
+          {"type":"small","count":10,"interval":0.45,"delay":0}
+        ],
+        [
+          {"type":"worker","count":8,"interval":0.9,"delay":0},
+          {"type":"glazed","count":3,"interval":1.4,"delay":1},
+          {"type":"flyer","count":4,"interval":0.8,"delay":1}
+        ],
+        [
+          {"type":"small","count":14,"interval":0.45,"delay":0},
+          {"type":"flyer","count":6,"interval":0.8,"delay":1},
+          {"type":"glazed","count":3,"interval":1.4,"delay":1}
+        ],
+        [
+          {"type":"glazed","count":4,"interval":1.3,"delay":0},
+          {"type":"worker","count":8,"interval":0.9,"delay":1},
+          {"type":"flyer","count":6,"interval":0.8,"delay":1}
+        ],
+        [
+          {"type":"small","count":14,"interval":0.45,"delay":0},
+          {"type":"glazed","count":4,"interval":1.3,"delay":1},
+          {"type":"worker","count":8,"interval":0.9,"delay":1},
+          {"type":"flyer","count":5,"interval":0.8,"delay":1}
+        ],
+        [
+          {"type":"worker","count":8,"interval":0.9,"delay":0},
+          {"type":"glazed","count":3,"interval":1.4,"delay":1},
+          {"type":"flyer","count":5,"interval":0.8,"delay":1},
+          {"type":"small","count":10,"interval":0.45,"delay":1},
+          {"type":"queen5","count":1,"interval":1,"delay":4}
         ]
       ]
     }
@@ -2229,6 +2688,186 @@
         ".....M..#.",
         "S.......#.",
         "........C."
+      ]
+    },
+    "w5_counter": {
+      "name": "Donut Counter",
+      "theme": 8,
+      "grid": [
+        ".....P..N.",
+        "........#.",
+        ".########.",
+        ".#........",
+        ".#........",
+        ".########.",
+        "........#.",
+        "........#.",
+        "..#######.",
+        "..#.......",
+        "..#.M.....",
+        ".C#......."
+      ]
+    },
+    "w5_stool": {
+      "name": "Sprinkle Stool",
+      "theme": 8,
+      "grid": [
+        "N........J",
+        "#.........",
+        "#########.",
+        "........#.",
+        ".########.",
+        ".#........",
+        ".########.",
+        ".....P..#.",
+        "........#.",
+        "..#######.",
+        "..#.......",
+        "..#######C"
+      ]
+    },
+    "w5_jelly": {
+      "name": "Jelly Booth",
+      "theme": 8,
+      "grid": [
+        "..N.......",
+        "..#.......",
+        "..#.#####.",
+        "..#.#...#.",
+        "..#.#...#.",
+        "..##+####.",
+        "....#.....",
+        "....#.S...",
+        "M...#.....",
+        "....####..",
+        ".......#..",
+        ".......C.."
+      ]
+    },
+    "w5_cruller": {
+      "name": "Cruller Corner",
+      "theme": 8,
+      "grid": [
+        "N........B",
+        "#.........",
+        "#########.",
+        "........#.",
+        ".########.",
+        ".#........",
+        ".########.",
+        "........#.",
+        ".########.",
+        ".#........",
+        ".#########",
+        ".....J...C"
+      ]
+    },
+    "w5_glaze": {
+      "name": "Glaze Line",
+      "theme": 8,
+      "grid": [
+        ".N......N.",
+        ".#......#.",
+        ".#......#.",
+        ".#......#.",
+        ".#####..#.",
+        ".....#..#.",
+        ".....####.",
+        ".....#....",
+        "...M.#....",
+        ".....#...P",
+        ".....#....",
+        ".....C...."
+      ]
+    },
+    "w5_coffee": {
+      "name": "Coffee Break",
+      "theme": 8,
+      "grid": [
+        ".....M....",
+        "..........",
+        "N########.",
+        "........#.",
+        "........#.",
+        ".########.",
+        ".#........",
+        ".#........",
+        ".####.....",
+        "....#....P",
+        "....#.....",
+        "....C....."
+      ]
+    },
+    "w5_maple": {
+      "name": "Maple Bar",
+      "theme": 8,
+      "grid": [
+        ".....N....",
+        ".....#....",
+        ".....#....",
+        ".########.",
+        ".#......#.",
+        ".#......#.",
+        ".#.B....#.",
+        ".#...####.",
+        ".#...#....",
+        ".#####....",
+        ".....#...P",
+        ".....C...."
+      ]
+    },
+    "w5_boston": {
+      "name": "Boston Cream",
+      "theme": 8,
+      "grid": [
+        "N........P",
+        "#.........",
+        "#.#######.",
+        "#.#.....#.",
+        "#.#.....#.",
+        "#.#..M..#.",
+        "#.#.....#.",
+        "#.#.....#.",
+        "#.###C..#.",
+        "#.......#.",
+        "#########.",
+        ".........."
+      ]
+    },
+    "w5_dozen": {
+      "name": "Baker's Dozen",
+      "theme": 8,
+      "grid": [
+        ".N......N.",
+        ".#...J..#.",
+        ".#......#.",
+        ".#......#.",
+        ".#.######.",
+        ".#.#......",
+        ".#######..",
+        ".......#..",
+        ".......#..",
+        "..P....##.",
+        "........#.",
+        "........C."
+      ]
+    },
+    "w5_diner": {
+      "name": "Glaze Counter",
+      "theme": 8,
+      "grid": [
+        ".......N..",
+        ".......#..",
+        "..######..",
+        "..#..P....",
+        "..#.......",
+        "..#######.",
+        "........#.",
+        "........#.",
+        ".########.",
+        ".#........",
+        ".#...M....",
+        ".C.......S"
       ]
     }
   }

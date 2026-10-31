@@ -460,6 +460,31 @@ var tuning_default = {
       boss: !0,
       spawn: { type: "nurse", every: 9, count: 1 },
       queenTraits: ["slow"]
+    },
+    glazed: {
+      hp: 24,
+      speed: 38,
+      armor: 0,
+      steal: 1,
+      weight: 0.8,
+      size: "regular",
+      crumbs: 3,
+      rarity: "uncommon",
+      shield: { pts: 30, regenDelay: 2.5, regenRate: 0.3, when: "always" }
+    },
+    queen5: {
+      hp: 2400,
+      speed: 15,
+      armor: 6,
+      weight: 0,
+      size: "queen",
+      crumbs: 200,
+      rarity: "boss",
+      slowResist: 0.6,
+      boss: !0,
+      spawn: { type: "glazed", every: 10, count: 1 },
+      shield: { pts: 600, regenDelay: 4, regenRate: 0.25, when: "always" },
+      queenTraits: ["slow"]
     }
   },
   worlds: [
@@ -502,6 +527,16 @@ var tuning_default = {
       unlock: { allLevelsWonInWorld: 3, minStarsInWorld: 14 },
       cardLevelCap: 6,
       coinMul: 1.5
+    },
+    {
+      id: 5,
+      name: "Donut Diner",
+      treat: "donut",
+      queen: "queen5",
+      levels: 10,
+      unlock: { allLevelsWonInWorld: 4, minStarsInWorld: 14 },
+      cardLevelCap: 6,
+      coinMul: 1.75
     }
   ],
   levels: [
@@ -1495,7 +1530,10 @@ var tuning_default = {
       hpMul: 5.9,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 5, interval: 1, delay: 0 }, { type: "small_gasmask", count: 8, interval: 0.45, delay: 1 }],
+        [
+          { type: "worker", count: 5, interval: 1, delay: 0 },
+          { type: "small_gasmask", count: 8, interval: 0.45, delay: 1 }
+        ],
         [
           { type: "gasmask", count: 4, interval: 1, delay: 0 },
           { type: "worker", count: 4, interval: 1, delay: 1 },
@@ -1699,6 +1737,427 @@ var tuning_default = {
           { type: "flyer", count: 5, interval: 0.8, delay: 1 },
           { type: "small", count: 10, interval: 0.45, delay: 1 },
           { type: "queen4", count: 1, interval: 1, delay: 4 }
+        ]
+      ]
+    },
+    {
+      world: 5,
+      name: "Donut Counter",
+      map: "w5_counter",
+      waveCount: 6,
+      hpMul: 4.2,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [{ type: "small", count: 8, interval: 0.45, delay: 0 }, { type: "worker", count: 4, interval: 1, delay: 1 }],
+        [
+          { type: "worker", count: 6, interval: 1, delay: 0 },
+          { type: "flyer", count: 3, interval: 0.8, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [{ type: "flyer", count: 4, interval: 0.8, delay: 0 }, { type: "worker", count: 6, interval: 1, delay: 0 }],
+        [
+          { type: "small", count: 10, interval: 0.45, delay: 0 },
+          { type: "worker", count: 6, interval: 1, delay: 0 },
+          { type: "flyer", count: 4, interval: 0.8, delay: 1 }
+        ],
+        [
+          { type: "worker", count: 8, interval: 0.9, delay: 0 },
+          { type: "small", count: 12, interval: 0.45, delay: 1 },
+          { type: "flyer", count: 4, interval: 0.8, delay: 1 }
+        ]
+      ]
+    },
+    {
+      world: 5,
+      name: "Sprinkle Stool",
+      map: "w5_stool",
+      waveCount: 6,
+      hpMul: 4.5,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [
+          { type: "worker", count: 5, interval: 1, delay: 0 },
+          { type: "glazed", count: 2, interval: 1.5, delay: 2 },
+          { type: "small", count: 6, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "small", count: 10, interval: 0.45, delay: 0 },
+          { type: "glazed", count: 2, interval: 1.5, delay: 1 },
+          { type: "worker", count: 5, interval: 1, delay: 1 }
+        ],
+        [
+          { type: "worker", count: 6, interval: 1, delay: 0 },
+          { type: "glazed", count: 3, interval: 1.4, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "small", count: 12, interval: 0.45, delay: 0 },
+          { type: "glazed", count: 3, interval: 1.4, delay: 2 },
+          { type: "worker", count: 6, interval: 1, delay: 1 }
+        ],
+        [
+          { type: "worker", count: 8, interval: 0.9, delay: 0 },
+          { type: "glazed", count: 4, interval: 1.3, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ]
+      ]
+    },
+    {
+      world: 5,
+      name: "Jelly Booth",
+      map: "w5_jelly",
+      waveCount: 7,
+      hpMul: 9.3,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [{ type: "flyer", count: 4, interval: 0.8, delay: 0 }, { type: "worker", count: 5, interval: 1, delay: 1 }],
+        [
+          { type: "small_fly", count: 8, interval: 0.5, delay: 0 },
+          { type: "glazed", count: 2, interval: 1.5, delay: 1 },
+          { type: "worker", count: 6, interval: 1, delay: 1 }
+        ],
+        [
+          { type: "flyer", count: 5, interval: 0.8, delay: 0 },
+          { type: "glazed", count: 3, interval: 1.4, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "small_fly", count: 10, interval: 0.5, delay: 0 },
+          { type: "flyer", count: 4, interval: 0.8, delay: 1 },
+          { type: "glazed", count: 3, interval: 1.4, delay: 1 },
+          { type: "worker", count: 6, interval: 1, delay: 1 }
+        ],
+        [
+          { type: "worker", count: 8, interval: 0.9, delay: 0 },
+          { type: "flyer", count: 6, interval: 0.8, delay: 1 },
+          { type: "glazed", count: 4, interval: 1.3, delay: 1 }
+        ],
+        [
+          { type: "small_fly", count: 12, interval: 0.5, delay: 0 },
+          { type: "flyer", count: 6, interval: 0.75, delay: 1 },
+          { type: "glazed", count: 4, interval: 1.3, delay: 1 },
+          { type: "worker", count: 8, interval: 0.9, delay: 1 }
+        ]
+      ]
+    },
+    {
+      world: 5,
+      name: "Cruller Corner",
+      map: "w5_cruller",
+      waveCount: 7,
+      hpMul: 8.35,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [
+          { type: "small_armed", count: 4, interval: 0.6, delay: 0 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 6, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "armored", count: 2, interval: 1.5, delay: 1 },
+          { type: "worker", count: 4, interval: 1, delay: 0 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "glazed", count: 3, interval: 1.4, delay: 0 },
+          { type: "armored", count: 2, interval: 1.5, delay: 1 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "glazed", count: 3, interval: 1.4, delay: 0 },
+          { type: "armored", count: 3, interval: 1.4, delay: 1 },
+          { type: "small_armed", count: 4, interval: 0.6, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "glazed", count: 4, interval: 1.3, delay: 0 },
+          { type: "armored", count: 3, interval: 1.4, delay: 1 },
+          { type: "worker", count: 6, interval: 1, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "glazed", count: 4, interval: 1.3, delay: 0 },
+          { type: "armored", count: 4, interval: 1.3, delay: 1 },
+          { type: "worker", count: 6, interval: 1, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ]
+      ]
+    },
+    {
+      world: 5,
+      name: "Glaze Line",
+      map: "w5_glaze",
+      waveCount: 7,
+      hpMul: 5.4,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [
+          { type: "greasy", count: 3, interval: 1.1, delay: 0 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "glazed", count: 3, interval: 1.4, delay: 0 },
+          { type: "mama", count: 1, interval: 1.6, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "glazed", count: 3, interval: 1.3, delay: 0 },
+          { type: "mama", count: 1, interval: 1.6, delay: 1 },
+          { type: "greasy", count: 3, interval: 1, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "glazed", count: 3, interval: 1.3, delay: 0 },
+          { type: "mama", count: 1, interval: 1.6, delay: 1 },
+          { type: "greasy", count: 3, interval: 1, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "glazed", count: 3, interval: 1.2, delay: 0 },
+          { type: "mama", count: 2, interval: 1.5, delay: 1 },
+          { type: "greasy", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "glazed", count: 3, interval: 1.2, delay: 0 },
+          { type: "mama", count: 2, interval: 1.5, delay: 1 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 12, interval: 0.45, delay: 1 }
+        ]
+      ]
+    },
+    {
+      world: 5,
+      name: "Coffee Break",
+      map: "w5_coffee",
+      waveCount: 6,
+      hpMul: 8.8,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [{ type: "flyer", count: 4, interval: 0.8, delay: 0 }, { type: "worker", count: 5, interval: 1, delay: 1 }],
+        [
+          { type: "small_fly", count: 8, interval: 0.5, delay: 0 },
+          { type: "glazed", count: 2, interval: 1.5, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "worker", count: 6, interval: 1, delay: 0 },
+          { type: "flyer", count: 5, interval: 0.8, delay: 1 },
+          { type: "glazed", count: 2, interval: 1.5, delay: 1 }
+        ],
+        [
+          { type: "small_fly", count: 10, interval: 0.5, delay: 0 },
+          { type: "glazed", count: 3, interval: 1.4, delay: 1 },
+          { type: "worker", count: 6, interval: 1, delay: 1 }
+        ],
+        [
+          { type: "worker", count: 8, interval: 0.9, delay: 0 },
+          { type: "flyer", count: 6, interval: 0.8, delay: 1 },
+          { type: "glazed", count: 3, interval: 1.4, delay: 1 },
+          { type: "small", count: 12, interval: 0.45, delay: 1 }
+        ]
+      ]
+    },
+    {
+      world: 5,
+      name: "Maple Bar",
+      map: "w5_maple",
+      waveCount: 7,
+      hpMul: 6.25,
+      interval: 1,
+      waves: [
+        [
+          { type: "worker", count: 5, interval: 1, delay: 0 },
+          { type: "small_gasmask", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "gasmask", count: 4, interval: 1, delay: 0 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small_gasmask", count: 6, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "flyer", count: 4, interval: 0.8, delay: 0 },
+          { type: "gasmask", count: 4, interval: 1, delay: 1 },
+          { type: "small_gasmask", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "gasmask", count: 5, interval: 1, delay: 0 },
+          { type: "glazed", count: 3, interval: 1.4, delay: 1 },
+          { type: "worker", count: 4, interval: 1, delay: 1 }
+        ],
+        [
+          { type: "small_gasmask", count: 12, interval: 0.45, delay: 0 },
+          { type: "glazed", count: 3, interval: 1.4, delay: 1 },
+          { type: "gasmask", count: 4, interval: 1, delay: 1 }
+        ],
+        [
+          { type: "gasmask", count: 6, interval: 0.9, delay: 0 },
+          { type: "glazed", count: 4, interval: 1.3, delay: 1 },
+          { type: "flyer", count: 5, interval: 0.8, delay: 1 }
+        ],
+        [
+          { type: "small_gasmask", count: 14, interval: 0.45, delay: 0 },
+          { type: "gasmask", count: 6, interval: 0.9, delay: 1 },
+          { type: "glazed", count: 4, interval: 1.3, delay: 1 },
+          { type: "flyer", count: 5, interval: 0.8, delay: 1 }
+        ]
+      ]
+    },
+    {
+      world: 5,
+      name: "Boston Cream",
+      map: "w5_boston",
+      waveCount: 8,
+      hpMul: 6.75,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [
+          { type: "flyer", count: 4, interval: 0.8, delay: 0 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "glazed", count: 3, interval: 1.4, delay: 0 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "glazed", count: 4, interval: 1.3, delay: 0 },
+          { type: "flyer", count: 4, interval: 0.8, delay: 1 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "heavy", count: 1, interval: 1.7, delay: 1 },
+          { type: "glazed", count: 3, interval: 1.4, delay: 1 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "heavy", count: 1, interval: 1.7, delay: 0.5 },
+          { type: "glazed", count: 4, interval: 1.3, delay: 0 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "heavy", count: 2, interval: 1.7, delay: 0.5 },
+          { type: "glazed", count: 4, interval: 1.3, delay: 0 },
+          { type: "flyer", count: 4, interval: 0.8, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "heavy", count: 3, interval: 1.6, delay: 0.5 },
+          { type: "glazed", count: 5, interval: 1.2, delay: 0 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 12, interval: 0.45, delay: 1 }
+        ]
+      ]
+    },
+    {
+      world: 5,
+      name: "Baker's Dozen",
+      map: "w5_dozen",
+      waveCount: 7,
+      hpMul: 5.45,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [
+          { type: "sprinter", count: 4, interval: 0.9, delay: 1 },
+          { type: "worker", count: 5, interval: 1, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "glazed", count: 3, interval: 1.4, delay: 0 },
+          { type: "sprinter", count: 4, interval: 0.9, delay: 1 },
+          { type: "worker", count: 5, interval: 1, delay: 1 }
+        ],
+        [
+          { type: "glazed", count: 4, interval: 1.3, delay: 0 },
+          { type: "nurse", count: 1, interval: 1.5, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 },
+          { type: "sprinter", count: 4, interval: 0.9, delay: 1 }
+        ],
+        [
+          { type: "glazed", count: 4, interval: 1.3, delay: 0 },
+          { type: "sprinter", count: 6, interval: 0.9, delay: 1 },
+          { type: "nurse", count: 1, interval: 1.5, delay: 1 },
+          { type: "worker", count: 6, interval: 1, delay: 1 }
+        ],
+        [
+          { type: "glazed", count: 5, interval: 1.2, delay: 0 },
+          { type: "nurse", count: 2, interval: 1.4, delay: 1 },
+          { type: "small", count: 14, interval: 0.45, delay: 1 },
+          { type: "sprinter", count: 4, interval: 0.9, delay: 1 }
+        ],
+        [
+          { type: "glazed", count: 5, interval: 1.2, delay: 0 },
+          { type: "sprinter", count: 6, interval: 0.85, delay: 1 },
+          { type: "nurse", count: 2, interval: 1.4, delay: 1 },
+          { type: "worker", count: 8, interval: 0.9, delay: 1 }
+        ]
+      ]
+    },
+    {
+      world: 5,
+      name: "Glaze Counter",
+      map: "w5_diner",
+      waveCount: 9,
+      hpMul: 0.87,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [
+          { type: "flyer", count: 4, interval: 0.8, delay: 0 },
+          { type: "worker", count: 5, interval: 1, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "glazed", count: 2, interval: 1.5, delay: 2 },
+          { type: "worker", count: 6, interval: 1, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "flyer", count: 5, interval: 0.8, delay: 0 },
+          { type: "glazed", count: 2, interval: 1.5, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 0 }
+        ],
+        [
+          { type: "worker", count: 8, interval: 0.9, delay: 0 },
+          { type: "glazed", count: 3, interval: 1.4, delay: 1 },
+          { type: "flyer", count: 4, interval: 0.8, delay: 1 }
+        ],
+        [
+          { type: "small", count: 14, interval: 0.45, delay: 0 },
+          { type: "flyer", count: 6, interval: 0.8, delay: 1 },
+          { type: "glazed", count: 3, interval: 1.4, delay: 1 }
+        ],
+        [
+          { type: "glazed", count: 4, interval: 1.3, delay: 0 },
+          { type: "worker", count: 8, interval: 0.9, delay: 1 },
+          { type: "flyer", count: 6, interval: 0.8, delay: 1 }
+        ],
+        [
+          { type: "small", count: 14, interval: 0.45, delay: 0 },
+          { type: "glazed", count: 4, interval: 1.3, delay: 1 },
+          { type: "worker", count: 8, interval: 0.9, delay: 1 },
+          { type: "flyer", count: 5, interval: 0.8, delay: 1 }
+        ],
+        [
+          { type: "worker", count: 8, interval: 0.9, delay: 0 },
+          { type: "glazed", count: 3, interval: 1.4, delay: 1 },
+          { type: "flyer", count: 5, interval: 0.8, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 },
+          { type: "queen5", count: 1, interval: 1, delay: 4 }
         ]
       ]
     }
@@ -2231,6 +2690,186 @@ var tuning_default = {
         "S.......#.",
         "........C."
       ]
+    },
+    w5_counter: {
+      name: "Donut Counter",
+      theme: 8,
+      grid: [
+        ".....P..N.",
+        "........#.",
+        ".########.",
+        ".#........",
+        ".#........",
+        ".########.",
+        "........#.",
+        "........#.",
+        "..#######.",
+        "..#.......",
+        "..#.M.....",
+        ".C#......."
+      ]
+    },
+    w5_stool: {
+      name: "Sprinkle Stool",
+      theme: 8,
+      grid: [
+        "N........J",
+        "#.........",
+        "#########.",
+        "........#.",
+        ".########.",
+        ".#........",
+        ".########.",
+        ".....P..#.",
+        "........#.",
+        "..#######.",
+        "..#.......",
+        "..#######C"
+      ]
+    },
+    w5_jelly: {
+      name: "Jelly Booth",
+      theme: 8,
+      grid: [
+        "..N.......",
+        "..#.......",
+        "..#.#####.",
+        "..#.#...#.",
+        "..#.#...#.",
+        "..##+####.",
+        "....#.....",
+        "....#.S...",
+        "M...#.....",
+        "....####..",
+        ".......#..",
+        ".......C.."
+      ]
+    },
+    w5_cruller: {
+      name: "Cruller Corner",
+      theme: 8,
+      grid: [
+        "N........B",
+        "#.........",
+        "#########.",
+        "........#.",
+        ".########.",
+        ".#........",
+        ".########.",
+        "........#.",
+        ".########.",
+        ".#........",
+        ".#########",
+        ".....J...C"
+      ]
+    },
+    w5_glaze: {
+      name: "Glaze Line",
+      theme: 8,
+      grid: [
+        ".N......N.",
+        ".#......#.",
+        ".#......#.",
+        ".#......#.",
+        ".#####..#.",
+        ".....#..#.",
+        ".....####.",
+        ".....#....",
+        "...M.#....",
+        ".....#...P",
+        ".....#....",
+        ".....C...."
+      ]
+    },
+    w5_coffee: {
+      name: "Coffee Break",
+      theme: 8,
+      grid: [
+        ".....M....",
+        "..........",
+        "N########.",
+        "........#.",
+        "........#.",
+        ".########.",
+        ".#........",
+        ".#........",
+        ".####.....",
+        "....#....P",
+        "....#.....",
+        "....C....."
+      ]
+    },
+    w5_maple: {
+      name: "Maple Bar",
+      theme: 8,
+      grid: [
+        ".....N....",
+        ".....#....",
+        ".....#....",
+        ".########.",
+        ".#......#.",
+        ".#......#.",
+        ".#.B....#.",
+        ".#...####.",
+        ".#...#....",
+        ".#####....",
+        ".....#...P",
+        ".....C...."
+      ]
+    },
+    w5_boston: {
+      name: "Boston Cream",
+      theme: 8,
+      grid: [
+        "N........P",
+        "#.........",
+        "#.#######.",
+        "#.#.....#.",
+        "#.#.....#.",
+        "#.#..M..#.",
+        "#.#.....#.",
+        "#.#.....#.",
+        "#.###C..#.",
+        "#.......#.",
+        "#########.",
+        ".........."
+      ]
+    },
+    w5_dozen: {
+      name: "Baker's Dozen",
+      theme: 8,
+      grid: [
+        ".N......N.",
+        ".#...J..#.",
+        ".#......#.",
+        ".#......#.",
+        ".#.######.",
+        ".#.#......",
+        ".#######..",
+        ".......#..",
+        ".......#..",
+        "..P....##.",
+        "........#.",
+        "........C."
+      ]
+    },
+    w5_diner: {
+      name: "Glaze Counter",
+      theme: 8,
+      grid: [
+        ".......N..",
+        ".......#..",
+        "..######..",
+        "..#..P....",
+        "..#.......",
+        "..#######.",
+        "........#.",
+        "........#.",
+        ".########.",
+        ".#........",
+        ".#...M....",
+        ".C.......S"
+      ]
     }
   }
 };
@@ -2532,33 +3171,42 @@ var LIFT_MAX = 3, SIZE_RANK = { small: 1, regular: 2, large: 3 }, LIFT_NAMES = [
   liftSize: "Lifts"
 }, SLOW_CAP = 0.85, ALL_CARDS = Object.keys(TOWERS), STARTER_CARDS = ["slingshot", "spray", "glue", "fan", "ball"];
 var AIR_COUNTERS = ["laser", "zapper"], TARGET_MODE_TEXT = {
-  slingshot: { carrier: "Single target: ants carrying food first, then the fewest HP left.", front: "Single target: the walking ant closest to the cookie." },
-  lizard: { carrier: "Targets ants carrying food first, then fewest HP left; chews after kills.", front: "Targets the walking ant closest to the cookie; chews after kills." },
-  laser: { carrier: "Aims at ants carrying food first, then fewest HP. Heat: +12% per hit on the same ant.", front: "Aims at the walking ant closest to the cookie. Heat: +12% per hit on the same ant." },
-  zapper: { carrier: "First zap: food carriers first, then fewest HP. Chains to the nearest flyers (60% each jump).", front: "First zap: the flyer closest to the cookie. Chains to the nearest flyers (60% each jump)." }
-}, VERSION = "0.8.0", ANT_SIZES = { ...tuning_default.antSizes }, ANT_TEXT = {
-  small: { name: "Scout Ant", desc: "Tiny, fast, comes in swarms." },
-  worker: { name: "Worker Ant", desc: "The regular. Hard hat included." },
-  big: { name: "Big Ant", desc: "Slow, chunky, a bit of armor." },
-  gasmask: { name: "Gas-Mask Ant", desc: "Immune to bug spray." },
-  armored: { name: "Knight Ant", desc: "Heavy armor. Use spray, boombox or gate." },
-  flyer: { name: "Flying Ant", desc: "Flies over ground towers. Laser, zapper or plane!" },
-  sprinter: { name: "Sprint Knight", desc: "Armored AND fast - sneakers on. Late stages only." },
-  heavy: { name: "Heavy Knight", desc: "A big ant in full armor. Late stages only." },
-  queen: { name: "Ant Queen", desc: "BOSS. Marches in and calls her scouts. Takes HALF the cookie." },
+  // v0.8.1: Front retired (M3); Healer (M1, levels with healer ants) and Heavy = 'strong' (M2, boss levels) added
+  slingshot: { carrier: "Single target: ants carrying food first, then the fewest HP left.", healer: "Single target: healer ants first, then the fewest HP left.", strong: "Single target: the toughest ant first. For queen levels." },
+  lizard: { carrier: "Targets ants carrying food first, then fewest HP left; chews after kills.", healer: "Targets healer ants first, then fewest HP left; chews after kills.", strong: "Targets the toughest ant first; chews after kills. For queen levels." },
+  laser: { carrier: "Aims at ants carrying food first, then fewest HP. Heat: +12% per hit on the same ant.", healer: "Aims at healer ants first, then fewest HP. Heat: +12% per hit on the same ant.", strong: "Aims at the toughest ant first. Heat: +12% per hit. For queen levels." },
+  zapper: { carrier: "First zap: food carriers first, then fewest HP. Chains to the nearest flyers (60% each jump).", healer: "First zap: healer flyers first, then fewest HP. Chains to the nearest flyers (60% each jump).", strong: "First zap: the toughest flyer first. Chains to the nearest flyers. For queen levels." }
+}, ART81 = !0, VERSION = "0.8.1", ANT_SIZES = { ...tuning_default.antSizes }, ANT_TEXT = {
+  small: { name: "Scout Ant", desc: "Tiny, fast, comes in swarms.", intro: "Tiny and fast. They come in swarms." },
+  worker: { name: "Worker Ant", desc: "The regular. Hard hat included.", intro: "The regular ant. Easy to stop." },
+  big: { name: "Big Ant", desc: "Slow, chunky, a bit of armor.", intro: "Slow and chunky, with a bit of armour." },
+  gasmask: { name: "Gas-Mask Ant", desc: "Immune to bug spray.", intro: "Wears a gas mask. Bug spray does nothing." },
+  armored: { name: "Knight Ant", desc: "Heavy armor. Use spray, boombox or gate.", intro: "Heavy armour. Use spray, boombox or the gate." },
+  flyer: { name: "Flying Ant", desc: "Flies over ground towers. Laser, zapper or plane!", intro: "Flies over ground towers. Use Laser or Zapper." },
+  sprinter: { name: "Sprint Knight", desc: "Armored AND fast - sneakers on. Late stages only.", intro: "Armoured AND fast. Hit it early." },
+  heavy: { name: "Heavy Knight", desc: "A big ant in full armor. Late stages only.", intro: "A big ant in full armour. Hit it hard." },
+  queen: { name: "Ant Queen", desc: "BOSS. Marches in and calls her scouts. Takes HALF the cookie.", intro: "BOSS. Calls her scouts. Takes half the cookie." },
   // v0.7 (Yair ANT-STATS-v0.6.3): small variants - same tiny body as the Scout, with a gas mask / armour / wings
-  small_gasmask: { name: "Masked Scout", desc: "A tiny scout with a gas mask - spray does nothing." },
-  small_armed: { name: "Armored Scout", desc: "A tiny scout in armour. Slower, shrugs off weak hits." },
-  small_fly: { name: "Flying Scout", desc: "A tiny flying scout. Laser or zapper!" },
-  queen2: { name: "Swift Queen", desc: "BOSS of world 2. Fast, calls flying ants. Takes 40 of the cake." },
+  small_gasmask: { name: "Masked Scout", desc: "A tiny scout with a gas mask - spray does nothing.", intro: "A tiny scout in a gas mask. Spray does nothing." },
+  small_armed: { name: "Armored Scout", desc: "A tiny scout in armour. Slower, shrugs off weak hits.", intro: "A tiny armoured scout. Weak hits bounce off." },
+  small_fly: { name: "Flying Scout", desc: "A tiny flying scout. Laser or zapper!", intro: "A tiny flyer. Use Laser or Zapper." },
+  queen2: { name: "Swift Queen", desc: "BOSS of world 2. Fast, calls flying ants. Takes 40 of the cake.", intro: "BOSS. Fast, and she calls flying ants." },
   // v0.7.7 world 3 (Pie Pantry)
-  greasy: { name: "Buttery Ant", desc: "Slippery! Slowing barely works. Hit it hard." },
-  mama: { name: "Brood Ant", desc: "Drops 3 baby ants when she falls." },
-  queen3: { name: "Pie Queen", desc: "BOSS of world 3. Calls buttery ants. Takes 55 of the pie. Ignores most slowing." },
+  greasy: { name: "Buttery Ant", desc: "Slippery! Slowing barely works. Hit it hard.", intro: "Slippery! Slowing barely works. Hit it hard." },
+  mama: { name: "Brood Ant", desc: "Drops 3 baby ants when she falls.", intro: "Drops 3 baby ants when she falls." },
+  queen3: { name: "Pie Queen", desc: "BOSS of world 3. Calls buttery ants. Takes 55 of the pie. Ignores most slowing.", intro: "BOSS. Calls buttery ants. Ignores most slowing." },
   // v0.7.9 world 4 (Ice-Cream Parlour)
-  nurse: { name: "Nurse Ant", desc: "Heals hurt friends nearby every 3 seconds. Pop her first!" },
-  queen4: { name: "Sundae Queen", desc: "BOSS of world 4. Calls a nurse every 9 seconds, and the nurses heal her. Takes 50 of the sundae." }
-}, QUEEN_TRAITS = { ...tuning_default.queenTraitMods };
+  nurse: { name: "Nurse Ant", desc: "Heals hurt friends nearby every 3 seconds. Pop her first!", intro: "Nurse Ant: heals friends nearby every 3 s. Pop her first!" },
+  glazed: { name: "Glazed Ant", desc: "Wears a sugar shield that soaks damage first, then grows back after a pause. Hit it hard and fast.", intro: "Glazed Ant: a sugar shield soaks damage, then it grows back." },
+  // v0.8.1 W2 / M4
+  queen5: { name: "Glaze Queen", desc: "BOSS of world 5. Shielded, and she keeps sending Glazed Ants. Takes 50 of the donut.", intro: "Glaze Queen: shielded, and she keeps sending Glazed Ants." },
+  // v0.8.1 M5
+  queen4: { name: "Sundae Queen", desc: "BOSS of world 4. Calls a nurse every 9 seconds, and the nurses heal her. Takes 50 of the sundae.", intro: "BOSS. Calls nurses that heal her." }
+}, ANT_CARD = {
+  glazed: "Glazed Ant \u2014 sweet armor. Its glaze soaks up damage, then grows back. Hit it hard and fast, or use Spray and Bombs.",
+  queen5: "Glaze Queen \u2014 shielded, and she keeps sending Glazed Ants. Break her glaze, then finish her.",
+  nurse: "Nurse Ant \u2014 heals friends nearby every 3 seconds. Pop her first!"
+}, L42_TIP = "Glaze grows back. Focus fire.", QUEEN_TRAITS = { ...tuning_default.queenTraitMods };
 function queenTake(traits = [], T = QUEEN_TRAITS) {
   return 50 + traits.reduce((s, t) => s + (T[t] || 0), 0);
 }
@@ -2745,12 +3393,22 @@ function starsFor(foodLeft, foodHP = BATTLE.foodHP, table = STARS) {
   for (let s of table) if (pct >= s.minPct - 1e-9) return s.stars;
   return 0;
 }
-var LOWEST_HP = /* @__PURE__ */ new Set(["slingshot", "laser", "zapper", "lizard"]), TARGET_MODES = ["weak", "carrier", "front"];
+var LOWEST_HP = /* @__PURE__ */ new Set(["slingshot", "laser", "zapper", "lizard"]);
+var BASE_MODES = ["weak", "carrier"], FRONT_FOR_TESTS = !1;
 function hasTargetModes(type) {
   return LOWEST_HP.has(type);
 }
-function nextTargetMode(mode) {
-  return TARGET_MODES[(TARGET_MODES.indexOf(mode) + 1) % TARGET_MODES.length];
+function isHealerType(type) {
+  let A = ANTS[type];
+  return !!(A && (A.heal || A.aura));
+}
+function modesForLevel(levelIndex) {
+  let out = BASE_MODES.slice();
+  return levelAntTypes(levelIndex).some(isHealerType) && out.push("healer"), isBossLevel(levelIndex) && out.push("strong"), out;
+}
+function nextTargetMode(mode, list = BASE_MODES) {
+  let k = list.indexOf(mode);
+  return list[(k + 1) % list.length];
 }
 function onTile(a, c, r) {
   return Math.floor(a.x / TILE) === c && Math.floor(a.y / TILE) === r;
@@ -3078,6 +3736,9 @@ var NEXT_ID = 1, Battle = class {
       spawnT: a.spawn ? a.spawn.every : 0,
       healCd: 0,
       healFx: 0,
+      shield: 0,
+      shieldMax: 0,
+      shieldT: 99,
       dead: !1,
       x: 0,
       y: 0,
@@ -3085,14 +3746,18 @@ var NEXT_ID = 1, Battle = class {
       hitFlash: 0,
       dir: 1
     }, p = this.routes[ri].at(d);
-    return ant.x = p.x, ant.y = p.y, this.ants.push(ant), this.stats.spawned++, ant;
+    return ant.x = p.x, ant.y = p.y, a.shield && a.shield.pts > 0 && (ant.shieldMax = ant.shield = Math.round(a.shield.pts * (this.level.hpMul || 1))), this.ants.push(ant), this.stats.spawned++, ant;
   }
   damage(ant, dmg, opt = {}) {
     if (ant.dead || dmg <= 0) return 0;
     if (opt.gas && ant.gasImmune)
       return opt.fx !== !1 && this.rng() < 0.05 && this.emit({ type: "immune", x: ant.x, y: ant.y }), 0;
-    let real = applyArmor(dmg, ant.armor, opt.ignoreArmor);
-    return ant.hp -= real, ant.hitFlash = 0.12, ant.hp <= 0 && this.kill(ant, opt.src), real;
+    let real = applyArmor(dmg, ant.armor, opt.ignoreArmor), toHp = real;
+    if (ant.shieldMax > 0 && (ant.shieldT = 0, ant.shield > 0)) {
+      let ab = Math.min(ant.shield, real);
+      ant.shield -= ab, toHp -= ab, this.stats.shieldAbsorbed = (this.stats.shieldAbsorbed || 0) + ab, ant.shield <= 1e-9 && (ant.shield = 0, this.stats.shieldBreaks = (this.stats.shieldBreaks || 0) + 1, this.emit({ type: "shieldBreak", x: ant.x, y: ant.y, id: ant.id, ant: ant.type }));
+    }
+    return ant.hitFlash = 0.12, toHp > 1e-12 && (ant.hp -= toHp, ant.hp <= 0 && this.kill(ant, opt.src)), real;
   }
   kill(ant, src) {
     ant.dead = !0;
@@ -3177,13 +3842,20 @@ var NEXT_ID = 1, Battle = class {
     let T = TOWERS[card];
     return T.place === "path" && !ti.onPath ? { ok: !1, why: "needPath" } : T.place === "side" && ti.onPath ? { ok: !1, why: "needSide" } : T.nearTrail && !this.touchesTrail(c, r) ? { ok: !1, why: "needNearTrail" } : { ok: !0, upgrade: !1 };
   }
+  // v0.8.1 M8: how far the in-battle upgrades reach this battle (towers on the board now by level, highest level per tower type, crumbs spent placing vs upgrading)
+  upgradeReach() {
+    let byType = {}, l1 = 0, l2 = 0, l3 = 0;
+    for (let t of this.towers)
+      byType[t.type] = Math.max(byType[t.type] || 0, t.lvl), t.lvl <= 1 ? l1++ : t.lvl === 2 ? l2++ : l3++;
+    return { towers: this.towers.length, l1, l2, l3p: l3, byType, placed: this.stats.placed || 0, upgrades: this.stats.upgrades || 0, crumbsPlace: this.stats.crumbsPlace || 0, crumbsUpgrade: this.stats.crumbsUpgrade || 0 };
+  }
   playCard(pickIndex, c, r) {
     let chk = this.canPlay(pickIndex, c, r);
     if (!chk.ok) return chk;
     let card = this.picks[pickIndex], cost = this.nextCardCost;
     this.crumbs -= cost, this.cardsPlayed++;
     let tower, diff = null;
-    return chk.upgrade ? (tower = chk.tower, diff = upgradeDiff(tower.type, tower.lvl, tower.cardLevel), tower.lvl++, TOWERS[tower.type].directional && this.computeRun(tower), this.emit({ type: "upgrade", x: tower.x, y: tower.y, lvl: tower.lvl, card, pick: pickIndex, cost, id: tower.id, diff })) : (tower = this.addTower(card, c, r), this.emit({ type: "place", x: tower.x, y: tower.y, card, pick: pickIndex, cost, id: tower.id })), this.picks[pickIndex] = this.drawReplacement(pickIndex), { ok: !0, upgrade: chk.upgrade, tower, cost, diff };
+    return chk.upgrade ? (tower = chk.tower, diff = upgradeDiff(tower.type, tower.lvl, tower.cardLevel), tower.lvl++, TOWERS[tower.type].directional && this.computeRun(tower), this.stats.upgrades = (this.stats.upgrades || 0) + 1, this.stats.crumbsUpgrade = (this.stats.crumbsUpgrade || 0) + cost, this.emit({ type: "upgrade", x: tower.x, y: tower.y, lvl: tower.lvl, card, pick: pickIndex, cost, id: tower.id, diff })) : (tower = this.addTower(card, c, r), this.stats.placed = (this.stats.placed || 0) + 1, this.stats.crumbsPlace = (this.stats.crumbsPlace || 0) + cost, this.emit({ type: "place", x: tower.x, y: tower.y, card, pick: pickIndex, cost, id: tower.id })), this.picks[pickIndex] = this.drawReplacement(pickIndex), { ok: !0, upgrade: chk.upgrade, tower, cost, diff };
   }
   // v0.5 item 17: 3, 6, 9, 12 ... crumbs (rerollCost + rerolls * rerollStep), reset at the start of every battle.
   // v0.7 D-R3: the first `freeRedraws` redraws of a battle are free, then 3, 6, 9 ...
@@ -3206,11 +3878,14 @@ var NEXT_ID = 1, Battle = class {
     return !tw || this.result || this.paused || !this.towers.includes(tw) || tw.c === c && tw.r === r || this.towers.some((o) => o.c === c && o.r === r) ? !1 : this.placeRuleOk(tw.type, c, r);
   }
   // v0.7.4 M1: set / cycle a single-target tower's target mode (instant, free; per tower; not saved)
+  get modeList() {
+    return this._modeList || (this._modeList = modesForLevel(this.levelIndex));
+  }
   setTargetMode(tw, mode) {
-    return !hasTargetModes(tw.type) || !TARGET_MODES.includes(mode) ? !1 : (tw.mode = mode, this.emit({ type: "mode", id: tw.id, x: tw.x, y: tw.y, mode }), !0);
+    return !hasTargetModes(tw.type) || !(this.modeList.includes(mode) || mode === "front" && FRONT_FOR_TESTS) ? !1 : (tw.mode = mode, this.emit({ type: "mode", id: tw.id, x: tw.x, y: tw.y, mode }), !0);
   }
   cycleTargetMode(tw) {
-    return hasTargetModes(tw.type) && this.setTargetMode(tw, nextTargetMode(tw.mode)) ? tw.mode : null;
+    return hasTargetModes(tw.type) && this.setTargetMode(tw, nextTargetMode(tw.mode, this.modeList)) ? tw.mode : null;
   }
   moveTower(tw, c, r) {
     if (!this.canMoveTower(tw, c, r)) return !1;
@@ -3389,7 +4064,7 @@ var NEXT_ID = 1, Battle = class {
         else if (tw.type === "pheromone") {
           a.slow = Math.max(a.slow, tw.stat("slow")), this.damage(a, tw.stat("power") * dt, { ignoreArmor: !0, src: tw });
           let rd = tw.routeD[a.ri];
-          !boss && rd != null && !tw.charmSet.has(a.id) && a.state === "go" && (tw.charmSet.add(a.id), a.charmT = tw.stat("charmTime"), a.charmD = rd, this.emit({ type: "charm", x: a.x, y: a.y }));
+          !boss && rd != null && !tw.charmSet.has(a.id) && a.state === "go" && (tw.charmSet.add(a.id), a.charmT = tw.stat("charmTime"), a.charmD = rd, this.emit({ type: "charm", x: a.x, y: a.y, tx: tw.x, ty: tw.y }));
         } else tw.type === "lava" ? (a.slow = Math.max(a.slow, tw.stat("slow")), this.damage(a, tw.stat("power") * dt, { ignoreArmor: !0, src: tw }), tw.roastSet.has(a.id) || (tw.roastSet.add(a.id), this.emit({ type: "roast", x: a.x, y: a.y }))) : tw.type === "gate" && tw.tick <= 0 && (this.damage(a, tw.stat("power"), { ignoreArmor: !0, src: tw }), zapped = !0);
       }
       tw.type === "gate" && tw.tick <= 0 && (tw.tick = 1 / tw.stat("rate"), zapped && (tw.fireFx = 0.2, this.emit({ type: "gateZap", x: tw.px, y: tw.py })));
@@ -3397,7 +4072,15 @@ var NEXT_ID = 1, Battle = class {
     for (let a of this.ants) {
       if (a.dead) continue;
       let rt = this.route(a), L = rt.length;
-      a.hitFlash = Math.max(0, a.hitFlash - dt), a.plantSlowT > 0 && (a.plantSlowT -= dt, a.slow = Math.max(a.slow, a.plantSlow));
+      if (a.hitFlash = Math.max(0, a.hitFlash - dt), a.shieldMax > 0) {
+        a.shieldT += dt;
+        let SH = ANTS[a.type].shield;
+        if (a.shieldT >= SH.regenDelay && a.shield < a.shieldMax) {
+          let was = a.shield;
+          a.shield = Math.min(a.shieldMax, a.shield + a.shieldMax * SH.regenRate * dt), a.shield >= a.shieldMax && this.emit({ type: "shieldFull", x: a.x, y: a.y, id: a.id }), was <= 0 && this.emit({ type: "shieldBack", x: a.x, y: a.y, id: a.id });
+        }
+      }
+      a.plantSlowT > 0 && (a.plantSlowT -= dt, a.slow = Math.max(a.slow, a.plantSlow));
       let A = ANTS[a.type], slow = a.slow * (1 - (A.slowResist || 0)), v = a.speed * (1 - slow);
       if (frozen && (v = 0), a.stunT > 0 && (a.stunT -= dt, v = 0), a.waitT > 0 && (a.waitT -= dt, v = 0), a.state === "back" && (v *= this.cfg.carrierSpeedMul), A.spawn && !frozen && (a.spawnT -= dt, a.spawnT <= 0)) {
         a.spawnT = A.spawn.every;
@@ -3500,7 +4183,7 @@ var NEXT_ID = 1, Battle = class {
     }
     for (let p of this.projectiles) {
       let tg = p.target, dx = tg.x - p.x, dy = tg.y - p.y, dist = Math.hypot(dx, dy), step = p.speed * dt;
-      dist <= step || tg.dead ? (tg.dead || this.damage(tg, p.dmg, { src: p.src }), p.done = !0, this.emit({ type: "hit", x: tg.x, y: tg.y })) : (p.x += dx / dist * step, p.y += dy / dist * step);
+      dist <= step || tg.dead ? (tg.dead || this.damage(tg, p.dmg, { src: p.src }), p.done = !0, this.emit({ type: "hit", x: tg.x, y: tg.y, src: p.src && p.src.type })) : (p.x += dx / dist * step, p.y += dy / dist * step);
     }
     this.projectiles = this.projectiles.filter((p) => !p.done);
     for (let c of this.clouds) {
@@ -3567,7 +4250,11 @@ var NEXT_ID = 1, Battle = class {
         return maxThreat(ws.length ? ws : pool);
       }
     }
-    return pool.reduce((b, a) => a.hp < b.hp - 1e-9 || Math.abs(a.hp - b.hp) <= 1e-9 && this.threat(a) > this.threat(b) ? a : b);
+    if (mode === "healer") {
+      let hs = pool.filter((a) => isHealerType(a.type));
+      if (hs.length) return hs.reduce((b, a) => this.threat(a) > this.threat(b) ? a : b);
+    }
+    return mode === "strong" ? pool.reduce((b, a) => a.hp > b.hp + 1e-9 || Math.abs(a.hp - b.hp) <= 1e-9 && this.threat(a) > this.threat(b) ? a : b) : pool.reduce((b, a) => a.hp < b.hp - 1e-9 || Math.abs(a.hp - b.hp) <= 1e-9 && this.threat(a) > this.threat(b) ? a : b);
   }
   // v0.6 item 6: the Tractor lowers its bucket onto the trail tile next to it (trailDirection, like the marble / fan) and lifts
   // EVERY liftable ant on that tile off the trail (instant kill; carried food returns as for any kill). It only acts when at
@@ -3617,7 +4304,7 @@ var NEXT_ID = 1, Battle = class {
   }
   reachFood(a) {
     let steal = Math.min(ANTS[a.type].steal, this.foodStored);
-    if (this.foodStored -= steal, this.stats.stolen += steal, this.emit({ type: "steal", x: a.x, y: a.y, n: steal, ant: a.type }), this.cfg.carryBack && steal > 0) {
+    if (this.foodStored -= steal, this.stats.stolen += steal, a.flying && (this.stats.flyLeak = (this.stats.flyLeak || 0) + steal), this.emit({ type: "steal", x: a.x, y: a.y, n: steal, ant: a.type }), this.cfg.carryBack && steal > 0) {
       a.state = "back", a.carrying = steal, a.d = this.route(a).length - 0.01;
       let F = this.cfg.forage, cp = F && F.on ? ANTS[a.type].boss && F.cookiePauseBoss != null ? F.cookiePauseBoss : F.cookiePause || 0 : 0;
       cp > 0 && (a.waitT = Math.max(a.waitT, cp), this.stats.pickups = (this.stats.pickups || 0) + 1, this.emit({ type: "pickup", x: a.x, y: a.y, n: steal, ant: a.type, t: cp }));
@@ -3631,6 +4318,12 @@ var NEXT_ID = 1, Battle = class {
 function segDist(px, py, ax, ay, bx, by) {
   let vx = bx - ax, vy = by - ay, l2 = vx * vx + vy * vy || 1, t = Math.max(0, Math.min(1, ((px - ax) * vx + (py - ay) * vy) / l2));
   return Math.hypot(px - (ax + vx * t), py - (ay + vy * t));
+}
+var LOSS_HINTS = { carrier: "Try Carrier mode on a tower", healer: "Healer ants keep others alive - pop them first", flyer: "Bring a Laser or Zapper for flyers" };
+function lossHint(b) {
+  if (!b || b.result !== "lose") return null;
+  let st = b.stats, stolen = st.stolen || 0;
+  return stolen > 0 && (st.lostOnWay || 0) >= 0.5 * stolen && b.towers.some((t) => hasTargetModes(t.type) && t.mode !== "carrier") ? LOSS_HINTS.carrier : b.ants.some((a) => !a.dead && isHealerType(a.type)) ? LOSS_HINTS.healer : (st.flyLeak || 0) > 0 && !b.deck.some((id) => id === "laser" || id === "zapper") ? LOSS_HINTS.flyer : null;
 }
 
 // src/meta.js
@@ -3653,12 +4346,18 @@ function newSave() {
     calendar: newCalendarState(),
     cardBlink: newCardBlinkState(),
     onboard: newOnboardState(),
-    packsSinceNew: 0
+    packsSinceNew: 0,
+    settings: defaultSettings(),
+    debug: { reach: [] },
+    seenAnts: []
   };
+}
+function defaultSettings() {
+  return { reduceMotion: "auto", haptics: !0 };
 }
 var SAVE_VERSION = 6;
 function newOnboardState() {
-  return { zapperGift: "none", grantedOnLoad: !1 };
+  return { zapperGift: "none", grantedOnLoad: !1, firstBattle: "pending" };
 }
 var ZAPPER_STAGE = 1;
 function newCardBlinkState() {
@@ -3866,6 +4565,25 @@ function highestWorld(save) {
   for (let W2 of WORLDS) worldUnlocked(save, W2.id) && (h = Math.max(h, W2.id));
   return h;
 }
+function nextAntCard(save, levelIndex) {
+  if (!save || !LEVELS[levelIndex] || save.levels[levelIndex] && save.levels[levelIndex].cleared) return null;
+  let seen = save.seenAnts || [];
+  for (let t of levelAntTypes(levelIndex)) if (ANT_CARD[t] && !seen.includes(t)) return t;
+  return null;
+}
+function markAntSeen(save, key) {
+  return Array.isArray(save.seenAnts) || (save.seenAnts = []), save.seenAnts.includes(key) ? !1 : (save.seenAnts.push(key), !0);
+}
+function lowestStarLevels(save, w) {
+  let W2 = WORLDS.find((x) => x.id === w);
+  if (!W2 || !W2.unlock) return [];
+  let prev = W2.unlock.allLevelsWonInWorld ?? w - 1, out = [];
+  return LEVELS.forEach((L, i) => {
+    if (L.world !== prev) return;
+    let lv = save.levels[i] || { stars: 0, cleared: !1 };
+    (lv.stars || 0) < 3 && out.push({ i, n: i + 1, stars: lv.stars || 0, cleared: !!lv.cleared });
+  }), out.sort((a, b) => a.stars - b.stars || a.i - b.i), out;
+}
 function worldUnlocked(save, w) {
   let W2 = WORLDS.find((x) => x.id === w);
   if (!W2 || !W2.unlock) return !0;
@@ -3978,12 +4696,14 @@ function loadSave(storage2) {
       }
       typeof c.copies == "number" && c.copies > 0 && (c.inv[1] = (c.inv[1] || 0) + c.copies, c.seen.includes(1) || (c.seen.push(1), c.seen.sort((a, b) => a - b), c.fresh = !0)), delete c.copies, syncCard(c);
     }
-    (!s.onboard || typeof s.onboard != "object") && (s.onboard = newOnboardState(), s.levels[ZAPPER_STAGE] && s.levels[ZAPPER_STAGE].cleared && (s.onboard.zapperGift = "done")), (s.version || 1) < 5 && s.levels[ZAPPER_STAGE] && s.levels[ZAPPER_STAGE].cleared && s.onboard.zapperGift === "done" && !s.onboard.legacyPack && (s.onboard.zapperGift = "pending", s.onboard.legacyPack = !0, s.onboard.grantedOnLoad = !1), typeof s.packsSinceNew != "number" && (s.packsSinceNew = 0);
+    (!s.onboard || typeof s.onboard != "object") && (s.onboard = newOnboardState(), s.levels[ZAPPER_STAGE] && s.levels[ZAPPER_STAGE].cleared && (s.onboard.zapperGift = "done")), s.onboard.firstBattle !== "pending" && s.onboard.firstBattle !== "done" && (s.onboard.firstBattle = "done"), (s.version || 1) < 5 && s.levels[ZAPPER_STAGE] && s.levels[ZAPPER_STAGE].cleared && s.onboard.zapperGift === "done" && !s.onboard.legacyPack && (s.onboard.zapperGift = "pending", s.onboard.legacyPack = !0, s.onboard.grantedOnLoad = !1), Array.isArray(s.seenAnts) || (s.seenAnts = [], s.levels.forEach((lv, i) => {
+      if (lv && lv.cleared && LEVELS[i]) for (let t of levelAntTypes(i)) s.seenAnts.includes(t) || s.seenAnts.push(t);
+    })), typeof s.packsSinceNew != "number" && (s.packsSinceNew = 0);
     for (let b of BONUS_TYPES) s.bonusStock[b] == null && (s.bonusStock[b] = 0);
     for (; s.levels.length < LEVELS.length; ) s.levels.push({ stars: 0, cleared: !1 });
     typeof s.diamonds != "number" && (s.diamonds = ECONOMY.diamonds.start), s.calendar || (s.calendar = newCalendarState()), (!s.cardBlink || typeof s.cardBlink != "object") && (s.cardBlink = newCardBlinkState());
     for (let k of Object.keys(base.cardBlink)) typeof s.cardBlink[k] != "boolean" && (s.cardBlink[k] = !1);
-    return s.lastDeck || (s.lastDeck = base.lastDeck.slice()), s.lastBonuses || (s.lastBonuses = base.lastBonuses.slice()), s.version = Math.max(s.version || 1, SAVE_VERSION), delete s.crumbs, s;
+    return s.lastDeck || (s.lastDeck = base.lastDeck.slice()), s.lastBonuses || (s.lastBonuses = base.lastBonuses.slice()), s.version = Math.max(s.version || 1, SAVE_VERSION), delete s.crumbs, s.settings = { ...defaultSettings(), ...s.settings && typeof s.settings == "object" ? s.settings : {} }, ["auto", "on", "off"].includes(s.settings.reduceMotion) || (s.settings.reduceMotion = "auto"), typeof s.settings.haptics != "boolean" && (s.settings.haptics = !0), s.debug = { reach: Array.isArray(s.debug && s.debug.reach) ? s.debug.reach.filter((x) => x && typeof x == "object").slice(-20) : [] }, s;
   } catch {
     return newSave();
   }
@@ -3991,6 +4711,22 @@ function loadSave(storage2) {
 function writeSave(storage2, save) {
   let copy = { ...save };
   delete copy.crumbs, storage2.setItem(SAVE_KEY, JSON.stringify(copy));
+}
+function noteLossRun(save, li, won) {
+  let r = save.lossRun;
+  return won ? (r && r.li === li && (save.lossRun = null), 0) : (r && r.li === li ? r.n += 1 : save.lossRun = { li, n: 1 }, save.lossRun.n);
+}
+function nextHintState(save) {
+  let o = save.onboard;
+  return !o || typeof o != "object" ? { shown: 2, armed: "", done: [] } : ((!o.nextHint || typeof o.nextHint != "object") && (o.nextHint = { shown: 0, armed: "", done: [] }), o.nextHint);
+}
+function armNextHint(save, kind) {
+  let h = nextHintState(save);
+  return h.shown >= 2 || h.armed || h.done.includes(kind) ? !1 : (h.armed = kind, !0);
+}
+function nextUnplayedLevel(save) {
+  for (let i = 0; i < LEVELS.length; i++) if (!save.levels[i].cleared && levelUnlocked(save, i)) return i;
+  return -1;
 }
 
 // src/calendar.js
@@ -4106,8 +4842,11 @@ var CANDY = {
   blue: ["#c8dcff", "#7ba8ff", "#3f66d6"],
   red: ["#ffb0a4", "#ff6a5a", "#c93030"],
   purple: ["#e2d0ff", "#b896f5", "#7a4cc2"],
-  grey: ["#eee6ea", "#d8cfd6", "#a89aa6"]
-}, COL2CANDY = { "#9fe0b5": "green", "#ffd27a": "gold", "#d9cfe0": "purple", "#ffb3c1": "pink", "#b5d8ff": "blue", "#ff9a9a": "red", "#ffd0d0": "red", "#8fd0ff": "cyan", "#ffb3b3": "red", "#d8cfd6": "grey" };
+  grey: ["#eee6ea", "#d8cfd6", "#a89aa6"],
+  // v0.8.1 F7: the neutral secondary family (Back / Pause / Redraw / Close / Map ...): cream face, #e8d2bd shade, #c9a98e lip, INK label. F14: the disabled ramp (flat, no gloss, label at 60% alpha).
+  cream: ["#fffaf3", "#fff3e6", "#c9a98e", "#e8d2bd"],
+  dis: ["#ebe2e7", "#e6dce2", "#bfb2bb", "#ddd0d8"]
+}, COL2CANDY = { "#9fe0b5": "green", "#ffd27a": "gold", "#d9cfe0": "purple", "#ffb3c1": "pink", "#b5d8ff": "blue", "#ff9a9a": "red", "#ffd0d0": "red", "#8fd0ff": "cyan", "#ffb3b3": "red", "#d8cfd6": "grey", "#fff3e6": "cream" };
 function candyOf(col) {
   let k = COL2CANDY[col.toLowerCase()];
   if (k) return CANDY[k];
@@ -4130,7 +4869,7 @@ function drawBeveledTile(ctx2, x, y, w, h, base, o = {}) {
   let lip = o.lip === void 0 ? 4 : o.lip, r = o.r === void 0 ? Math.min(10, h / 3) : o.r, lw = o.lw === void 0 ? 2.2 : o.lw, R = ramp(base, o.cool);
   lip && (rrPath(ctx2, x, y + lip, w, h, r), ctx2.fillStyle = R.deep, ctx2.fill(), lw && (ctx2.lineWidth = lw, ctx2.strokeStyle = o.line || INK, ctx2.stroke()));
   let g = ctx2.createLinearGradient(0, y, 0, y + h);
-  g.addColorStop(0, R.lit), g.addColorStop(0.5, R.base), g.addColorStop(1, R.shade), rrPath(ctx2, x, y, w, h, r), ctx2.fillStyle = g, ctx2.fill(), lw && (ctx2.lineWidth = lw, ctx2.strokeStyle = o.line || INK, ctx2.stroke()), h >= 14 && w >= 14 && (ctx2.lineCap = "round", ctx2.beginPath(), ctx2.moveTo(x + r * 0.7 + 1, y + lw + 1.2), ctx2.lineTo(x + w - r * 0.7 - 1, y + lw + 1.2), ctx2.lineWidth = 1.6, ctx2.strokeStyle = R.hi, ctx2.globalAlpha = o.hi === void 0 ? 0.8 : o.hi, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(x + r * 0.7 + 1, y + h - lw - 1.4), ctx2.lineTo(x + w - r * 0.7 - 1, y + h - lw - 1.4), ctx2.lineWidth = 2.2, ctx2.strokeStyle = R.deep, ctx2.globalAlpha = 0.28, ctx2.stroke(), ctx2.globalAlpha = 1);
+  g.addColorStop(0, R.lit), g.addColorStop(0.5, R.base), g.addColorStop(1, o.end || R.shade), rrPath(ctx2, x, y, w, h, r), ctx2.fillStyle = g, ctx2.fill(), lw && (ctx2.lineWidth = lw, ctx2.strokeStyle = o.line || INK, ctx2.stroke()), h >= 14 && w >= 14 && (ctx2.lineCap = "round", ctx2.beginPath(), ctx2.moveTo(x + r * 0.7 + 1, y + lw + 1.2), ctx2.lineTo(x + w - r * 0.7 - 1, y + lw + 1.2), ctx2.lineWidth = 1.6, ctx2.strokeStyle = R.hi, ctx2.globalAlpha = o.hi === void 0 ? 0.8 : o.hi, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(x + r * 0.7 + 1, y + h - lw - 1.4), ctx2.lineTo(x + w - r * 0.7 - 1, y + h - lw - 1.4), ctx2.lineWidth = 2.2, ctx2.strokeStyle = R.deep, ctx2.globalAlpha = 0.28, ctx2.stroke(), ctx2.globalAlpha = 1);
 }
 var _spr = /* @__PURE__ */ new Map(), _sprCount = 0;
 var _mk = null;
@@ -4155,12 +4894,12 @@ function bakedBox(ctx2, key, x, y, w, h, pad2, draw, cap = 96) {
   _spr.set(k, e), ctx2.drawImage(e.cv, x - pad2, y - pad2, w + pad2 * 2, h + pad2 * 2);
 }
 function drawPillButton(ctx2, x, y, w, h, family, o = {}) {
-  let press = o.pressed ? 3 : 0, dis = !!o.disabled, r = o.r === void 0 ? Math.min(h / 2, 16) : o.r, fam = dis ? CANDY.grey : typeof family == "string" && CANDY[family] || (Array.isArray(family) ? family : candyOf(family || "#ffb3c1"));
+  let press = o.pressed ? 3 : 0, dis = !!o.disabled, r = o.r === void 0 ? Math.min(h / 2, 16) : o.r, fam = dis ? CANDY.dis : typeof family == "string" && CANDY[family] || (Array.isArray(family) ? family : candyOf(family || "#ffb3c1"));
   bakedBox(ctx2, "pill|" + fam.join(",") + "|" + (o.pressed ? 1 : 0) + "|" + r, x, y, w, h + 5, 4, (g, bw, bh) => {
     let hh = bh - 5, ph = press;
-    rrPath(g, 0, 4, bw, hh, r), g.fillStyle = fam[2], g.fill(), g.lineWidth = 2.5, g.strokeStyle = INK, g.stroke();
+    rrPath(g, 0, o.pressed && fam[3] ? 1 : 4, bw, hh, r), g.fillStyle = fam[2], g.fill(), g.lineWidth = 2.5, g.strokeStyle = INK, g.stroke();
     let gr = g.createLinearGradient(0, ph, 0, ph + hh);
-    gr.addColorStop(0, fam[0]), gr.addColorStop(0.55, fam[1]), gr.addColorStop(1, mixHex(fam[1], fam[2], 0.42)), rrPath(g, 0, ph, bw, hh, r), g.fillStyle = gr, g.fill(), g.lineWidth = 2.5, g.strokeStyle = INK, g.stroke(), rrPath(g, 5, ph + 3.5, bw - 10, Math.max(6, hh * 0.3), Math.min(8, hh * 0.18)), g.fillStyle = "rgba(255,255,255,0.42)", g.fill(), g.beginPath(), g.moveTo(r * 0.8, ph + hh - 4.5), g.lineTo(bw - r * 0.8, ph + hh - 4.5), g.lineWidth = 2, g.strokeStyle = fam[2], g.globalAlpha = 0.3, g.stroke(), g.globalAlpha = 1;
+    gr.addColorStop(0, o.pressed && fam[3] ? "#f4e3d3" : fam[0]), gr.addColorStop(0.55, o.pressed && fam[3] ? "#f4e3d3" : fam[1]), gr.addColorStop(1, fam[3] || mixHex(fam[1], fam[2], 0.42)), rrPath(g, 0, ph, bw, hh, r), g.fillStyle = gr, g.fill(), g.lineWidth = 2.5, g.strokeStyle = INK, g.stroke(), dis || (rrPath(g, 5, ph + 3.5, bw - 10, Math.max(6, hh * 0.3), Math.min(8, hh * 0.18)), g.fillStyle = "rgba(255,255,255,0.42)", g.fill()), g.beginPath(), g.moveTo(r * 0.8, ph + hh - 4.5), g.lineTo(bw - r * 0.8, ph + hh - 4.5), g.lineWidth = 2, g.strokeStyle = fam[2], g.globalAlpha = 0.3, g.stroke(), g.globalAlpha = 1;
   });
 }
 var TEXT_MODES = {
@@ -4205,6 +4944,10 @@ function candyStarRaw(ctx2, x, y, r, base, lw, rot) {
   ctx2.closePath();
   let R = ramp(base, !1), g = ctx2.createLinearGradient(0, -r, 0, r);
   g.addColorStop(0, R.lit), g.addColorStop(0.55, R.base), g.addColorStop(1, R.shade), ctx2.fillStyle = g, ctx2.fill(), lw && (ctx2.lineWidth = lw, ctx2.strokeStyle = INK, ctx2.stroke()), r >= 6 && (ctx2.beginPath(), ctx2.moveTo(-r * 0.3, -r * 0.35), ctx2.lineTo(-r * 0.08, -r * 0.68), ctx2.lineWidth = Math.max(1, r * 0.12), ctx2.strokeStyle = "rgba(255,255,255,0.8)", ctx2.lineCap = "round", ctx2.stroke()), ctx2.restore();
+}
+function squashAt(ctx2, x, y, k, amt = 0.12) {
+  let s = 1 + amt * Math.sin(Math.max(0, Math.min(1, k)) * Math.PI);
+  ctx2.translate(x, y), ctx2.scale(1 / Math.sqrt(s), s), ctx2.translate(-x, -y);
 }
 var easeOutBack = (k) => {
   k = Math.max(0, Math.min(1, k));
@@ -4252,7 +4995,7 @@ function drawCoinPile(ctx2, x, y, k = 1) {
 }
 
 // src/art.js
-var CRUMB_OUTLINE = "#2e1a12", FONT = FONT_DISPLAY;
+var CRUMB_OUTLINE = "#2e1a12", FONT = FONT_BODY;
 function rr(ctx2, x, y, w, h, r) {
   r = Math.min(r, w / 2, h / 2), ctx2.beginPath(), ctx2.moveTo(x + r, y), ctx2.arcTo(x + w, y, x + w, y + h, r), ctx2.arcTo(x + w, y + h, x, y + h, r), ctx2.arcTo(x, y + h, x, y, r), ctx2.arcTo(x, y, x + w, y, r), ctx2.closePath();
 }
@@ -4273,8 +5016,8 @@ function shadow(ctx2, x, y, rx, ry = rx * 0.35, a = 0.2) {
 function rim(ctx2, x, y, rx, ry, a = 0.7, from = Math.PI * 1.05, to = Math.PI * 1.55) {
   ctx2.beginPath(), ctx2.ellipse(x, y, rx * 0.86, ry * 0.86, 0, from, to), ctx2.lineWidth = Math.max(1, Math.min(rx, ry) * 0.16), ctx2.strokeStyle = `rgba(255,255,255,${a})`, ctx2.lineCap = "round", ctx2.stroke();
 }
-function text(ctx2, s, x, y, size = 16, fill = "#fff", align = "center", stroke = INK, weight = "bold") {
-  ctx2.font = `${weight} ${size}px ${FONT}`, ctx2.textAlign = align, ctx2.textBaseline = "middle", stroke && (ctx2.lineJoin = "round", ctx2.lineWidth = Math.max(2, size / 4.5), ctx2.strokeStyle = stroke, ctx2.strokeText(s, x, y)), ctx2.fillStyle = fill, ctx2.fillText(s, x, y);
+function text(ctx2, s, x, y, size = 16, fill = "#fff", align = "center", stroke = INK, weight = "bold", display = !1) {
+  ctx2.font = `${weight} ${size}px ${display ? FONT_DISPLAY : FONT}`, ctx2.textAlign = align, ctx2.textBaseline = "middle", stroke && (ctx2.lineJoin = "round", ctx2.lineWidth = Math.max(2, size / 4.5), ctx2.strokeStyle = stroke, ctx2.strokeText(s, x, y)), ctx2.fillStyle = fill, ctx2.fillText(s, x, y);
 }
 function eye(ctx2, x, y, r, look = 0.5, blink = !1) {
   if (blink) {
@@ -4344,12 +5087,12 @@ function monthBox(ctx2, x, y, s, tier, t = 0, reached = !1) {
   ctx2.fillStyle = rib, ctx2.fillRect(-2.6, -9 - lift, 5.2, 22 + lift), ctx2.strokeRect(-2.6, -9 - lift, 5.2, 22 + lift), ctx2.fillRect(-12, 3, 24, 3.6), ctx2.strokeRect(-12, 3, 24, 3.6);
   for (let sx of [-1, 1])
     ctx2.beginPath(), ctx2.ellipse(sx * 5.5, -12.5 - lift, 5.6, 3.4, sx * 0.5, 0, 7), ctx2.fillStyle = st.knot, ctx2.fill(), ctx2.stroke();
-  if (ctx2.beginPath(), ctx2.arc(0, -11.5 - lift, 2.2, 0, 7), ctx2.fillStyle = st.knot, ctx2.fill(), ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(-7, -0.5, 2.6, 1, -0.3, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.8)", ctx2.fill(), reached || (ctx2.font = `bold 9px ${FONT}`, ctx2.textAlign = "center", ctx2.textBaseline = "middle", ctx2.lineWidth = 2.4, ctx2.strokeStyle = INK, ctx2.strokeText("?", 7.5, 9.5), ctx2.fillStyle = "#ffffff", ctx2.fillText("?", 7.5, 9.5)), ctx2.restore(), tier >= 2) for (let k = 0; k < (tier === 3 ? 4 : 2); k++) {
+  if (ctx2.beginPath(), ctx2.arc(0, -11.5 - lift, 2.2, 0, 7), ctx2.fillStyle = st.knot, ctx2.fill(), ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(-7, -0.5, 2.6, 1, -0.3, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.8)", ctx2.fill(), reached || (ctx2.font = `bold 12px ${FONT}`, ctx2.textAlign = "center", ctx2.textBaseline = "middle", ctx2.lineWidth = 2, ctx2.strokeStyle = INK, ctx2.strokeText("?", 7.5, 9.5), ctx2.fillStyle = "#ffffff", ctx2.fillText("?", 7.5, 9.5)), ctx2.restore(), tier >= 2) for (let k = 0; k < (tier === 3 ? 4 : 2); k++) {
     let a = t * 1.6 + k * (Math.PI * 2 / (tier === 3 ? 4 : 2));
     starShape(ctx2, x + Math.cos(a) * 20 * s, y + bob + Math.sin(a) * 13 * s, (tier === 3 ? 3.4 : 2.4) * (0.75 + 0.25 * Math.sin(t * 5 + k)), "#fff7a8", 1);
   }
 }
-var NODE_COLS = ["#ffc38a", "#ffb3c1", "#b9e89a", "#9fd6ff", "#c9b6f2", "#ffd27a", "#ff9e9e", "#a8e6e0", "#f7b6e8", "#d7b8ff"], NODE_ORN = ["leaf", "crumb", "bubble", "wing", "shield", "cloud", "cone", "mask", "dots", "crown"];
+var NODE_COLS = ["#ffc38a", "#ffb3c1", "#b9e89a", "#9fd6ff", "#c9b6f2", "#ffd27a", "#ff9e9e", "#a8e6e0", "#f7b6e8", "#d7b8ff"], W5_NODE_COLS = ["#a9d8de", "#8fcbd5", "#b9e2e6", "#9ecfd6", "#c4e8ec"], NODE_ORN = ["leaf", "crumb", "bubble", "wing", "shield", "cloud", "cone", "mask", "dots", "crown"];
 function miniCrown(ctx2, x, y, s, fill = "#ffe36e") {
   ctx2.save(), ctx2.translate(x, y), ctx2.scale(s, s), ctx2.beginPath(), ctx2.moveTo(-7, 3), ctx2.lineTo(-8, -5), ctx2.lineTo(-3.5, -1), ctx2.lineTo(0, -7), ctx2.lineTo(3.5, -1), ctx2.lineTo(8, -5), ctx2.lineTo(7, 3), ctx2.closePath(), ctx2.fillStyle = fill, ctx2.fill(), ctx2.lineWidth = 1.8, ctx2.strokeStyle = INK, ctx2.lineJoin = "round", ctx2.stroke(), ctx2.beginPath(), ctx2.arc(0, -0.5, 1.4, 0, 7), ctx2.fillStyle = "#ff6f91", ctx2.fill(), ctx2.restore();
 }
@@ -4394,11 +5137,16 @@ function nodeOrnament(ctx2, kind, x, y, t) {
     case "crown":
       miniCrown(ctx2, 0, 0, 1.05);
       break;
+    case "donut":
+      ctx2.beginPath(), ctx2.arc(0, 0, 5.4, 0, 7), ctx2.fillStyle = "#f7b6c8", ctx2.fill(), ctx2.stroke(), ctx2.beginPath(), ctx2.arc(0, 0, 1.7, 0, 7), ctx2.fillStyle = "#8a5a3a", ctx2.fill();
+      for (let [dx, dy, c] of [[-3, -2.4, "#ffe27a"], [3, -2, "#8fd0f7"], [0, 3.6, "#ffffff"]])
+        ctx2.fillStyle = c, ctx2.fillRect(dx - 1.1, dy - 0.5, 2.2, 1);
+      break;
   }
   ctx2.restore();
 }
 function mapNode(ctx2, x, y, i, st, t = 0) {
-  let base = st.open ? NODE_COLS[i % NODE_COLS.length] : "#cfc6cf", R = st.boss ? 29 : 27, depth = 7;
+  let w5 = ART81 && worldOf(i) === 5, base = st.open ? w5 ? W5_NODE_COLS[i % W5_NODE_COLS.length] : NODE_COLS[i % NODE_COLS.length] : "#cfc6cf", R = st.boss ? 29 : 27, depth = 7;
   if (ctx2.save(), shadow(ctx2, x, y + 26, 30, 7, 0.28), st.next && (ctx2.beginPath(), ctx2.ellipse(x, y + 3, R + 7 + Math.sin(t * 4) * 2, R * 0.92 + 6, 0, 0, 7), ctx2.fillStyle = "rgba(255,212,94,0.35)", ctx2.fill()), ctx2.beginPath(), ctx2.ellipse(x, y + depth, R, R * 0.9, 0, 0, Math.PI), ctx2.lineTo(x - R, y), ctx2.ellipse(x, y, R, R * 0.9, 0, Math.PI, 0, !0), ctx2.closePath(), ctx2.fillStyle = shade(base, -0.3), ctx2.fill(), ctx2.lineWidth = 3, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), st.boss) {
     for (let k = 0; k <= 10; k++) {
       let a = Math.PI + k / 10 * Math.PI, rr2 = k % 2 ? R * 0.82 : R;
@@ -4407,12 +5155,12 @@ function mapNode(ctx2, x, y, i, st, t = 0) {
     ctx2.ellipse(x, y, R, R * 0.9, 0, 0, Math.PI);
   } else ctx2.ellipse(x, y, R, R * 0.9, 0, 0, 7);
   let g = ctx2.createRadialGradient(x - R * 0.35, y - R * 0.4, 2, x, y, R * 1.1);
-  g.addColorStop(0, shade(base, 0.55)), g.addColorStop(0.6, base), g.addColorStop(1, shade(base, -0.12)), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = 3, ctx2.strokeStyle = st.cleared ? "#e0a830" : INK, ctx2.stroke(), st.cleared && (ctx2.beginPath(), ctx2.ellipse(x, y, R - 2.5, R * 0.9 - 2.5, 0, 0, 7), ctx2.lineWidth = 2, ctx2.strokeStyle = "#ffe9a0", ctx2.stroke()), ctx2.beginPath(), ctx2.ellipse(x, y + 1, R * 0.66, R * 0.6, 0, 0, 7), ctx2.lineWidth = 2, ctx2.strokeStyle = `rgba(255,255,255,${st.open ? 0.55 : 0.3})`, ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(x - R * 0.38, y - R * 0.5, R * 0.36, R * 0.16, -0.4, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.6)", ctx2.fill(), st.open ? (drawChunkyText(ctx2, String(i + 1), x, y + 1, 25, { mode: "num" }), nodeOrnament(ctx2, NODE_ORN[i % NODE_ORN.length], x + R * 0.72, y - R * 0.72, t), st.stars >= 3 && !st.boss && miniCrown(ctx2, x, y - R - 3, 1.1)) : (rr(ctx2, x - 8, y - 3, 16, 13, 3), ctx2.fillStyle = "#8c8090", ctx2.fill(), ctx2.beginPath(), ctx2.arc(x, y - 4, 5.5, Math.PI, 0), ctx2.lineWidth = 3, ctx2.strokeStyle = "#8c8090", ctx2.stroke()), ctx2.restore();
+  g.addColorStop(0, shade(base, 0.55)), g.addColorStop(0.6, base), g.addColorStop(1, shade(base, -0.12)), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = 3, ctx2.strokeStyle = st.cleared ? "#e0a830" : INK, ctx2.stroke(), st.cleared && (ctx2.beginPath(), ctx2.ellipse(x, y, R - 2.5, R * 0.9 - 2.5, 0, 0, 7), ctx2.lineWidth = 2, ctx2.strokeStyle = "#ffe9a0", ctx2.stroke()), ctx2.beginPath(), ctx2.ellipse(x, y + 1, R * 0.66, R * 0.6, 0, 0, 7), ctx2.lineWidth = 2, ctx2.strokeStyle = w5 && st.open ? "rgba(247,182,200,0.95)" : `rgba(255,255,255,${st.open ? 0.55 : 0.3})`, ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(x - R * 0.38, y - R * 0.5, R * 0.36, R * 0.16, -0.4, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.6)", ctx2.fill(), st.open ? (drawChunkyText(ctx2, String(i + 1), x, y + 1, 25, { mode: "num" }), nodeOrnament(ctx2, w5 ? st.boss ? "crown" : "donut" : NODE_ORN[i % NODE_ORN.length], x + R * 0.72, y - R * 0.72, t), st.stars >= 3 && !st.boss && miniCrown(ctx2, x, y - R - 3, 1.1)) : (rr(ctx2, x - 8, y - 3, 16, 13, 3), ctx2.fillStyle = "#8c8090", ctx2.fill(), ctx2.beginPath(), ctx2.arc(x, y - 4, 5.5, Math.PI, 0), ctx2.lineWidth = 3, ctx2.strokeStyle = "#8c8090", ctx2.stroke()), ctx2.restore();
 }
 function starShape(ctx2, x, y, r, fill, lw = 2) {
   candyStar(ctx2, x, y, r, fill, lw);
 }
-var ANT_COL = { small: "#f8c07e", worker: "#f0994d", big: "#d97a3f", gasmask: "#f0994d", armored: "#e48a47", flyer: "#f9b878", queen: "#f59b9b", queen2: "#c7a6f5", sprinter: "#f0994d", heavy: "#b95b34", greasy: "#ee9f45", mama: "#d9774a", queen3: "#e9b05c", nurse: "#f2b49b", queen4: "#f4b9c8" }, ALW = 2.4;
+var ANT_COL = { small: "#f8c07e", worker: "#f0994d", big: "#d97a3f", gasmask: "#f0994d", armored: "#e48a47", flyer: "#f9b878", queen: "#f59b9b", queen2: "#c7a6f5", sprinter: "#f0994d", heavy: "#b95b34", greasy: "#ee9f45", mama: "#d9774a", queen3: "#e9b05c", nurse: "#f2b49b", queen4: "#f4b9c8", glazed: "#f1cf9a", queen5: "#f7b6c8" }, ALW = 2.4;
 function softBlob(ctx2, x, y, rx, ry, col, lw = ALW, gloss = 1) {
   drawGlossyBlob(ctx2, x, y, rx, ry, col, { lw, gloss });
 }
@@ -4457,9 +5205,9 @@ function plusShape(ctx2, x, y, s, fill, lw = 1.5) {
   ctx2.beginPath(), ctx2.moveTo(x - a, y - t), ctx2.lineTo(x + a, y - t), ctx2.lineTo(x + a, y - a), ctx2.lineTo(x + t, y - a), ctx2.lineTo(x + t, y + a), ctx2.lineTo(x + a, y + a), ctx2.lineTo(x + a, y + t), ctx2.lineTo(x - a, y + t), ctx2.lineTo(x - a, y + a), ctx2.lineTo(x - t, y + a), ctx2.lineTo(x - t, y - a), ctx2.lineTo(x - a, y - a), ctx2.closePath(), ctx2.fillStyle = fill, ctx2.fill(), lw > 0 && (ctx2.lineWidth = lw, ctx2.strokeStyle = INK, ctx2.stroke());
 }
 function drawAnt(ctx2, type, phase = 0, opt = {}) {
-  let S2 = ANTS[type].size;
+  let S2 = ANTS[type].size, LW = Math.min(3, Math.max(1.8, 2.2 * S2)) / S2;
   type = ANT_LOOK[type] || type;
-  let col = ANT_COL[type], legCol = shade(col, -0.18), farCol = shade(col, -0.32), P = phase * Math.PI * 2, step = Math.sin(P), hop = Math.abs(Math.sin(P)), flying = type === "flyer", queen = type === "queen" || type === "queen2" || type === "queen3" || type === "queen4", swiftQueen = type === "queen2", mama = type === "mama", greasy = type === "greasy", pieQueen = type === "queen3", nurse = type === "nurse", sundaeQueen = type === "queen4", big = type === "big" || type === "heavy" || mama, shell = type === "armored" || type === "heavy" || type === "sprinter", sprinter = type === "sprinter", heavy = type === "heavy", cheer = opt.pose === "cheer";
+  let col = ANT_COL[type], legCol = shade(col, -0.18), farCol = shade(col, -0.32), P = phase * Math.PI * 2, step = Math.sin(P), hop = Math.abs(Math.sin(P)), flying = type === "flyer", queen = type === "queen" || type === "queen2" || type === "queen3" || type === "queen4" || type === "queen5", swiftQueen = type === "queen2", mama = type === "mama", greasy = type === "greasy", pieQueen = type === "queen3", nurse = type === "nurse", sundaeQueen = type === "queen4", glazed = type === "glazed", glazeQueen = type === "queen5", big = type === "big" || type === "heavy" || mama, shell = type === "armored" || type === "heavy" || type === "sprinter", sprinter = type === "sprinter", heavy = type === "heavy", cheer = opt.pose === "cheer";
   ctx2.save(), ctx2.scale(S2, S2), ctx2.lineJoin = "round", ctx2.lineCap = "round", flying ? shadow(ctx2, 0, 21, 10, 3, 0.13) : shadow(ctx2, 0, 10.5, 15 - hop * 2, 4, 0.2);
   let lift = flying ? 9 + Math.sin(P * 2) * 2 : big ? hop * 1.8 : hop * 3.2;
   if (big && !flying && (ctx2.translate(0, 10), ctx2.rotate(Math.sin(P) * 0.06), ctx2.translate(0, -10), hop < 0.18)) {
@@ -4489,7 +5237,7 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
     let sw = Math.sin(P) * 1.5;
     ctx2.beginPath(), ctx2.moveTo(3, -8), ctx2.quadraticCurveTo(-14, -12 + sw, -24, 7), ctx2.quadraticCurveTo(-11, 11, 2, 5), ctx2.closePath();
     let g = ctx2.createLinearGradient(0, -10, 0, 10);
-    g.addColorStop(0, sundaeQueen ? "#8fe0c8" : pieQueen ? "#7f9be6" : "#b597f0"), g.addColorStop(1, sundaeQueen ? "#3fa88f" : pieQueen ? "#4f69b8" : "#8a68d8"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = ALW, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(-22, 6.5), ctx2.quadraticCurveTo(-10, 10, 1.5, 4.5), ctx2.lineWidth = 3.4, ctx2.strokeStyle = "#ffffff", ctx2.stroke(), ctx2.fillStyle = INK;
+    g.addColorStop(0, glazeQueen ? "#9fe3e6" : sundaeQueen ? "#8fe0c8" : pieQueen ? "#7f9be6" : "#b597f0"), g.addColorStop(1, glazeQueen ? "#4fb3bd" : sundaeQueen ? "#3fa88f" : pieQueen ? "#4f69b8" : "#8a68d8"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = LW, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(-22, 6.5), ctx2.quadraticCurveTo(-10, 10, 1.5, 4.5), ctx2.lineWidth = 3.4, ctx2.strokeStyle = "#ffffff", ctx2.stroke(), ctx2.fillStyle = INK;
     for (let [a, b] of [[-17, 6.8], [-10, 8], [-4, 6.6]])
       ctx2.beginPath(), ctx2.arc(a, b, 0.9, 0, 7), ctx2.fill();
   }
@@ -4499,7 +5247,7 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
     leg(ctx2, -8 + i * 4.8, legY, -7 + i * 4.8 - sw, footY - 0.5, farCol), sprinter && sneaker(ctx2, -7 + i * 4.8 - sw, footY - 0.5, !0);
   }
   let abRx = queen ? 13 : big ? 12 : 11, abRy = queen ? 11 : big ? 10 : 9.5;
-  softBlob(ctx2, -10, 0.5, abRx, abRy, col, ALW, 0.85), ctx2.save(), ctx2.beginPath(), ctx2.ellipse(-10, 0.5, abRx - 1, abRy - 1, 0, 0, 7), ctx2.clip(), ctx2.strokeStyle = shade(col, -0.14), ctx2.lineWidth = 2;
+  softBlob(ctx2, -10, 0.5, abRx, abRy, col, LW, 0.85), ctx2.save(), ctx2.beginPath(), ctx2.ellipse(-10, 0.5, abRx - 1, abRy - 1, 0, 0, 7), ctx2.clip(), ctx2.strokeStyle = shade(col, -0.14), ctx2.lineWidth = 2;
   for (let sx of [-15, -10.5])
     ctx2.beginPath(), ctx2.ellipse(sx - (big ? 1.5 : 0), 0.5, 2, abRy + 2, 0, -1.3, 1.3), ctx2.stroke();
   if (ctx2.restore(), mama)
@@ -4513,7 +5261,7 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
       ctx2.beginPath(), ctx2.arc(rx, -3, 1.1, 0, 7), ctx2.fill();
     heavy && (ctx2.beginPath(), ctx2.ellipse(-10, -2.5, abRx * 0.8, 1.4, 0, Math.PI * 1.1, Math.PI * 1.9), ctx2.lineWidth = 1.6, ctx2.strokeStyle = "#f4b632", ctx2.stroke()), ctx2.restore();
   }
-  softBlob(ctx2, -1, 1.5, 6.5, 6, col, ALW, 0), opt.carrying && crumbIcon(ctx2, -10.5, -12.5, 1.4, !0);
+  softBlob(ctx2, -1, 1.5, 6.5, 6, col, LW, 0), opt.carrying && crumbIcon(ctx2, -10.5, -12.5, 1.4, !0);
   for (let i = 0; i < 3; i++) {
     let sw = (i % 2 ? 1 : -1) * step * 2.2;
     cheer && i === 2 || (leg(ctx2, -6 + i * 4.8, legY + 1.2, -5 + i * 4.8 + sw, footY + 0.5, legCol), sprinter && sneaker(ctx2, -5 + i * 4.8 + sw, footY + 0.5, !1));
@@ -4521,16 +5269,16 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
   if (cheer) {
     let wv = Math.sin(P * 2) * 1.6;
     for (let [sx0, sy0, mx, my, c0] of [[-3, 0, -9 + wv, -25, farCol], [3, 0, 27 - wv, -20, legCol]])
-      ctx2.beginPath(), ctx2.moveTo(sx0, sy0), ctx2.quadraticCurveTo((sx0 + mx) / 2 + (mx > 0 ? 8 : -5), (sy0 + my) / 2 + 2, mx, my), ctx2.lineWidth = 6.4, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.lineWidth = 4, ctx2.strokeStyle = c0, ctx2.stroke(), blob(ctx2, mx, my, 3.4, 3.2, c0, 1.8, 0, { gloss: 0.6 });
+      ctx2.beginPath(), ctx2.moveTo(sx0, sy0), ctx2.quadraticCurveTo((sx0 + mx) / 2 + (mx > 0 ? 8 : -5), (sy0 + my) / 2 + 2, mx, my), ctx2.lineWidth = 6.4, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.lineWidth = 4, ctx2.strokeStyle = c0, ctx2.stroke(), ctx2.save(), ctx2.translate(-0.7, -0.9), ctx2.lineWidth = 1.5, ctx2.strokeStyle = shade(c0, 0.38), ctx2.globalAlpha = 0.85, ctx2.stroke(), ctx2.restore(), blob(ctx2, mx, my, 3.4, 3.2, c0, 1.8, 0, { gloss: 0.6 });
   }
-  sprinter && (ctx2.save(), ctx2.beginPath(), ctx2.ellipse(-1, 1.5, 6.5, 6, 0, 0, 7), ctx2.clip(), ctx2.fillStyle = "#4fb4ff", ctx2.fillRect(-7, -4, 12, 12), ctx2.fillStyle = "#ffffff", ctx2.fillRect(-7, -0.6, 12, 1.6), ctx2.restore(), ctx2.beginPath(), ctx2.ellipse(-1, 1.5, 6.5, 6, 0, 0, 7), ctx2.lineWidth = ALW, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.font = `bold 5px ${FONT}`, ctx2.textAlign = "center", ctx2.textBaseline = "middle", ctx2.fillStyle = "#ffffff", ctx2.fillText("7", -1, 4.2));
+  sprinter && (ctx2.save(), ctx2.beginPath(), ctx2.ellipse(-1, 1.5, 6.5, 6, 0, 0, 7), ctx2.clip(), ctx2.fillStyle = "#4fb4ff", ctx2.fillRect(-7, -4, 12, 12), ctx2.fillStyle = "#ffffff", ctx2.fillRect(-7, -0.6, 12, 1.6), ctx2.restore(), ctx2.beginPath(), ctx2.ellipse(-1, 1.5, 6.5, 6, 0, 0, 7), ctx2.lineWidth = LW, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.font = `bold 5px ${FONT}`, ctx2.textAlign = "center", ctx2.textBaseline = "middle", ctx2.fillStyle = "#ffffff", ctx2.fillText("7", -1, 4.2));
   let hr = 12.5, hx2 = 8, hy = -10, bob = Math.sin(P * 2 + 0.6) * 1.4;
   if (type !== "armored" && type !== "heavy" && type !== "small")
     for (let k of [0, 1]) {
-      let bx0 = hx2 - 3 + k * 6, by0 = hy - hr + 3, tx = hx2 - 4.5 + k * 10 + bob * (k ? 1 : -0.6), ty = hy - hr - 4.5 + k * 0.5 - Math.abs(bob) * 0.5;
-      ctx2.beginPath(), ctx2.moveTo(bx0, by0), ctx2.quadraticCurveTo(bx0 + (k ? 3 : -2), ty + 3, tx, ty), ctx2.lineWidth = 4.6, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.lineWidth = 2.2, ctx2.strokeStyle = legCol, ctx2.stroke(), blob(ctx2, tx, ty, 3.1, 3.1, shade(col, 0.25), 2, 0, { gloss: 0.8 });
+      let bx0 = hx2 - 3 + k * 6, by0 = hy - hr + 3, tx0 = hx2 - 4.5 + k * 10 + bob * (k ? 1 : -0.6), ty0 = hy - hr - 4.5 + k * 0.5 - Math.abs(bob) * 0.5, tx = bx0 + (tx0 - bx0) * 1.2, ty = by0 + (ty0 - by0) * 1.2;
+      ctx2.beginPath(), ctx2.moveTo(bx0, by0), ctx2.quadraticCurveTo(bx0 + (k ? 3 : -2), ty + 3, tx, ty), ctx2.lineWidth = 3.2, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.lineWidth = 1.5, ctx2.strokeStyle = legCol, ctx2.stroke(), blob(ctx2, tx, ty, 2, 2, shade(col, 0.25), 1.5, 0, { gloss: 0.6 });
     }
-  softBlob(ctx2, hx2, hy, hr, hr * 0.92, col);
+  softBlob(ctx2, hx2, hy, hr, hr * 0.92, col, LW);
   let e1x = hx2 + 0.2, e2x = hx2 + 8.6, ey = hy + 1.6, blink = opt.blink, mood = opt.mood || (cheer ? "cheer" : "");
   if (type === "gasmask") {
     ctx2.beginPath(), ctx2.moveTo(hx2 - hr + 1, hy - 3), ctx2.quadraticCurveTo(hx2 - 2, hy - 6, e1x, ey - 1), ctx2.lineWidth = 3, ctx2.strokeStyle = "#6f6a7c", ctx2.stroke();
@@ -4584,7 +5332,7 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
       ctx2.beginPath(), ctx2.arc(hx2 + dx, hy + dy + 1, 1.15, 0, 7), ctx2.fill();
     ctx2.beginPath(), ctx2.moveTo(hx2 - hr + 1, hy - 4.5), ctx2.quadraticCurveTo(hx2 - hr - 6, hy - 9, hx2 - hr - 7, hy - 3 + step), ctx2.quadraticCurveTo(hx2 - hr - 3, hy - 4, hx2 - hr + 1, hy - 1.6), ctx2.fillStyle = "#ff8fb0", ctx2.fill(), ctx2.lineWidth = 2, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(hx2 - 4, top + 3.2, 2.4, 1.2, -0.4, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.75)", ctx2.fill();
   } else if (type === "big")
-    ctx2.save(), ctx2.beginPath(), ctx2.ellipse(hx2, hy, hr, hr * 0.92, 0, 0, 7), ctx2.clip(), ctx2.fillStyle = "#ff6f91", ctx2.fillRect(hx2 - hr - 1, hy - 7.5, hr * 2 + 2, 4), ctx2.fillStyle = "#ffffff", ctx2.fillRect(hx2 - hr - 1, hy - 6.2, hr * 2 + 2, 1.2), ctx2.restore(), ctx2.beginPath(), ctx2.ellipse(hx2, hy, hr, hr * 0.92, 0, 0, 7), ctx2.lineWidth = ALW, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(hx2 - hr + 0.5, hy - 5.5), ctx2.quadraticCurveTo(hx2 - hr - 4, hy - 4 + step, hx2 - hr - 5, hy + 0.5), ctx2.lineWidth = 3, ctx2.strokeStyle = "#ff6f91", ctx2.stroke();
+    ctx2.save(), ctx2.beginPath(), ctx2.ellipse(hx2, hy, hr, hr * 0.92, 0, 0, 7), ctx2.clip(), ctx2.fillStyle = "#ff6f91", ctx2.fillRect(hx2 - hr - 1, hy - 7.5, hr * 2 + 2, 4), ctx2.fillStyle = "#ffffff", ctx2.fillRect(hx2 - hr - 1, hy - 6.2, hr * 2 + 2, 1.2), ctx2.restore(), ctx2.beginPath(), ctx2.ellipse(hx2, hy, hr, hr * 0.92, 0, 0, 7), ctx2.lineWidth = LW, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(hx2 - hr + 0.5, hy - 5.5), ctx2.quadraticCurveTo(hx2 - hr - 4, hy - 4 + step, hx2 - hr - 5, hy + 0.5), ctx2.lineWidth = 3, ctx2.strokeStyle = "#ff6f91", ctx2.stroke();
   else if (sprinter) {
     ctx2.beginPath(), ctx2.ellipse(hx2, hy - 3.4, hr * 1, hr * 0.8, 0, Math.PI, 0), ctx2.closePath();
     let g = ctx2.createLinearGradient(0, top - 1, 0, hy - 3);
@@ -4608,8 +5356,25 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
     ctx2.beginPath(), ctx2.ellipse(hx2, hy - 3.4, hr * 0.98, hr * 0.8, 0, Math.PI, 0), ctx2.closePath();
     let g = ctx2.createLinearGradient(0, top - 1, 0, hy - 3);
     g.addColorStop(0, grey ? "#e3e3ea" : "#ffffff"), g.addColorStop(1, grey ? "#b9bac6" : "#eef3f6"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = 2.5, ctx2.strokeStyle = INK, ctx2.stroke(), rr(ctx2, hx2 - hr - 1, hy - 5.2, hr * 2 + 2, 3.2, 1.6), ctx2.fillStyle = grey ? "#b9bac6" : "#ffffff", ctx2.fill(), ctx2.lineWidth = 2, ctx2.strokeStyle = INK, ctx2.stroke(), plusShape(ctx2, hx2, hy - 12.6, 4.6, grey ? "#9a9ba8" : "#ff5a7e", 1.5), ctx2.beginPath(), ctx2.ellipse(hx2 - 5.6, top + 3.6, 2, 1, -0.5, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.85)", ctx2.fill();
+  } else if (glazed) {
+    let cw2 = hr * 1.2;
+    ctx2.beginPath(), ctx2.moveTo(hx2 - cw2, hy - 2.2), ctx2.bezierCurveTo(hx2 - cw2 - 1, hy - hr * 1.5, hx2 + cw2 + 1, hy - hr * 1.5, hx2 + cw2, hy - 2.2);
+    for (let k = 0; k < 4; k++) ctx2.quadraticCurveTo(hx2 + cw2 - (k + 0.5) * cw2 * 0.5, hy + (k % 2 ? 0.6 : 2.4), hx2 + cw2 - (k + 1) * cw2 * 0.5, hy - 2.2);
+    ctx2.closePath();
+    let gz = ctx2.createLinearGradient(0, top - 2, 0, hy);
+    gz.addColorStop(0, "#ffd3e0"), gz.addColorStop(1, "#f48fb1"), ctx2.fillStyle = gz, ctx2.fill(), ctx2.lineWidth = 2.3, ctx2.strokeStyle = INK, ctx2.stroke();
+    for (let [dx, dy, c2, rot] of [[-4.6, -3.6, "#6fd0e8", 0.5], [0.4, -7.6, "#fff3a8", -0.6], [5, -3.2, "#8de0a8", 1.1]])
+      ctx2.save(), ctx2.translate(hx2 + dx, hy + dy), ctx2.rotate(rot), rr(ctx2, -1.8, -0.7, 3.6, 1.4, 0.7), ctx2.fillStyle = c2, ctx2.fill(), ctx2.restore();
+    ctx2.beginPath(), ctx2.ellipse(hx2 - 5.6, top + 3.8, 2.2, 1, -0.5, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.85)", ctx2.fill();
   } else if (queen) {
     let cy = top + 3;
+    if (glazeQueen) {
+      blob(ctx2, hx2, cy - 6, 10.5, 6.6, "#f1cf9a", 2.4), blob(ctx2, hx2, cy - 7.4, 9, 5, "#ff9ec0", 2), blob(ctx2, hx2, cy - 7.4, 3.2, 1.9, "#f1cf9a", 1.6), blob(ctx2, hx2 - 3, cy - 10, 2.6, 1.2, "#ffd9e6", 0.1);
+      for (let [dx, dy, c2, rot] of [[-6, -6.6, "#6fd0e8", 0.4], [5.5, -7.6, "#fff3a8", -0.5], [-1, -11.2, "#8de0a8", 1], [7, -5, "#ffffff", 0.9]])
+        ctx2.save(), ctx2.translate(hx2 + dx, cy + dy), ctx2.rotate(rot), rr(ctx2, -1.6, -0.6, 3.2, 1.2, 0.6), ctx2.fillStyle = c2, ctx2.fill(), ctx2.restore();
+      ctx2.restore();
+      return;
+    }
     if (sundaeQueen) {
       ctx2.beginPath(), ctx2.moveTo(hx2 - 8.5, cy - 8.5), ctx2.lineTo(hx2 + 8.5, cy - 8.5), ctx2.lineTo(hx2 + 1.2, cy + 1), ctx2.lineTo(hx2 - 1.2, cy + 1), ctx2.closePath();
       let gc = ctx2.createLinearGradient(0, cy - 9, 0, cy + 1);
@@ -4645,7 +5410,10 @@ function heroGloss(ctx2, type, lvl) {
   let h = HERO_GLOSS[type];
   h && (ctx2.save(), ctx2.beginPath(), ctx2.ellipse(h[0], h[1], h[2], h[3], -0.2, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.62)", ctx2.fill(), ctx2.beginPath(), ctx2.arc(h[0] + h[2] * 0.4, h[1] + h[3] + 2.4, 1.1, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.8)", ctx2.fill(), ctx2.restore());
 }
-var partCache = /* @__PURE__ */ new Map(), partHits = 0, partMisses = 0, partBytes = 0, partClipped = 0, BAKE_BOX = [-44, -60, 44, 36];
+var partCache = /* @__PURE__ */ new Map(), partHits = 0, partMisses = 0, partBytes = 0, partClipped = 0, BAKE_BOX = ART81 ? [-48, -76, 48, 36] : [-44, -60, 44, 36], TOWER_K = 1.18, BODYK = 1, TOWER_PAD = { slingshot: "#e78015", spray: "#49af29", sound: "#a687e9", ball: "#30a2f1", laser: "#ff6673", zapper: "#319fff", fan: "#28aa9d", pheromone: "#f06da6", lizard: "#76a927", tractor: "#cf8a00", glue: "#d9a900", gate: "#d99a00", lava: "#ff6a00" }, tpad = (type, old) => ART81 ? TOWER_PAD[type] : old, MOTION = { reduced: !1, bobTowers: !1, hop: 0 }, BOBV = null;
+function bodyScale(ctx2) {
+  ART81 && (MOTION.hop && ctx2.translate(0, -MOTION.hop), BOBV !== null && (ctx2.translate(0, 8), ctx2.translate(0, -1.2 * (0.5 + 0.5 * BOBV)), ctx2.scale(1, 1 + 0.012 * BOBV), ctx2.translate(0, -8)), ctx2.translate(0, 8), ctx2.scale(TOWER_K, TOWER_K), ctx2.translate(0, -8), BODYK = TOWER_K);
+}
 function clearTowerCache() {
   partCache.clear(), partBytes = 0;
 }
@@ -4664,7 +5432,18 @@ function baked(ctx2, key, draw, os = 1) {
   else {
     partMisses++, partBytes > 4e7 && clearTowerCache();
     let [x0, y0, x1, y1] = BAKE_BOX, W0 = Math.ceil((x1 - x0) * sc), H0 = Math.ceil((y1 - y0) * sc), big = makeCanvas(W0, H0), g = big.getContext("2d");
-    g.setTransform(sc, 0, 0, sc, -x0 * sc, -y0 * sc), g.lineJoin = "round", g.lineCap = "round", draw(g);
+    if (g.setTransform(sc, 0, 0, sc, -x0 * sc, -y0 * sc), g.lineJoin = "round", g.lineCap = "round", BODYK !== 1) {
+      let set = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(g), "lineWidth");
+      if (set && set.set) {
+        let f = 1.2 / BODYK, lw = 1;
+        Object.defineProperty(g, "lineWidth", { configurable: !0, get() {
+          return lw;
+        }, set(v) {
+          lw = v, set.set.call(g, v * f);
+        } });
+      }
+    }
+    draw(g);
     let minX = W0, minY = H0, maxX = -1, maxY = -1;
     if (g.getImageData) {
       let d = g.getImageData(0, 0, W0, H0).data;
@@ -4685,7 +5464,7 @@ function baked(ctx2, key, draw, os = 1) {
   e.cv && ctx2.drawImage(e.cv, e.x, e.y, e.w, e.h);
 }
 function pad(ctx2, color) {
-  baked(ctx2, "pad" + color, (g) => padPaths(g, color));
+  baked(ctx2, "pad" + color, (g) => padPaths(g, color)), bodyScale(ctx2);
 }
 function padPaths(ctx2, color) {
   shadow(ctx2, 0, 11, 18, 6.5, 0.24), ctx2.beginPath(), ctx2.ellipse(0, 9.6, 16.4, 8.6, 0, 0, 7), ctx2.fillStyle = shade(color, -0.3), ctx2.fill(), ctx2.lineWidth = 3, ctx2.strokeStyle = INK, ctx2.stroke(), blob(ctx2, 0, 5.5, 15.5, 8, shade(color, -0.02), 3, 0, { gloss: 0.55 });
@@ -4699,13 +5478,13 @@ function padPaths(ctx2, color) {
 var lvKey = (lvl) => lvl >= 5 ? 5 : lvl >= 3 ? 3 : lvl >= 2 ? 2 : 1, r2 = (v) => Math.round(v * 100) / 100;
 function drawTower(ctx2, type, t = 0, tw = null) {
   let T = TOWERS[type], aim = tw ? tw.aim : -0.6, fx = tw ? tw.fireFx : 0, lvl = tw && tw.lvl || 1, lk = lvKey(lvl);
-  switch (ctx2.save(), ctx2.lineJoin = "round", ctx2.lineCap = "round", T.place === "side" && baked(ctx2, "ring76", (g) => {
+  switch (ctx2.save(), ctx2.lineJoin = "round", ctx2.lineCap = "round", BODYK = 1, BOBV = ART81 && MOTION.bobTowers && tw && !MOTION.reduced && !(tw.fireFx > 0) ? Math.sin(Math.PI * 2 * t / 2.4 + (tw.id || 0) * 0.83) : null, T.place === "side" && baked(ctx2, "ring76", (g) => {
     g.beginPath(), g.ellipse(0, 10.2, 19.2, 9.6, 0, 0, 7), g.fillStyle = "#7d5a40", g.fill(), g.lineWidth = 3, g.strokeStyle = INK, g.stroke(), drawGlossyBlob(g, 0, 9, 19.5, 10.5, "#a67c5c", { lw: 2.6, gloss: 0.5 });
   }), lvl >= 4 && T.place === "side" && baked(ctx2, "plinth", plinthPaths), lvl >= 2 && T.place === "side" && (baked(ctx2, "trim", (g) => {
     g.beginPath(), g.ellipse(0, 8.1, 19, 10.5, 0, 0, Math.PI), g.lineWidth = 3.2, g.strokeStyle = "#b8700a", g.stroke(), g.beginPath(), g.ellipse(0, 7, 19, 10.5, 0, 0, 7), g.lineWidth = 3.2, g.strokeStyle = "#f4b632", g.stroke(), g.beginPath(), g.ellipse(0, 6.6, 19, 10.5, 0, Math.PI * 1.05, Math.PI * 1.75), g.lineWidth = 1.3, g.strokeStyle = "#ffe566", g.stroke();
   }), ctx2.beginPath(), ctx2.ellipse(0, 7, 19, 10.5, 0, Math.PI * 1.1 + t % 3 * 0.6, Math.PI * 1.3 + t % 3 * 0.6), ctx2.lineWidth = 2, ctx2.strokeStyle = "#fff6c0", ctx2.stroke()), lvl > 1 && ctx2.scale(1 + 0.03 * (lvl - 1), 1 + 0.03 * (lvl - 1)), lvl >= 4 && T.place === "path" && pathStuds(ctx2, t), type) {
     case "slingshot": {
-      pad(ctx2, "#f6c99a");
+      pad(ctx2, tpad("slingshot", "#f6c99a"));
       let face = Math.cos(aim) >= 0 ? 1 : -1;
       ctx2.save(), ctx2.scale(face, 1), baked(ctx2, "sling:frame", (g) => {
         g.lineWidth = 7, g.strokeStyle = INK, g.beginPath(), g.moveTo(0, 6), g.lineTo(0, -4), g.moveTo(0, -4), g.quadraticCurveTo(-8, -8, -8, -17), g.moveTo(0, -4), g.quadraticCurveTo(8, -8, 8, -17), g.stroke(), g.lineWidth = 4.2, g.strokeStyle = "#c98a55", g.beginPath(), g.moveTo(0, 6), g.lineTo(0, -4), g.moveTo(0, -4), g.quadraticCurveTo(-8, -8, -8, -17), g.moveTo(0, -4), g.quadraticCurveTo(8, -8, 8, -17), g.stroke();
@@ -4719,7 +5498,7 @@ function drawTower(ctx2, type, t = 0, tw = null) {
       break;
     }
     case "spray": {
-      pad(ctx2, "#bfe8b2");
+      pad(ctx2, tpad("spray", "#bfe8b2"));
       let sx = fx > 0 ? 1.06 : 1;
       ctx2.scale(1 / sx, sx), baked(ctx2, "spray:can", (g) => {
         rr(g, -9, -20, 18, 26, 6);
@@ -4738,7 +5517,7 @@ function drawTower(ctx2, type, t = 0, tw = null) {
       break;
     }
     case "sound": {
-      pad(ctx2, "#d6c8f5");
+      pad(ctx2, tpad("sound", "#d6c8f5"));
       let beat = Math.max(0, Math.sin(t * 7.5)), pump = fx > 0 ? 1 + fx * 0.25 : 1 + beat * 0.04;
       if (ctx2.translate(0, 6), ctx2.scale(pump, 1 / pump), ctx2.translate(0, -6 - beat * 1.2), fx <= 0 && beat > 0.6) {
         ctx2.save(), ctx2.globalAlpha = (beat - 0.6) * 2;
@@ -4758,10 +5537,10 @@ function drawTower(ctx2, type, t = 0, tw = null) {
       break;
     }
     case "ball": {
-      pad(ctx2, "#b6defa");
+      pad(ctx2, tpad("ball", "#b6defa"));
       let ca = tw && tw.lx != null ? Math.atan2(tw.ly - tw.y, tw.lx - tw.x) : 0.5;
       ctx2.save(), ctx2.rotate(ca);
-      let cl = lvl >= 2 ? 27 : 22;
+      let cl = lvl >= 2 ? 23 : 18;
       if (baked(ctx2, "ball:chute" + (lvl >= 2 ? 2 : 1), (g) => {
         rr(g, 0, -5, cl, 10, 4), g.fillStyle = "#e8c08a", g.fill(), g.lineWidth = 2, g.strokeStyle = INK, g.stroke(), g.beginPath(), g.moveTo(3, 0), g.lineTo(cl - 2, 0), g.lineWidth = 2, g.strokeStyle = "#c99a62", g.stroke(), lvl >= 2 && (g.beginPath(), g.moveTo(4, -5.5), g.lineTo(cl - 3, -5.5), g.moveTo(4, 5.5), g.lineTo(cl - 3, 5.5), g.lineWidth = 1.8, g.strokeStyle = "#f4b632", g.stroke());
       }, 2), ctx2.restore(), baked(ctx2, "ball:body", (g) => {
@@ -4780,8 +5559,8 @@ function drawTower(ctx2, type, t = 0, tw = null) {
       let ax = r2(tw && tw.ax != null ? tw.ax : 0.45), ay = r2(tw && tw.ay != null ? tw.ay : 0.9), spin = t * (fx > 0 ? 30 : 5), sx = ax < 0 ? -1 : 1, wf = Math.max(0.36, Math.abs(ay)), back = ay < -0.25, mx = -ax * 7, my = -ay * 3, v = ax + "," + ay, cage = (g) => {
         g.translate(0, -16), g.translate(ax * 2, ay * 1), g.scale(wf * sx, 1);
       };
-      baked(ctx2, "fan:below:" + v, (g) => {
-        padPaths(g, "#bdeee8"), g.lineWidth = 4, g.strokeStyle = INK, g.beginPath(), g.moveTo(0, 6), g.lineTo(0, -8), g.stroke(), g.lineWidth = 2.2, g.strokeStyle = "#7fcfc4", g.beginPath(), g.moveTo(0, 6), g.lineTo(0, -8), g.stroke(), g.save(), g.translate(0, -16), back || blob(g, mx, my, 6, 6, "#bfe9e2", 1.8), g.restore(), g.save(), cage(g), blob(g, 0, 0, 14, 14, "#effcfa", 2), g.restore();
+      pad(ctx2, tpad("fan", "#bdeee8")), baked(ctx2, "fan:below:" + v, (g) => {
+        g.lineWidth = 4, g.strokeStyle = INK, g.beginPath(), g.moveTo(0, 6), g.lineTo(0, -8), g.stroke(), g.lineWidth = 2.2, g.strokeStyle = "#7fcfc4", g.beginPath(), g.moveTo(0, 6), g.lineTo(0, -8), g.stroke(), g.save(), g.translate(0, -16), back || blob(g, mx, my, 6, 6, "#bfe9e2", 1.8), g.restore(), g.save(), cage(g), blob(g, 0, 0, 14, 14, "#effcfa", 2), g.restore();
       }), ctx2.save(), ctx2.translate(0, -16), ctx2.save(), ctx2.translate(ax * 2, ay * 1), ctx2.scale(wf * sx, 1), ctx2.globalAlpha = back ? 0.55 : 1;
       let nb = lvl >= 2 ? 4 : 3;
       for (let k = 0; k < nb; k++) {
@@ -4813,10 +5592,10 @@ function drawTower(ctx2, type, t = 0, tw = null) {
       break;
     }
     case "pheromone": {
-      baked(ctx2, "pher:body", (g) => {
-        shadow(g, 0, 9, 13, 4.5, 0.18), g.beginPath(), g.ellipse(0, 6, 15, 6, 0, 0, 7), g.fillStyle = "rgba(255,170,210,0.45)", g.fill(), rr(g, -8, -12, 16, 18, 7);
+      bodyScale(ctx2), baked(ctx2, "pher:body", (g) => {
+        shadow(g, 0, 9, 13, 4.5, 0.18), g.beginPath(), g.ellipse(0, 6, 15, 6, 0, 0, 7), g.fillStyle = ART81 ? "rgba(240,109,166,0.85)" : "rgba(255,170,210,0.45)", g.fill(), rr(g, -8, -12, 16, 18, 7);
         let gr = g.createLinearGradient(-8, 0, 8, 0);
-        gr.addColorStop(0, "#ffd9ec"), gr.addColorStop(1, "#f59cc6"), g.fillStyle = gr, g.fill(), g.lineWidth = 2.2, g.strokeStyle = INK, g.stroke(), rr(g, -3.5, -18, 7, 6, 2), g.fillStyle = "#e7c4ff", g.fill(), g.stroke(), heart(g, 0, -3, 4, "#ff6fa5");
+        gr.addColorStop(0, ART81 ? "#ff9ec8" : "#ffd9ec"), gr.addColorStop(1, ART81 ? "#f06da6" : "#f59cc6"), g.fillStyle = gr, g.fill(), g.lineWidth = 2.2, g.strokeStyle = INK, g.stroke(), rr(g, -3.5, -18, 7, 6, 2), g.fillStyle = "#e7c4ff", g.fill(), g.stroke(), heart(g, 0, -3, 4, "#ff6fa5");
       });
       for (let k = 0; k < 2; k++) {
         let p = (t * 0.6 + k * 0.5) % 1;
@@ -4832,13 +5611,13 @@ function drawTower(ctx2, type, t = 0, tw = null) {
           let a = k / 12 * Math.PI * 2, r = 15 + Math.sin(a * 3 + 1) * 2.5;
           g.lineTo(Math.cos(a) * r, 3 + Math.sin(a) * r * 0.5);
         }
-        g.closePath(), g.fillStyle = "rgba(255,248,205,0.92)", g.fill(), g.lineWidth = 2, g.strokeStyle = "#d8c27a", g.stroke(), g.beginPath(), g.ellipse(-5, 0, 4, 1.6, -0.3, 0, 7), g.fillStyle = "#fff", g.fill(), g.save(), g.translate(9, -5), g.rotate(0.9), rr(g, -5, -9, 10, 15, 4), g.fillStyle = "#fffdf3", g.fill(), g.lineWidth = 2, g.strokeStyle = INK, g.stroke(), rr(g, -5, -3, 10, 5, 1), g.fillStyle = "#ffb347", g.fill(), g.stroke(), g.beginPath(), g.moveTo(-2, -9), g.lineTo(0, -14), g.lineTo(2, -9), g.closePath(), g.fillStyle = "#ff8c6b", g.fill(), g.stroke(), g.restore(), lvl >= 2 && (g.save(), g.translate(-10, -3), g.rotate(-0.7), rr(g, -3.5, -6, 7, 10, 3), g.fillStyle = "#fffdf3", g.fill(), g.lineWidth = 1.5, g.strokeStyle = INK, g.stroke(), rr(g, -3.5, -2, 7, 3, 1), g.fillStyle = "#7fd3ff", g.fill(), g.restore());
+        g.closePath(), g.fillStyle = ART81 ? "#d9a900" : "rgba(255,248,205,0.92)", g.fill(), g.lineWidth = 2, g.strokeStyle = ART81 ? INK : "#d8c27a", g.stroke(), g.beginPath(), g.ellipse(-5, 0, 4, 1.6, -0.3, 0, 7), g.fillStyle = "#fff", g.fill(), g.save(), g.translate(9, -5), g.rotate(0.9), rr(g, -5, -9, 10, 15, 4), g.fillStyle = "#fffdf3", g.fill(), g.lineWidth = 2, g.strokeStyle = INK, g.stroke(), rr(g, -5, -3, 10, 5, 1), g.fillStyle = "#ffb347", g.fill(), g.stroke(), g.beginPath(), g.moveTo(-2, -9), g.lineTo(0, -14), g.lineTo(2, -9), g.closePath(), g.fillStyle = "#ff8c6b", g.fill(), g.stroke(), g.restore(), lvl >= 2 && (g.save(), g.translate(-10, -3), g.rotate(-0.7), rr(g, -3.5, -6, 7, 10, 3), g.fillStyle = "#fffdf3", g.fill(), g.lineWidth = 1.5, g.strokeStyle = INK, g.stroke(), rr(g, -3.5, -2, 7, 3, 1), g.fillStyle = "#7fd3ff", g.fill(), g.restore());
       }), lk >= 3) for (let k = 0; k < 2; k++) {
         let p = (t * 0.8 + k * 0.5) % 1;
         ctx2.globalAlpha = 1 - p, ctx2.beginPath(), ctx2.arc(-4 + k * 8, 2 - p * 8, 1.5 + p, 0, 7), ctx2.lineWidth = 1, ctx2.strokeStyle = "#d8c27a", ctx2.stroke(), ctx2.globalAlpha = 1;
       }
       lk >= 5 && baked(ctx2, "glue:lp5", (g) => {
-        for (let [x, y] of [[-14, 8], [14, 9], [0, 12]]) blob(g, x, y, 2.6, 1.5, "#fff4c0", 1);
+        for (let [x, y] of [[-14, 8], [14, 9], [0, 12]]) blob(g, x, y, 2.6, 1.5, ART81 ? "#e8b800" : "#fff4c0", 1);
       });
       break;
     }
@@ -4896,7 +5675,7 @@ function drawTower(ctx2, type, t = 0, tw = null) {
       }
       baked(ctx2, "gate:poles:" + dirx + "," + diry + ":" + Math.min(lk, 3), (g) => {
         for (let [px, py] of [[ax, ay], [bx, by]]) {
-          if (shadow(g, px, py + 5, 6, 2.2, 0.22), rr(g, px - 3, py - 14, 6, 19, 3), g.fillStyle = "#c3c9d8", g.fill(), g.lineWidth = 1.8, g.strokeStyle = INK, g.stroke(), lvl >= 3) for (let k of [0, 1])
+          if (shadow(g, px, py + 5, 6, 2.2, 0.22), rr(g, px - 3, py - 14, 6, 19, 3), g.fillStyle = ART81 ? "#d99a00" : "#c3c9d8", g.fill(), g.lineWidth = 1.8, g.strokeStyle = INK, g.stroke(), lvl >= 3) for (let k of [0, 1])
             g.beginPath(), g.ellipse(px, py - 3 - k * 5, 4.2, 1.6, 0, 0, 7), g.fillStyle = "#ffb3c1", g.fill(), g.lineWidth = 1.1, g.strokeStyle = INK, g.stroke();
           lvl >= 2 ? starShape(g, px, py - 16, 5.2, "#ffe066", 1.4) : blob(g, px, py - 15, 4.2, 4.2, "#ffe066", 1.8);
         }
@@ -4904,17 +5683,17 @@ function drawTower(ctx2, type, t = 0, tw = null) {
       break;
     }
     case "lizard": {
-      baked(ctx2, "liz:shadow", (g) => shadow(g, 0, 11, 17, 5, 0.22));
+      baked(ctx2, "liz:shadow", (g) => shadow(g, 0, 11, 17, 5, 0.22)), bodyScale(ctx2);
       let chew = tw && tw.chew > 0, face = Math.cos(aim) >= 0 ? 1 : -1;
-      ctx2.save(), ctx2.scale(face, 1), ctx2.beginPath(), ctx2.moveTo(-8, 4), ctx2.quadraticCurveTo(-20, 8 + Math.sin(t * 3) * 3, -18, -4), ctx2.lineWidth = 6, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.lineWidth = 3.6, ctx2.strokeStyle = "#a7d96a", ctx2.stroke(), baked(ctx2, "liz:body", (g) => {
-        blob(g, -2, 2, 12, 8, "#b8e07a"), g.fillStyle = "#8cc456";
+      ctx2.save(), ctx2.scale(face, 1), ctx2.beginPath(), ctx2.moveTo(-8, 4), ctx2.quadraticCurveTo(-20, 8 + Math.sin(t * 3) * 3, -18, -4), ctx2.lineWidth = 6, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.lineWidth = 3.6, ctx2.strokeStyle = tpad("lizard", "#a7d96a") === "#76a927" ? "#6a9c22" : "#a7d96a", ctx2.stroke(), baked(ctx2, "liz:body", (g) => {
+        blob(g, -2, 2, 12, 8, tpad("lizard", "#b8e07a")), g.fillStyle = ART81 ? "#55851a" : "#8cc456";
         for (let [a, b] of [[-6, 0], [-1, -2], [3, 1]])
           g.beginPath(), g.arc(a, b, 1.6, 0, 7), g.fill();
-        for (let fx2 of [-9, 6]) blob(g, fx2, 9, 3.5, 2.2, "#a7d96a", 1.5);
+        for (let fx2 of [-9, 6]) blob(g, fx2, 9, 3.5, 2.2, ART81 ? "#5f8f1c" : "#a7d96a", 1.5);
         g.beginPath(), g.ellipse(-1, 5.4, 7.5, 2.6, 0, 0, 7), g.fillStyle = "rgba(230,247,184,0.85)", g.fill();
       });
       let hb = chew ? Math.sin(t * 25) * 1.5 : 0;
-      ctx2.save(), ctx2.translate(0, hb), baked(ctx2, "liz:head", (g) => blob(g, 9, -6, 9, 7.5, "#c4ea86")), ctx2.restore();
+      ctx2.save(), ctx2.translate(0, hb), baked(ctx2, "liz:head", (g) => blob(g, 9, -6, 9, 7.5, ART81 ? "#8cc03a" : "#c4ea86")), ctx2.restore();
       let blink = t % 3.7 < 0.12, br = Math.sin(t * 2.4) * 0.6;
       eye(ctx2, 6, -13 + hb + br, 3.6, 0.6, blink), eye(ctx2, 12.5, -12.5 + hb + br, 3.4, 0.6, blink), ctx2.save(), ctx2.translate(0, hb), baked(ctx2, "liz:mouth", (g) => {
         g.beginPath(), g.arc(13, -3, 3, 0.1, Math.PI - 0.3), g.lineWidth = 1.5, g.strokeStyle = INK, g.stroke(), g.beginPath(), g.ellipse(8, -2, 2, 1.2, 0, 0, 7), g.fillStyle = "rgba(255,120,140,0.6)", g.fill();
@@ -4922,7 +5701,7 @@ function drawTower(ctx2, type, t = 0, tw = null) {
       break;
     }
     case "laser": {
-      pad(ctx2, "#ffc2c7");
+      pad(ctx2, tpad("laser", "#ffc2c7"));
       let charge = fx > 0 ? 1 : 0.5 + 0.5 * Math.sin(t * 4);
       baked(ctx2, "laser:ped", (g) => {
         rr(g, -7.5, -8, 15, 13, 4);
@@ -4958,6 +5737,7 @@ function drawTower(ctx2, type, t = 0, tw = null) {
       break;
     }
     case "tractor": {
+      bodyScale(ctx2);
       let dx = tw && tw.trailDir ? tw.trailDir.nc - tw.c : 1, dy = tw && tw.trailDir ? tw.trailDir.nr - tw.r : 0, face = dx < 0 ? -1 : 1;
       ctx2.save(), ctx2.scale(face, 1), dy && ctx2.translate(0, dy * 2);
       let bob = fx > 0 ? 0 : Math.sin(t * 9) * 0.35;
@@ -4984,7 +5764,7 @@ function drawTower(ctx2, type, t = 0, tw = null) {
       break;
     }
     case "zapper": {
-      pad(ctx2, "#c5e4ff"), baked(ctx2, "zap:stem", (g) => {
+      pad(ctx2, tpad("zapper", "#c5e4ff")), baked(ctx2, "zap:stem", (g) => {
         rr(g, -3, -8, 6, 12, 2), g.fillStyle = "#9aa3b5", g.fill(), g.lineWidth = 1.8, g.strokeStyle = INK, g.stroke();
       });
       let glow = 0.5 + Math.sin(t * 6) * 0.2 + (fx > 0 ? 0.5 : 0);
@@ -5019,7 +5799,7 @@ function drawTower(ctx2, type, t = 0, tw = null) {
       ctx2.beginPath(), ctx2.moveTo(0, -26), ctx2.quadraticCurveTo(6, -24 + wv, 11, -22 + wv), ctx2.lineTo(0, -18), ctx2.closePath(), ctx2.fillStyle = "#ff8fab", ctx2.fill(), ctx2.lineWidth = 1.4, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.restore();
     }
   }
-  ctx2.restore();
+  BODYK = 1, BOBV = null, ctx2.restore();
 }
 function plinthPaths(ctx2) {
   ctx2.beginPath(), ctx2.ellipse(0, 11, 22, 10, 0, 0, 7), ctx2.fillStyle = "#d8ccd4", ctx2.fill(), ctx2.lineWidth = 2, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(0, 9.5, 21, 8.6, 0, Math.PI * 1.05, Math.PI * 1.6), ctx2.lineWidth = 1.4, ctx2.strokeStyle = "#f6f0f3", ctx2.stroke();
@@ -5029,7 +5809,7 @@ function plinthPaths(ctx2) {
 function tractorBodyPaths(ctx2) {
   shadow(ctx2, 0, 9, 18, 5, 0.24), rr(ctx2, -12, -10, 25, 13, 5);
   let g = ctx2.createLinearGradient(0, -10, 0, 3);
-  g.addColorStop(0, "#ffe39e"), g.addColorStop(1, "#f2b84a"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = 2, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(-8, -8.2), ctx2.lineTo(9, -8.2), ctx2.lineWidth = 1.5, ctx2.strokeStyle = "rgba(255,255,255,0.55)", ctx2.stroke(), rr(ctx2, -13, -23, 13, 15, 3), ctx2.fillStyle = "#ffd27a", ctx2.fill(), ctx2.lineWidth = 2, ctx2.strokeStyle = INK, ctx2.stroke(), rr(ctx2, -10.5, -20.5, 8, 8, 2), ctx2.fillStyle = "#bfe6ff", ctx2.fill(), ctx2.lineWidth = 1.3, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(-9, -19), ctx2.lineTo(-6, -16), ctx2.lineWidth = 1.2, ctx2.strokeStyle = "#ffffff", ctx2.stroke(), rr(ctx2, -15, -25.5, 17, 4, 2), ctx2.fillStyle = "#ff8fab", ctx2.fill(), ctx2.lineWidth = 1.6, ctx2.strokeStyle = INK, ctx2.stroke();
+  g.addColorStop(0, ART81 ? "#eeb040" : "#ffe39e"), g.addColorStop(1, ART81 ? "#cf8a00" : "#f2b84a"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = 2, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(-8, -8.2), ctx2.lineTo(9, -8.2), ctx2.lineWidth = 1.5, ctx2.strokeStyle = "rgba(255,255,255,0.55)", ctx2.stroke(), rr(ctx2, -13, -23, 13, 15, 3), ctx2.fillStyle = ART81 ? "#e3a020" : "#ffd27a", ctx2.fill(), ctx2.lineWidth = 2, ctx2.strokeStyle = INK, ctx2.stroke(), rr(ctx2, -10.5, -20.5, 8, 8, 2), ctx2.fillStyle = "#bfe6ff", ctx2.fill(), ctx2.lineWidth = 1.3, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(-9, -19), ctx2.lineTo(-6, -16), ctx2.lineWidth = 1.2, ctx2.strokeStyle = "#ffffff", ctx2.stroke(), rr(ctx2, -15, -25.5, 17, 4, 2), ctx2.fillStyle = "#ff8fab", ctx2.fill(), ctx2.lineWidth = 1.6, ctx2.strokeStyle = INK, ctx2.stroke();
   for (let ex of [6, 10.5])
     ctx2.beginPath(), ctx2.ellipse(ex, -5.5, 1.7, 2.1, 0, 0, 7), ctx2.fillStyle = INK, ctx2.fill(), ctx2.beginPath(), ctx2.arc(ex + 0.5, -6.3, 0.6, 0, 7), ctx2.fillStyle = "#fff", ctx2.fill();
   ctx2.beginPath(), ctx2.arc(8.3, -2.6, 2, 0.2, Math.PI - 0.2), ctx2.lineWidth = 1.2, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(3.5, -2.5, 1.6, 1, 0, 0, 7), ctx2.fillStyle = "rgba(255,112,140,0.55)", ctx2.fill();
@@ -5075,7 +5855,11 @@ function levelParts(ctx2, type, lvl, t, fx, aim) {
       break;
     }
     case "ball": {
-      if (L3 && (ctx2.beginPath(), ctx2.ellipse(0, -14, 11, 4.6, 0, 0, 7), ctx2.lineWidth = 2.4, ctx2.strokeStyle = "#f4b632", ctx2.stroke()), L5) for (let [x, y] of [[-14, 2], [-11, -2], [-15, -3]]) marble(ctx2, x, y, 3, x);
+      if (L3) {
+        let hg = ctx2.createRadialGradient(0, -14, 8, 0, -14, 19);
+        hg.addColorStop(0, "rgba(244,182,50,0)"), hg.addColorStop(0.3, "rgba(244,182,50,0.35)"), hg.addColorStop(1, "rgba(244,182,50,0)"), ctx2.save(), ctx2.beginPath(), ctx2.rect(-30, -13, 60, 40), ctx2.clip(), ctx2.fillStyle = hg, ctx2.beginPath(), ctx2.arc(0, -14, 19, 0, 7), ctx2.fill(), ctx2.restore(), ctx2.beginPath(), ctx2.ellipse(0, -14, 10.4, 4.2, 0, 0.12, Math.PI - 0.12), ctx2.lineWidth = 2.2, ctx2.strokeStyle = "#f4b632", ctx2.stroke();
+      }
+      if (L5) for (let [x, y] of [[-14, 2], [-11, -2], [-15, -3]]) marble(ctx2, x, y, 3, x);
       break;
     }
     case "lizard": {
@@ -5245,7 +6029,42 @@ function sundaeBody(ctx2, r, pct) {
   }
   ctx2.restore();
 }
-var TREAT_BODIES = { cookie: cookieBody, cake: cakeBody, pie: pieBody, sundae: sundaeBody };
+var DONUT_SPR = [[-16, -15, "#ffe27a", 0.6], [15, -16, "#8fd0f7", -0.5], [-21, 5, "#ffffff", 0.2], [21, 4, "#a8e6a1", 1.1], [-12, 20, "#ff6f91", 0.9], [13, 20, "#ffe27a", -0.4]];
+function donutBody(ctx2, r, pct) {
+  let bites = Math.round((1 - pct) * 9), bAt = (k) => {
+    let a = -0.6 + k * 0.72;
+    return [Math.cos(a) * r * 0.98, Math.sin(a) * r * 0.98];
+  };
+  ctx2.save(), ctx2.beginPath(), ctx2.arc(0, 0, r, 0, Math.PI * 2);
+  for (let k = 0; k < bites; k++) {
+    let [bx, by] = bAt(k);
+    ctx2.moveTo(bx + 9, by), ctx2.arc(bx, by, 9, 0, Math.PI * 2, !0);
+  }
+  ctx2.clip("evenodd");
+  let g = ctx2.createRadialGradient(-8, -10, 4, 0, 0, r * 1.1);
+  g.addColorStop(0, "#fbe3b0"), g.addColorStop(0.7, "#e9b266"), g.addColorStop(1, "#c98a3e"), ctx2.beginPath(), ctx2.arc(0, 0, r, 0, 7), ctx2.fillStyle = g, ctx2.fill(), ctx2.beginPath();
+  for (let k = 0; k <= 48; k++) {
+    let a = k / 48 * Math.PI * 2, rr2 = r * 0.8 + Math.sin(a * 7) * 2.2;
+    (k ? ctx2.lineTo : ctx2.moveTo).call(ctx2, Math.cos(a) * rr2, Math.sin(a) * rr2);
+  }
+  ctx2.closePath();
+  let ig = ctx2.createRadialGradient(-8, -10, 3, 0, 0, r * 0.9);
+  ig.addColorStop(0, "#ffdbe6"), ig.addColorStop(0.65, "#f7b6c8"), ig.addColorStop(1, "#ec97b2"), ctx2.fillStyle = ig, ctx2.fill(), ctx2.lineWidth = 1.8, ctx2.strokeStyle = "rgba(82,60,75,0.7)", ctx2.stroke();
+  for (let [x, y, c, a] of DONUT_SPR)
+    ctx2.save(), ctx2.translate(x, y), ctx2.rotate(a), ctx2.fillStyle = c, ctx2.fillRect(-2.5, -1, 5, 2.2), ctx2.lineWidth = 0.8, ctx2.strokeStyle = "rgba(82,60,75,0.55)", ctx2.strokeRect(-2.5, -1, 5, 2.2), ctx2.restore();
+  ctx2.beginPath(), ctx2.ellipse(0, 1.6, 3.6, 3, 0, 0, 7), ctx2.fillStyle = "#8a5a3a", ctx2.fill(), ctx2.lineWidth = 1.5, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.restore(), ctx2.save(), ctx2.beginPath(), ctx2.rect(-r - 12, -r - 12, r * 2 + 24, r * 2 + 24);
+  for (let k = 0; k < bites; k++) {
+    let [bx, by] = bAt(k);
+    ctx2.moveTo(bx + 9, by), ctx2.arc(bx, by, 9, 0, Math.PI * 2, !0);
+  }
+  ctx2.clip("evenodd"), ctx2.beginPath(), ctx2.arc(0, 0, r, 0, 7), ctx2.lineWidth = 3, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.restore(), ctx2.save(), ctx2.beginPath(), ctx2.arc(0, 0, r + 1, 0, 7), ctx2.clip();
+  for (let k = 0; k < bites; k++) {
+    let [bx, by] = bAt(k);
+    ctx2.beginPath(), ctx2.arc(bx, by, 9, 0, 7), ctx2.lineWidth = 3, ctx2.strokeStyle = INK, ctx2.stroke();
+  }
+  ctx2.restore();
+}
+var TREAT_BODIES = { cookie: cookieBody, cake: cakeBody, pie: pieBody, sundae: sundaeBody, donut: donutBody };
 function reactMotion(react, t) {
   if (!react) return { dx: 0, dy: 0, sx: 1, sy: 1 };
   let a = react.age, e = Math.max(0, 1 - a / 1.6);
@@ -5269,12 +6088,51 @@ function reactMotion(react, t) {
 }
 function treatGloss(ctx2, kind, r, pct) {
   let bites = kind === "cake" ? 0 : Math.round((1 - pct) * 9);
-  ctx2.save(), kind === "cake" ? (ctx2.beginPath(), ctx2.ellipse(-r * 0.55, -r * 0.2, r * 0.36, 2.2, -0.05, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.55)", ctx2.fill()) : bites < 6 && (ctx2.beginPath(), ctx2.arc(0, 0, r - 4.2, Math.PI * 1.08, Math.PI * 1.46), ctx2.lineWidth = 2.2, ctx2.lineCap = "round", ctx2.strokeStyle = "rgba(255,255,255,0.5)", ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(-r * 0.46, -r * 0.55, 6.5, 3, -0.7, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.5)", ctx2.fill(), ctx2.beginPath(), ctx2.arc(-r * 0.22, -r * 0.8, 1.5, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.7)", ctx2.fill()), ctx2.restore();
+  if (ctx2.save(), kind === "cake")
+    ctx2.beginPath(), ctx2.ellipse(-r * 0.55, -r * 0.2, r * 0.36, 2.2, -0.05, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.55)", ctx2.fill();
+  else if (kind === "donut" && bites < 6) {
+    ctx2.beginPath(), ctx2.arc(0, 0, r - 2.6, Math.PI * 1.08, Math.PI * 1.46), ctx2.lineWidth = 2.2, ctx2.lineCap = "round", ctx2.strokeStyle = "rgba(255,255,255,0.55)", ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(-r * 0.5, -r * 0.5, 6, 2.8, -0.7, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.55)", ctx2.fill();
+    let sr = bites === 0 ? 3.4 : bites < 3 ? 2.7 : 2.1;
+    ctx2.save(), ctx2.translate(-r * 0.7, -r * 0.62), ctx2.beginPath();
+    for (let k = 0; k < 8; k++) {
+      let a = k * Math.PI / 4 - Math.PI / 2, rr2 = k % 2 ? sr * 0.3 : sr;
+      (k ? ctx2.lineTo : ctx2.moveTo).call(ctx2, Math.cos(a) * rr2, Math.sin(a) * rr2);
+    }
+    ctx2.closePath(), ctx2.fillStyle = "rgba(255,255,255,0.9)", ctx2.fill(), ctx2.restore();
+  } else bites < 6 && (ctx2.beginPath(), ctx2.arc(0, 0, r - 4.2, Math.PI * 1.08, Math.PI * 1.46), ctx2.lineWidth = 2.2, ctx2.lineCap = "round", ctx2.strokeStyle = "rgba(255,255,255,0.5)", ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(-r * 0.46, -r * 0.55, 6.5, 3, -0.7, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.5)", ctx2.fill(), ctx2.beginPath(), ctx2.arc(-r * 0.22, -r * 0.8, 1.5, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.7)", ctx2.fill());
+  ctx2.restore();
+}
+function treatBaked(ctx2, kind, r, pct) {
+  let cake = kind === "cake", bites = Math.round(cake ? (1 - pct) * 4 : (1 - pct) * 9), P = r + 9, S2 = P * 2;
+  bakedBox(ctx2, "treat|" + kind + "|" + bites, -P, -P, S2, S2, 0, (g) => {
+    if (g.translate(P, P), (TREAT_BODIES[kind] || cookieBody)(g, r, 1), !bites) return;
+    if (cake) {
+      let w = r * 1.05, h = r * 0.95, x0 = w - bites * w * 0.42;
+      g.globalCompositeOperation = "destination-out", g.fillRect(x0, -h * 0.9, w * 2, h * 2.2), g.globalCompositeOperation = "source-atop", g.beginPath(), g.moveTo(x0 - 1.5, -h * 0.9), g.lineTo(x0 - 1.5, h * 0.9), g.lineWidth = 3, g.strokeStyle = INK, g.stroke();
+      return;
+    }
+    let bAt = (k) => {
+      let an = -0.6 + k * 0.72;
+      return [Math.cos(an) * r * 0.98, Math.sin(an) * r * 0.98];
+    };
+    g.globalCompositeOperation = "destination-out", g.fillStyle = "#000";
+    for (let k = 0; k < bites; k++) {
+      let [bx, by] = bAt(k);
+      g.beginPath(), g.arc(bx, by, 9, 0, 7), g.fill();
+    }
+    g.globalCompositeOperation = "source-atop", g.lineWidth = 3.2, g.strokeStyle = INK;
+    for (let k = 0; k < bites; k++) {
+      let [bx, by] = bAt(k);
+      g.beginPath(), g.arc(bx, by, 10.4, 0, 7), g.stroke();
+    }
+  });
 }
 function drawTreat(ctx2, kind, x, y, pct, t, opts = {}) {
   typeof opts == "boolean" && (opts = {});
   let face = opts.face || cookieFace(pct), react = opts.react || null, r = 26, m = reactMotion(react, t);
-  ctx2.save(), ctx2.translate(x, y), shadow(ctx2, 0, r * 0.75, r * 1.05 * (1 - Math.min(0.2, -m.dy / 40)), r * 0.32, 0.25), ctx2.save(), ctx2.translate(m.dx, m.dy + r * 0.75), ctx2.scale(m.sx, m.sy), ctx2.translate(0, -r * 0.75), (TREAT_BODIES[kind] || cookieBody)(ctx2, r, pct), treatGloss(ctx2, kind, r, pct), react ? drawTreatFace(ctx2, react.face, t, react.age) : drawCookieFace(ctx2, opts.ouch ? "ouch" : face, t), ctx2.restore(), ctx2.restore();
+  ctx2.save(), ctx2.translate(x, y), shadow(ctx2, 0, r * 0.75, r * 1.05 * (1 - Math.min(0.2, -m.dy / 40)), r * 0.32, 0.25);
+  let tb = ART81 && !MOTION.reduced && !react && !opts.ouch && !opts.face && !opts.still ? 1 + 0.025 * Math.sin(Math.PI * 2 * t / 2.8) : 1;
+  ctx2.save(), ctx2.translate(m.dx, m.dy + r * 0.75), ctx2.scale(m.sx, m.sy * tb), ctx2.translate(0, -r * 0.75), treatBaked(ctx2, kind, r, pct), treatGloss(ctx2, kind, r, pct), react ? drawTreatFace(ctx2, react.face, t, react.age) : drawCookieFace(ctx2, opts.ouch ? "ouch" : face, t), ctx2.restore(), ctx2.restore();
 }
 function drawCookie(ctx2, x, y, pct, t, opts = {}) {
   return drawTreat(ctx2, "cookie", x, y, pct, t, opts);
@@ -5406,15 +6264,105 @@ function drawCookieFace(ctx2, face, t) {
   }
 }
 function drawNest(ctx2, x, y, t) {
-  ctx2.save(), ctx2.translate(x, y), bakedBox(ctx2, "nest", -40, -42, 80, 68, 4, (ctx3) => {
+  ctx2.save(), ctx2.translate(x, y);
+  let K7 = ART81, topY = K7 && y < 40 ? -24 : -36;
+  if (bakedBox(ctx2, K7 ? y < 40 ? "nest7s" : "nest7" : "nest", -40, -42, 80, 68, 4, (ctx3) => {
     ctx3.translate(40, 42), shadow(ctx3, 0, 13, 32, 8, 0.24), ctx3.beginPath(), ctx3.ellipse(0, 10.5, 32, 7.5, 0, 0, 7), ctx3.fillStyle = "#7d5436", ctx3.fill(), ctx3.lineWidth = 3, ctx3.strokeStyle = INK, ctx3.stroke(), ctx3.beginPath(), ctx3.moveTo(-30, 10), ctx3.quadraticCurveTo(-25, -15, 0, -17), ctx3.quadraticCurveTo(25, -15, 30, 10), ctx3.quadraticCurveTo(0, 16, -30, 10), ctx3.closePath();
     let g = ctx3.createRadialGradient(-9, -10, 2, 0, -2, 38);
     g.addColorStop(0, "#f1c79a"), g.addColorStop(0.45, "#d29a69"), g.addColorStop(1, "#a8754e"), ctx3.fillStyle = g, ctx3.fill(), ctx3.lineWidth = 3, ctx3.strokeStyle = INK, ctx3.stroke(), ctx3.beginPath(), ctx3.ellipse(-12, -8.5, 8.5, 3.2, -0.55, 0, 7), ctx3.fillStyle = "rgba(255,255,255,0.5)", ctx3.fill(), ctx3.beginPath(), ctx3.arc(-4.5, -13, 1.4, 0, 7), ctx3.fillStyle = "rgba(255,255,255,0.7)", ctx3.fill();
     for (let [a, b, r] of [[-20, 4, 2.4], [17, -3, 2.2], [22, 6, 2.6], [-6, -9, 1.8], [8, -11, 1.6]]) blob(ctx3, a, b, r, r * 0.8, "#d9a77a", 1.2, 0, { gloss: 0 });
     ctx3.beginPath(), ctx3.ellipse(0, 5, 10.5, 7.5, 0, 0, 7);
     let dg = ctx3.createLinearGradient(0, -2, 0, 12);
-    dg.addColorStop(0, "#2c1a24"), dg.addColorStop(1, "#4a2e3a"), ctx3.fillStyle = dg, ctx3.fill(), ctx3.lineWidth = 2.4, ctx3.strokeStyle = INK, ctx3.stroke(), ctx3.beginPath(), ctx3.ellipse(0, 5, 8.6, 5.7, 0, 0.25, Math.PI - 0.25), ctx3.lineWidth = 1.5, ctx3.strokeStyle = "rgba(255,214,170,0.8)", ctx3.stroke(), ctx3.beginPath(), ctx3.moveTo(14, -11), ctx3.lineTo(14, -31), ctx3.lineWidth = 2.4, ctx3.strokeStyle = INK, ctx3.stroke(), blob(ctx3, 14, -32, 2.2, 2.2, "#ffd45e", 1.4, 0, { gloss: 0.8 });
-  }), ctx2.beginPath(), ctx2.moveTo(14, -31), ctx2.quadraticCurveTo(22, -29 + Math.sin(t * 4) * 2, 29, -26), ctx2.lineTo(14, -21.5), ctx2.closePath(), ctx2.fillStyle = "#ff6f86", ctx2.fill(), ctx2.lineWidth = 1.8, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(16, -28.5), ctx2.quadraticCurveTo(21, -27.2 + Math.sin(t * 4) * 1.4, 24, -26), ctx2.lineWidth = 1.3, ctx2.strokeStyle = "rgba(255,255,255,0.65)", ctx2.stroke(), ctx2.restore();
+    dg.addColorStop(0, "#2c1a24"), dg.addColorStop(1, "#4a2e3a"), ctx3.fillStyle = dg, ctx3.fill(), ctx3.lineWidth = 2.4, ctx3.strokeStyle = INK, ctx3.stroke(), ctx3.beginPath(), ctx3.ellipse(0, 5, 8.6, 5.7, 0, 0.25, Math.PI - 0.25), ctx3.lineWidth = 1.5, ctx3.strokeStyle = "rgba(255,214,170,0.8)", ctx3.stroke(), K7 ? (ctx3.beginPath(), ctx3.moveTo(0, -16), ctx3.lineTo(0, topY), ctx3.lineWidth = 2.4, ctx3.strokeStyle = INK, ctx3.stroke(), blob(ctx3, 0, topY - 1, 2.2, 2.2, "#ffd45e", 1.4, 0, { gloss: 0.8 })) : (ctx3.beginPath(), ctx3.moveTo(14, -11), ctx3.lineTo(14, -31), ctx3.lineWidth = 2.4, ctx3.strokeStyle = INK, ctx3.stroke(), blob(ctx3, 14, -32, 2.2, 2.2, "#ffd45e", 1.4, 0, { gloss: 0.8 }));
+  }), K7) {
+    let w = Math.sin(t * 4);
+    ctx2.beginPath(), ctx2.moveTo(0, topY + 1), ctx2.quadraticCurveTo(8 * 0.95, topY + 3 * 0.95 + w * 2, 15 * 0.95, topY + 6 * 0.95), ctx2.lineTo(0, topY + 10.5 * 0.95), ctx2.closePath(), ctx2.fillStyle = "#ff6f86", ctx2.fill(), ctx2.lineWidth = 1.8, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(2, topY + 4), ctx2.quadraticCurveTo(7, topY + 5.2 + w * 1.4, 10, topY + 6.5), ctx2.lineWidth = 1.3, ctx2.strokeStyle = "rgba(255,255,255,0.65)", ctx2.stroke(), ctx2.restore();
+    return;
+  }
+  ctx2.beginPath(), ctx2.moveTo(14, -31), ctx2.quadraticCurveTo(22, -29 + Math.sin(t * 4) * 2, 29, -26), ctx2.lineTo(14, -21.5), ctx2.closePath(), ctx2.fillStyle = "#ff6f86", ctx2.fill(), ctx2.lineWidth = 1.8, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(16, -28.5), ctx2.quadraticCurveTo(21, -27.2 + Math.sin(t * 4) * 1.4, 24, -26), ctx2.lineWidth = 1.3, ctx2.strokeStyle = "rgba(255,255,255,0.65)", ctx2.stroke(), ctx2.restore();
+}
+function drawFoodBar(ctx2, f, label, t, st = {}) {
+  f = Math.max(0, Math.min(1, f)), bakedBox(ctx2, "foodTrack", 60, 22, 84, 20, 3, (g) => {
+    g.translate(-60, -22), rr(g, 60, 22, 84, 20, 10);
+    let gr = g.createLinearGradient(0, 22, 0, 42);
+    gr.addColorStop(0, "#e9d6cc"), gr.addColorStop(1, "#f6e9e2"), g.fillStyle = gr, g.fill(), g.lineWidth = 2.4, g.strokeStyle = INK, g.stroke(), g.beginPath(), g.moveTo(68, 25.6), g.lineTo(136, 25.6), g.lineWidth = 3, g.strokeStyle = "rgba(82,60,75,0.18)", g.stroke();
+  });
+  let kind = f >= 0.9 ? "g" : f >= 0.5 ? "y" : "r", cols = { g: ["#b8f5ae", "#8fe388", "#52b955"], y: ["#ffe9a0", "#ffd45e", "#e2a92a"], r: ["#ffb4b4", "#ff8a8a", "#e05a64"] }[kind], sprite = (k, c, stripes) => bakedBox(ctx2, "foodFill" + k + (stripes ? "s" : ""), 62, 24, 80, 16, 2, (g) => {
+    if (g.translate(-62, -24), g.fillStyle = c[1], g.fillRect(62, 24, 80, 16), g.fillStyle = c[2], g.fillRect(62, 35.2, 80, 4.8), g.fillStyle = c[0], g.fillRect(62, 24, 80, 5.2), stripes) {
+      g.save(), g.beginPath(), g.rect(62, 24, 80, 16), g.clip(), g.fillStyle = "rgba(255,255,255,0.22)";
+      for (let x = 54; x < 150; x += 12)
+        g.beginPath(), g.moveTo(x, 40), g.lineTo(x + 6, 40), g.lineTo(x + 14, 24), g.lineTo(x + 8, 24), g.closePath(), g.fill();
+      g.restore();
+    }
+    g.beginPath(), g.moveTo(67, 28), g.lineTo(136, 28), g.lineWidth = 4, g.lineCap = "round", g.strokeStyle = "rgba(255,255,255,0.55)", g.stroke(), g.beginPath(), g.arc(138.5, 28.5, 1.5, 0, 7), g.fillStyle = "rgba(255,255,255,0.8)", g.fill(), g.lineCap = "butt", g.lineWidth = 1, g.strokeStyle = "rgba(82,60,75,0.35)";
+    for (let tx of [102, 134])
+      g.beginPath(), g.moveTo(tx, 25), g.lineTo(tx, 39), g.stroke();
+  }), pulse = f > 0 && f < 0.25 && !st.still ? 0.85 + 0.15 * (0.5 + 0.5 * Math.sin(t * 9.42)) : 1, drawFill = (ff, alpha) => {
+    if (ff <= 0) return;
+    let w = 80 * ff;
+    ctx2.save(), alpha < 1 && (ctx2.globalAlpha = alpha), rr(ctx2, 62, 24, w, 16, 8), ctx2.clip(), ctx2.globalAlpha = alpha, sprite(kind, cols, f < 0.5), ctx2.restore(), ctx2.beginPath();
+    let ex = 62 + w - 3.2;
+    ctx2.moveTo(ex, 28), ctx2.lineTo(ex, 36), ctx2.lineWidth = 1, ctx2.strokeStyle = "rgba(82,60,75,0.28)", ff < 0.98 && ctx2.stroke();
+  };
+  if (st.drain && st.drain.a > 0 && st.drain.from > f) {
+    let w0 = 80 * f, w1 = 80 * st.drain.from;
+    ctx2.save(), rr(ctx2, 62, 24, w1, 16, 8), ctx2.clip(), ctx2.globalAlpha = Math.min(1, st.drain.a) * 0.85, ctx2.fillStyle = "#fff7f2", ctx2.fillRect(62 + w0, 24, w1 - w0, 16), ctx2.restore();
+  }
+  if (drawFill(f, pulse), f > 0) {
+    let fl = st.flash || 0;
+    fl > 0 && (ctx2.save(), rr(ctx2, 62, 24, 80 * f, 16, 8), ctx2.clip(), ctx2.globalAlpha = Math.min(0.7, fl), ctx2.fillStyle = "#fff", ctx2.fillRect(62, 24, 80 * f, 16), ctx2.restore());
+  }
+  text(ctx2, label, 102, 33, 14, "#fff");
+}
+var RIBBON_PAL = { pink: ["#ff8fa3", "#e0546e", "#b83a55"], gold: ["#ffd45e", "#f0a82a", "#b8700a"], slate: ["#b9aecb", "#8f84a6", "#6e6488"] }, CROWN_PAL = { bronze: "#d9a77a", silver: "#dfe6f0", gold: "#ffd23f" };
+function rewardPalette(win, stars, perfect) {
+  return win ? perfect || stars >= 3 ? { ribbon: "gold", crown: "gold" } : stars === 2 ? { ribbon: "pink", crown: "silver" } : { ribbon: "pink", crown: "bronze" } : { ribbon: "slate", crown: null };
+}
+function ribbonSprite(ctx2, pal) {
+  let [face, shd, lip] = RIBBON_PAL[pal];
+  bakedBox(ctx2, "rwRibbon:" + pal, 48, 138, 304, 42, 4, (g) => {
+    g.translate(-48, -138);
+    for (let s of [-1, 1]) {
+      let ex = s < 0 ? 82 : 318, fx = s < 0 ? 48 : 352, nx = fx - s * 9;
+      g.beginPath(), g.moveTo(ex, 146), g.lineTo(fx, 146), g.lineTo(nx, 163), g.lineTo(fx, 180), g.lineTo(ex, 180), g.closePath(), g.fillStyle = shd, g.fill(), g.lineWidth = 2.4, g.strokeStyle = INK, g.stroke(), g.beginPath(), g.moveTo(ex, 172), g.lineTo(ex, 180), g.lineTo(ex - s * 12, 172), g.closePath(), g.fillStyle = shade(shd, -0.35), g.fill(), g.lineWidth = 2, g.strokeStyle = INK, g.stroke();
+    }
+    rr(g, 82, 138, 236, 34, 6);
+    let gr = g.createLinearGradient(0, 138, 0, 172);
+    gr.addColorStop(0, face), gr.addColorStop(0.62, face), gr.addColorStop(0.63, shd), gr.addColorStop(1, shd), g.fillStyle = gr, g.fill(), g.save(), rr(g, 82, 138, 236, 34, 6), g.clip(), g.fillStyle = lip, g.fillRect(82, 168.6, 236, 3.4), g.restore(), rr(g, 82, 138, 236, 34, 6), g.lineWidth = 2.4, g.strokeStyle = INK, g.stroke(), g.beginPath(), g.moveTo(90, 141.4), g.lineTo(310, 141.4), g.lineWidth = 1.6, g.strokeStyle = "rgba(255,255,255,0.6)", g.stroke();
+  });
+}
+function crownSprite(ctx2, pal) {
+  let base = CROWN_PAL[pal];
+  bakedBox(ctx2, "rwCrown:" + pal, 160, 96, 80, 50, 4, (g) => {
+    g.translate(-160, -96), g.beginPath(), g.moveTo(166, 141), g.lineTo(164, 108), g.lineTo(183, 125), g.lineTo(200, 101), g.lineTo(217, 125), g.lineTo(236, 108), g.lineTo(234, 141), g.closePath();
+    let gr = g.createLinearGradient(0, 100, 0, 141);
+    gr.addColorStop(0, shade(base, 0.25)), gr.addColorStop(0.55, base), gr.addColorStop(1, shade(base, -0.22)), g.fillStyle = gr, g.fill(), g.lineWidth = 2.4, g.strokeStyle = INK, g.lineJoin = "round", g.stroke(), g.beginPath(), g.moveTo(167, 133), g.lineTo(233, 133), g.lineWidth = 1.6, g.strokeStyle = shade(base, -0.35), g.stroke();
+    for (let [x, y, c] of [[164.5, 111, "#ff6f86"], [200, 105.5, "#8fe9fb"], [235.5, 111, "#ff6f86"]])
+      g.beginPath(), g.arc(x, y, 3.4, 0, 7), g.fillStyle = c, g.fill(), g.lineWidth = 1.6, g.strokeStyle = INK, g.stroke(), g.beginPath(), g.arc(x - 1, y - 1.1, 0.9, 0, 7), g.fillStyle = "rgba(255,255,255,0.85)", g.fill();
+    g.beginPath(), g.ellipse(180, 118, 7, 2.6, -0.7, 0, 7), g.fillStyle = "rgba(255,255,255,0.5)", g.fill();
+  });
+}
+function drawRewardHeader(ctx2, pal, k, still, stars3) {
+  let rp = pal.ribbon, cr = pal.crown;
+  ctx2.save();
+  let dy = 0, alpha = 1, cs = 1;
+  if (still ? alpha = Math.min(1, k / 0.15) : (dy = -36 * (1 - easeOutBack(k / 0.24)), alpha = Math.min(1, k / 0.1), cs = k < 0.15 ? 0 : 0.4 + 0.6 * easeOutBack((k - 0.15) / 0.25)), ctx2.globalAlpha = alpha, ctx2.translate(0, dy), ribbonSprite(ctx2, rp), cr && cs > 0.01 && (ctx2.save(), !still && k >= 0.15 && k < 0.4 && squashAt(ctx2, 200, 141, (k - 0.15) / 0.25, 0.1), ctx2.translate(200, 141), ctx2.scale(cs, cs), ctx2.translate(-200, -141), crownSprite(ctx2, cr), ctx2.restore()), ctx2.restore(), stars3 && !still) {
+    let tw = 0.6 + 0.4 * Math.sin(k * 6);
+    if (k > 0.3) for (let x of [52, 348]) sparkle(ctx2, x, 163, 3.4 * tw, "#fff7a8", k);
+    if (k > 0.4 && k < 1) for (let x of [164, 236]) sparkle(ctx2, x, 104, 5 * (1 - (k - 0.4) / 0.6) + 1, "#fff7a8", k * 2);
+  }
+}
+function heroBob(ctx2, t, i = 0) {
+  if (!ART81 || MOTION.reduced) return;
+  let s = Math.sin(Math.PI * 2 * t / 1.9 + i * 0.6);
+  ctx2.translate(0, 1.5 * s), ctx2.scale(1, 1 + 0.02 * s);
+}
+var coinSprite = (...q) => drawCoin(...q), sparkleAt = (...q) => sparkle(...q), SPARK_COLS = ["#ffffff", "#ffe27a", "#8fe9fb", "#ffa6dc"];
+function fxSparkle(ctx2, x, y, r, col, k) {
+  let rm = MOTION.reduced;
+  ctx2.globalAlpha = rm ? 1 - k : 1;
+  let sc = rm ? 1 : k < 0.35 ? 1 + 0.25 * (k / 0.35) : 1.25 * (1 - (k - 0.35) / 0.65);
+  sparkle(ctx2, x, y, Math.max(0.8, r * sc), col, rm ? 0 : 0.6 * k);
 }
 var THEMES = [
   { name: "gingham", a: "#f7d3ca", b: "#f1c7bd", check: "rgba(222,112,122,0.10)", grout: "rgba(200,160,130,0.18)", trail: "#fff8ec", edge: "#d9a08c", dot: "#e7a3a3" },
@@ -5426,7 +6374,9 @@ var THEMES = [
   { name: "W3 blueberry", a: "#bcd5ef", b: "#b0cbea", check: "rgba(90,130,200,0.14)", grout: "rgba(90,120,170,0.22)", trail: "#fffaf2", edge: "#86a9d6", dot: "#9dbde4" },
   { name: "W3 crust", a: "#e4bf92", b: "#deb88a", grain: "rgba(130,80,40,0.14)", grout: "rgba(130,85,45,0.28)", trail: "#fffaf0", edge: "#b98a57", dot: "#c99c6a" },
   // v0.7.9 world 4 (Crumb Design w4-paste.json artThemes_add index 7): mint. Contrast A1/A2/A3 on all ten W4 maps in qa/v0.7.9/contrast.
-  { name: "W4 mint", a: "#b6e4d6", b: "#abdccd", check: "rgba(60,170,150,0.14)", grout: "rgba(70,150,130,0.22)", trail: "#fffdf5", edge: "#80c3b0", dot: "#98d3c2" }
+  { name: "W4 mint", a: "#b6e4d6", b: "#abdccd", check: "rgba(60,170,150,0.14)", grout: "rgba(70,150,130,0.22)", trail: "#fffdf5", edge: "#80c3b0", dot: "#98d3c2" },
+  // v0.8.1 world 5 (plan W4, Crumb Design palettes-W3-W10.json): teal diner, with a pink icing accent for the flowers/dots. A1/A2/A3/A5 measured on the G1 renderer over all ten W5 maps (qa/v0.8.1/contrast-w5.json).
+  { name: "W5 teal-diner", a: "#a9d8de", b: "#9ecfd6", check: "rgba(60,150,170,0.13)", grout: "rgba(60,130,150,0.22)", trail: "#fffdf5", edge: "#7fbcc6", dot: "#f7b6c8" }
 ];
 function renderMapBackground(routes, theme, w, h, dpr2, props = []) {
   Array.isArray(routes) || (routes = [routes]);
@@ -5466,6 +6416,10 @@ function renderMapBackground(routes, theme, w, h, dpr2, props = []) {
     let mg = g.createRadialGradient(w * 0.85, -20, 10, w * 0.85, -20, 300);
     mg.addColorStop(0, "rgba(255,255,230,0.45)"), mg.addColorStop(1, "rgba(255,255,230,0)"), g.fillStyle = mg, g.fillRect(0, 0, w, h);
   }
+  if (ART81) {
+    let lp = g.createRadialGradient(130, 110, 20, 130, 110, 300);
+    lp.addColorStop(0, "rgba(255,250,228,0.02)"), lp.addColorStop(1, "rgba(255,250,228,0)"), g.fillStyle = lp, g.fillRect(0, 0, w, h);
+  }
   for (let k = 0; k < 10; k++) {
     let x = rnd() * w, y = rnd() * h;
     g.globalAlpha = 0.5, g.fillStyle = th.dot;
@@ -5483,7 +6437,7 @@ function renderMapBackground(routes, theme, w, h, dpr2, props = []) {
       g.lineWidth = lw, g.strokeStyle = col, g.lineJoin = "round", g.lineCap = "round", g.setLineDash(dash || []), g.stroke(), g.setLineDash([]);
     }
   };
-  g.save(), g.translate(0, 5), strokeAll(40, "rgba(70,35,50,0.26)"), g.restore(), strokeAll(36, INK), g.save(), g.translate(0, 1.5), strokeAll(32, shade(th.edge, -0.28)), g.restore(), strokeAll(30, th.edge), strokeAll(25, th.trail), g.save(), g.globalAlpha = 0.34, g.translate(-2, -2), strokeAll(15, mixHex(th.trail, "#ffffff", 0.5)), g.restore(), g.save(), g.globalAlpha = 0.16, g.translate(6.5, 6.5), strokeAll(5, shade(th.trail, -0.4)), g.restore();
+  g.save(), g.translate(0, 5), strokeAll(40, "rgba(70,35,50,0.26)"), g.restore(), ART81 && (g.save(), g.translate(2, 3), strokeAll(42, "rgba(70,35,50,0.07)"), g.restore(), g.save(), g.translate(-1.5, -1.5), strokeAll(39, "rgba(255,248,232,0.22)"), g.restore()), strokeAll(36, INK), g.save(), g.translate(0, 1.5), strokeAll(32, shade(th.edge, -0.28)), g.restore(), strokeAll(30, th.edge), strokeAll(25, th.trail), g.save(), g.globalAlpha = 0.34, g.translate(-2, -2), strokeAll(15, mixHex(th.trail, "#ffffff", 0.5)), g.restore(), g.save(), g.globalAlpha = 0.16, g.translate(6.5, 6.5), strokeAll(5, shade(th.trail, -0.4)), g.restore();
   for (let path of routes) {
     for (let d = 14; d < path.length; d += 15) {
       let p = path.at(d), side = (Math.floor(d / 15) % 2 ? 1 : -1) * 4;
@@ -5501,19 +6455,38 @@ function renderMapBackground(routes, theme, w, h, dpr2, props = []) {
       tuft(g, nx + Math.cos(a) * 36 * (k % 2 ? 1 : -1), ny + 10 + Math.sin(a) * 6, 0.8 + rnd() * 0.4);
     }
   }
+  ART81 && plates(g, routes);
   for (let pr of props) drawProp(g, pr.k, (pr.c + 0.5) * TILE, (pr.r + 0.5) * TILE);
   let vg = g.createRadialGradient(w / 2, h / 2, Math.min(w, h) * 0.45, w / 2, h / 2, Math.max(w, h) * 0.75);
-  vg.addColorStop(0, "rgba(80,40,50,0)"), vg.addColorStop(1, "rgba(80,40,50,0.18)"), g.fillStyle = vg, g.fillRect(0, 0, w, h);
-  {
+  if (vg.addColorStop(0, "rgba(80,40,50,0)"), vg.addColorStop(1, ART81 ? "rgba(80,40,50,0.12)" : "rgba(80,40,50,0.18)"), g.fillStyle = vg, g.fillRect(0, 0, w, h), ART81) {
+    let wall = (x0, y0, x1, y1, c0, c1, rx, ry, rw, rh) => {
+      let q = g.createLinearGradient(x0, y0, x1, y1);
+      q.addColorStop(0, c0), q.addColorStop(1, c1), g.fillStyle = q, g.fillRect(rx, ry, rw, rh);
+    };
+    wall(0, 5, 0, 21, "rgba(70,35,50,0.26)", "rgba(70,35,50,0)", 0, 5, w, 16), wall(5, 0, 19, 0, "rgba(70,35,50,0.20)", "rgba(70,35,50,0)", 5, 0, 14, h), wall(0, h - 15, 0, h - 5, "rgba(255,248,230,0)", "rgba(255,248,230,0.20)", 0, h - 15, w, 10), wall(w - 15, 0, w - 5, 0, "rgba(255,248,230,0)", "rgba(255,248,230,0.20)", w - 15, 0, 10, h);
+  } else {
     let ig = g.createLinearGradient(0, 0, 0, 12);
     ig.addColorStop(0, "rgba(70,35,50,0.22)"), ig.addColorStop(1, "rgba(70,35,50,0)"), g.fillStyle = ig, g.fillRect(0, 0, w, 12);
   }
   {
     g.save(), g.beginPath(), g.rect(0, 0, w, h), g.rect(5, 5, w - 10, h - 10);
     let rg = g.createLinearGradient(0, 0, 0, h);
-    rg.addColorStop(0, "#f0d0a4"), rg.addColorStop(0.5, "#e6bf8f"), rg.addColorStop(1, "#c99a68"), g.fillStyle = rg, g.fill("evenodd"), g.lineWidth = 2, g.strokeStyle = INK, g.strokeRect(5, 5, w - 10, h - 10), g.lineWidth = 1.4, g.strokeStyle = "rgba(255,246,222,0.85)", g.beginPath(), g.moveTo(1.5, h - 2), g.lineTo(1.5, 1.5), g.lineTo(w - 2, 1.5), g.stroke(), g.restore();
+    rg.addColorStop(0, "#f0d0a4"), rg.addColorStop(0.5, "#e6bf8f"), rg.addColorStop(1, "#c99a68"), g.fillStyle = rg, g.fill("evenodd"), g.lineWidth = 2, g.strokeStyle = INK, g.strokeRect(5, 5, w - 10, h - 10), g.lineWidth = 1.4, g.strokeStyle = "rgba(255,246,222,0.85)", g.beginPath(), g.moveTo(1.5, h - 2), g.lineTo(1.5, 1.5), g.lineTo(w - 2, 1.5), g.stroke(), ART81 && (g.lineWidth = 1.6, g.strokeStyle = "rgba(110,70,45,0.6)", g.beginPath(), g.moveTo(1, h - 1), g.lineTo(w - 1, h - 1), g.lineTo(w - 1, 1), g.stroke()), g.restore();
   }
   return cv;
+}
+function plates(g, routes) {
+  let ends = [];
+  for (let rt of routes) {
+    let p = rt.pts[rt.pts.length - 1];
+    ends.some((q) => Math.hypot(q.x - p.x, q.y - p.y) < 5) || ends.push(p);
+  }
+  for (let p of ends) {
+    let cy = p.y + 19.5 + 4;
+    g.save(), g.translate(p.x, cy), g.beginPath(), g.ellipse(0, 10, 32, 7, 0, 0, 7), g.fillStyle = "rgba(70,35,50,0.22)", g.fill(), g.beginPath(), g.ellipse(0, 0, 30, 11, 0, 0, 7);
+    let pg = g.createLinearGradient(0, -11, 0, 11);
+    pg.addColorStop(0, "#fff6e4"), pg.addColorStop(1, "#f1dcc0"), g.fillStyle = pg, g.fill(), g.lineWidth = 2.4, g.strokeStyle = INK, g.stroke(), g.beginPath(), g.ellipse(0, 0, 26, 8, 0, Math.PI * 0.9, Math.PI * 1.45), g.lineWidth = 1.4, g.strokeStyle = "rgba(255,255,255,0.85)", g.stroke(), g.restore();
+  }
 }
 function tuft(g, x, y, s) {
   g.save(), g.translate(x, y), g.scale(s, s);
@@ -5522,16 +6495,18 @@ function tuft(g, x, y, s) {
   g.restore();
 }
 function drawProp(g, kind, x, y) {
-  if (g.save(), g.translate(x, y), g.lineJoin = "round", g.lineCap = "round", shadow(g, 2, 13, 17, 5, 0.25), kind === "mug") {
+  if (g.save(), g.translate(x, y), g.lineJoin = "round", g.lineCap = "round", ART81 ? (g.beginPath(), g.ellipse(0, 12.5, 17, 5.5, 0, 0, 7), g.fillStyle = "rgba(255,248,232,0.5)", g.fill(), g.lineWidth = 1.4, g.strokeStyle = "rgba(82,60,75,0.45)", g.stroke(), g.beginPath(), g.ellipse(2, 14, 19, 6, 0, 0, 7), g.fillStyle = "rgba(70,35,50,0.14)", g.fill(), g.beginPath(), g.ellipse(1, 13, 12, 3.6, 0, 0, 7), g.fillStyle = "rgba(70,35,50,0.30)", g.fill()) : shadow(g, 2, 13, 17, 5, 0.25), kind === "mug") {
     g.beginPath(), g.arc(13, -2, 7, -1.4, 1.4), g.lineWidth = 6, g.strokeStyle = INK, g.stroke(), g.lineWidth = 3, g.strokeStyle = "#ff9fb2", g.stroke(), rr(g, -13, -14, 26, 27, 6);
     let gr = g.createLinearGradient(-13, 0, 13, 0);
     gr.addColorStop(0, "#ffc4cf"), gr.addColorStop(1, "#f28aa0"), g.fillStyle = gr, g.fill(), g.lineWidth = 2.4, g.strokeStyle = INK, g.stroke(), g.beginPath(), g.ellipse(0, -14, 13, 4, 0, 0, 7), g.fillStyle = "#7a4a34", g.fill(), g.lineWidth = 2.2, g.stroke(), heart(g, 0, -1, 4, "#fff"), g.globalAlpha = 0.5, g.strokeStyle = "#fff", g.lineWidth = 2;
     for (let k of [-4, 3])
       g.beginPath(), g.moveTo(k, -20), g.quadraticCurveTo(k + 4, -25, k, -30), g.stroke();
+    g.globalAlpha = 1, ART81 && propGloss(g, -8, -4, 2.6, 6.5, -9, -9);
   } else if (kind === "sugar") {
     blob(g, 0, 2, 16, 11, "#cfe8ff", 2.4), g.beginPath(), g.ellipse(0, -6, 14, 5, 0, 0, 7), g.fillStyle = "#fffaf0", g.fill(), g.lineWidth = 2, g.strokeStyle = INK, g.stroke(), sugarCube(g, -4, -9, 4), sugarCube(g, 4, -10, 3.5), g.fillStyle = "#8fc2ef";
     for (let k of [-8, 0, 8])
       g.beginPath(), g.arc(k, 5, 2, 0, 7), g.fill();
+    ART81 && propGloss(g, -10, 3, 2.8, 5, -11, -1);
   } else if (kind === "jam") {
     rr(g, -11, -10, 22, 23, 6);
     let gr = g.createLinearGradient(-11, 0, 11, 0);
@@ -5540,13 +6515,16 @@ function drawProp(g, kind, x, y) {
       g.beginPath(), g.arc(k, -8, 2.4, 0, Math.PI), g.fill();
     rr(g, -7, -2, 14, 9, 3), g.fillStyle = "#fff6e8", g.fill(), g.lineWidth = 1.4, g.stroke(), g.beginPath(), g.ellipse(-5, -4, 2, 5, 0.2, 0, 7), g.fillStyle = "rgba(255,255,255,0.5)", g.fill();
   } else if (kind === "spoon")
-    g.rotate(-0.6), rr(g, -2.5, -4, 5, 24, 2.5), g.fillStyle = "#d8dce8", g.fill(), g.lineWidth = 2, g.strokeStyle = INK, g.stroke(), blob(g, 0, -11, 8, 10, "#eef0f7", 2.2), g.beginPath(), g.ellipse(-2, -14, 2, 4, 0, 0, 7), g.fillStyle = "#fff", g.fill();
+    g.rotate(-0.6), rr(g, -2.5, -4, 5, 24, 2.5), g.fillStyle = "#d8dce8", g.fill(), g.lineWidth = 2, g.strokeStyle = INK, g.stroke(), blob(g, 0, -11, 8, 10, "#eef0f7", 2.2), g.beginPath(), g.ellipse(-2, -14, 2, 4, 0, 0, 7), g.fillStyle = "#fff", g.fill(), ART81 && (g.beginPath(), g.ellipse(-0.6, 8, 1.2, 6, 0, 0, 7), g.fillStyle = "rgba(255,255,255,0.55)", g.fill(), g.beginPath(), g.arc(-3.5, -17, 1.1, 0, 7), g.fillStyle = "rgba(255,255,255,0.8)", g.fill());
   else if (kind === "plant") {
     for (let [a, l] of [[-0.8, 16], [-0.3, 20], [0.2, 19], [0.7, 15]])
       g.save(), g.translate(0, -6), g.rotate(a), g.beginPath(), g.ellipse(0, -l / 2, 5, l / 2, 0, 0, 7), g.fillStyle = "#8fd17d", g.fill(), g.lineWidth = 2, g.strokeStyle = INK, g.stroke(), g.beginPath(), g.moveTo(0, 0), g.lineTo(0, -l + 3), g.lineWidth = 1, g.strokeStyle = "#5fa34e", g.stroke(), g.restore();
-    g.beginPath(), g.moveTo(-11, -4), g.lineTo(11, -4), g.lineTo(8, 13), g.lineTo(-8, 13), g.closePath(), g.fillStyle = "#e88a5c", g.fill(), g.lineWidth = 2.4, g.strokeStyle = INK, g.stroke(), rr(g, -12, -7, 24, 5, 2), g.fillStyle = "#f2a274", g.fill(), g.stroke();
+    g.beginPath(), g.moveTo(-11, -4), g.lineTo(11, -4), g.lineTo(8, 13), g.lineTo(-8, 13), g.closePath(), g.fillStyle = "#e88a5c", g.fill(), g.lineWidth = 2.4, g.strokeStyle = INK, g.stroke(), rr(g, -12, -7, 24, 5, 2), g.fillStyle = "#f2a274", g.fill(), g.stroke(), ART81 && propGloss(g, -6, 4, 1.8, 4.5, -6.5, 0);
   }
-  g.restore();
+  ART81 && kind === "jam" && (g.beginPath(), g.arc(-8, -13, 1.2, 0, 7), g.fillStyle = "rgba(255,255,255,0.8)", g.fill()), g.restore();
+}
+function propGloss(g, x, y, rx, ry, dx, dy) {
+  g.beginPath(), g.ellipse(x, y, rx, ry, 0.15, 0, 7), g.fillStyle = "rgba(255,255,255,0.55)", g.fill(), g.beginPath(), g.arc(dx, dy, 1.4, 0, 7), g.fillStyle = "rgba(255,255,255,0.8)", g.fill();
 }
 function drawSwatter(ctx2, x, y, ang = 0, sc = 1, flash = 0) {
   ctx2.save(), ctx2.translate(x, y), ctx2.rotate(ang), ctx2.scale(sc, sc), ctx2.lineJoin = "round", ctx2.lineCap = "round", shadow(ctx2, 0, 2, 9, 3, 0.22), rr(ctx2, -3.2, -34, 6.4, 34, 3.2), ctx2.fillStyle = "#d9a066", ctx2.fill(), ctx2.lineWidth = 2.2, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(-1, -6), ctx2.lineTo(-1, -28), ctx2.lineWidth = 1.4, ctx2.strokeStyle = "rgba(255,240,210,0.55)", ctx2.stroke(), ctx2.beginPath(), ctx2.arc(0, -2.5, 1.7, 0, 7), ctx2.fillStyle = "#b97f48", ctx2.fill();
@@ -5600,7 +6578,7 @@ var speedK = 1;
 function setAudioSpeed(k) {
   speedK = k;
 }
-var FAST_THROTTLED = /* @__PURE__ */ new Set(["laser", "zap", "pop", "pulse"]), throttleMs = (name, speed) => speed >= 4 && FAST_THROTTLED.has(name) ? 120 : 60;
+var FAST_THROTTLED = /* @__PURE__ */ new Set(["laser", "zap", "pop", "pulse"]), throttleMs = (name, speed) => name === "coinTick" ? speed >= 4 ? 120 : 100 : speed >= 4 && FAST_THROTTLED.has(name) ? 120 : 60;
 function sfx(name) {
   if (!ac || muted) return;
   let now2 = performance.now();
@@ -5646,6 +6624,26 @@ function sfx(name) {
       case "lose":
         [392, 330, 262].forEach((f, i) => tone(f, 0.3, "triangle", 0.4, 1, i * 0.2));
         break;
+      case "shield":
+        tone(1568, 0.05, "triangle", 0.16), tone(988, 0.09, "triangle", 0.14, 1, 0.04), tone(659, 0.12, "sine", 0.12, 1, 0.09);
+        break;
+      // v0.8.1 M4: a glassy 'tink' when a glaze shield breaks
+      case "shieldUp":
+        tone(659, 0.08, "sine", 0.1), tone(988, 0.1, "sine", 0.1, 1, 0.07);
+        break;
+      // v0.8.1 M4: soft rising pair when the shield is full again
+      case "coinTick":
+        tone(1318 + Math.random() * 60, 0.05, "triangle", 0.14, 1.1);
+        break;
+      // v0.8.1 G4/J10: a small bright tick when crumbs land on the counter
+      case "perfect":
+        [784, 988, 1175, 1568].forEach((f, i) => tone(f, 0.16, "triangle", 0.3, 1, i * 0.07)), tone(2093, 0.3, "sine", 0.14, 1, 0.3);
+        break;
+      // v0.8.1 J10: Perfect = a quick rising arpeggio + a sparkle
+      case "boss":
+        tone(98, 0.5, "sawtooth", 0.14, 0.7), tone(147, 0.4, "triangle", 0.18, 0.8, 0.12);
+        break;
+      // v0.8.1 J9: the Queen's low entrance tone
       case "heal":
         tone(880, 0.1, "sine", 0.18), tone(1175, 0.14, "sine", 0.16, 1, 0.08);
         break;
@@ -5879,6 +6877,8 @@ var W = 400, H = 720, MAP_Y = 68, MAP_W = GRID_COLS * TILE, MAP_H = GRID_ROWS * 
   shopMsg: null,
   crumbShake: 0,
   crumbPulse: 0,
+  crumbBump: 0,
+  chipSparkT: -9,
   slotFlip: [0, 0, 0],
   mergeAnim: null,
   prepAlert: null,
@@ -5940,8 +6940,10 @@ function applyLayout() {
   if (isMeta()) {
     let availH = Math.max(100, ch - (BAR_H + insetB));
     scale = Math.min(cw / W, availH / META_H), offX = (cw - W * scale) / 2, offY = (availH - META_H * scale) / 2;
-  } else
-    scale = Math.min(cw / W, ch / H), offX = (cw - W * scale) / 2, offY = (ch - H * scale) / 2;
+  } else {
+    let availH = Math.max(100, ch - insetB);
+    scale = Math.min(cw / W, availH / H), offX = (cw - W * scale) / 2, offY = (availH - H * scale) / 2;
+  }
   let px = Math.max(1, Math.round(dpr * scale * 2) / 2);
   px !== pxRatio && (pxRatio = px, S.bgCache = {}, clearTowerCache());
 }
@@ -5970,10 +6972,14 @@ function hit(list, x, y) {
 }
 function drawButton(x, y, w, h, label, col = "#ffb3c1", opt = {}) {
   let press = opt.pressed ? 3 : 0;
-  ctx.save(), drawPillButton(ctx, x, y, w, h, opt.disabled ? "grey" : col, { pressed: !!opt.pressed, disabled: !!opt.disabled, r: opt.r ?? Math.min(14, h / 2) }), label && (opt.disabled ? drawChunkyText(ctx, label, x + w / 2, y + h / 2 + press + 1, opt.size || 17, { mode: "plain", fill: "#a89aa5" }) : drawChunkyText(ctx, label, x + w / 2, y + h / 2 + press + 1, opt.size || 17, { mode: "btn" })), ctx.restore();
+  if (ctx.save(), drawPillButton(ctx, x, y, w, h, opt.disabled ? "dis" : col, { pressed: !!opt.pressed, disabled: !!opt.disabled, r: opt.r ?? Math.min(14, h / 2) }), label) {
+    let neutral = !opt.disabled && String(col).toLowerCase() === "#fff3e6";
+    opt.disabled ? (ctx.globalAlpha = 0.6, drawChunkyText(ctx, label, x + w / 2, y + h / 2 + press + 1, opt.size || 17, { mode: "btn" })) : neutral ? (ctx.font = `${opt.size || 17}px ${FONT_DISPLAY}`, ctx.textAlign = "center", ctx.textBaseline = "middle", ctx.fillStyle = INK, ctx.fillText(label, x + w / 2, y + h / 2 + press + 1)) : drawChunkyText(ctx, label, x + w / 2, y + h / 2 + press + 1, opt.size || 17, { mode: "btn" });
+  }
+  ctx.restore();
 }
 function panel(x, y, w, h, col = "#fff6ee", r = 18, opt = {}) {
-  drawBeveledTile(ctx, x, y, w, h, col, { lip: h >= 28 ? 4 : 3, r, lw: 3, hi: 0.55 }), opt.gold && (rr(ctx, x + 3.5, y + 3.5, w - 7, h - 7, Math.max(4, r - 3)), ctx.lineWidth = 3, ctx.strokeStyle = "#f6c648", ctx.stroke(), rr(ctx, x + 6, y + 6, w - 12, h - 12, Math.max(3, r - 5)), ctx.lineWidth = 1.2, ctx.strokeStyle = "rgba(255,248,200,0.9)", ctx.stroke());
+  drawBeveledTile(ctx, x, y, w, h, col, { lip: h >= 28 ? 4 : 3, r, lw: 3, hi: 0.55, end: col === "#fff6ee" ? "#fff0e6" : void 0 }), opt.gold && (rr(ctx, x + 3.5, y + 3.5, w - 7, h - 7, Math.max(4, r - 3)), ctx.lineWidth = 3, ctx.strokeStyle = "#f6c648", ctx.stroke(), rr(ctx, x + 6, y + 6, w - 12, h - 12, Math.max(3, r - 5)), ctx.lineWidth = 1.2, ctx.strokeStyle = "rgba(255,248,200,0.9)", ctx.stroke());
 }
 function toast(msg, col = "#fff") {
   let small = S.screen === "battle";
@@ -5987,7 +6993,7 @@ function toLogical(e) {
   return { x: (e.clientX - offX) / scale, y: (e.clientY - offY) / scale };
 }
 canvas.addEventListener("pointerdown", (e) => {
-  initAudio(), e.preventDefault();
+  initAudio(), e.preventDefault(), S.result && S.result.t < 4 && (S.result.coinSkip = !0);
   let p = toLogical(e), b = hit(prevButtons, p.x, p.y);
   down = { x: p.x, y: p.y, b, moved: !1 }, S.screen === "map" && !S.cal && !S.reveal.length && !S.pack && p.y >= MAPVIEW.top && p.y <= MAPVIEW.bottom && (down.scroll0 = S.mapScroll), b && b.onDown && b.onDown(p);
 });
@@ -6009,7 +7015,7 @@ canvas.addEventListener("pointerup", (e) => {
   }
   S.drag = null;
   let b = hit(prevButtons, p.x, p.y);
-  b && down.b && b.id === down.b.id && b.onTap && b.onTap(p), down = null;
+  b && down.b && b.id === down.b.id && b.onTap && (b.id !== "map" && haptic("light"), b.onTap(p)), down = null;
 });
 canvas.addEventListener("pointercancel", () => {
   down = null, S.drag = null;
@@ -6038,7 +7044,7 @@ function closeSettings() {
   S.settings = null, S.confirmReset = 0, S.settingsPushed && (S.settingsPushed = !1, ownBack());
 }
 function go(screen) {
-  S.settingsPushed = !1, S.screen = screen, S.prepTip = null, S.sel = null, S.info = null, S.drag = null, S.mergeAnim = null, S.toast = null, S.dialog = null, S.cal = null, S.settings = null, S.mode = null, S.shopFx = null, sfx("tap"), screen === "map" && (S.mapScroll = autoMapScroll(), maybeShowCalendar());
+  S.settingsPushed = !1, S.screen = screen, S.guide = null, S.antCard = null, S.starCard = null, S.prepTip = null, S.sel = null, S.info = null, S.drag = null, S.mergeAnim = null, S.toast = null, S.dialog = null, S.cal = null, S.settings = null, S.mode = null, S.shopFx = null, sfx("tap"), screen === "map" && (S.mapScroll = autoMapScroll(), maybeShowCalendar());
   try {
     let inner = history.state && history.state.inner;
     screen !== "map" && !inner ? history.pushState({ inner: 1 }, "") : screen === "map" && inner && ownBack();
@@ -6090,7 +7096,20 @@ function openPrep(i) {
   S.levelIndex = i;
   let unlocked = unlockedCards(S.save), deck = (S.save.lastDeck || []).filter((id) => unlocked.includes(id));
   for (let id of unlocked) deck.length < BATTLE.deckSize && !deck.includes(id) && deck.push(id);
-  S.prep.deck = deck.slice(0, BATTLE.deckSize), S.prep.bonuses = autoFixBonuses(S.save, (S.save.lastBonuses || BONUS_TYPES.slice(0, 2)).slice(0, BATTLE.bonusTypesToBring)), S.prepAlert = null, go("prep");
+  S.prep.deck = deck.slice(0, BATTLE.deckSize), S.prep.bonuses = autoFixBonuses(S.save, (S.save.lastBonuses || BONUS_TYPES.slice(0, 2)).slice(0, BATTLE.bonusTypesToBring)), S.prepAlert = null, go("prep"), S.antCard = antCardWanted() ? nextAntCard(S.save, i) : null;
+}
+function antCardWanted() {
+  return ART81 && !0;
+}
+function antCardDone() {
+  let t = S.antCard;
+  t && (markAntSeen(S.save, t) && persist(), sfx("tap"), S.antCard = nextAntCard(S.save, S.levelIndex));
+}
+function guideWanted(levelIndex) {
+  return levelIndex === 0 && !!(S.save.onboard && typeof S.save.onboard == "object" && S.save.onboard.firstBattle === "pending") && !0;
+}
+function guideDone() {
+  S.guide = null, S.save.onboard && typeof S.save.onboard == "object" && S.save.onboard.firstBattle !== "done" && (S.save.onboard.firstBattle = "done", persist());
 }
 function startBattle(levelIndex = S.levelIndex, deck = S.prep.deck, bonuses = S.prep.bonuses, seed = Date.now() & 16777215) {
   S.levelIndex = levelIndex, S.save.lastDeck = deck.slice(), S.save.lastBonuses = bonuses.slice(), persist(), S.treat = newTreatState(), S.battle = new Battle({
@@ -6103,20 +7122,27 @@ function startBattle(levelIndex = S.levelIndex, deck = S.prep.deck, bonuses = S.
     onBonusUsed: (type) => {
       consumeBonus(S.save, type), persist();
     }
-  }), S.battleStartStock = { ...S.save.bonusStock }, S.fx = [], S.swatQ = [], S.ui = [], S.result = null, setPaused(!1), S.speed = startSpeed(S.speed, UI.speedMaxAtStart), clock.acc = 0, S.sel = null, S.info = null, S.mode = null, S.queenDown = null, S.modeHint = !1, S.nurseTip = !1, S.battle.rescueScale = S.speed, go("battle");
+  }), S.battleStartStock = { ...S.save.bonusStock }, capsReset(), S.queenIntro = null, S._bubbleShown = !1, S.impactT = {}, S.crumbSprites = [], S.sparkles = [], S.fx = [], S.swatQ = [], S.ui = [], S.result = null, setPaused(!1), S.speed = startSpeed(S.speed, UI.speedMaxAtStart), clock.acc = 0, S.sel = null, S.info = null, S.mode = null, S.queenDown = null, S.modeHint = !1, S.nurseTip = !1, S.battle.rescueScale = S.speed, go("battle"), S.guide = guideWanted(levelIndex) ? { step: 1 } : null;
 }
 var CONFETTI_MAX = 36, MOMENT_MS = 2250, MOMENT_T = { drop: 0.2, shake: 0.45, burst: 0.6, count: 1.5, hold: 1.9, fly: 2.25 }, RESULT_PILE = { x: 200, y: 250 }, RESULT_TREAT = { x: 200, y: 201, k: 1.1 };
 function finishBattle() {
-  let b = S.battle, out = applyBattleResult(S.save, b.levelIndex, b.result, b.stars, { kills: b.stats.kills, foodLeft: b.foodStored, perfect: b.perfect, time: b.time });
-  b.result === "lose" && noteLossForCardBlink(S.save), persist();
+  let b = S.battle;
+  guideDone();
+  let out = applyBattleResult(S.save, b.levelIndex, b.result, b.stars, { kills: b.stats.kills, foodLeft: b.foodStored, perfect: b.perfect, time: b.time });
+  {
+    let rc = b.upgradeReach();
+    S.save.debug = S.save.debug || { reach: [] }, S.save.debug.reach.push({ li: b.levelIndex, res: b.result, towers: rc.towers, l1: rc.l1, l2: rc.l2, l3p: rc.l3p, placed: rc.placed, upgrades: rc.upgrades, crumbsPlace: rc.crumbsPlace, crumbsUpgrade: rc.crumbsUpgrade }), S.save.debug.reach.length > 20 && S.save.debug.reach.shift();
+  }
+  let lossRun = noteLossRun(S.save, b.levelIndex, b.result === "win");
+  b.result === "win" && b.levelIndex === 0 && out.firstClear && ART81 && armNextHint(S.save, "l1"), b.result === "lose" && noteLossForCardBlink(S.save), persist();
   let win = b.result === "win", fullFood = b.foodStored >= b.cfg.foodHP - 1e-6, queenKilled = win && Object.keys(b.stats.byType).some((t) => isQueen(t)), hold = queenKilled ? UI.queenCheerHold : 0;
-  S.result = { win, stars: b.stars, out, t: 0, hold, crumbsLeft: b.crumbs, perfect: out.perfect, kills: b.stats.kills, confetti: [], fullFood, queenKilled };
+  S.result = { win, stars: b.stars, out, t: 0, hold, crumbsLeft: b.crumbs, perfect: out.perfect, kills: b.stats.kills, confetti: [], fullFood, queenKilled, hint: ART81 && b.result === "lose" && lossRun >= 2 ? lossHint(b) : null };
   {
     let sp = out.starParts || { s2: 0, s3: 0 };
     win && b.stars >= 3 && sp.s3 > 0 && (S.result.moment = { amount: sp.s3, t0: out.perfect ? UI.perfectAnimTime : 1, dur: MOMENT_MS / 1e3, sfx: 0 }), win && sp.s2 > 0 && (S.result.chip2 = sp.s2);
   }
   if (win && (b.stars >= 3 || fullFood || out.perfect)) for (let i = 0; i < CONFETTI_MAX; i++) S.result.confetti.push({ x: 200 + (Math.random() - 0.5) * 60, y: 230, vx: (Math.random() - 0.5) * 420, vy: -150 - Math.random() * 320, r: Math.random() * 6, c: ["#ff8fab", "#ffd45e", "#8fe388", "#9fd3f2", "#c9b6f2"][i % 5] });
-  win && fullFood && launchFireworks(9, 2.6), queenKilled && (launchFireworks(10, 3), S.queenDown = { t: S.t, world: worldOf(b.levelIndex) }), out.prize && out.prize.kind === "cards" && out.prize.reveal && queueReveal(out.prize.id, out.prize.level, out.prize.newCard, S.t + hold + UI.perfectAnimTime + 0.4 + (S.result.moment ? S.result.moment.dur + 0.1 : 0)), out.bossGift && out.bossGift.reveal && queueReveal(out.bossGift.id, out.bossGift.level, out.bossGift.newCard, S.t + hold + UI.perfectAnimTime + (out.prize && out.prize.reveal ? 2.4 : 0.4) + (S.result.moment ? S.result.moment.dur + 0.1 : 0)), sfx(win ? "win" : "lose");
+  win && fullFood && (S.result.moment ? S.result.pendingFw = [9, 2.6] : launchFireworks(9, 2.6)), queenKilled && (launchFireworks(10, 3), S.queenDown = { t: S.t, world: worldOf(b.levelIndex) }), out.prize && out.prize.kind === "cards" && out.prize.reveal && queueReveal(out.prize.id, out.prize.level, out.prize.newCard, S.t + hold + UI.perfectAnimTime + 0.4 + (S.result.moment ? S.result.moment.dur + 0.1 : 0)), out.bossGift && out.bossGift.reveal && queueReveal(out.bossGift.id, out.bossGift.level, out.bossGift.newCard, S.t + hold + UI.perfectAnimTime + (out.prize && out.prize.reveal ? 2.4 : 0.4) + (S.result.moment ? S.result.moment.dur + 0.1 : 0)), sfx(win ? "win" : "lose"), win ? b.stars >= 3 && haptic("medium") : haptic("heavy"), win && out.perfect && ART81 && setTimeout(() => sfx("perfect"), 500);
 }
 function tileAt(p) {
   let x = p.x, y = p.y - MAP_Y;
@@ -6174,11 +7200,11 @@ function mapTap(p) {
   }
   S.info = tw ? { tower: tw, t: 0 } : null;
 }
-var TREAT_NAME = { cookie: "Cookie", cake: "Cake", pie: "Pie", sundae: "Sundae" }, HINT_ANTS = /* @__PURE__ */ new Set(["armored", "big", "heavy", "queen", "queen2", "greasy", "mama", "queen3", "nurse", "queen4"]);
+var W5_STORY = "Glaze grows back: hit hard, hit fast!", TREAT_NAME = { cookie: "Cookie", cake: "Cake", pie: "Pie", sundae: "Sundae", donut: "Donut" }, HINT_ANTS = /* @__PURE__ */ new Set(["armored", "big", "heavy", "queen", "queen2", "greasy", "mama", "queen3", "nurse", "queen4", "glazed", "queen5"]);
 function maybeModeHint(b, e) {
   S.modeHint || S.paused || !e.ant || !HINT_ANTS.has(e.ant) || !(e.n > 0) || b.towers.some((q) => hasTargetModes(q.type)) && (S.modeHint = !0, toast("Tip: tap a tower, then pick who it shoots", "#ffe39a"), S.toast.hint = !0);
 }
-var MODE_NAME = { weak: "Weakest", carrier: "Carrier", front: "Front" };
+var MODE_NAME = { weak: "Weakest", carrier: "Carrier", healer: "Healer", strong: "Heavy" };
 function modeFeedback(tw, m) {
   sfx("tap"), tw._modeAt = S.t, addFloatText(S.fx, { key: "mode" + tw.id, x: tw.x, y: tw.y - 26, n: 1, fmt: () => MODE_NAME[m], col: m === "weak" ? "#fff" : "#ffe39a", life: 1 });
 }
@@ -6217,6 +7243,21 @@ function modeTap(b, t) {
   b.swapTowers(m.tower, other) ? (S.mode = null, sfx("place")) : toast("Those two can't swap spots", "#ffd0d0");
 }
 function addFx(f) {
+  if (ART81 && (f.k === "spark" || f.k === "star")) {
+    let n = 0;
+    for (let i = 0; i < S.fx.length; i++) {
+      let q = S.fx[i];
+      (q.k === "spark" || q.k === "star") && n++;
+    }
+    if (n >= 24)
+      for (let i = 0; i < S.fx.length; i++) {
+        let q = S.fx[i];
+        if (q.k === "spark" || q.k === "star") {
+          S.fx.splice(i, 1);
+          break;
+        }
+      }
+  }
   S.fx.push(f);
   let cap = S.speed >= 4 ? 220 : 300;
   if (S.fx.length > cap) {
@@ -6239,14 +7280,106 @@ var fmtFood = (n) => Math.abs(n - Math.round(n)) < 0.05 ? String(Math.round(n)) 
 function swatHitTime(b) {
   return b.time - (0.5 - b.swatFx) + SWAT_HIT;
 }
+var CHIP = { x: 341, y: 33 };
+function crumbUp(e) {
+  if (!ART81 || !(e.crumbs > 0) || S.screen !== "battle") return;
+  if (reducedMotion()) {
+    S.crumbBump = 0.12, sfx("coinTick");
+    return;
+  }
+  let fast = S.speed >= 4, list = S.crumbSprites || (S.crumbSprites = []), life = fast ? 0.35 : 0.55, last2 = list[list.length - 1];
+  if (last2 && S.t - last2.t0 < 0.1) {
+    last2.sc = 1.3;
+    return;
+  }
+  if (list.length >= (fast ? 6 : 12)) {
+    S.crumbBump = Math.max(S.crumbBump || 0, 0.12);
+    return;
+  }
+  list.push({ x0: e.x, y0: e.y + MAP_Y - 10, t0: S.t, life, sc: 1 });
+}
+function drawCrumbUp() {
+  let list = S.crumbSprites;
+  if (!list || !list.length) return;
+  let fast = S.speed >= 4;
+  for (let i = list.length - 1; i >= 0; i--) {
+    let q = list[i], p = (S.t - q.t0) / q.life;
+    if (p >= 1 || p < 0) {
+      list.splice(i, 1), S.crumbBump = 0.12, S.t - (S.chipSparkT || -9) > 0.15 && (S.chipSparkT = S.t), sfx("coinTick");
+      continue;
+    }
+    let u = p * p, cx = q.x0 + (CHIP.x - q.x0) * 0.25, cy = Math.min(q.y0, 70) - 46, v = 1 - u, pt = (uu) => {
+      let w = 1 - uu;
+      return [w * w * q.x0 + 2 * w * uu * cx + uu * uu * CHIP.x, w * w * q.y0 + 2 * w * uu * cy + uu * uu * CHIP.y];
+    };
+    if (!fast) for (let j = 1; j <= 2; j++) {
+      let [tx, ty] = pt(Math.max(0, u - j * 0.1));
+      ctx.save(), ctx.globalAlpha = 0.7 - j * 0.2, sparkleAt(ctx, tx, ty, 3 - j * 0.6, j === 1 ? "#fff" : "#ffe27a", 0.4), ctx.restore();
+    }
+    let [x, y] = pt(u);
+    ctx.save(), ctx.globalAlpha = Math.min(1, 1.4 - p * 0.4), crumbIcon(ctx, x, y, 1.2 * (1 - 0.2 * p) * q.sc), ctx.restore();
+  }
+}
+function towerImpact(tp, x, y, shape, opt = {}) {
+  if (!ART81) return;
+  let fast = S.speed >= 4, tk = S.impactT || (S.impactT = {});
+  if (fast && S.t - (tk[tp] || -9) < 0.12) return;
+  tk[tp] = S.t;
+  let col = TOWERS[tp] ? TOWERS[tp].color : "#ffffff";
+  if (reducedMotion()) {
+    addFx({ k: "impact", shape: "tint", col, x, y, life: 0.034, max: 0.034 });
+    return;
+  }
+  addFx({ k: "impact", shape, col, x, y, life: opt.life || 0.18, max: opt.life || 0.18, fast });
+}
+var SHARD_COL = { armored: "#b8c3d4", gasmask: "#a9c9a0", glazed: "#ffa6dc", small_gasmask: "#a9c9a0", small_armed: "#b8c3d4", sprinter: "#b8c3d4", queen5: "#ffa6dc" };
+function deathExtras(e) {
+  if (!ART81 || reducedMotion()) return;
+  let D0 = ANTS[e.ant];
+  if (e.ant === "queen5") {
+    let fast2 = S.speed >= 4, n = fast2 ? 12 : 24, cols = ["#ffe27a", "#8fd0f7", "#ffffff", "#a8e6a1", "#ff6f91", "#f7b6c8"];
+    addFx({ k: "icing", x: e.x, y: e.y - 4, life: 0.7, max: 0.7 });
+    for (let i = 0; i < 3; i++) addFx({ k: "puff", x: e.x + (i - 1) * 14, y: e.y - 8, vx: (i - 1) * 26, vy: -16, r: 12 + i * 3, life: 0.6, max: 0.6, col: "#f7b6c8" });
+    for (let i = 0; i < n; i++) {
+      let a = -Math.PI * (0.1 + 0.8 * Math.random()), v = 70 + Math.random() * 110;
+      addFx({ k: "sprk", x: e.x, y: e.y - 20, vx: Math.cos(a) * v, vy: Math.sin(a) * v, rot: Math.random() * 6, col: cols[i % cols.length], life: 0.9, max: 0.9 });
+    }
+    addFx({ k: "spark", big: !0, x: e.x, y: e.y - 34, life: 0.7, max: 0.7, col: "#f7b6c8" });
+    return;
+  }
+  if (D0 && D0.boss) {
+    for (let i = 0; i < 2; i++) addFx({ k: "puff", x: e.x + (i - 0.5) * 16, y: e.y - 6, vx: (i - 0.5) * 30, vy: -14, r: 15 + i * 6, life: 0.7, max: 0.7 });
+    addFx({ k: "spark", big: !0, x: e.x, y: e.y - 34, life: 0.7, max: 0.7, col: "#ffd23f" });
+    return;
+  }
+  let D = D0;
+  if (!D) return;
+  let fast = S.speed >= 4, y = e.y - 4;
+  if (!D.flying) {
+    if (D.heal) {
+      addFx({ k: "healCross", x: e.x, y: e.y - 10, life: 0.5, max: 0.5 });
+      return;
+    }
+    if (D.sizeClass === "large") {
+      addFx({ k: "puff", x: e.x, y, vx: 0, vy: -10, r: 4.2 * 1.4 + 3, life: 0.5, max: 0.5 });
+      for (let i = 0; i < (fast ? 2 : 4); i++) addFx({ k: "puff", x: e.x + (i - 1.5) * 9, y: e.y + 2, vx: (i - 1.5) * 24, vy: -6, r: 3, life: 0.45, max: 0.45 });
+      return;
+    }
+    if (D.shield || SHARD_COL[e.ant] || D.armor && D.sizeClass !== "small") {
+      for (let i = 0; i < (fast ? 2 : 3); i++) addFx({ k: "shard", col: SHARD_COL[e.ant] || "#b8c3d4", x: e.x, y: y - 2, vx: (i - 1) * 55 + (Math.random() - 0.5) * 20, vy: -45 - Math.random() * 40, life: 0.5, max: 0.5 });
+      return;
+    }
+    addFx({ k: "spark", x: e.x, y: y - 4, life: 0.3, max: 0.3, col: "#fff7a8" });
+  }
+}
 function killFx(e) {
-  if (e.src === "tractor") {
+  if (crumbUp(e), deathExtras(e), ANTS[e.ant] && ANTS[e.ant].boss && haptic("medium"), e.src === "tractor") {
     e.crumbs > 0 && addFloatText(S.fx, { k: "crumbTxt", key: "crumb", x: e.x, y: e.y - 14, n: e.crumbs, fmt: (n) => n, life: 0.9 });
     return;
   }
   let fast = S.speed >= 4;
   for (let i = 0; i < (fast ? 1 : 4); i++) addFx({ k: "crumbBit", x: e.x, y: e.y - 6, vx: (Math.random() - 0.5) * 90, vy: -40 - Math.random() * 60, life: 0.6, max: 0.6 });
-  addFx({ k: "ko", x: e.x, y: e.y, ant: e.ant, life: 0.32, max: 0.32, face: Math.random() < 0.5 ? 1 : -1 });
+  addFx({ k: "ko", x: e.x, y: e.y, ant: e.ant, fall: !!(ART81 && ANTS[e.ant] && ANTS[e.ant].flying), life: 0.32, max: 0.32, face: Math.random() < 0.5 ? 1 : -1 });
   for (let i = 0; i < (fast ? 2 : 5); i++) addFx({ k: "puff", x: e.x + (Math.random() - 0.5) * 10, y: e.y + (Math.random() - 0.5) * 6, vx: (Math.random() - 0.5) * 40, vy: -Math.random() * 30, r: 4 + Math.random() * 4, life: 0.5, max: 0.5 });
   e.crumbs > 0 && addFloatText(S.fx, { k: "crumbTxt", key: "crumb", x: e.x, y: e.y - 14, n: e.crumbs, fmt: (n) => n, life: 0.9 }), sfx("pop");
 }
@@ -6278,17 +7411,18 @@ function consumeEvents() {
         killFx(e);
         break;
       case "beam":
-        addFx({ k: "beam", ...e, life: 0.09, max: 0.09 }), sfx("laser");
+        addFx({ k: "beam", ...e, life: 0.09, max: 0.09 }), towerImpact("laser", e.tx, e.ty - 4, "sparkle", { life: 0.14 }), sfx("laser");
         break;
       case "zap":
-        addFx({ k: "zap", ...e, life: 0.14, max: 0.14 }), sfx("zap");
+        addFx({ k: "zap", ...e, life: 0.14, max: 0.14 }), towerImpact("zapper", e.tx, e.ty - 6, "sparks2", { life: 0.16 }), sfx("zap");
         break;
       case "roast":
+        towerImpact("lava", e.x, e.y - 6, "bubbles", { life: 0.3 });
         for (let i = 0; i < 5; i++) addFx({ k: "ember", x: e.x + (Math.random() - 0.5) * 14, y: e.y - 4, vx: (Math.random() - 0.5) * 20, vy: -30 - Math.random() * 30, life: 0.7, max: 0.7 });
         break;
       // v0.4 item 7
       case "tongue":
-        addFx({ k: "tongue", ...e, life: 0.25, max: 0.25 });
+        addFx({ k: "tongue", ...e, life: 0.25, max: 0.25 }), towerImpact("lizard", e.tx, e.ty - 6, "spoke3", { life: 0.16 });
         break;
       case "scoop": {
         let side = e.dx ? [0, 1] : [1, 0];
@@ -6308,14 +7442,14 @@ function consumeEvents() {
         sfx("gust");
         break;
       case "spray":
-        addFx({ k: "mist", ...e, life: 0.3, max: 0.3 });
+        addFx({ k: "mist", ...e, life: 0.3, max: 0.3 }), towerImpact("spray", e.tx, e.ty - 4, "ring", { life: 0.18 });
         break;
       case "swat": {
         reducedMotion() ? swatHitFx(e) : S.swatQ.push({ at: swatHitTime(b), swat: e });
         break;
       }
       case "hit":
-        addFx({ k: "spark", x: e.x, y: e.y - 6, life: 0.15, max: 0.15 });
+        ART81 && e.src === "slingshot" ? towerImpact("slingshot", e.x, e.y - 6, "spoke3", { life: 0.15 }) : addFx({ k: "spark", x: e.x, y: e.y - 6, life: 0.15, max: 0.15 });
         break;
       case "gateZap":
         addFx({ k: "spark", x: e.x, y: e.y - 14, life: 0.18, max: 0.18, col: "#fff27a" });
@@ -6327,7 +7461,7 @@ function consumeEvents() {
       case "pieceCollect": {
         let cp = b.path.pts[b.path.pts.length - 1];
         addFx({ k: "crumbFly", x0: e.x, y0: e.y, x1: cp.x, y1: cp.y, life: 0.35, max: 0.35 }), addFloatText(S.fx, { key: "rescue" + e.id, x: e.x, y: e.y - 20, n: e.n, fmt: (n) => `+${fmtFood(n)}`, col: "#4fc25a", life: 0.9 });
-        for (let i = 0; i < 4; i++) addFx({ k: "star", x: e.x, y: e.y, vx: (Math.random() - 0.5) * 120, vy: -30 - Math.random() * 70, life: 0.45, max: 0.45 });
+        for (let i = 0; i < 4; i++) addFx({ k: "star", ci: i, x: e.x, y: e.y, vx: (Math.random() - 0.5) * 120, vy: -30 - Math.random() * 70, life: 0.45, max: 0.45 });
         sfx("return");
         break;
       }
@@ -6349,11 +7483,18 @@ function consumeEvents() {
           addUi({ k: "cardFly", card: e.card, x0: sx, y0: sy, x1: e.x, y1: e.y + MAP_Y, life: delay, max: delay }), S.slotFlip[e.pick] = 0.3;
         }
         e.cost > 0 && addUi({ k: "costFly", n: e.cost, x0: 340, y0: 34, x1: 300, y1: 96, life: 1, max: 1 }), S.crumbPulse = 0.35;
-        for (let i = 0; i < 14; i++) {
-          let a = i / 14 * Math.PI * 2;
-          addFx({ k: "star", x: e.x, y: e.y, vx: Math.cos(a) * 75, vy: Math.sin(a) * 75 - 25, life: 0.7 + delay, max: 0.7, wait: delay });
+        {
+          let nS = ART81 ? S.speed >= 4 ? 5 : 10 : 14;
+          for (let i = 0; i < nS; i++) {
+            let a = i / nS * Math.PI * 2;
+            addFx({ k: "star", ci: i, x: e.x, y: e.y, vx: Math.cos(a) * 75, vy: Math.sin(a) * 75 - 25, life: 0.7 + delay, max: 0.7, wait: delay });
+          }
         }
         if (addFx({ k: "pop", x: e.x, y: e.y, life: 0.35 + delay, max: 0.35, wait: delay }), addFx({ k: "ring2", x: e.x, y: e.y, life: 0.5 + delay, max: 0.5, wait: delay }), e.type === "upgrade") {
+          if (ART81 && !reducedMotion()) {
+            let ut = b.towers.find((q) => q.id === e.id);
+            ut && (ut._upAt = S.t + delay), addFx({ k: "ring", x: e.x, y: e.y + 14, r: 30, col: TOWER_PAD[ut ? ut.type : "slingshot"] || "#ffd45e", life: 0.4 + delay + 0.22, max: 0.4, wait: delay + 0.22 });
+          }
           addFx({ k: "pillar", x: e.x, y: e.y, life: 0.9 + delay, max: 0.9, wait: delay }), addFx({ k: "txt", x: e.x, y: e.y - 34, s: `Level ${e.lvl}!${dmgGainText(e.card, e.lvl, S.battle.cardLevels[e.card] || 1) ? "  " + dmgGainText(e.card, e.lvl, S.battle.cardLevels[e.card] || 1) : ""}`, col: "#ffe36e", life: 1.4 + delay, max: 1.4, wait: delay, size: 17 }), (e.diff || []).forEach((d, k) => addFx({ k: "txt", x: e.x, y: e.y - 52 - k * 16, s: `${d.label} ${formatStat(e.card, d.key, d.from)} \u2192 ${formatStat(e.card, d.key, d.to)}`, col: "#a8ffb0", life: 2 + delay, max: 2, wait: delay, size: 12 }));
           let tw = S.battle.towers.find((q) => q.id === e.id);
           if (tw && !S.autoBot) {
@@ -6365,9 +7506,10 @@ function consumeEvents() {
         break;
       }
       case "stick":
-        addFloatText(S.fx, { key: "stick", x: e.x, y: e.y - 20, n: 1, fmt: () => "stuck!", col: "#fff3b0", life: 0.7 });
+        towerImpact("glue", e.x, e.y + 4, "splat", { life: 0.25 }), addFloatText(S.fx, { key: "stick", x: e.x, y: e.y - 20, n: 1, fmt: () => "stuck!", col: "#fff3b0", life: 0.7 });
         break;
       case "charm":
+        e.tx !== void 0 && towerImpact("pheromone", e.tx, e.ty - 22, "heart", { life: 0.5 });
         for (let i = 0; i < 2; i++) addFx({ k: "heart", x: e.x + (i - 0.5) * 8, y: e.y - 18, life: 0.9, max: 0.9 });
         break;
       case "squash":
@@ -6397,9 +7539,26 @@ function consumeEvents() {
       case "plane":
         sfx("plane");
         break;
-      case "wave":
-        addFx({ k: "banner", s: `Wave ${e.n}`, life: 1.4, max: 1.4 }), sfx("wave"), b.levelIndex === 31 && e.n === 2 && !S.nurseTip && (S.nurseTip = !0, toast("Nurse ants heal their friends. Pop them first!", "#ffe39a"), S.toast.hint = !0);
+      case "wave": {
+        let lastW = e.n >= b.totalWaves, queen = lastW && isBossLevel(b.levelIndex);
+        addFx(ART81 ? { k: "banner", pill: !0, last: lastW, s: queen ? "Queen!" : lastW ? `Final wave ${e.n}/${b.totalWaves}` : `Wave ${e.n}/${b.totalWaves}`, life: 1.08, max: 1.08 } : { k: "banner", s: `Wave ${e.n}`, life: 1.4, max: 1.4 }), sfx("wave"), lastW && ART81 && setTimeout(() => sfx("wave"), 380), ART81 && b.levelIndex === 41 && e.n === 2 && markAntSeen(S.save, "tip:glazed42") && (persist(), toast(L42_TIP, "#ffe39a"), S.toast.hint = !0), b.levelIndex === 31 && e.n === 2 && !S.nurseTip && (S.nurseTip = !0, toast("Nurse ants heal their friends. Pop them first!", "#ffe39a"), S.toast.hint = !0);
         break;
+      }
+      case "shieldBreak": {
+        let rm = reducedMotion(), fast = S.speed >= 4;
+        if (rm) addFx({ k: "shieldPop", x: e.x, y: e.y - 8, life: 0.3, max: 0.3 });
+        else for (let i = 0; i < (fast ? 3 : 6); i++) {
+          let an = -Math.PI / 2 + (i - 2.5) * 0.7 + i % 3 * 0.1;
+          addFx(i < 3 ? { k: "iceShard", x: e.x, y: e.y - 10, vx: Math.cos(an) * (60 + 20 * i), vy: Math.sin(an) * (70 + 15 * i), rot: i * 2.1, life: 0.5, max: 0.5 } : { k: "puff", x: e.x + (i - 4) * 6, y: e.y - 14, vx: (i - 4) * 18, vy: -22, r: 1.6, life: 0.3, max: 0.3 });
+        }
+        S.t - (S.lastShieldSfx || -9) > 0.08 && (S.lastShieldSfx = S.t, sfx("shield"));
+        break;
+      }
+      case "shieldFull": {
+        let o = b.ants.find((q) => q.id === e.id);
+        o && (o._shieldFlash = S.t + 0.25), S.t - (S.lastShieldUpSfx || -9) > 0.25 && (S.lastShieldUpSfx = S.t, sfx("shieldUp"));
+        break;
+      }
       case "heal": {
         let fast = S.speed >= 4, rm = reducedMotion();
         addFx({ k: "healRing", x: e.x, y: e.y, r: e.r, life: rm ? 0.35 : 0.5, max: rm ? 0.35 : 0.5 });
@@ -6426,7 +7585,7 @@ function consumeEvents() {
           let d = Math.abs(q.x - e.x) + Math.abs(q.y - e.y);
           d < nd && (nd = d, near = q);
         }
-        near && nd < 6 && !rm && (near._hopT = S.t);
+        near && nd < 6 && !rm && (near._hopT = S.t, ART81 && (near._grabT = S.t, S._bubbleShown || (S._bubbleShown = !0, near._bubbleUntil = S.t + (e.t || 1))));
         for (let i = 0; i < (rm || fast ? 1 : 3); i++) addFx({ k: "puff", x: e.x + (Math.random() - 0.5) * 8, y: e.y - 8 - Math.random() * 4, vx: rm ? 0 : (Math.random() - 0.5) * 36, vy: rm ? 0 : -14 - Math.random() * 18, r: 2.2, life: 0.4, max: 0.4 });
         !fast && S.t - (S._pickTick || -9) > 0.14 && (S._pickTick = S.t, sfx("pop"));
         break;
@@ -6442,14 +7601,43 @@ function battleStep(dt) {
   return b.rescueScale = S.speed, b.update(dt), S.autoBot && smartBotStep(b), (S.speed > 1 || b.result) && (consumeEvents(), flushSwat(!!b.result)), !!b.result;
 }
 function battleFrame(dt) {
+  if (S.guide) {
+    consumeEvents();
+    return;
+  }
   advanceFrame(clock, dt, S.speed, battleStep, { now: () => performance.now() }), consumeEvents(), flushSwat(!!S.battle.result), S.battle.result && finishBattle();
 }
 function frame(now2) {
   let dt = Math.min(0.1, (now2 - lastT) / 1e3);
-  lastT = now2, S.t += dt, heartbeat(!1), insetClock += dt, insetClock >= 0.5 && (insetClock = 0, refreshInset()), setAudioSpeed(S.screen === "battle" ? S.speed : 1), S.screen === "battle" && S.battle && !S.paused && !S.result && !S.dialog && battleFrame(dt), render(dt), requestAnimationFrame(frame);
+  lastT = now2, S.t += dt, heartbeat(!1), insetClock += dt, insetClock >= 0.5 && (insetClock = 0, refreshInset()), setAudioSpeed(S.screen === "battle" ? S.speed : 1), S.screen === "battle" && S.battle && !S.paused && !S.result && !S.dialog && battleFrame(dt), render(dt), capsTick(dt, now2), down && down.b && down.b.id === "verLong" && !down.moved && performance.now() - (S.capsHold || 0) > 700 && (S.capsOn = !S.capsOn, down.b = null, sfx("tap")), requestAnimationFrame(frame);
+}
+var CAPS = { fx: 0, ui: 0, crumbSprites: 0, sparkles: 0, confetti: 0, frameMax: 0 }, CAPW = { n: 0, sum: 0, max: 0, at: 0, avg: 0, wmax: 0 };
+function capsReset() {
+  for (let k of Object.keys(CAPS)) CAPS[k] = 0;
+  CAPW.n = 0, CAPW.sum = 0, CAPW.max = 0, CAPW.at = 0, CAPW.avg = 0, CAPW.wmax = 0;
+}
+function capsNow() {
+  return { fx: S.fx.length, ui: S.ui.length, crumbSprites: (S.crumbSprites || []).length, sparkles: S.fx.reduce((n, q) => n + (q.k === "spark" || q.k === "star" ? 1 : 0), 0), confetti: S.result ? S.result.confetti.length : 0 };
+}
+function capsTick(dt, now2) {
+  let c = capsNow();
+  for (let k of Object.keys(c)) c[k] > CAPS[k] && (CAPS[k] = c[k]);
+  let ms = dt * 1e3;
+  CAPW.n++, CAPW.sum += ms, ms > CAPW.max && (CAPW.max = ms), ms > CAPS.frameMax && (CAPS.frameMax = ms), now2 - CAPW.at >= 5e3 && (CAPW.avg = CAPW.sum / Math.max(1, CAPW.n), CAPW.wmax = CAPW.max, CAPW.n = 0, CAPW.sum = 0, CAPW.max = 0, CAPW.at = now2);
+}
+function drawCapsOverlay() {
+  if (!S.capsOn) return;
+  let c = capsNow();
+  ctx.save(), ctx.globalAlpha = 0.88, rr(ctx, 6, 64, 206, S.battle ? 134 : 98, 8), ctx.fillStyle = "#2e2230", ctx.fill(), ctx.globalAlpha = 1;
+  let L = [`fx ${c.fx} (max ${CAPS.fx})   ui ${c.ui} (${CAPS.ui})`, `crumbs ${c.crumbSprites} (${CAPS.crumbSprites})   sparks ${c.sparkles} (${CAPS.sparkles})`, `confetti ${c.confetti} (${CAPS.confetti})`, `frame avg ${CAPW.avg.toFixed(1)} ms  max ${CAPW.wmax.toFixed(1)}`, `run max ${CAPS.frameMax.toFixed(1)} ms   ants ${S.battle ? S.battle.ants.length : 0}`];
+  if (S.battle) {
+    let rc = S.battle.upgradeReach();
+    L.push(`towers L1/L2/L3+ ${rc.l1}/${rc.l2}/${rc.l3p}  upg ${rc.upgrades}`, `crumbs place ${rc.crumbsPlace}  upgrade ${rc.crumbsUpgrade}`);
+  }
+  L.forEach((s, i) => text(ctx, s, 14, 78 + i * 17, 12, "#ffe9c9", "left", null)), ctx.restore();
 }
 function render(dt) {
-  if (prevButtons = buttons, buttons = [], ctx.setTransform(1, 0, 0, 1, 0, 0), ctx.fillStyle = BG, ctx.fillRect(0, 0, canvas.width, canvas.height), applyLayout(), ctx.setTransform(dpr * scale, 0, 0, dpr * scale, offX * dpr, offY * dpr), drawBackdrop(), renderTabBar(dt), S.screen === "map" ? renderMapScreen() : S.screen === "prep" ? renderPrep() : S.screen === "battle" ? renderBattle(dt) : S.screen === "cards" ? renderCards() : S.screen === "card" ? renderCardView() : S.screen === "shop" && renderShop(), renderFireworks(dt), S.reveal.length && S.reveal[0].at <= S.t && renderReveal(dt), S.pack && renderPack(dt), S.toast) {
+  if (MOTION.reduced = reducedMotion(), prevButtons = buttons, buttons = [], ctx.setTransform(1, 0, 0, 1, 0, 0), ctx.fillStyle = BG, ctx.fillRect(0, 0, canvas.width, canvas.height), applyLayout(), ctx.setTransform(dpr * scale, 0, 0, dpr * scale, offX * dpr, offY * dpr), drawBackdrop(), renderTabBar(dt), S.screen === "map" ? renderMapScreen() : S.screen === "prep" ? renderPrep() : S.screen === "battle" ? renderBattle(dt) : S.screen === "cards" ? renderCards() : S.screen === "card" ? renderCardView() : S.screen === "shop" && renderShop(), renderFireworks(dt), S.reveal.length && S.reveal[0].at <= S.t && renderReveal(dt), S.pack && renderPack(dt), S.toast) {
     if (S.toast.t -= dt, ctx.save(), ctx.globalAlpha = Math.min(1, S.toast.t * 5), S.toast.small) {
       ctx.font = `bold 12px ${FONT}`;
       let w = Math.min(300, ctx.measureText(S.toast.msg).width + 26), y = TRAY_Y - 30;
@@ -6461,13 +7649,14 @@ function render(dt) {
     }
     ctx.restore(), S.toast.t <= 0 && (S.toast = null, S.layoutToast = null);
   }
+  drawCapsOverlay();
 }
 var barK = 0, TAB_COL = ["#d9cfe0", "#b5d8ff", "#ffd27a"], TAB_NAME = ["Map", "Cards", "Shop"], TAB_MUTED = "#7a5a6a", BAR_BG = "#fff6ee";
 function activeTab() {
   return S.screen === "map" ? 0 : S.screen === "shop" ? 2 : 1;
 }
 function barWanted() {
-  return isMeta() && !S.cal && !S.settings && !S.pack && !S.mergeAnim && !(S.reveal.length && S.reveal[0].at <= S.t) && !S.dialog;
+  return isMeta() && !S.antCard && !S.starCard && !S.cal && !S.settings && !S.pack && !S.mergeAnim && !(S.reveal.length && S.reveal[0].at <= S.t) && !S.dialog;
 }
 function tabRect(i) {
   let tw = cw / 3, top = ch - BAR_H - insetB;
@@ -6516,17 +7705,23 @@ function renderSettings() {
   if (!S.settings) return;
   button("setBlock", -2e3, -2e3, W + 4e3, H + 4e3, () => {
   }), ctx.save(), ctx.fillStyle = "rgba(40,26,38,0.55)", ctx.fillRect(-2e3, -2e3, W + 4e3, H + 4e3), ctx.restore(), button("setBlock2", -2e3, -2e3, W + 4e3, H + 4e3, () => closeSettings());
-  let x = 70, y = 190, w = 260, h = 262;
+  let x = 70, y = 122, w = 260, h = 398;
   panel(x, y, w, h, "#fff6ee", 20), button("setPanel", x, y, w, h, () => {
   }), text(ctx, "Settings", 200, y + 28, 22, "#ffb3c1");
-  let muted2 = S.save.settings && S.save.settings.muted;
-  drawButton(x + 24, y + 54, w - 48, 52, muted2 ? "Sound: Off" : "Sound: On", muted2 ? "#e6dce2" : "#c9f0c0", { size: 17 }), button("setSound", x + 24, y + 48, w - 48, 64, () => {
+  let st = S.save.settings || {}, muted2 = st.muted, rmv = st.reduceMotion || "auto", hap = st.haptics !== !1, setS = (k, v) => {
+    S.save.settings = { ...S.save.settings || {}, [k]: v }, persist(), sfx("tap");
+  };
+  drawButton(x + 24, y + 54, w - 48, 52, muted2 ? "Sound: Off" : "Sound: On", muted2 ? "#fff3e6" : "#9fe0b5", { size: 17 }), button("setSound", x + 24, y + 50, w - 48, 60, () => {
     S.save.settings = { ...S.save.settings || {}, muted: !muted2 }, setMuted(!muted2), persist(), sfx("tap");
-  });
+  }), drawButton(x + 24, y + 122, w - 48, 52, "Reduce motion: " + (rmv === "on" ? "On" : rmv === "off" ? "Off" : "Auto"), rmv === "on" ? "#9fe0b5" : "#fff3e6", { size: 16 }), button("setReduce", x + 24, y + 118, w - 48, 60, () => setS("reduceMotion", rmv === "auto" ? "on" : rmv === "on" ? "off" : "auto")), drawButton(x + 24, y + 190, w - 48, 52, hap ? "Haptics: On" : "Haptics: Off", hap ? "#9fe0b5" : "#fff3e6", { size: 17 }), button("setHaptics", x + 24, y + 186, w - 48, 60, () => setS("haptics", !hap));
   let sure = S.confirmReset > S.t;
-  drawButton(x + 24, y + 122, w - 48, 52, sure ? "Sure? Tap again" : "Reset progress", "#ffb3b3", { size: sure ? 16 : 17 }), button("setReset", x + 24, y + 116, w - 48, 64, () => {
-    S.confirmReset > S.t ? (S.save = newSave(), touch(S.save, now()), persist(), S.confirmReset = 0, S.cardsBlinkUntil = 0, closeSettings(), toast("Progress reset")) : S.confirmReset = S.t + 3;
-  }), drawButton(x + 24, y + 190, w - 48, 48, "Close", "#d9cfe0", { size: 17 }), button("setClose", x + 24, y + 184, w - 48, 64, () => closeSettings());
+  drawButton(x + 24, y + 258, w - 48, 52, sure ? "Sure? Tap again" : "Reset progress", "#ffb3b3", { size: sure ? 16 : 17 }), button("setReset", x + 24, y + 254, w - 48, 60, () => {
+    if (S.confirmReset > S.t) {
+      let keepSet = S.save.settings;
+      S.save = newSave(), keepSet && (S.save.settings = keepSet), touch(S.save, now()), persist(), S.confirmReset = 0, S.cardsBlinkUntil = 0, closeSettings(), toast("Progress reset");
+    } else
+      S.confirmReset = S.t + 3;
+  }), drawButton(x + 24, y + 326, w - 48, 48, "Close", "#fff3e6", { size: 17 }), button("setClose", x + 24, y + 322, w - 48, 56, () => closeSettings());
 }
 function bakeBackdrop() {
   let k = Math.min(1, 2 / dpr), cv = document.createElement("canvas");
@@ -6600,6 +7795,13 @@ function mapRoadPoints() {
   let e = nodePos(LEVELS.length - 1);
   return pts.push({ x: e.x, y: e.y }), S.mapRoad = pts;
 }
+var _lblBoxes = null;
+function mapLabelBoxes() {
+  return _lblBoxes || (_lblBoxes = LEVELS.map((_, i) => {
+    let p = nodePos(i);
+    return { x: p.x, y: p.y + 48 };
+  }));
+}
 function drawMapRoad() {
   let pts = mapRoadPoints(), done = 0;
   for (; done < S.save.levels.length && S.save.levels[done].cleared; ) done++;
@@ -6616,20 +7818,27 @@ function drawMapRoad() {
   path(), ctx.setLineDash([2, 13]), ctx.lineDashOffset = -S.t * 6, ctx.lineWidth = 5, ctx.strokeStyle = "rgba(200,140,110,0.75)", ctx.stroke(), ctx.setLineDash([]), ctx.restore();
   for (let k = 12; k < pts.length - 6; k += 29) {
     let p = pts[k], q = pts[k + 1], dx = q.x - p.x, dy = q.y - p.y, L = Math.hypot(dx, dy) || 1, s = k % 2 ? 1 : -1, tx = p.x - dy / L * 17 * s, ty = p.y + dx / L * 17 * s;
-    if (k % 3) {
-      ctx.beginPath();
-      for (let a of [-0.5, 0, 0.5])
-        ctx.moveTo(tx, ty), ctx.lineTo(tx + Math.sin(a) * 6, ty - Math.cos(a) * 7);
-      ctx.lineWidth = 2, ctx.strokeStyle = "#8fcf86", ctx.lineCap = "round", ctx.stroke();
-    } else blob(ctx, tx, ty, 3.2, 2.4, "#d9c6cf", 1.4);
+    if (!mapLabelBoxes().some((q2) => Math.abs(tx - q2.x) < 46 && ty > q2.y - 14 && ty < q2.y + 14))
+      if (k % 3) {
+        ctx.beginPath();
+        for (let a of [-0.5, 0, 0.5])
+          ctx.moveTo(tx, ty), ctx.lineTo(tx + Math.sin(a) * 6, ty - Math.cos(a) * 7);
+        ctx.lineWidth = 2, ctx.strokeStyle = "#8fcf86", ctx.lineCap = "round", ctx.stroke();
+      } else blob(ctx, tx, ty, 3.2, 2.4, "#d9c6cf", 1.4);
   }
 }
 function drawWorldGate(w) {
   let W2 = WORLDS.find((x) => x.id === w), y = gateY(w), open = worldUnlocked(S.save, w), prev = W2.unlock ? W2.unlock.allLevelsWonInWorld ?? w - 1 : w - 1;
-  if (panel(40, y - 30, 320, 60, open ? "#fff1f6" : "#efe7ec", 18), ctx.save(), ctx.translate(76, y + 2), ctx.scale(0.62, 0.62), drawTreat(ctx, W2.treat, 0, 0, 1, S.t, { face: open ? "happy" : "content" }), ctx.restore(), text(ctx, `World ${w}: ${W2.name}`, 214, y - 12, 17, open ? "#ff8fab" : "#b9a6b2"), open) plainText("Open! Beat the queen at the top.", 214, y + 12, 12, "#6b5562", "center", "600");
+  if (panel(40, y - 30, 320, 60, open ? "#fff1f6" : "#efe7ec", 18), ctx.save(), ctx.translate(76, y + 2), ctx.scale(0.62, 0.62), drawTreat(ctx, W2.treat, 0, 0, 1, S.t, { face: open ? "happy" : "content" }), ctx.restore(), w === 5 && ART81 ? drawChunkyText(ctx, `${W2.name}`, 214, y - 12, 20, open ? { mode: "title" } : { mode: "plain", fill: "#b9a6b2" }) : text(ctx, `World ${w}: ${W2.name}`, 214, y - 12, 17, open ? "#ff8fab" : "#b9a6b2"), open) plainFit(w === 5 ? W5_STORY : "Open! Beat the queen at the top.", 214, y + 12, 262, 12, "#6b5562", "center", "600");
   else {
     let won = LEVELS.filter((L, i) => L.world === prev && S.save.levels[i].cleared).length, total = LEVELS.filter((L) => L.world === prev).length;
-    plainFit(`Win all ${total} levels (${won}/${total}) + ${W2.unlock.minStarsInWorld} stars (${worldStars(S.save, prev)}/${total * 3})`, 214, y + 12, 262, 12, "#a0607e", "center", "700"), ctx.save(), ctx.translate(346, y - 22), rr(ctx, -8, -3, 16, 13, 3), ctx.fillStyle = "#8c8090", ctx.fill(), ctx.beginPath(), ctx.arc(0, -4, 5.5, Math.PI, 0), ctx.lineWidth = 3, ctx.strokeStyle = "#8c8090", ctx.stroke(), ctx.restore();
+    if (plainFit(`Win all ${total} levels (${won}/${total}) + ${W2.unlock.minStarsInWorld} stars (${worldStars(S.save, prev)}/${total * 3})`, 214, y + 12, 262, 12, "#a0607e", "center", "700"), ART81) {
+      let gy0 = Math.max(y + S.mapScroll - 30, MAPVIEW.top), gy1 = Math.min(y + S.mapScroll + 30, MAPVIEW.bottom);
+      gy1 - gy0 >= 16 && button("gate" + w, 40, gy0, 320, gy1 - gy0, () => {
+        S.starCard || (S.starCard = { w }, sfx("tap"));
+      });
+    }
+    ctx.save(), ctx.translate(346, y - 22), rr(ctx, -8, -3, 16, 13, 3), ctx.fillStyle = "#8c8090", ctx.fill(), ctx.beginPath(), ctx.arc(0, -4, 5.5, Math.PI, 0), ctx.lineWidth = 3, ctx.strokeStyle = "#8c8090", ctx.stroke(), ctx.restore();
   }
 }
 function updateCardsBlink() {
@@ -6648,15 +7857,32 @@ function renderMapScreen() {
   ctx.save(), ctx.beginPath(), ctx.rect(-200, MAPVIEW.top, W + 400, MAPVIEW.bottom - MAPVIEW.top), ctx.clip(), ctx.translate(0, sc), drawMapRoad();
   for (let w of WORLDS) w.id > 1 && drawWorldGate(w.id);
   S.layoutNodes = [];
+  let lifeOn = ART81 && !reducedMotion(), shines = 0, lastCleared = -1;
+  if (lifeOn) for (let i = 0; i < LEVELS.length; i++) S.save.levels[i].cleared && (lastCleared = i);
   for (let i = 0; i < LEVELS.length; i++) {
     let p = nodePos(i), L = S.save.levels[i], open = levelUnlocked(S.save, i), w = worldOf(i), boss = i === WORLD_START[w] + WORLDS.find((x) => x.id === w).levels - 1, isNext = open && !L.cleared, bounce = isNext ? Math.abs(Math.sin(S.t * 3)) * 4 : 0;
-    mapNode(ctx, p.x, p.y - bounce, i, { open, cleared: L.cleared, next: isNext, stars: L.stars, boss }, S.t), boss && (ctx.save(), ctx.translate(p.x + 24, p.y - 30 - bounce), ctx.scale(0.55, 0.55), drawAnt(ctx, QUEENS[w].type, 0.2), ctx.restore());
+    if (mapNode(ctx, p.x, p.y - bounce, i, { open, cleared: L.cleared, next: isNext, stars: L.stars, boss }, S.t), boss && (ctx.save(), ctx.translate(p.x + 24, p.y - 30 - bounce), ctx.scale(0.55, 0.55), drawAnt(ctx, QUEENS[w].type, 0.2), ctx.restore()), lifeOn && L.stars >= 3 && shines < 4 && p.y + sc > MAPVIEW.top && p.y + sc < MAPVIEW.bottom) {
+      let ph = (S.t + i * 1.3) % 4 / 0.6;
+      ph < 1 && (shines++, fxSparkle(ctx, p.x + 15, p.y - 15, 7, "#fff7a8", ph));
+    }
+    if (lifeOn && i === lastCleared && i + 1 < LEVELS.length) {
+      let wk = S.t % 8 / 3;
+      if (wk < 1) {
+        let q = nodePos(i + 1), ax = p.x + (q.x - p.x) * (0.15 + 0.7 * wk), ay = p.y + (q.y - p.y) * (0.15 + 0.7 * wk);
+        ctx.save(), ctx.translate(ax, ay + 4), ctx.scale((q.x >= p.x ? 1 : -1) * 0.34, 0.34);
+        {
+          let wsp = antSprite("worker", Math.floor(S.t * 9) % ANT_FRAMES, !1, pxRatio);
+          ctx.drawImage(wsp.cv, -wsp.ox, -wsp.oy, wsp.w, wsp.h);
+        }
+        ctx.restore();
+      }
+    }
     for (let s2 = 0; s2 < 3; s2++) starShape(ctx, p.x - 18 + s2 * 18, p.y + 32, 7, s2 < L.stars ? "#ffd45e" : "#e8dde4", 1.6);
     text(ctx, LEVELS[i].name, p.x, p.y + 48, 12, "#7a5a6a", "center", null);
     let sy = p.y + sc;
     S.layoutNodes.push({ i, x: p.x, y: sy }), open && sy > MAPVIEW.top + 10 && sy < MAPVIEW.bottom - 10 && button("lvl" + i, p.x - 30, sy - 30, 60, 60, () => openPrep(i));
   }
-  ctx.restore();
+  drawNextHint(sc), ctx.restore();
   let hintW = WORLDS.map((x) => x.id).filter((id) => id >= 2).find((id) => gateY(id) + sc < MAPVIEW.top - 10);
   if (hintW) {
     let a = 0.75 + 0.25 * Math.sin(S.t * 4);
@@ -6664,16 +7890,19 @@ function renderMapScreen() {
   }
   updateCardsBlink(), blob(ctx, 363, 22, 19, 19, "#fff6ee", 2.2), drawGearIcon(363, 22, 12), button("gear", 337, 0, 52, 52, () => openSettings());
   let shopHint = !S.cal && !S.settings && zapperGiftPending(S.save) && !S.reveal.length;
-  !S.cal && !S.settings && !shopHint && plainText("v" + VERSION, 14, 186, 12, "#a08090", "left", "600"), S.cal ? renderCalendar() : S.settings ? renderSettings() : shopHint && onboardSpot(tabRect(2), "shop", () => go("shop"), "A free pack waits in the Shop!"), renderUiFx(1 / 60);
+  !S.cal && !S.settings && !shopHint && plainText("v" + VERSION, 14, 186, 12, "#a08090", "left", "600"), !S.cal && !S.settings && !shopHint && button("verLong", 8, 168, 84, 44, () => {
+  }, { onDown: () => {
+    S.capsHold = performance.now();
+  } }), S.starCard && !S.cal && !S.settings && renderStarCard(), S.cal ? renderCalendar() : S.settings ? renderSettings() : shopHint && onboardSpot(tabRect(2), "shop", () => go("shop"), "A free pack waits in the Shop!"), renderUiFx(1 / 60);
 }
 var lastBubble = null;
-function onboardSpot(R, id, onTap, msg, bub = null) {
+function onboardSpot(R, id, onTap, msg, bub = null, dim = 0.66) {
   ctx.save(), ctx.beginPath(), ctx.rect(-2e3, -2e3, W + 4e3, H + 4e3);
   {
     let x = R.x - 6, y = R.y - 6, w = R.w + 12, h = R.h + 14, r = Math.min((R.r || 14) + 4, w / 2, h / 2);
     ctx.moveTo(x + r, y), ctx.arcTo(x + w, y, x + w, y + h, r), ctx.arcTo(x + w, y + h, x, y + h, r), ctx.arcTo(x, y + h, x, y, r), ctx.arcTo(x, y, x + w, y, r), ctx.closePath();
   }
-  ctx.fillStyle = "rgba(40,26,38,0.66)", ctx.fill("evenodd");
+  ctx.fillStyle = `rgba(40,26,38,${dim})`, ctx.fill("evenodd");
   let g = 0.5 + 0.5 * Math.sin(S.t * 5);
   rr(ctx, R.x - 6, R.y - 6, R.w + 12, R.h + 14, (R.r || 14) + 4), ctx.lineWidth = 3 + g * 2, ctx.strokeStyle = `rgba(255,227,110,${0.6 + 0.4 * g})`, ctx.stroke(), ctx.restore(), button("onboardBlock", -2e3, -2e3, W + 4e3, H + 4e3, () => {
   }), button(id, R.x, R.y, R.w, R.h, onTap);
@@ -6682,6 +7911,33 @@ function onboardSpot(R, id, onTap, msg, bub = null) {
     let my = R.y < 260 ? R.y + R.h + 22 : Math.max(90, R.y - (R.y > 600 ? 148 : 104));
     bub ? (panel(bub.x, bub.y, bub.w, 40, "#fff6ee", 16), plainFit(msg, bub.x + bub.w / 2, bub.y + 20, bub.w - 24, 15, "#e0607e", "center", "800"), lastBubble = { x: bub.x, y: bub.y, w: bub.w, h: 40 }) : (panel(60, my, 280, 40, "#fff6ee", 16), plainFit(msg, 200, my + 20, 256, 15, "#e0607e", "center", "800"), lastBubble = { x: 60, y: my, w: 280, h: 40 });
   }
+}
+function nextHintWanted() {
+  return ART81 && !0;
+}
+function drawNextHint(sc) {
+  if (!nextHintWanted() || S.screen !== "map") {
+    S.nextHint = null;
+    return;
+  }
+  if (S.cal || S.settings || S.antCard || S.starCard || S.reveal.length || S.pack || zapperGiftPending(S.save) && !S.reveal.length) return;
+  let h = nextHintState(S.save), i = nextUnplayedLevel(S.save);
+  if (i < 0) {
+    S.nextHint = null;
+    return;
+  }
+  let p = nodePos(i), sy = p.y + sc;
+  if (sy < MAPVIEW.top + 20 || sy > MAPVIEW.bottom - 40) return;
+  if (!S.nextHint) {
+    if (!h.armed || h.shown >= 2) return;
+    S.nextHint = { kind: h.armed, i, t0: S.t }, h.shown++, h.done.push(h.armed), h.armed = "", persist();
+  }
+  if (S.nextHint.i !== i || S.t - S.nextHint.t0 > 12) {
+    S.nextHint = null;
+    return;
+  }
+  let pulse = reducedMotion() ? 0.5 : 0.5 + 0.5 * Math.sin(S.t * 5);
+  ctx.save(), ctx.lineWidth = 3.5 + pulse * 2, ctx.strokeStyle = `rgba(255,227,110,${0.65 + 0.35 * pulse})`, ctx.beginPath(), ctx.arc(p.x, p.y, 30 + pulse * 5, 0, Math.PI * 2), ctx.stroke(), ctx.restore(), drawFinger(p.x + 18, p.y - 30 - (reducedMotion() ? 0 : Math.abs(Math.sin(S.t * 4)) * 10));
 }
 function drawFinger(x, y) {
   ctx.save(), ctx.translate(x, y), ctx.rotate(0.35), ctx.lineJoin = "round", ctx.lineWidth = 2.6, ctx.strokeStyle = INK, ctx.fillStyle = "#ffe2c8", rr(ctx, -6, -34, 12, 34, 6), ctx.fill(), ctx.stroke(), rr(ctx, -15, -50, 34, 26, 11), ctx.fill(), ctx.stroke();
@@ -6769,14 +8025,14 @@ function drawCard(x, y, w, h, type, opt = {}) {
   let iconS = Math.min(w / 58, (nameY - y) / 58);
   ctx.translate(x + w / 2, iconY), ctx.scale(iconS, iconS), drawTower(ctx, type, S.t, null), ctx.restore();
   let tag = T.place === "path" ? "on trail" : T.targets === "air" ? "air only" : type === "laser" ? "gnd+air" : "";
-  if (tag && h > 70 && !opt.badge && text(ctx, tag, x + w - 7, y + 11, 11, "#fff", "right"), fitText(T.short || T.name, x + w / 2, nameY, w - 10, w < 85 ? 13 : 14, "#fff"), opt.level && (blob(ctx, x + 12, y + 12, 11, 10, "#ffe36e", 2), text(ctx, "L" + opt.level, x + 12, y + 12.5, 11, "#7a4a2a", "center", null)), opt.cost != null && (rr(ctx, x + 10, y + h - 21, w - 20, 17, 8), ctx.fillStyle = opt.afford ? "#fff8ec" : "#ffd6d6", ctx.fill(), ctx.lineWidth = 1.8, ctx.strokeStyle = INK, ctx.stroke(), crumbIcon(ctx, x + w / 2 - (opt.cost === 0 ? 22 : 14), y + h - 12.5, 0.75), text(ctx, opt.cost === 0 ? "FREE" : String(opt.cost), x + w / 2 + 6, y + h - 12, 12, opt.afford ? "#7a4a2a" : "#c0392b", "center", null)), opt.badge && (blob(ctx, x + w - 11, y + 11, 11, 11, "#ff8fab", 2), text(ctx, opt.badge, x + w - 11, y + 11.5, 12, "#fff")), opt.mergeReady) {
+  if (tag && h > 70 && !opt.badge && text(ctx, tag, x + w - 7, y + 11, 12, "#fff", "right"), fitText(T.short || T.name, x + w / 2, nameY, w - 10, w < 85 ? 13 : 14, "#fff"), opt.level && (blob(ctx, x + 12, y + 12, 12, 11, "#ffe36e", 2), text(ctx, "L" + opt.level, x + 12, y + 12.5, 12, "#7a4a2a", "center", null)), opt.cost != null && (rr(ctx, x + 10, y + h - 21, w - 20, 17, 8), ctx.fillStyle = opt.afford ? "#fff8ec" : "#ffd6d6", ctx.fill(), ctx.lineWidth = 1.8, ctx.strokeStyle = INK, ctx.stroke(), crumbIcon(ctx, x + w / 2 - (opt.cost === 0 ? 22 : 14), y + h - 12.5, 0.75), text(ctx, opt.cost === 0 ? "FREE" : String(opt.cost), x + w / 2 + 6, y + h - 12, 12, opt.afford ? "#7a4a2a" : "#c0392b", "center", null)), opt.badge && (blob(ctx, x + w - 11, y + 11, 11, 11, "#ff8fab", 2), text(ctx, opt.badge, x + w - 11, y + 11.5, 12, "#fff")), opt.mergeReady) {
     let p = 1 + Math.sin(S.t * 6) * 0.08;
     ctx.save(), ctx.translate(x + w - 10, y + 10), ctx.scale(p, p), blob(ctx, 0, 0, 11, 11, "#ff6f91", 2), text(ctx, "!", 0, 0.5, 14, "#fff"), ctx.restore();
   }
   opt.fresh && (rr(ctx, x + w / 2 - 19, y - 9, 38, 17, 8), ctx.fillStyle = "#ffd45e", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), text(ctx, "NEW", x + w / 2, y - 0.5, 12, "#fff")), ctx.restore();
 }
-function antIcon(type, x, y, s = 1) {
-  ctx.save(), ctx.translate(x, y), ctx.scale(s, s), drawAnt(ctx, type, S.t * 1.3 % 1), ctx.restore();
+function antIcon(type, x, y, s = 1, idx = 0) {
+  ctx.save(), ctx.translate(x, y), ctx.scale(s, s), heroBob(ctx, S.t, idx), drawAnt(ctx, type, S.t * 1.3 % 1), ctx.restore();
 }
 function renderPrep() {
   let i = S.levelIndex, L = LEVELS[i];
@@ -6786,7 +8042,7 @@ function renderPrep() {
   let n = ants.length, slot = Math.min(76, 340 / n), x0 = 200 - slot * (n - 1) / 2;
   ants.forEach((t, k) => {
     let x = x0 + k * slot, sz = ANTS[t].size, sc = Math.min(1.15, (slot - 6) / (40 * sz), 30 / (34 * sz));
-    antIcon(t, x, 133, sc), S.layoutPrepAnts.push({ type: t, x: x - 20 * sz * sc, y: 133 - 34 * sz * sc, w: 40 * sz * sc, h: 46 * sz * sc });
+    antIcon(t, x, 133, sc, k), S.layoutPrepAnts.push({ type: t, x: x - 20 * sz * sc, y: 133 - 34 * sz * sc, w: 40 * sz * sc, h: 46 * sz * sc });
     {
       let rk = rarityRank(t) + 1, cols = ["#b9a8b0", "#5fbf7a", "#4a90e2", "#a05ad8"];
       if (rk <= 4) for (let q = 0; q < rk; q++)
@@ -6811,11 +8067,11 @@ function renderPrep() {
     let col = k % 5, row = Math.floor(k / 5), x = 22 + col * 72, y = 196 + row * 98, w = 66, h = 90, isU = unlocked.includes(id), di = S.prep.deck.indexOf(id);
     drawCardPic(x, y, w, h, id, { locked: !isU, lockText: "Shop or prize", selected: di >= 0, selCol: "#111111", badge: di >= 0 ? String(di + 1) : null, tag: !0, level: isU ? S.save.cards[id].level : 0, cap: capW || 0, dim: isU && di < 0 && S.prep.deck.length >= BATTLE.deckSize }), isU && button("deck" + id, x, y, w, h, () => {
       let d = S.prep.deck, j = d.indexOf(id);
-      j >= 0 ? d.splice(j, 1) : d.length < BATTLE.deckSize ? d.push(id) : toast("Deck is full (5). Tap a card to remove it."), sfx("tap");
+      j >= 0 ? d.splice(j, 1) : d.length < BATTLE.deckSize ? d.push(id) : toast(`Deck is full (${BATTLE.deckSize}). Tap a card to remove it.`), sfx("tap");
     });
   }), S.prepTip && S.t < S.prepTip.until) {
     let tp = S.prepTip.type, rk = rarityRank(tp) + 1, tier = rarityOf(tp), nm = ANTS[tp].name;
-    panel(20, 179, 360, 40, "#5a4058", 14), plainFit(rk <= 4 ? `${nm}: ${tier} (${rk} dot${rk > 1 ? "s" : ""})` : `${nm}: ${tier} (no dots)`, 200, 192, 336, 12, "#ffe39a", "center", "800"), plainFit("Dots: 1 common, 2 uncommon, 3 rare, 4 elite", 200, 208, 336, 12, "#ffffff", "center", "600"), button("antTip", 20, 175, 360, 48, () => {
+    panel(20, 179, 360, 40, "#5a4058", 14), plainFit(rk <= 4 ? `${nm}: ${tier} (${rk} dot${rk > 1 ? "s" : ""})` : `${nm}: ${tier} (no dots)`, 200, 192, 336, 12, "#ffe39a", "center", "800"), plainFit(ANTS[tp].intro || "Dots: 1 common, 2 uncommon, 3 rare, 4 elite", 200, 208, 336, 12, "#ffffff", "center", "600"), button("antTip", 20, 175, 360, 48, () => {
       S.prepTip = null;
     });
   } else S.prepTip = null;
@@ -6834,15 +8090,48 @@ function renderPrep() {
     let lines = wrapLines(warn, 324, 12).slice(0, 3), hh = 12 + lines.length * 14;
     panel(26, 646 - hh - 2, 348, hh, issues.length ? "#ffd9d0" : "#fff0c2", 12), lines.forEach((l, k) => text(ctx, l, 200, 646 - hh + 6 + k * 14 + 5, 12, issues.length ? "#c0392b" : "#b0602a", "center", null)), ctx.font = `bold 12px ${FONT}`, S.layoutWarn = { box: { x: 26, y: 646 - hh - 2, w: 348, h: hh }, lines: lines.map((l) => ctx.measureText(l).width), maxW: 324 };
   }
-  drawButton(26, 652, 110, 48, "Back", "#d9cfe0"), button("back", 26, 652, 110, 48, () => go("map"));
+  drawButton(26, 652, 110, 48, "Back", "#fff3e6"), button("back", 26, 650, 110, 54, () => go("map"));
   let ready = S.prep.deck.length === Math.min(BATTLE.deckSize, unlocked.length);
-  if (drawButton(150, 652, 224, 48, "Defend!", "#9fe0b5", { disabled: !ready, size: 22 }), button("start", 150, 652, 224, 48, () => {
-    ready ? startBattle() : toast("Pick 5 cards");
+  if (drawButton(150, 652, 224, 48, "Defend!", "#9fe0b5", { disabled: !ready, size: 22 }), button("start", 150, 650, 224, 54, () => {
+    ready ? startBattle() : toast(`Pick ${BATTLE.deckSize} cards`);
   }), S.prepAlert) {
     S.prepAlert.t -= 1 / 60, ctx.save(), ctx.globalAlpha = Math.min(1, S.prepAlert.t * 4);
     let lines = wrapLines(S.prepAlert.msg, 250, 12.5), hh = 22 + lines.length * 16, y0 = 498 - hh;
     panel(60, y0, 280, hh, "#5a4058", 14), lines.forEach((l, k) => text(ctx, l, 200, y0 + 19 + k * 16, 12.5, "#ffd0d0", "center", null)), ctx.restore(), S.prepAlert.t <= 0 && (S.prepAlert = null);
   }
+  S.antCard && renderAntCard();
+}
+function renderAntCard() {
+  let t = S.antCard, D = ANTS[t];
+  if (!D) {
+    S.antCard = null;
+    return;
+  }
+  ctx.fillStyle = "rgba(60,40,55,0.6)", ctx.fillRect(-2e3, -2e3, W + 4e3, H + 4e3), button("antCardBlock", -2e3, -2e3, W + 4e3, H + 4e3, () => {
+  });
+  let x0 = 36, w = 328, y0 = 150, h = 400;
+  panel(x0, y0, w, h, "#fff6ee"), drawChunkyText(ctx, "New ant!", 200, y0 + 36, 28, { mode: "title" }), ctx.save(), ctx.translate(200, y0 + 150);
+  let sz = Math.min(1, 1.3 / D.size);
+  ctx.scale(2.2 * sz, 2.2 * sz), contactShadow(ctx, 0, 16, 22, 5, 0.22), heroBob(ctx, S.t, 0), drawAnt(ctx, t, S.t * 1.3 % 1), ctx.restore(), text(ctx, D.name, 200, y0 + 214, 20, "#7a4a5e");
+  let rk = rarityRank(t) + 1, cols = ["#b9a8b0", "#5fbf7a", "#4a90e2", "#a05ad8"];
+  if (rk <= 4) for (let q = 0; q < rk; q++)
+    ctx.beginPath(), ctx.arc(200 + (q - (rk - 1) / 2) * 12, y0 + 234, 4, 0, Math.PI * 2), ctx.fillStyle = cols[rk - 1], ctx.fill(), ctx.lineWidth = 1, ctx.strokeStyle = "rgba(70,40,55,.55)", ctx.stroke();
+  wrapLines(ANT_CARD[t] || D.intro || "", w - 44, 14).forEach((l, k) => text(ctx, l, 200, y0 + 262 + k * 19, 14, "#5a4652", "center", null)), drawButton(x0 + 64, y0 + h - 64, w - 128, 48, "Got it", "#9fe0b5", { size: 20 }), button("antCardOk", x0 + 60, y0 + h - 68, w - 120, 56, antCardDone);
+}
+function renderStarCard() {
+  let c = S.starCard, W2 = WORLDS.find((x) => x.id === c.w);
+  if (!W2) {
+    S.starCard = null;
+    return;
+  }
+  let prev = W2.unlock ? W2.unlock.allLevelsWonInWorld ?? c.w - 1 : c.w - 1, need = W2.unlock ? W2.unlock.minStarsInWorld : 0;
+  ctx.fillStyle = "rgba(60,40,55,0.55)", ctx.fillRect(-2e3, -2e3, W + 4e3, H + 4e3), button("starCardBlock", -2e3, -2e3, W + 4e3, H + 4e3, () => {
+    S.starCard = null;
+  });
+  let rows = lowestStarLevels(S.save, c.w).slice(0, 5), x0 = 36, w = 328, h = 150 + Math.max(1, rows.length) * 26, y0 = Math.round(380 - h / 2);
+  panel(x0, y0, w, h, "#fff6ee"), text(ctx, `World ${c.w} needs ${need} stars`, 200, y0 + 30, 20, "#7a4a5e"), plainText(`World ${prev}: ${worldStars(S.save, prev)} of ${need} so far`, 200, y0 + 56, 13, "#5a4652", "center", "700"), plainText("Best places to gain stars:", 200, y0 + 80, 13, "#7a6a76", "center", "600"), rows.length || plainText("Every level is at 3 stars!", 200, y0 + 108, 13, "#5a4652", "center", "600"), rows.forEach((r, k) => plainFit(r.cleared ? `L${r.n}: ${r.stars} star${r.stars === 1 ? "" : "s"} - a ${r.stars + 1}${r.stars === 0 ? "st" : r.stars === 1 ? "nd" : "rd"} star here adds +1` : `L${r.n}: not won yet - win it first`, 200, y0 + 108 + k * 26, w - 40, 13, "#3d2a36", "center", "600")), drawButton(x0 + 84, y0 + h - 62, w - 168, 46, "OK", "#9fe0b5", { size: 20 }), button("starCardOk", x0 + 80, y0 + h - 66, w - 160, 54, () => {
+    S.starCard = null, sfx("tap");
+  });
 }
 function zeroBonusAlert(bt) {
   S.prepAlert = { msg: `0 ${BONUSES[bt].name}s left! In battle you can buy one for ${ECONOMY.diamonds.boosterPriceStart} diamonds (you have ${S.save.diamonds || 0}).`, t: 2.6, bonus: bt };
@@ -6860,8 +8149,37 @@ function mapBg(b) {
   let key = b.mapId + pxRatio;
   return S.bgCache[key] || (S.bgCache[key] = renderMapBackground(b.routes, b.map.theme, MAP_W, MAP_H, pxRatio, b.props)), S.bgCache[key];
 }
+function renderGuide(b) {
+  if (S.guide.step === 1 && b.towers.length > 0 && (S.guide.step = 2), S.guide.step === 2 && b.nextWave > 0) {
+    guideDone();
+    return;
+  }
+  let y0 = TRAY_Y, bub = { x: 100, y: MAP_Y + 8, w: 288 };
+  S.guide.step === 1 ? (onboardSpot({ x: 12, y: y0 + TRAY.cardY, w: 88, h: TRAY.cardH, r: 14 }, "guideCard", () => {
+    S.sel = { kind: "card", i: 0 }, S.info = null, sfx("tap");
+  }, "Drag a card to a blue spot", bub, 0.34), button("guideDrag", 9, y0 + 2, 94, TRAY.cardH + 8, () => {
+    S.sel = { kind: "card", i: 0 }, S.info = null, sfx("tap");
+  }, { onDown: (p) => {
+    S.drag = { i: 0, x: p.x, y: p.y, moved: !1 };
+  } }), button("map", 0, MAP_Y, MAP_W, MAP_H, mapTap)) : onboardSpot({ x: 296, y: y0 + TRAY.waveY, w: 92, h: TRAY.waveH, r: 14 }, "wave", () => {
+    b.callWaveEarly() > 0 && sfx("return"), guideDone();
+  }, "Start the wave!", bub), drawButton(12, MAP_Y + 8, 80, 44, "Skip", "#fff3e6", { size: 16, r: 18 }), button("guideSkip", 8, MAP_Y + 6, 88, 48, () => {
+    guideDone(), sfx("tap");
+  });
+}
 function renderBattle(dt) {
   let b = S.battle, t = S.t;
+  if (ART81 && !S.queenIntro && isBossLevel(b.levelIndex) && !b.result) {
+    let q = b.ants.find((a) => !a.dead && ANTS[a.type].boss);
+    q && (S.queenIntro = { t0: S.t, type: q.type }, addUi({ k: "queenPill", type: q.type, life: 2, max: 2 }), sfx("boss"), haptic("medium"));
+  }
+  if (ctx.save(), S.queenIntro && !reducedMotion()) {
+    let zk = (S.t - S.queenIntro.t0) / 0.8;
+    if (zk >= 0 && zk < 1) {
+      let z = 1 + 0.04 * Math.sin(zk * Math.PI), cy = MAP_Y + MAP_H / 2;
+      ctx.translate(200, cy), ctx.scale(z, z), ctx.translate(-200, -cy);
+    }
+  }
   ctx.save(), rr(ctx, -4, MAP_Y - 4, MAP_W + 8, MAP_H + 8, 10), ctx.fillStyle = INK, ctx.fill(), ctx.restore(), ctx.drawImage(mapBg(b), 0, MAP_Y, MAP_W, MAP_H), ctx.save(), ctx.beginPath(), ctx.rect(0, MAP_Y, MAP_W, MAP_H), ctx.clip(), ctx.translate(0, MAP_Y);
   let p1 = b.path.pts[b.path.pts.length - 1], nests = [];
   for (let rt of b.routes) {
@@ -6869,7 +8187,7 @@ function renderBattle(dt) {
     nests.some((n) => Math.hypot(n.x - q.x, n.y - q.y) < 5) || nests.push(q);
   }
   for (let q of nests) drawNest(ctx, Math.max(30, Math.min(MAP_W - 30, q.x)), Math.max(26, Math.min(MAP_H - 20, q.y + 6)), t);
-  let selCard = S.drag ? S.drag.i : S.sel && S.sel.kind === "card" ? S.sel.i : null;
+  let selCard = S.drag ? S.drag.i : S.sel && S.sel.kind === "card" ? S.sel.i : S.guide && S.guide.step === 1 ? 0 : null;
   if (selCard != null) {
     let card = b.picks[selCard];
     for (let c = 0; c < GRID_COLS; c++) for (let r = 0; r < GRID_ROWS; r++) {
@@ -6926,13 +8244,13 @@ function renderBattle(dt) {
     let tw = S.info.tower, T = TOWERS[tw.type], rng = tw.stat("range");
     T.place === "path" ? tileArea(tw.c, tw.r, !0) : rng && !T.nearTrail && (ctx.beginPath(), ctx.arc(tw.x, tw.y, rng, 0, 7), ctx.fillStyle = "rgba(255,255,255,0.2)", ctx.fill(), ctx.lineWidth = 2.5, ctx.strokeStyle = "#fff", ctx.setLineDash([6, 5]), ctx.stroke(), ctx.setLineDash([])), T.directional && drawAim(tw), ctx.beginPath(), ctx.arc(tw.x, tw.y, 21, 0, 7), ctx.lineWidth = 3, ctx.strokeStyle = "#ffe36e", ctx.stroke();
   }
-  if (drawWaveStrip(b), ctx.restore(), button("map", 0, MAP_Y, MAP_W, MAP_H, mapTap), S.info && S.info.tower && renderTowerInfo(b, S.info), S.mode && !S.result) {
+  if (drawWaveStrip(b), ctx.restore(), ctx.restore(), button("map", 0, MAP_Y, MAP_W, MAP_H, mapTap), S.info && S.info.tower && renderTowerInfo(b, S.info), S.mode && !S.result) {
     let m = S.mode;
     panel(30, MAP_Y + 6, 340, 34, "#5a4058", 16), plainFit(m.kind === "move" ? `Tap a free blue spot to move it (${ECONOMY.diamonds.moveTower} diamond)` : "Tap the tower to swap with (free)", 182, MAP_Y + 23, 280, 12.5, "#ffffff", "center", "700"), blob(ctx, 350, MAP_Y + 23, 11, 11, "#ffb3b3", 1.8), text(ctx, "x", 350, MAP_Y + 22.5, 12, "#fff"), button("modeCancel", 300, MAP_Y + 2, 74, 42, () => {
       S.mode = null;
     });
   }
-  renderHud(b), renderTray(b), renderUiFx(dt), S.paused && !S.result && renderPause(), S.result && renderResult(dt), S.queenDown && S.t - S.queenDown.t < 4.5 && drawQueenCheer(S.t - S.queenDown.t, S.queenDown.world), S.dialog && !S.paused && !S.result && renderDialog();
+  renderHud(b), renderTray(b), S.guide && !S.paused && !S.result && renderGuide(b), renderUiFx(dt), S.paused && !S.result && renderPause(), S.result && renderResult(dt), S.queenDown && S.t - S.queenDown.t < 4.5 && drawQueenCheer(S.t - S.queenDown.t, S.queenDown.world), S.dialog && !S.paused && !S.result && renderDialog();
 }
 function tileArea(c, r, ok = !0) {
   ctx.save(), rr(ctx, c * TILE + 1.5, r * TILE + 1.5, TILE - 3, TILE - 3, 6), ctx.fillStyle = ok ? "rgba(255,255,255,0.25)" : "rgba(255,120,120,0.2)", ctx.fill(), ctx.lineWidth = 2.2, ctx.strokeStyle = ok ? "rgba(255,255,255,0.95)" : "rgba(255,90,90,0.8)", ctx.setLineDash([5, 4]), ctx.stroke(), ctx.restore();
@@ -6983,8 +8301,10 @@ function rollHere(tw) {
 }
 function drawModeIcon(m, x, y, k) {
   if (ctx.save(), ctx.translate(x, y), ctx.scale(k, k), m === "carrier") crumbIcon(ctx, 0, 0, 1, !0);
-  else if (m === "front")
-    ctx.beginPath(), ctx.arc(7, 0, 4.6, 0, 7), ctx.fillStyle = "#e8b878", ctx.fill(), ctx.lineWidth = 1.6, ctx.strokeStyle = CRUMB_OUTLINE, ctx.stroke(), ctx.beginPath(), ctx.moveTo(-9, -1.8), ctx.lineTo(-3, -1.8), ctx.lineTo(-3, -5), ctx.lineTo(3, 0), ctx.lineTo(-3, 5), ctx.lineTo(-3, 1.8), ctx.lineTo(-9, 1.8), ctx.closePath(), ctx.fillStyle = "#ff6f6f", ctx.fill(), ctx.lineWidth = 1.5, ctx.strokeStyle = CRUMB_OUTLINE, ctx.lineJoin = "round", ctx.stroke();
+  else if (m === "healer")
+    ctx.beginPath(), ctx.arc(0, 0, 7.2, 0, 7), ctx.fillStyle = "#fffaf5", ctx.fill(), ctx.lineWidth = 1.5, ctx.strokeStyle = CRUMB_OUTLINE, ctx.stroke(), ctx.fillStyle = "#e8454f", ctx.fillRect(-1.9, -5, 3.8, 10), ctx.fillRect(-5, -1.9, 10, 3.8);
+  else if (m === "strong")
+    ctx.beginPath(), ctx.moveTo(-7.5, 5), ctx.lineTo(-8.5, -4.5), ctx.lineTo(-4, -0.8), ctx.lineTo(0, -6), ctx.lineTo(4, -0.8), ctx.lineTo(8.5, -4.5), ctx.lineTo(7.5, 5), ctx.closePath(), ctx.fillStyle = "#ffcf4a", ctx.fill(), ctx.lineWidth = 1.5, ctx.lineJoin = "round", ctx.strokeStyle = CRUMB_OUTLINE, ctx.stroke();
   else {
     ctx.fillStyle = "#7a4a2a", ctx.strokeStyle = CRUMB_OUTLINE, ctx.lineWidth = 1.4;
     for (let [cx, cy, r] of [[-5, 0, 3.4], [0.5, 0, 2.7], [5.5, 0, 3.2]])
@@ -7084,17 +8404,20 @@ function renderTowerInfo(b, info) {
     let ls = plainWrap(line, 350, 12).slice(0, 2), y0 = py + (modes ? 160 : 122) - (ls.length > 1 ? 8 : 0);
     ls.forEach((l, i) => plainText(l, 200, y0 + i * 15, 12, extra.length ? "#2f8a36" : INFO_INK, "center"));
   }
-  button("infoClose", 14, py, 372, H2, () => {
+  if (button("infoClose", 14, py, 372, H2, () => {
     S.info = null;
-  }), modes && TARGET_MODES.forEach((m, i) => {
-    let x = 22 + i * 120, y = py + 108, w = 114, h = 34, on = tw.mode === m, age = S.t - (tw._modeAt ?? -9), pop = on && age >= 0 && age < 0.12 && !reducedMotion() ? 1 + 0.08 * Math.sin(age / 0.12 * Math.PI) : 1;
-    ctx.save(), pop !== 1 && (ctx.translate(x + w / 2, y + h / 2), ctx.scale(pop, pop), ctx.translate(-(x + w / 2), -(y + h / 2))), rr(ctx, x, y, w, h, 11), ctx.fillStyle = on ? "#ffd27a" : "#f7efeb", ctx.fill(), ctx.lineWidth = on ? 2.6 : 1.5, ctx.strokeStyle = on ? INK : "#d9c5cc", ctx.stroke(), drawModeIcon(m, x + 18, y + h / 2, 1), plainFit(MODE_NAME[m], x + 34, y + h / 2 + 0.5, w - 40, 13, on ? INK : INFO_INK, "left", on ? "700" : "600"), ctx.restore(), button("mode_" + m, x - 2, y - 2, w + 4, h + 4, () => setMode(tw, m));
-  });
+  }), modes) {
+    let ML = S.battle.modeList, n4 = ML.length > 3;
+    ML.forEach((m, i) => {
+      let w = n4 ? 84 : 114, h = 34, x = 22 + i * (w + 6), y = py + 108, on = (tw.mode || "weak") === m, age = S.t - (tw._modeAt ?? -9), pop = on && age >= 0 && age < 0.12 && !reducedMotion() ? 1 + 0.08 * Math.sin(age / 0.12 * Math.PI) : 1;
+      ctx.save(), pop !== 1 && (ctx.translate(x + w / 2, y + h / 2), ctx.scale(pop, pop), ctx.translate(-(x + w / 2), -(y + h / 2))), rr(ctx, x, y, w, h, 11), ctx.fillStyle = on ? "#ffd27a" : "#f7efeb", ctx.fill(), ctx.lineWidth = on ? 2.6 : 1.5, ctx.strokeStyle = on ? INK : "#d9c5cc", ctx.stroke(), drawModeIcon(m, x + (n4 ? 14 : 18), y + h / 2, 1), plainFit(MODE_NAME[m], x + (n4 ? 28 : 34), y + h / 2 + 0.5, w - (n4 ? 32 : 40), 13, on ? INK : INFO_INK, "left", on ? "700" : "600"), ctx.restore(), button("mode_" + m, x - 2, y - 5.5, w + 4, h + 11, () => setMode(tw, m));
+    });
+  }
   let canMove = (S.save.diamonds || 0) >= ECONOMY.diamonds.moveTower;
-  drawButton(256, py + 5, 62, 24, "", "#9fd8ff", { r: 10, disabled: !canMove }), text(ctx, "Move", 280, py + 17, 12), diamondIcon(ctx, 305, py + 17, 0.55), text(ctx, String(ECONOMY.diamonds.moveTower), 312, py + 17.5, 12), drawButton(322, py + 5, 58, 24, "Swap", "#c9b6f2", { r: 10, size: 12, disabled: b.towers.length < 2 }), button("infoMove", 252, py, 68, 40, () => startMode("move", tw)), button("infoSwap", 320, py, 64, 40, () => startMode("swap", tw));
+  drawButton(256, py + 5, 62, 24, "", "#9fd8ff", { r: 10, disabled: !canMove }), text(ctx, "Move", 280, py + 17, 12), diamondIcon(ctx, 305, py + 17, 0.55), text(ctx, String(ECONOMY.diamonds.moveTower), 312, py + 17.5, 12), drawButton(322, py + 5, 58, 24, "Swap", "#fff3e6", { r: 10, size: 12, disabled: b.towers.length < 2 }), button("infoMove", 252, py - 2, 68, 44, () => startMode("move", tw)), button("infoSwap", 320, py - 2, 64, 44, () => startMode("swap", tw));
 }
 function drawQueenCheer(age, world) {
-  let k = Math.min(1, age / 0.35), fade = age > 3.8 ? Math.max(0, 1 - (age - 3.8) / 0.7) : 1, msg = world === 4 ? ["Way to go,", "you saved the sundae!"] : world === 3 ? ["Way to go,", "you saved the pie!"] : world === 2 ? ["Way to go,", "you saved the cake!"] : ["Way to go,", "you saved the cookies!"];
+  let k = Math.min(1, age / 0.35), fade = age > 3.8 ? Math.max(0, 1 - (age - 3.8) / 0.7) : 1, msg = world === 5 ? ["Way to go,", "you saved the donut!"] : world === 4 ? ["Way to go,", "you saved the sundae!"] : world === 3 ? ["Way to go,", "you saved the pie!"] : world === 2 ? ["Way to go,", "you saved the cake!"] : ["Way to go,", "you saved the cookies!"];
   ctx.save(), ctx.globalAlpha = fade, ctx.translate(200, MAP_Y + 210);
   let sc = 0.6 + 0.4 * k + Math.sin(age * 5) * 0.03;
   ctx.scale(sc, sc), rr(ctx, -170, -48, 340, 96, 24), ctx.fillStyle = "rgba(90,64,88,0.82)", ctx.fill(), ctx.lineWidth = 3, ctx.strokeStyle = "#ffd45e", ctx.stroke(), text(ctx, msg[0], 0, -18, 26, "#ffe36e"), text(ctx, msg[1], 0, 16, 24, "#ffffff");
@@ -7124,11 +8447,20 @@ function drawTowerObj(tw) {
       ctx.scale(sx, sy);
     }
   }
-  if (TOWERS[tw.type].place === "path" && ctx.translate(tw.px - tw.x, tw.py - tw.y), drawTower(ctx, tw.type, S.t + tw.id, tw), tw.mode && tw.mode !== "weak") {
+  TOWERS[tw.type].place === "path" && ctx.translate(tw.px - tw.x, tw.py - tw.y);
+  let uk = tw._upAt !== void 0 ? (S.t - tw._upAt) / 0.22 : 2;
+  if (MOTION.hop = uk >= 0 && uk < 1 ? 6 * Math.sin(uk * Math.PI) : 0, MOTION.bobTowers = !0, drawTower(ctx, tw.type, S.t + tw.id, tw), MOTION.bobTowers = !1, MOTION.hop = 0, tw.mode && tw.mode !== "weak") {
     let bage = S.t - (tw._modeAt ?? -9), bp = bage >= 0 && bage < 0.5 && !reducedMotion() ? 1 + 0.35 * Math.sin(Math.min(1, bage / 0.5) * Math.PI) : 1;
     ctx.save(), ctx.translate(14, 13), ctx.scale(bp, bp), ctx.beginPath(), ctx.arc(0, 0, 8, 0, 7), ctx.fillStyle = "#fffaf5", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), drawModeIcon(tw.mode, 0, 0, 0.55), ctx.restore();
   }
-  if (tw.lvl > 1) for (let k = 0; k < tw.lvl; k++) starShape(ctx, -(tw.lvl - 1) * 3.6 + k * 7.2, 16, 3.6, "#ffd45e", 1.1);
+  if (tw.lvl > 1) for (let k = 0; k < tw.lvl; k++) {
+    let ps = 1;
+    if (ART81 && k === tw.lvl - 1 && tw._upAt !== void 0 && !reducedMotion()) {
+      let pk = (S.t - tw._upAt - 0.22) / 0.16;
+      pk >= 0 && pk < 1 ? ps = Math.max(0.01, easeOutBack(pk)) : pk < 0 && (ps = 0.01);
+    }
+    starShape(ctx, -(tw.lvl - 1) * 3.6 + k * 7.2, 16, 3.6 * ps, "#ffd45e", 1.1);
+  }
   ctx.restore();
 }
 function drawGuard(b, ck) {
@@ -7164,6 +8496,17 @@ function drawNurseHud(a, H2, x, y, frozen) {
     }
   hurt && (ctx.save(), ctx.lineWidth = 2.4, ctx.strokeStyle = "rgba(255,255,255,0.95)", ctx.setLineDash([5, 5]), ctx.lineDashOffset = reducedMotion() ? 0 : -S.t * 14, ctx.beginPath(), ctx.arc(x, y + 2, R, 0, 7), ctx.stroke(), ctx.setLineDash([]), ctx.lineWidth = 1, ctx.strokeStyle = "rgba(255,90,126,0.9)", ctx.beginPath(), ctx.arc(x, y + 2, R - 2.6, 0, 7), ctx.stroke(), ctx.restore());
 }
+function drawShield(a, x, y) {
+  let sz = a.size, f = Math.max(0, Math.min(1, a.shield / a.shieldMax)), rm = reducedMotion(), sh = ANTS[a.type].shield, regen = a.shield < a.shieldMax && a.shieldT >= sh.regenDelay, pulse = !rm && regen ? 0.5 + 0.5 * Math.sin(S.t * Math.PI * 4) : 0, flash = !rm && a._shieldFlash > S.t ? (a._shieldFlash - S.t) / 0.25 : 0;
+  if (a.shield > 0) {
+    let rx = 17 * sz, ry = 21 * sz, cy = y - 6 * sz;
+    ctx.save(), ctx.globalAlpha = 0.55 + 0.4 * f - 0.25 * pulse + 0.3 * flash, ctx.globalAlpha = Math.min(1, ctx.globalAlpha), ctx.beginPath(), ctx.ellipse(x, cy, rx, ry, 0, 0, Math.PI * 2), ctx.lineWidth = 1.5 + 0.5 * flash, ctx.strokeStyle = INK, ctx.stroke(), ctx.beginPath(), ctx.ellipse(x, cy, rx - 1.1, ry - 1.1, 0, 0, Math.PI * 2), ctx.lineWidth = 1, ctx.strokeStyle = "#ffffff", ctx.stroke(), ctx.beginPath(), ctx.ellipse(x, cy, rx - 3, ry - 3, 0, Math.PI * 1.08, Math.PI * 1.42), ctx.lineWidth = 1.6, ctx.strokeStyle = "#ffffff", ctx.stroke(), ctx.restore();
+  }
+  if (a.shield < a.shieldMax) {
+    let w = a.type === "queen5" ? 60 : 22, hy = y - (a.flying ? 44 : 33) * sz - 4;
+    rr(ctx, x - w / 2 - 1, hy - 1, w + 2, 4, 2), ctx.fillStyle = INK, ctx.fill(), f > 0 && (rr(ctx, x - w / 2, hy, Math.max(2, w * f), 2, 1), ctx.fillStyle = pulse > 0.5 ? "#ffffff" : "#a8e4ff", ctx.fill());
+  }
+}
 function drawAntObj(a, ghost = !1) {
   let b = S.battle, frozen = b.time < b.freezeUntil, p = b.route(a).at(a.d);
   Math.abs(p.dx) > 0.3 && (a._face = p.dx * (a.dir || 1) >= 0 ? 1 : -1);
@@ -7174,12 +8517,24 @@ function drawAntObj(a, ghost = !1) {
     let hk = (S.t - a._hopT) / 0.24;
     hk >= 0 && hk < 1 && (hopY = -Math.sin(hk * Math.PI) * 4, hopS = 1 + 0.1 * Math.sin(hk * Math.PI * 2) * (1 - hk));
   }
-  if (ctx.save(), ctx.translate(x, y + 4 + hopY), ctx.scale(face / breathe, breathe * hopS), a.hitFlash > 0 && !reducedMotion()) {
+  let gsx = 1, gsy = 1;
+  if (a._grabT && !reducedMotion()) {
+    let gk = (S.t - a._grabT) / 0.08;
+    if (gk >= 0 && gk < 1) {
+      let q = Math.sin(gk * Math.PI);
+      gsx = 1 + 0.12 * q, gsy = 1 - 0.12 * q;
+    }
+  }
+  if (ctx.save(), ctx.translate(x, y + 4 + hopY), ctx.scale(face / breathe * gsx, breathe * hopS * gsy), a.hitFlash > 0 && !reducedMotion()) {
     let q = Math.min(1, a.hitFlash / 0.12), sq = 0.12 * q * q;
     ctx.scale(1 + sq, 1 - sq);
   }
-  if (ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h), a.hitFlash > 0.04 && (ctx.globalCompositeOperation = "lighter", ctx.globalAlpha = 0.6, ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h)), a._healFlash > S.t && !ghost && (ctx.globalCompositeOperation = "lighter", ctx.globalAlpha = reducedMotion() ? 0.35 : 0.55 * Math.min(1, (a._healFlash - S.t) / 0.2), ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h)), ctx.restore(), H2 && !ghost && drawNurseHud(a, H2, x, y, frozen), frozen && (ctx.save(), ctx.globalAlpha = 0.55, rr(ctx, x - 17 * a.size, y - 24 * a.size, 34 * a.size, 32 * a.size, 7), ctx.fillStyle = "#d6f3ff", ctx.fill(), ctx.lineWidth = 1.5, ctx.strokeStyle = "#8fd0f5", ctx.stroke(), ctx.restore()), a.slow > 0.01 && !frozen && (ctx.fillStyle = "rgba(255,240,160,0.8)", ctx.beginPath(), ctx.ellipse(x, y + 8, 9 * a.size, 2.5, 0, 0, 7), ctx.fill()), a.stunT > 0 && !frozen && stunStars(ctx, x, y - 30 * a.size, S.t + a.id, a.size), a.charmT > 0 && heart(ctx, x + Math.sin(S.t * 4 + a.id) * 4, y - 32 * a.size - Math.abs(Math.sin(S.t * 3)) * 4, 3, "#ff8fbf"), a.hp < a.maxHp && !ghost) {
-    let w = a.type === "queen" || a.type === "queen3" || a.type === "queen4" ? 60 : 22, hy = y - (a.flying ? 44 : 33) * a.size;
+  if (ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h), a.hitFlash > 0.04 && (ctx.globalCompositeOperation = "lighter", ctx.globalAlpha = 0.6, ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h)), a._healFlash > S.t && !ghost && (ctx.globalCompositeOperation = "lighter", ctx.globalAlpha = reducedMotion() ? 0.35 : 0.55 * Math.min(1, (a._healFlash - S.t) / 0.2), ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h)), ctx.restore(), a._bubbleUntil > S.t && !ghost && !reducedMotion()) {
+    let bx = x, by = y - 40 * a.size - Math.abs(Math.sin(S.t * 6)) * 2;
+    ctx.save(), ctx.beginPath(), ctx.arc(bx, by, 7.5, 0, 7), ctx.fillStyle = "#fffdf0", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), ctx.beginPath(), ctx.moveTo(bx - 2.5, by + 6.5), ctx.lineTo(bx + 1, by + 12), ctx.lineTo(bx + 3, by + 6), ctx.fillStyle = "#fffdf0", ctx.fill(), drawChunkyText(ctx, "!", bx, by + 0.5, 12, { mode: "btn", fill: "#e0524f", outline: 2 }), ctx.restore();
+  }
+  if (H2 && !ghost && drawNurseHud(a, H2, x, y, frozen), frozen && (ctx.save(), ctx.globalAlpha = 0.55, rr(ctx, x - 17 * a.size, y - 24 * a.size, 34 * a.size, 32 * a.size, 7), ctx.fillStyle = "#d6f3ff", ctx.fill(), ctx.lineWidth = 1.5, ctx.strokeStyle = "#8fd0f5", ctx.stroke(), ctx.restore()), a.slow > 0.01 && !frozen && (ctx.fillStyle = "rgba(255,240,160,0.8)", ctx.beginPath(), ctx.ellipse(x, y + 8, 9 * a.size, 2.5, 0, 0, 7), ctx.fill()), a.stunT > 0 && !frozen && stunStars(ctx, x, y - 30 * a.size, S.t + a.id, a.size), a.charmT > 0 && heart(ctx, x + Math.sin(S.t * 4 + a.id) * 4, y - 32 * a.size - Math.abs(Math.sin(S.t * 3)) * 4, 3, "#ff8fbf"), a.shieldMax > 0 && !ghost && drawShield(a, x, y), a.hp < a.maxHp && !ghost) {
+    let w = a.type === "queen" || a.type === "queen3" || a.type === "queen4" || a.type === "queen5" ? 60 : 22, hy = y - (a.flying ? 44 : 33) * a.size;
     rr(ctx, x - w / 2 - 1, hy - 1, w + 2, 6, 3), ctx.fillStyle = INK, ctx.fill();
     let f = Math.max(0, a.hp / a.maxHp);
     rr(ctx, x - w / 2, hy, w * f, 4, 2), ctx.fillStyle = f > 0.5 ? "#8fe388" : f > 0.25 ? "#ffd45e" : "#ff7a7a", ctx.fill();
@@ -7209,11 +8564,11 @@ function renderFx(dt) {
       }
       case "ko": {
         let spr = antSprite(f.ant, 0, !1, pxRatio), rmo = reducedMotion(), ds = rmo ? 1 : k < 0.25 ? 1 + 0.25 * (k / 0.25) : 1.25 * (1 - (k - 0.25) / 0.75);
-        ctx.globalAlpha = rmo ? 1 - k : 1 - k * k, ctx.translate(f.x, f.y - (rmo ? 0 : k * 24)), ctx.rotate(rmo ? 0 : Math.PI * k * 0.4 * f.face), ctx.scale(f.face * ds, -ds), ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h), ctx.scale(1, -1), ctx.beginPath(), ctx.ellipse(0, -18, 8, 2.5, 0, 0, 7), ctx.lineWidth = 2, ctx.strokeStyle = "#ffe36e", ctx.stroke();
+        ctx.globalAlpha = rmo ? 1 - k : 1 - k * k, ctx.translate(f.x, f.y - (rmo ? 0 : f.fall ? -k * k * 20 + Math.sin(k * 14) * 3 : k * 24)), ctx.rotate(rmo ? 0 : Math.PI * k * (f.fall ? 2.2 : 0.4) * f.face), ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h), ctx.scale(1, -1), ctx.beginPath(), ctx.ellipse(0, -18, 8, 2.5, 0, 0, 7), ctx.lineWidth = 2, ctx.strokeStyle = "#ffe36e", ctx.stroke();
         break;
       }
       case "puff":
-        f.x += f.vx * dt, f.y += f.vy * dt, ctx.globalAlpha = (1 - k) * 0.8, ctx.beginPath(), ctx.arc(f.x, f.y, f.r * (1 + k), 0, 7), ctx.fillStyle = "#fff", ctx.fill();
+        f.x += f.vx * dt, f.y += f.vy * dt, ctx.globalAlpha = (1 - k) * 0.8, ctx.beginPath(), ctx.arc(f.x, f.y, f.r * (1 + k), 0, 7), ctx.fillStyle = f.col || "#fff", ctx.fill();
         break;
       case "crumbTxt":
         ctx.globalAlpha = 1 - k * k, crumbIcon(ctx, f.x - 7, f.y - k * 24, 0.7), text(ctx, "+" + f.n, f.x + 7, f.y - k * 24, 12, "#ffe3a8");
@@ -7230,6 +8585,12 @@ function renderFx(dt) {
         ctx.globalAlpha = (1 - k) * 0.95, ctx.beginPath(), ctx.arc(f.x, f.y + 2, rr3, 0, 7), ctx.lineWidth = 6 * (1 - k) + 1.5, ctx.strokeStyle = INK, ctx.stroke(), ctx.lineWidth = 3.6 * (1 - k) + 1, ctx.strokeStyle = "#ffffff", ctx.stroke(), plusShape(ctx, f.x, f.y - 12, 6, "#ff5a7e", 1.5);
         break;
       }
+      case "iceShard":
+        f.x += f.vx * dt, f.y += f.vy * dt, f.vy += 220 * dt, ctx.globalAlpha = 1 - k * k, ctx.translate(f.x, f.y), ctx.rotate(f.rot + k * 5), ctx.beginPath(), ctx.moveTo(0, -4), ctx.lineTo(3, 3), ctx.lineTo(-3, 2.5), ctx.closePath(), ctx.fillStyle = "#e9f8ff", ctx.fill(), ctx.lineWidth = 1, ctx.strokeStyle = INK, ctx.stroke();
+        break;
+      case "shieldPop":
+        ctx.globalAlpha = (1 - k) * 0.9, ctx.beginPath(), ctx.ellipse(f.x, f.y, 17, 21, 0, 0, 7), ctx.lineWidth = 1.5, ctx.strokeStyle = "#ffffff", ctx.stroke();
+        break;
       case "healPlus": {
         let rm = reducedMotion();
         ctx.globalAlpha = k < 0.7 ? 1 : (1 - k) / 0.3, plusShape(ctx, f.x, f.y - (rm ? 4 : k * 22), 5, "#8fe388", 1.6);
@@ -7293,17 +8654,92 @@ function renderFx(dt) {
         ctx.beginPath(), ctx.arc(x, y, 6 + k * 8, 0, 7), ctx.fillStyle = "#c9f5b8", ctx.fill();
         break;
       }
+      case "healCross": {
+        ctx.globalAlpha = 1 - k * k;
+        let cy = f.y - k * 16, s = 1 + 0.2 * k;
+        ctx.translate(f.x, cy), ctx.scale(s, s), ctx.lineJoin = "round", ctx.beginPath(), ctx.moveTo(-2.8, -7), ctx.lineTo(2.8, -7), ctx.lineTo(2.8, -2.8), ctx.lineTo(7, -2.8), ctx.lineTo(7, 2.8), ctx.lineTo(2.8, 2.8), ctx.lineTo(2.8, 7), ctx.lineTo(-2.8, 7), ctx.lineTo(-2.8, 2.8), ctx.lineTo(-7, 2.8), ctx.lineTo(-7, -2.8), ctx.lineTo(-2.8, -2.8), ctx.closePath(), ctx.fillStyle = "#c9f5b8", ctx.fill(), ctx.lineWidth = 1.8, ctx.strokeStyle = INK, ctx.stroke();
+        break;
+      }
+      case "impact": {
+        let x = f.x, y = f.y;
+        switch (ctx.lineCap = "round", f.shape) {
+          case "tint":
+            ctx.globalAlpha = 0.4, ctx.beginPath(), ctx.arc(x, y, 9, 0, 7), ctx.fillStyle = f.col, ctx.fill();
+            break;
+          case "spoke3": {
+            ctx.globalAlpha = 1 - k * k;
+            let L = 5 + 4 * k;
+            for (let w of [[5, INK], [2.4, "#fff4c8"]]) {
+              ctx.lineWidth = w[0], ctx.strokeStyle = w[1], ctx.beginPath();
+              for (let i = 0; i < 3; i++) {
+                let a = -Math.PI / 2 + i * 2.094 + k * 0.5;
+                ctx.moveTo(x, y), ctx.lineTo(x + Math.cos(a) * L, y + Math.sin(a) * L);
+              }
+              ctx.stroke();
+            }
+            break;
+          }
+          case "ring":
+            ctx.globalAlpha = 1 - k, ctx.beginPath(), ctx.arc(x, y, 6 + 8 * k, 0, 7), ctx.lineWidth = 4.2, ctx.strokeStyle = INK, ctx.stroke(), ctx.lineWidth = 2.2, ctx.strokeStyle = "#d6f2ff", ctx.stroke();
+            break;
+          case "sparkle":
+            fxSparkle(ctx, x, y, 6, "#ffffff", k);
+            break;
+          case "sparks2":
+            ctx.globalAlpha = 1 - k;
+            for (let i = 0; i < 2; i++) {
+              let a = -0.6 + i * 2.2 + k, d = 3 + 7 * k;
+              ctx.beginPath(), ctx.arc(x + Math.cos(a) * d, y + Math.sin(a) * d, 2.5 * (1 - k * 0.5), 0, 7), ctx.fillStyle = "#fff7a8", ctx.fill(), ctx.lineWidth = 1.2, ctx.strokeStyle = INK, ctx.stroke();
+            }
+            break;
+          case "splat": {
+            ctx.globalAlpha = 1 - k * k;
+            let w = 5 + 7 * Math.min(1, k * 2.2);
+            ctx.beginPath(), ctx.ellipse(x, y, w, w * 0.45, 0, 0, 7), ctx.fillStyle = "rgba(255,240,170,0.85)", ctx.fill(), ctx.lineWidth = 1.6, ctx.strokeStyle = INK, ctx.stroke(), k > 0.3 && (ctx.beginPath(), ctx.arc(x + 3, y + (k - 0.3) * 14, 1.8, 0, 7), ctx.fillStyle = "#ffe48a", ctx.fill());
+            break;
+          }
+          case "bubbles":
+            ctx.globalAlpha = 1 - k;
+            for (let i = 0; i < 2; i++) {
+              let rr2 = (i ? 2.5 : 4) * (0.5 + k * 1.1);
+              ctx.beginPath(), ctx.arc(x + (i ? 6 : -4), y - (i ? 3 : 0) - k * 6, rr2, 0, 7), ctx.lineWidth = 1.8, ctx.strokeStyle = INK, ctx.stroke(), ctx.fillStyle = "rgba(255,170,70,0.75)", ctx.fill();
+            }
+            break;
+          case "heart":
+            ctx.globalAlpha = 1 - k, heart(ctx, x, y - k * 10, 5, "#ff8fbf");
+            break;
+        }
+        break;
+      }
       case "ember":
         f.x += f.vx * dt, f.y += f.vy * dt, ctx.globalAlpha = 1 - k, ctx.beginPath(), ctx.arc(f.x, f.y, 2.6 * (1 - k) + 0.8, 0, 7), ctx.fillStyle = k < 0.4 ? "#ffe08a" : "#ff8a4a", ctx.fill();
         break;
       case "spark":
+        if (ART81) {
+          fxSparkle(ctx, f.x, f.y, f.big ? 11 + 5 * k : 4 + 4 * k, f.col || "#fff7a8", k);
+          break;
+        }
         ctx.globalAlpha = 1 - k, starShape(ctx, f.x, f.y, 5 + k * 4, f.col || "#fff", 1);
         break;
+      case "icing": {
+        let rr2 = 10 + 34 * Math.sqrt(k);
+        ctx.globalAlpha = (1 - k) * 0.9, ctx.beginPath(), ctx.ellipse(f.x, f.y + 8, rr2, rr2 * 0.45, 0, 0, 7), ctx.fillStyle = "#f7b6c8", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke();
+        break;
+      }
+      // v0.8.1 W8: the Glaze Queen's icing splash
+      case "sprk":
+        f.x += f.vx * dt, f.y += f.vy * dt, f.vy += 320 * dt, ctx.globalAlpha = 1 - k * k, ctx.translate(f.x, f.y), ctx.rotate(f.rot + k * 9), ctx.fillStyle = f.col, ctx.fillRect(-3, -1.2, 6, 2.4), ctx.lineWidth = 0.9, ctx.strokeStyle = INK, ctx.strokeRect(-3, -1.2, 6, 2.4);
+        break;
+      // v0.8.1 W8: a sprinkle piece
       case "shard":
-        f.x += f.vx * dt, f.y += f.vy * dt, f.vy += 300 * dt, ctx.globalAlpha = 1 - k, ctx.translate(f.x, f.y), ctx.rotate(k * 9), ctx.beginPath(), ctx.moveTo(-3, -2), ctx.lineTo(3, -1), ctx.lineTo(0, 3), ctx.closePath(), ctx.fillStyle = "#bfe6ff", ctx.fill(), ctx.lineWidth = 1, ctx.strokeStyle = INK, ctx.stroke();
+        f.x += f.vx * dt, f.y += f.vy * dt, f.vy += 300 * dt, ctx.globalAlpha = 1 - k, ctx.translate(f.x, f.y), ctx.rotate(k * 9), ctx.beginPath(), ctx.moveTo(-3, -2), ctx.lineTo(3, -1), ctx.lineTo(0, 3), ctx.closePath(), ctx.fillStyle = f.col || "#bfe6ff", ctx.fill(), ctx.lineWidth = 1, ctx.strokeStyle = INK, ctx.stroke();
         break;
       case "star":
-        f.x += f.vx * dt, f.y += f.vy * dt, f.vy += 80 * dt, ctx.globalAlpha = 1 - k, starShape(ctx, f.x, f.y, 4 * (1 - k) + 1, "#ffe36e", 1);
+        if (f.x += f.vx * dt, f.y += f.vy * dt, f.vy += 80 * dt, ART81) {
+          fxSparkle(ctx, f.x, f.y, 4.5 * (1 - k) + 1.5, SPARK_COLS[(f.ci || 0) % 4], k);
+          break;
+        }
+        ctx.globalAlpha = 1 - k, starShape(ctx, f.x, f.y, 4 * (1 - k) + 1, "#ffe36e", 1);
         break;
       case "pop":
         ctx.globalAlpha = 1 - k, ctx.beginPath(), ctx.arc(f.x, f.y, 10 + k * 22, 0, 7), ctx.lineWidth = 3, ctx.strokeStyle = "#fff", ctx.stroke();
@@ -7321,12 +8757,20 @@ function renderFx(dt) {
       case "flash":
         ctx.globalAlpha = 1 - k, ctx.fillStyle = f.col, ctx.fillRect(0, 0, MAP_W, MAP_H);
         break;
-      case "banner": {
-        ctx.globalAlpha = k < 0.15 ? k / 0.15 : k > 0.75 ? (1 - k) / 0.25 : 1;
-        let s = 1 + Math.max(0, 0.15 - k) * 2;
-        ctx.translate(200, 200), ctx.scale(s, s), text(ctx, f.s, 0, 0, 34, "#ffe36e");
-        break;
-      }
+      case "banner":
+        if (f.pill) {
+          let t = k * f.max, rm = reducedMotion(), inn = Math.min(1, t / 0.18), ease = 1 - (1 - inn) * (1 - inn), fade = t > 0.88 ? Math.max(0, 1 - (t - 0.88) / 0.2) : 1, w = f.last ? 190 : 150, h = 36;
+          if (ctx.globalAlpha = rm ? Math.min(fade, k < 0.15 ? k / 0.15 : 1) : Math.min(1, inn * 1.5) * fade, ctx.translate(0, rm ? 0 : -28 * (1 - ease)), drawPillButton(ctx, 200 - w / 2, 92, w, h, f.last ? "gold" : "pink"), drawChunkyText(ctx, f.s, 200, 92 + h / 2 + 1, 20, { mode: "btn" }), f.last && !rm && t > 0.12) for (let j = 0; j < 4; j++) {
+            let ph = (t * 2.2 + j * 0.27) % 1;
+            fxSparkle(ctx, 200 + (j % 2 ? 1 : -1) * (w / 2 + 6 + (j > 1 ? 14 : 0)), 98 + (j > 1 ? 22 : 0) + ph * 4, 6 - j % 2 * 1.5, SPARK_COLS[(j + 1) % 4], ph * 0.9);
+          }
+          break;
+        } else {
+          ctx.globalAlpha = k < 0.15 ? k / 0.15 : k > 0.75 ? (1 - k) / 0.25 : 1;
+          let s = 1 + Math.max(0, 0.15 - k) * 2;
+          ctx.translate(200, 200), ctx.scale(s, s), text(ctx, f.s, 0, 0, 34, "#ffe36e");
+          break;
+        }
     }
     ctx.restore();
   }
@@ -7342,6 +8786,9 @@ function renderUiFx(dt) {
     if (ctx.save(), f.k === "cardFly") {
       let x = f.x0 + (f.x1 - f.x0) * e, y = f.y0 + (f.y1 - f.y0) * e - Math.sin(k * Math.PI) * 40, sc = 1 - 0.65 * e;
       ctx.translate(x, y), ctx.rotate(Math.sin(k * Math.PI) * 0.25), ctx.scale(sc, sc), drawCard(-44, -47, 88, 94, f.card, {});
+    } else if (f.k === "queenPill") {
+      let t = k * f.max, rm = reducedMotion(), inn = Math.min(1, t / 0.25), ease = 1 - (1 - inn) * (1 - inn), fade = t > 1.75 ? Math.max(0, 1 - (t - 1.75) / 0.25) : 1;
+      ctx.globalAlpha = rm ? Math.min(fade, t < 0.2 ? t / 0.2 : 1) : fade, ctx.translate(rm ? 0 : -150 * (1 - ease), 0), drawPillButton(ctx, 8, 76, 168, 38, "purple"), ctx.save(), ctx.beginPath(), ctx.arc(28, 95, 15, 0, 7), ctx.fillStyle = "#fff3e6", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), ctx.clip(), ctx.translate(28, 104), ctx.scale(0.5, 0.5), drawAnt(ctx, f.type, 0.2), ctx.restore(), drawChunkyText(ctx, ANTS[f.type].name, 102, 96, 15, { mode: "btn", align: "center" });
     } else if (f.k === "costFly") {
       let x = f.x0 + (f.x1 - f.x0) * e, y = f.y0 + (f.y1 - f.y0) * e;
       ctx.globalAlpha = k > 0.75 ? (1 - k) / 0.25 : 1;
@@ -7365,14 +8812,27 @@ function renderUiFx(dt) {
 function treatKind(b) {
   return treatOf(b ? b.levelIndex : 0);
 }
+var foodBarSt = { b: null, prev: 1, flash: 0, drain: null };
 function renderHud(b) {
   panel(6, 6, 388, 54, "#fff6ee", 16), drawTreat(ctx, treatKind(b), 30, 33, b.foodStored / b.cfg.foodHP, S.t, { ouch: S.cookieOuch > S.t, react: reaction(S.treat, S.t) });
   let f = b.foodStored / b.cfg.foodHP;
-  rr(ctx, 60, 22, 84, 20, 10), ctx.fillStyle = "#f0e0d8", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), f > 0 && (rr(ctx, 62, 24, 80 * f, 16, 8), ctx.fillStyle = f >= 0.9 ? "#8fe388" : f >= 0.5 ? "#ffd45e" : "#ff8a8a", ctx.fill()), text(ctx, `${Math.floor(b.foodStored + 1e-6)}`, 102, 33, 13, "#fff");
+  if (ART81) {
+    foodBarSt.b !== b && (foodBarSt = { b, prev: f, flash: 0, drain: null }), f < foodBarSt.prev - 1e-6 && (foodBarSt.flash = 0.5, foodBarSt.drain = { from: Math.max(foodBarSt.prev, foodBarSt.drain ? foodBarSt.drain.from : 0), a: 1 }), foodBarSt.prev = f;
+    let dt = Math.min(0.1, S.t - (foodBarSt.t || S.t));
+    foodBarSt.t = S.t, foodBarSt.flash = Math.max(0, foodBarSt.flash - dt * (0.5 / 0.12)), foodBarSt.drain && (foodBarSt.drain.a -= dt / 0.4, foodBarSt.drain.a <= 0 && (foodBarSt.drain = null)), drawFoodBar(ctx, f, `${Math.floor(b.foodStored + 1e-6)}`, S.t, { flash: reducedMotion() ? 0 : foodBarSt.flash, drain: reducedMotion() ? null : foodBarSt.drain, still: reducedMotion() });
+  } else
+    rr(ctx, 60, 22, 84, 20, 10), ctx.fillStyle = "#f0e0d8", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), f > 0 && (rr(ctx, 62, 24, 80 * f, 16, 8), ctx.fillStyle = f >= 0.9 ? "#8fe388" : f >= 0.5 ? "#ffd45e" : "#ff8a8a", ctx.fill()), text(ctx, `${Math.floor(b.foodStored + 1e-6)}`, 102, 33, 13, "#fff");
   let carried = b.ants.reduce((s, a) => s + (a.trips === 0 ? a.carrying : 0), 0);
-  carried && text(ctx, `${fmtFood(carried)} carried off!`, 102, 51, 12, "#c0392b", "center", null), text(ctx, `Wave ${Math.min(b.nextWave, b.totalWaves)}/${b.totalWaves}`, 184, 26, 15, "#ffb3c1"), hudPreviewLast = null, stripNoRoom && drawHudPreview(b) || text(ctx, `Lv ${b.levelIndex + 1}`, 184, 46, 12, "#a08090", "center", null), ctx.save(), ctx.translate(252, 33), rr(ctx, -31, -14, 62, 28, 14), ctx.fillStyle = "#e9f7ff", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), diamondIcon(ctx, -15, 0, 0.95), text(ctx, String(S.save.diamonds || 0), 8, 1, 16, "#7fd3ff"), ctx.restore(), S.crumbShake = Math.max(0, S.crumbShake - 1 / 60), S.crumbPulse = Math.max(0, S.crumbPulse - 1 / 60);
-  let shx = S.crumbShake > 0 ? Math.sin(S.t * 60) * 4 * S.crumbShake / 0.45 : 0, pul = 1 + S.crumbPulse * 0.5;
-  ctx.save(), ctx.translate(341 + shx, 33), ctx.scale(pul, pul), rr(ctx, -45, -16, 90, 32, 16), ctx.fillStyle = S.crumbShake > 0 ? "#ffd6d6" : "#fff1d6", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = S.crumbShake > 0 ? "#e0524f" : INK, ctx.stroke(), crumbIcon(ctx, -27, 0, 1.2), text(ctx, String(Math.floor(b.crumbs)), 7, 1, 19, "#ffcf7a"), blob(ctx, 36, -1, 9, 9, "#9fe0ff", 1.8), text(ctx, "+", 36, -1.5, 15, "#ffffff"), ctx.restore(), S.result || button("buyCrumbs", 290, 0, 110, 66, () => openCrumbDialog());
+  carried && text(ctx, `${fmtFood(carried)} carried off!`, 102, 51, 12, "#c0392b", "center", null), text(ctx, `Wave ${Math.min(b.nextWave, b.totalWaves)}/${b.totalWaves}`, 184, 26, 16, "#ffb3c1", "center", INK, "bold", !0), hudPreviewLast = null, stripNoRoom && drawHudPreview(b) || text(ctx, `Lv ${b.levelIndex + 1}`, 184, 46, 12, "#a08090", "center", null), ctx.save(), ctx.translate(252, 33), rr(ctx, -31, -14, 62, 28, 14), ctx.fillStyle = "#e9f7ff", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), diamondIcon(ctx, -15, 0, 0.95), text(ctx, String(S.save.diamonds || 0), 8, 1, 16, "#7fd3ff", "center", INK, "bold", !0), ctx.restore(), S.crumbShake = Math.max(0, S.crumbShake - 1 / 60), S.crumbPulse = Math.max(0, S.crumbPulse - 1 / 60);
+  let cbump = S.crumbBump > 0 ? 0.08 * Math.sin(Math.PI * (1 - S.crumbBump / 0.12)) : 0;
+  S.crumbBump = Math.max(0, S.crumbBump - 1 / 60);
+  let shx = S.crumbShake > 0 ? Math.sin(S.t * 60) * 4 * S.crumbShake / 0.45 : 0, pul = 1 + S.crumbPulse * 0.5 + cbump;
+  if (ctx.save(), ctx.translate(341 + shx, 33), ctx.scale(pul, pul), rr(ctx, -45, -16, 90, 32, 16), ctx.fillStyle = S.crumbShake > 0 ? "#ffd6d6" : "#fff1d6", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = S.crumbShake > 0 ? "#e0524f" : INK, ctx.stroke(), crumbIcon(ctx, -27, 0, 1.2), text(ctx, String(Math.floor(b.crumbs)), 7, 1, 19, "#ffcf7a", "center", INK, "bold", !0), blob(ctx, 36, -1, 9, 9, "#9fe0ff", 1.8), text(ctx, "+", 36, -1.5, 15, "#ffffff"), ctx.restore(), ART81) {
+    drawCrumbUp();
+    let sk = (S.t - S.chipSparkT) / 0.28;
+    sk >= 0 && sk < 1 && !reducedMotion() && (ctx.save(), fxSparkle(ctx, 322, 22, 5, "#fff7c2", sk), ctx.restore());
+  }
+  S.result || button("buyCrumbs", 290, 0, 110, 66, () => openCrumbDialog());
 }
 function openCrumbDialog() {
   let b = S.battle;
@@ -7410,11 +8870,11 @@ function openBoosterDialog(bt) {
 function renderDialog() {
   let D = S.dialog, have = S.save.diamonds || 0, afford = have >= D.price;
   if (ctx.fillStyle = "rgba(60,40,55,0.5)", ctx.fillRect(-2e3, -2e3, W + 4e3, H + 4e3), button("dlgBlock", -2e3, -2e3, W + 4e3, H + 4e3, () => {
-  }), panel(44, 228, 312, 250, "#fff6ee"), text(ctx, D.title, 200, 258, 22, D.kind === "crumbs" ? "#ffcf7a" : BONUSES[D.booster].color), ctx.save(), ctx.translate(200, 300), D.kind === "crumbs")
+  }), panel(44, 228, 312, 250, "#fff6ee"), text(ctx, D.title, 200, 258, 22, D.kind === "crumbs" ? "#ffcf7a" : BONUSES[D.booster].color, "center", INK, "bold", !0), ctx.save(), ctx.translate(200, 300), D.kind === "crumbs")
     for (let k = 0; k < 5; k++) crumbIcon(ctx, -28 + k * 14, Math.sin(S.t * 4 + k) * 2, 1.4);
   else
     ctx.scale(1.4, 1.4), drawBonusIcon(ctx, D.booster, S.t);
-  ctx.restore(), plainText(D.line, 200, 338, 14, "#3d2a36", "center", "600"), diamondIcon(ctx, 178, 364, 1.2), text(ctx, String(D.price), 212, 365, 22, "#7fd3ff"), plainText(afford ? `You have ${have} diamonds.` : `You have ${have} diamonds. Get diamonds from the Reward Calendar.`, 200, 392, 12, afford ? "#5a4652" : "#c0392b", "center"), plainText(D.note, 200, 408, 12, "#7a6a76", "center"), drawButton(64, 420, 128, 46, "Cancel", "#d9cfe0"), button("dlgCancel", 60, 418, 136, 52, () => {
+  ctx.restore(), plainText(D.line, 200, 338, 14, "#3d2a36", "center", "600"), diamondIcon(ctx, 178, 364, 1.2), text(ctx, String(D.price), 212, 365, 22, "#7fd3ff", "center", INK, "bold", !0), plainText(afford ? `You have ${have} diamonds.` : `You have ${have} diamonds. Get diamonds from the Reward Calendar.`, 200, 392, 12, afford ? "#5a4652" : "#c0392b", "center"), plainText(D.note, 200, 408, 12, "#7a6a76", "center"), drawButton(64, 420, 128, 46, "Cancel", "#fff3e6"), button("dlgCancel", 60, 418, 136, 52, () => {
     S.dialog = null;
   }), drawButton(208, 420, 128, 46, "Buy", "#9fe0ff", { disabled: !afford }), button("dlgBuy", 204, 418, 136, 52, () => {
     if (!afford) {
@@ -7453,7 +8913,7 @@ function renderTray(b) {
     b.callWaveEarly() > 0 && sfx("return");
   });
   let rc = b.rerollPrice, ry = y0 + L.rerollY;
-  drawButton(wx, ry, ww, L.rerollH, "", "#c9b6f2", { disabled: b.crumbs < rc }), rc === 0 ? (text(ctx, "Redraw", wx + 30, ry + 18, 13), text(ctx, "FREE", wx + 76, ry + 18, 12, "#2f8a3a")) : (text(ctx, "Redraw", wx + 30, ry + 18, 13), crumbIcon(ctx, wx + 66, ry + 18, 0.65), text(ctx, String(rc), wx + 80, ry + 18, 12)), button("reroll", wx - 4, y0 + L.rerollY - 2, ww + 8, L.rowY - L.rerollY, () => {
+  drawButton(wx, ry, ww, L.rerollH, "", "#fff3e6", { disabled: b.crumbs < rc }), rc === 0 ? (text(ctx, "Redraw", wx + 30, ry + 18, 13, INK, "center", null), text(ctx, "FREE", wx + 76, ry + 18, 12, "#2f8a3a", "center", null)) : (text(ctx, "Redraw", wx + 30, ry + 18, 13, INK, "center", null), crumbIcon(ctx, wx + 66, ry + 18, 0.65), text(ctx, String(rc), wx + 80, ry + 18, 12, INK, "center", null)), button("reroll", wx - 4, y0 + L.rerollY - 4, ww + 8, L.rowY - L.rerollY + 4, () => {
     b.reroll() ? (sfx("tap"), rc > 0 && (addUi({ k: "costFly", n: rc, x0: 340, y0: 34, x1: 300, y1: 96, life: 1, max: 1 }), S.crumbPulse = 0.35)) : needCrumbs(rc);
   });
   let by = y0 + L.rowY, bh = L.rowH, hitY = y0 + L.rowY - 2, hitH = H - hitY;
@@ -7476,7 +8936,7 @@ function renderTray(b) {
     });
   }), text(ctx, `${b.bonusUsesLeft}`, 234, by + 14, 14, "#ffb3c1"), text(ctx, "left", 234, by + 30, 12, "#a08090", "center", null), drawSpeedButton(256, by, 60, bh), button("speed", 252, hitY, 68, hitH, () => {
     S.speed = nextSpeed(S.speed), sfx("tap");
-  }), drawButton(324, by, 64, bh, "II", "#d9cfe0", { r: 12, size: 16 }), button("pause", 320, hitY, 76, hitH, () => {
+  }), drawButton(324, by, 64, bh, "II", "#fff3e6", { r: 12, size: 16 }), button("pause", 320, hitY, 76, hitH, () => {
     setPaused(!0);
   });
 }
@@ -7522,7 +8982,7 @@ function drawStarMoment(MO, rt, tRes) {
   }
   ctx.save(), ctx.globalAlpha = Math.max(0, al), ctx.translate(x, y), ctx.rotate(rot), ctx.scale(sc, sc), drawBeveledTile(ctx, -76, -49, 152, 98, "#ffe58a", { lip: 5, r: 18, lw: 3, hi: 0.8 }), rr(ctx, -72, -45, 144, 90, 15), ctx.lineWidth = 3, ctx.strokeStyle = "#f2a81d", ctx.stroke();
   for (let i = 0; i < 3; i++) candyStar(ctx, -26 + i * 26, i === 1 ? -33 : -29, i === 1 ? 11 : 9, "#ffd23f", 1.8);
-  if (coinIcon(ctx, -42, 4, 1.5), drawChunkyText(ctx, `+${amount}`, 10, 4, 38, { mode: "title" }), drawChunkyText(ctx, "3-STAR REWARD", 0, 35, 14, { mode: "btn" }), ctx.restore(), !rm && rt >= T.burst && rt < T.burst + 0.5) {
+  if (coinIcon(ctx, -42, 3, 1.5), drawChunkyText(ctx, `+${amount}`, 10, 3, 40, { mode: "title" }), drawChunkyText(ctx, "3 STARS!", 0, 34, 16, { mode: "btn" }), ctx.restore(), !rm && rt >= T.burst && rt < T.burst + 0.5) {
     let k = (rt - T.burst) / 0.5;
     for (let i = 0; i < 12; i++) {
       let a = i * Math.PI / 6 + 0.3, d = 40 + 70 * k * (0.7 + i % 3 * 0.15);
@@ -7544,8 +9004,10 @@ function renderResult(dt) {
   }), R.win && !reducedMotion() && lightBurst(ctx, RESULT_TREAT.x, RESULT_TREAT.y, 230, R.t, { alpha: 0.5 });
   let celebrating = R.perfect && R.t < UI.perfectAnimTime, pop = Math.min(1, R.t * 4);
   ctx.save(), ctx.translate(200, 360), ctx.scale(0.7 + pop * 0.3, 0.7 + pop * 0.3), ctx.translate(-200, -360), panel(36, 120, 328, 480, "#fff6ee", 18, { gold: R.win });
-  let tk = treatOf(S.battle.levelIndex), TN = TREAT_NAME[tk] || "Cookie", title = R.perfect ? `Perfect ${TN}!` : R.win ? `${TN} saved!` : `${TN} eaten!`, ts = R.perfect ? 30 + Math.max(0, 0.3 - R.t) * 30 + Math.sin(R.t * 6) * 1.5 : 28;
-  if (R.win ? drawChunkyText(ctx, title, 200, 156, ts, { mode: "title" }) : drawChunkyText(ctx, title, 200, 156, ts, { mode: "plain", fill: "#ffb4ac" }), R.perfect) {
+  let tk = treatOf(S.battle.levelIndex), TN = TREAT_NAME[tk] || "Cookie";
+  ART81 && drawRewardHeader(ctx, rewardPalette(R.win, R.stars, R.perfect), R.skipped ? 99 : R.t, reducedMotion(), R.win && (R.stars >= 3 || R.perfect));
+  let title = R.perfect ? `Perfect ${TN}!` : R.win ? `${TN} saved!` : `${TN} eaten!`, ts = R.perfect ? 30 + Math.max(0, 0.3 - R.t) * 30 + Math.sin(R.t * 6) * 1.5 : 28;
+  if (R.win ? drawChunkyText(ctx, title, 200, 156, ts, ART81 ? { mode: "title", fill: "#fff" } : { mode: "title" }) : drawChunkyText(ctx, title, 200, 156, ts, { mode: "plain", fill: ART81 ? "#fff" : "#ffb4ac" }), R.perfect) {
     ctx.save(), ctx.globalAlpha = 0.35 + Math.sin(R.t * 4) * 0.15;
     let g = ctx.createRadialGradient(200, 212, 10, 200, 212, 70);
     g.addColorStop(0, "#fff6a8"), g.addColorStop(1, "rgba(255,246,168,0)"), ctx.fillStyle = g, ctx.beginPath(), ctx.arc(200, 212, 70, 0, 7), ctx.fill(), ctx.restore();
@@ -7565,17 +9027,17 @@ function renderResult(dt) {
       ctx.save(), ctx.translate(ax, 240 - hop(k)), ctx.scale(1.25 * (k ? -1 : 1), 1.25), ctx.drawImage(sp.cv, -sp.ox, -sp.oy, sp.w, sp.h), ctx.restore(), contactShadow(ctx, ax, 244, 20, 5, 0.22);
     }
   }
-  R.queenKilled && plainFit(tk === "cake" ? "Way to go, you saved the cake!" : tk === "pie" ? "Way to go, you saved the pie!" : tk === "sundae" ? "Way to go, you saved the sundae!" : "Way to go, you saved the cookies!", 200, 180, 300, 13, "#e0607e", "center", "800");
+  R.queenKilled && plainFit(tk === "donut" ? "Way to go, you saved the donut!" : tk === "cake" ? "Way to go, you saved the cake!" : tk === "pie" ? "Way to go, you saved the pie!" : tk === "sundae" ? "Way to go, you saved the sundae!" : "Way to go, you saved the cookies!", 200, 180, 300, 13, "#e0607e", "center", "800");
   for (let s = 0; s < 3; s++) {
     let on = s < R.stars && R.t > 0.3 + s * 0.25, sc = on ? 1 + Math.max(0, 0.2 - (R.t - 0.3 - s * 0.25)) * 3 : 1;
     starShape(ctx, 140 + s * 60, 270, 18 * sc, on ? "#ffd45e" : "#e8dde4", 2.5);
   }
   if (R.chip2 && R.t > 0.55) {
     let k = Math.min(1, (R.t - 0.55) * 5), cx2 = 322, cy2 = 270;
-    ctx.save(), ctx.translate(cx2, cy2), ctx.scale(0.6 + 0.4 * easeOutBack(k), 0.6 + 0.4 * easeOutBack(k)), drawBeveledTile(ctx, -30, -12, 60, 24, "#ffe9a8", { lip: 2, r: 12, lw: 2, hi: 0.6 }), coinIcon(ctx, -17, 0, 1), drawChunkyText(ctx, `+${R.chip2}`, 6, 0, 14, { mode: "num" }), ctx.restore();
+    ctx.save(), ctx.translate(cx2, cy2), ctx.scale(0.6 + 0.4 * easeOutBack(k), 0.6 + 0.4 * easeOutBack(k)), drawBeveledTile(ctx, -32, -14, 64, 28, "#ffe9a8", { lip: 2, r: 14, lw: 2, hi: 0.6 }), coinIcon(ctx, -19, 0, 1.1), drawChunkyText(ctx, `+${R.chip2}`, 9, 0, 16, { mode: "num" });
   }
   let bodyA = MO && !R.skipped ? Math.max(0, Math.min(1, (rtM - MOMENT_T.hold) / 0.35)) : 1;
-  text(ctx, `Food left: ${fmtFood(S.battle.foodStored)}/${S.battle.cfg.foodHP}   Ants beaten: ${R.kills}`, 200, 302, 12, "#7a5a6a", "center", null), ctx.save(), ctx.globalAlpha = bodyA;
+  ctx.save(), ctx.globalAlpha = bodyA, text(ctx, `Food left: ${fmtFood(S.battle.foodStored)}/${S.battle.cfg.foodHP}   Ants beaten: ${R.kills}`, 200, 302, 12, "#7a5a6a", "center", null);
   let P = out.parts || {}, rows = [];
   R.win ? (rows.push(["Victory", P.base]), rows.push(["Food left", P.food]), rows.push(["Ants beaten", P.kills]), P.level && rows.push(["Level reward", P.level]), P.firstClear && rows.push(["First clear", P.firstClear]), P.stars && rows.push(["Star bonus", P.stars])) : rows.push(["Ants beaten", P.kills || 0]), rows.push([R.win ? "Time survived" : `Time survived${out.coins >= ECONOMY.lossCap ? ` (max ${ECONOMY.lossCap})` : ""}`, P.time || 0]);
   let RS = rows.length > 5 ? 14 : 16;
@@ -7583,9 +9045,17 @@ function renderResult(dt) {
     text(ctx, l, 84, 330 + i * RS, 12, "#7a5a6a", "left", null), text(ctx, `+${v}`, 316, 330 + i * RS, 12, "#c9962a", "right", null);
   });
   let yy = 330 + rows.length * RS + 18;
-  out.gems ? (coinIcon(ctx, 92, yy, 1.3), text(ctx, `+${out.coins} coins`, 146, yy + 1, 18, "#ffd45e", "center"), diamondIcon(ctx, 226, yy, 0.8), text(ctx, `+${out.gems} gems`, 240, yy + 1, 18, "#8fd0ff", "left")) : (coinIcon(ctx, 150, yy, 1.3), text(ctx, `+${out.coins} coins`, 208, yy + 1, 18, "#ffd45e"));
+  if (out.gems ? (coinIcon(ctx, 92, yy, 1.3), text(ctx, `+${out.coins} coins`, 146, yy + 1, 18, "#ffd45e", "center"), diamondIcon(ctx, 226, yy, 0.8), text(ctx, `+${out.gems} gems`, 240, yy + 1, 18, "#8fd0ff", "left")) : (coinIcon(ctx, 150, yy, 1.3), text(ctx, `+${out.coins} coins`, 208, yy + 1, 18, "#ffd45e")), ART81 && R.win && out.coins > 0 && !celebrating && !reducedMotion() && !R.coinSkip) {
+    let tx = out.gems ? 92 : 150, ty = yy, n = Math.min(8, Math.max(3, Math.ceil(out.coins / 12)));
+    for (let i = 0; i < n; i++) {
+      let s = (R.t - (R.perfect ? UI.perfectAnimTime : 0) - 0.35 - i * 0.06) / 0.6;
+      if (s <= 0 || s >= 1) continue;
+      let u = s * s * (3 - 2 * s), x = RESULT_PILE.x + (tx - RESULT_PILE.x) * u + Math.sin(i * 2.1) * 26 * (1 - u) * u * 2, y = RESULT_PILE.y + (ty - RESULT_PILE.y) * u - Math.sin(Math.PI * u) * 34;
+      ctx.save(), ctx.translate(x, y), ctx.scale(Math.max(0.15, Math.abs(Math.cos(s * 9 + i))), 1), ctx.globalAlpha = Math.min(1, (1 - s) * 5), coinSprite(ctx, 0, 0, 9), ctx.restore();
+    }
+  }
   let gift = out.bossGift && !celebrating, twin = gift && out.prize;
-  yy += 20, twin || (text(ctx, `(${R.crumbsLeft} unspent crumbs vanish)`, 200, yy, 12, "#a08090", "center", null), yy += 20), R.win || text(ctx, "Win to earn cards and prizes!", 200, yy, 12, "#a08090", "center", null), out.booster && (rr(ctx, 70, yy - 12, 260, 26, 12), ctx.fillStyle = "#ffe9f0", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = "#ff9ab0", ctx.stroke(), ctx.save(), ctx.translate(92, yy + 1), ctx.scale(0.62, 0.62), drawBonusIcon(ctx, out.booster.id, S.t), ctx.restore(), text(ctx, `First clear: +1 ${BONUSES[out.booster.id].name} booster`, 210, yy + 1, 12.5, "#e0607e", "center", null), yy += 30);
+  yy += 20, twin || (text(ctx, `(${R.crumbsLeft} unspent crumbs vanish)`, 200, yy, 12, "#a08090", "center", null), yy += 20), R.win || text(ctx, "Win to earn cards and prizes!", 200, yy, 12, "#a08090", "center", null), !R.win && R.hint && (rr(ctx, 50, yy + 14, 300, 26, 13), ctx.fillStyle = "#fff2b8", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = "#e0a830", ctx.stroke(), plainFit(R.hint, 200, yy + 27, 280, 13, "#a8661a", "center", "800")), out.booster && (rr(ctx, 70, yy - 12, 260, 26, 12), ctx.fillStyle = "#ffe9f0", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = "#ff9ab0", ctx.stroke(), ctx.save(), ctx.translate(92, yy + 1), ctx.scale(0.62, 0.62), drawBonusIcon(ctx, out.booster.id, S.t), ctx.restore(), text(ctx, `First clear: +1 ${BONUSES[out.booster.id].name} booster`, 210, yy + 1, 12.5, "#e0607e", "center", null), yy += 30);
   let strip = (cy, pz, label, k) => {
     ctx.save(), ctx.translate(200, cy), ctx.scale(0.5 + k * 0.5, 0.5 + k * 0.5), rr(ctx, -130, -15, 260, 30, 14), ctx.fillStyle = "#fff2b8", ctx.fill(), ctx.lineWidth = 2.4, ctx.strokeStyle = "#e0a830", ctx.stroke(), pz.kind === "bonus" ? (ctx.save(), ctx.translate(-108, 0), ctx.scale(0.8, 0.8), drawBonusIcon(ctx, pz.id, S.t), ctx.restore()) : (ctx.save(), ctx.translate(-108, 6), ctx.scale(0.42, 0.42), drawTower(ctx, pz.id, S.t, null), ctx.restore()), text(ctx, label, 10, 1, 13, "#c47a12"), ctx.restore();
   }, cardLabel = (pz, head) => pz.newCard ? `${head}: new tower - ${TOWERS[pz.id].short}!` : `${head === "Prize" ? "You won a card" : head}: ${TOWERS[pz.id].short} L${pz.level}`;
@@ -7598,7 +9068,8 @@ function renderResult(dt) {
     strip(yy + 12 + (out.prize ? 34 : 0), out.bossGift, cardLabel(out.bossGift, "Boss gift"), k);
   }
   !(out.prize && !celebrating) && !gift && R.win && !R.perfect && S.battle.stats.stolen > 0 && text(ctx, "Tip: lose no food at all for a Perfect prize", 200, yy + 10, 12, "#a08090", "center", null), ctx.restore(), ctx.restore(), MO && rtM > -0.01 && rtM < MO.dur && drawStarMoment(MO, rtM, R.t);
-  for (let c of R.confetti)
+  let released = !MO || R.skipped || rtM >= MOMENT_T.hold;
+  if (released && R.pendingFw && (launchFireworks(...R.pendingFw), R.pendingFw = null), released) for (let c of R.confetti)
     c.vy += 420 * dt, c.x += c.vx * dt, c.y += c.vy * dt, c.r += dt * 8, c.y < 760 && candyStar(ctx, c.x, c.y, 4 + c.r * 7 % 3, c.c, 1.2, c.r);
   if (celebrating || MO && !R.skipped && R.t < MO.t0 + MO.dur) return;
   let by = 540;
@@ -7608,11 +9079,11 @@ function renderResult(dt) {
     });
     return;
   }
-  drawButton(52, by, 92, 50, "Map", "#d9cfe0"), button("rmap", 52, by, 92, 50, () => {
+  drawButton(52, by, 92, 50, "Map", "#fff3e6"), button("rmap", 52, by - 3, 92, 56, () => {
     S.battle = null, go("map");
-  }), drawButton(154, by, 92, 50, "Retry", "#ffd27a"), button("rretry", 154, by, 92, 50, () => openPrep(S.levelIndex));
+  }), drawButton(154, by, 92, 50, "Retry", "#ffd27a"), button("rretry", 154, by - 3, 92, 56, () => openPrep(S.levelIndex));
   let hasNext = R.win && S.levelIndex + 1 < LEVELS.length;
-  drawButton(256, by, 92, 50, "Next", "#9fe0b5", { disabled: !hasNext }), hasNext && button("rnext", 256, by, 92, 50, () => openPrep(S.levelIndex + 1));
+  drawButton(256, by, 92, 50, "Next", "#9fe0b5", { disabled: !hasNext }), hasNext && button("rnext", 256, by - 3, 92, 56, () => openPrep(S.levelIndex + 1));
 }
 function cardStatKeys(id) {
   return id === "ball" ? ["power", "rate", "ballRadius"] : id === "tractor" ? ["liftSize", "rate", "scoop"] : ["power", "rate", "range"];
@@ -7662,14 +9133,14 @@ function drawCardPic(x, y, w, h, type, opt = {}) {
   let py = by + bh + (y + h - by - bh) / 2, n = MAX_CARD_LEVEL, gap = Math.min(7, (w - 2 * m - 6) / n);
   if (!compact) for (let i = 0; i < n; i++)
     ctx.beginPath(), ctx.arc(x + w / 2 - (n - 1) * gap / 2 + i * gap, py, Math.max(1.6, gap * 0.32), 0, 7), ctx.fillStyle = i < Le ? "#fff6c0" : "rgba(74,52,66,0.25)", ctx.fill();
-  let bs = Math.max(11, w * 0.15), capped = Le < L, bcx = x + bs * 0.75, bcy = y + bs * 0.75;
-  if (blob(ctx, bcx, bcy, bs, bs * 0.92, capped ? "#ffc2d4" : "#ffe36e", 2), text(ctx, "L" + Le, bcx, bcy + 0.5, 11, "#7a4a2a", "center", null), capped) {
+  let bs = Math.max(12, w * 0.15), capped = Le < L, bcx = x + bs * 0.75, bcy = y + bs * 0.75;
+  if (blob(ctx, bcx, bcy, bs, bs * 0.92, capped ? "#ffc2d4" : "#ffe36e", 2), text(ctx, "L" + Le, bcx, bcy + 0.5, 12, "#7a4a2a", "center", null), capped) {
     let tx = bcx + bs * 0.62, ty = bcy + bs * 0.66;
     ctx.beginPath(), ctx.moveTo(tx - 4, ty - 3), ctx.lineTo(tx + 4, ty - 3), ctx.lineTo(tx, ty + 3.4), ctx.closePath(), ctx.fillStyle = "#b0506a", ctx.fill(), ctx.lineWidth = 1.5, ctx.lineJoin = "round", ctx.strokeStyle = INK, ctx.stroke();
   }
   if (opt.tag && !opt.badge) {
     let tag = T.place === "path" ? "on trail" : T.targets === "air" ? "air only" : type === "laser" ? "gnd+air" : "";
-    tag && text(ctx, tag, ax + aw - 3, ay + 8, 11, "#fff", "right");
+    tag && text(ctx, tag, ax + aw - 3, ay + 8, 12, "#fff", "right");
   }
   if (opt.badge && (blob(ctx, x + w - 11, y + 11, 11, 11, "#ff8fab", 2), text(ctx, opt.badge, x + w - 11, y + 11.5, 12, "#fff")), opt.count != null) {
     let str = `\xD7${opt.count}`;
@@ -7703,16 +9174,16 @@ function renderCards() {
   let anyReady = anyMergeReady(S.save);
   if (!!(S.cardsSel && S.save.cards[S.cardsSel].unlocked)) {
     let ready = mergeReady(S.save, S.cardsSel);
-    drawButton(24, 604, 172, 34, ready ? "Open card  !" : "Open card", ready ? "#ff9ec0" : "#d7e8ff", { size: 15, r: 12 }), button("open" + S.cardsSel, 24, 590, 172, 58, () => openCardView(S.cardsSel));
+    drawButton(24, 604, 172, 34, ready ? "Open card  !" : "Open card", ready ? "#ff9ec0" : "#fff3e6", { size: 15, r: 12 }), button("open" + S.cardsSel, 24, 590, 172, 58, () => openCardView(S.cardsSel));
   }
-  if (drawButton(204, 604, 172, 34, "Merge all", anyReady ? "#ff9ec0" : "#e6dce2", { size: 15, r: 12, disabled: !anyReady }), button("mergeAll", 204, 590, 172, 58, doMergeAll), S.mergeAnim) renderMergeAnim();
+  if (drawButton(204, 604, 172, 34, "Merge all", anyReady ? "#9fe0b5" : "#e6dce2", { size: 15, r: 12, disabled: !anyReady }), button("mergeAll", 204, 590, 172, 58, doMergeAll), S.mergeAnim) renderMergeAnim();
   else if (S.save.onboard && S.save.onboard.cardsHint === "cards" && S.save.cards.zapper.unlocked) {
     let k = ALL_CARDS.indexOf("zapper"), x = 30 + k % 4 * 88, y = 80 + Math.floor(k / 4) * 104;
     onboardSpot(
       { x, y, w: 76, h: 96, r: 12 },
       "cardzapper",
       () => {
-        S.save.onboard.cardsHint = "done", persist(), openCardView("zapper");
+        S.save.onboard.cardsHint = "done", ART81 && armNextHint(S.save, "card"), persist(), openCardView("zapper");
       },
       "Your Bug Zapper - it hits flying ants!",
       { x: 122, y: 80 + Math.floor((ALL_CARDS.length - 1) / 4) * 104 + 28, w: 272 }
@@ -7734,7 +9205,7 @@ function worldCapLine() {
 }
 function renderCardView() {
   let id = S.cardView, T = TOWERS[id], c = S.save.cards[id];
-  panel(12, 12, 376, 636, "#fff6ee"), text(ctx, T.name, 200, 36, 24, "#b5d8ff"), drawButton(22, 18, 66, 28, "Back", "#d9cfe0", { size: 13, r: 10 }), button("cvBack", 14, 8, 84, 48, () => go("cards")), drawCardPic(28, 58, 104, 136, id, { level: c.level, locked: !c.unlocked });
+  panel(12, 12, 376, 636, "#fff6ee"), text(ctx, T.name, 200, 36, 24, "#b5d8ff"), drawButton(22, 18, 66, 28, "Back", "#fff3e6", { size: 13, r: 10 }), button("cvBack", 14, 8, 84, 48, () => go("cards")), drawCardPic(28, 58, 104, 136, id, { level: c.level, locked: !c.unlocked });
   let capNow = highestWorldCap();
   plainText(c.unlocked ? `Fights as L${capNow ? Math.min(c.level, capNow) : c.level}` : "Not unlocked yet", 146, 76, 15, INFO_INK, "left", "800"), plainText("3 cards of a level \u2192 1 of the next", 146, 98, 12, INFO_SOFT, "left", "600"), plainText("Your highest level fights.", 146, 114, 12, INFO_SOFT, "left", "600"), c.unlocked && plainFit(worldCapLine(), 146, 130, 236, 12, INFO_SOFT, "left", "700"), plainText(`Cards held: ${totalCards(c)}`, 146, 146, 12, INFO_SOFT, "left", "600"), coinIcon(ctx, 158, 170, 1), text(ctx, String(S.save.coins), 190, 171, 15, "#ffd45e");
   let rows = mergeRows(S.save, id);
@@ -7759,11 +9230,11 @@ function renderCardView() {
     });
   }), cardInfoPanel(id, 24, 497, 352, 97, {});
   let ready = mergeReady(S.save, id);
-  drawButton(24, 604, 352, 34, "Merge all", ready ? "#ff9ec0" : "#e6dce2", { size: 15, r: 12, disabled: !anyMergeReady(S.save) }), button("cvMergeAll", 24, 591, 352, 57, doMergeAll), S.mergeAnim && renderMergeAnim();
+  drawButton(24, 604, 352, 34, "Merge all", ready ? "#9fe0b5" : "#e6dce2", { size: 15, r: 12, disabled: !anyMergeReady(S.save) }), button("cvMergeAll", 24, 591, 352, 57, doMergeAll), S.mergeAnim && renderMergeAnim();
 }
 function renderMergeAnim() {
   let MA = S.mergeAnim;
-  MA.t += 1 / 60;
+  MA.t += 1 / 60 * (ART81 ? 2.3 / 1.5 : 1);
   let T = UI.mergeAnimTime, k = MA.t / T;
   ctx.save(), ctx.fillStyle = `rgba(60,40,55,${Math.min(0.55, k * 3)})`, ctx.fillRect(-2e3, -2e3, W + 4e3, H + 4e3), ctx.restore();
   let cx = 200, cy = 330, n = Math.min(6, MA.n || 3);
@@ -7821,7 +9292,7 @@ function renderShop() {
       let left = Math.max(1, (E.packPity || 0) - (S.save.packsSinceNew || 0));
       plainFit(lockedCards(S.save).length ? `level 1, ${Math.round(E.packNewTowerChance * 100)}% NEW tower${E.packPity ? ` (sure in ${left})` : ""}` : "level 1, any unlocked tower", 112, 152, 172, 12, "#a08090", "left", "700");
     }
-    drawButton(290, 122, 74, 40, `${E.cardPack}c`, "#9fe0b5", { size: 15, disabled: S.save.coins < E.cardPack }), button("pack", 290, 122, 74, 40, () => {
+    drawButton(290, 122, 74, 40, `${E.cardPack}c`, "#9fe0b5", { size: 15, disabled: S.save.coins < E.cardPack }), button("pack", 286, 119, 82, 46, () => {
       let got = buyPack(S.save);
       got ? (persist(), shopBought("pack", "pack", E.cardPack, "coin"), openPackReveal(got, { source: "paid", newTower: got.newTower })) : toast("Not enough coins");
     });
@@ -7830,7 +9301,7 @@ function renderShop() {
     let col = k % 5, row = Math.floor(k / 5), x = 24 + col * 71, y = 200 + row * 84, w = 64, h = 62, c = S.save.cards[id], own = c.unlocked, up = unlockPrice(id), pk = shopPulse("card", id), cs = pk == null ? 1 : 1 + SHOP_FX.cardPulse * Math.sin(pk * Math.PI);
     ctx.save(), ctx.translate(x + w / 2, y + h / 2), ctx.scale(cs, cs), ctx.translate(-(x + w / 2), -(y + h / 2)), drawCardPic(x, y, w, h, id, { level: c.level, locked: !own, lockText: `Unlock ${up}c`, selected: S.shopSel === id, selCol: "#5a9fe0" }), ctx.restore(), own && countBadge(x + w - 17, y + 13, totalCards(c), pk), blob(ctx, x + 10, y + h + 10, 8, 8, S.shopSel === id ? "#5a9fe0" : "#d7e8ff", 1.6), text(ctx, "i", x + 10, y + h + 10.5, 12, "#fff"), plainText(own ? `${E.cardL1}c` : `${up}c`, x + w - 4, y + h + 10, 12, own ? "#c9962a" : "#e0607e", "right", "800"), button("buy" + id, x, y, w, h, () => {
       S.shopSel = id, own ? buyCard(S.save, id) ? (persist(), sfx("tap"), shopBought("card", id, E.cardL1, "coin")) : toast("Not enough coins") : buyCardUnlock(S.save, id) ? (persist(), sfx("upgrade"), shopBought("card", id, up, "coin"), queueReveal(id, 1, !0, S.t + 0.3)) : toast(`Need ${up} coins`);
-    }), button("info" + id, x - 2, y + h - 2, 40, 24, () => {
+    }), button("info" + id, x - 6, y + h - 22, 48, 44, () => {
       S.shopSel = S.shopSel === id ? null : id, sfx("tap");
     });
   });
@@ -7898,8 +9369,18 @@ var PACK = {
   rowY: 250,
   packX: 200,
   packY: 330
-};
+}, HAPTIC_MS = { light: 12, medium: 26, heavy: [40, 30, 60] };
+function haptic(kind) {
+  if (!(!ART81 || !HAPTIC_MS[kind]) && !(S.save && S.save.settings && S.save.settings.haptics === !1))
+    try {
+      (window.__hapticLog || (window.__hapticLog = [])).push(kind), typeof navigator < "u" && navigator.vibrate && navigator.vibrate(HAPTIC_MS[kind]);
+    } catch {
+    }
+}
 function reducedMotion() {
+  let rmS = S.save && S.save.settings && S.save.settings.reduceMotion;
+  if (rmS === "on") return !0;
+  if (rmS === "off") return !1;
   try {
     return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   } catch {
@@ -7970,16 +9451,18 @@ function renderPack(dt) {
   P.t += dt;
   let t = P.t;
   packFire("drop", 0, () => sfx("tap")), packFire("shake", PACK.drop, () => {
-    sfx("packShake");
+    sfx("packShake"), haptic("light");
   }), packFire("burst", PACK.shake, () => {
-    sfx("pop");
+    sfx("pop"), haptic("medium");
   }), P.cards.forEach((cd, i) => {
     let f0 = PACK.flip0 + i * PACK.flipStep;
-    packFire("flip" + i, f0, () => sfx("cardFlip")), cd.ready && packFire("merge" + i, f0 + PACK.flipDur / 2, () => sfx("upgrade"));
+    packFire("flip" + i, f0, () => {
+      sfx("cardFlip"), haptic("light");
+    }), cd.ready && packFire("merge" + i, f0 + PACK.flipDur / 2, () => sfx("upgrade"));
   });
   let lastFlipEnd = PACK.flip0 + (P.cards.length - 1) * PACK.flipStep + PACK.flipDur;
   P.newTower && packFire("beat", lastFlipEnd, () => {
-    sfx("win");
+    sfx("win"), haptic("medium");
   });
   let dimA = P.reduced ? 0.72 * Math.min(1, (t - P.fadeFrom) / PACK.fade) : 0.72 * Math.min(1, t / PACK.dim);
   ctx.save(), ctx.fillStyle = `rgba(50,32,46,${dimA})`, ctx.fillRect(-2e3, -2e3, W + 4e3, H + 4e3), ctx.restore();

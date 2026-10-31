@@ -35,9 +35,11 @@ export const CANDY = {
   green: ['#b6f08a', '#6fd44a', '#2f9a3a'], gold: ['#fff0a0', '#ffd23f', '#d98a14'], orange: ['#ffd29a', '#ff9a3c', '#d8561a'],
   pink: ['#ffc4d8', '#ff7fa8', '#d1497b'], cyan: ['#c4f6ff', '#6fd8ef', '#2a98c0'], blue: ['#c8dcff', '#7ba8ff', '#3f66d6'],
   red: ['#ffb0a4', '#ff6a5a', '#c93030'], purple: ['#e2d0ff', '#b896f5', '#7a4cc2'], grey: ['#eee6ea', '#d8cfd6', '#a89aa6'],
+  // v0.8.1 F7: the neutral secondary family (Back / Pause / Redraw / Close / Map ...): cream face, #e8d2bd shade, #c9a98e lip, INK label. F14: the disabled ramp (flat, no gloss, label at 60% alpha).
+  cream: ['#fffaf3', '#fff3e6', '#c9a98e', '#e8d2bd'], dis: ['#ebe2e7', '#e6dce2', '#bfb2bb', '#ddd0d8'],
 };
 // map the app's existing pastel button colours onto the candy families (so every call site inherits the look)
-const COL2CANDY = { '#9fe0b5': 'green', '#ffd27a': 'gold', '#d9cfe0': 'purple', '#ffb3c1': 'pink', '#b5d8ff': 'blue', '#ff9a9a': 'red', '#ffd0d0': 'red', '#8fd0ff': 'cyan', '#ffb3b3': 'red', '#d8cfd6': 'grey' };
+const COL2CANDY = { '#9fe0b5': 'green', '#ffd27a': 'gold', '#d9cfe0': 'purple', '#ffb3c1': 'pink', '#b5d8ff': 'blue', '#ff9a9a': 'red', '#ffd0d0': 'red', '#8fd0ff': 'cyan', '#ffb3b3': 'red', '#d8cfd6': 'grey', '#fff3e6': 'cream' };
 export function candyOf(col) {
   const k = COL2CANDY[col.toLowerCase()]; if (k) return CANDY[k];
   const r = ramp(col); return [r.lit, col, r.shade];
@@ -82,7 +84,7 @@ export function rrPath(ctx, x, y, w, h, r) {
 export function drawBeveledTile(ctx, x, y, w, h, base, o = {}) {
   const lip = o.lip === undefined ? 4 : o.lip, r = o.r === undefined ? Math.min(10, h / 3) : o.r, lw = o.lw === undefined ? 2.2 : o.lw, R = ramp(base, o.cool);
   if (lip) { rrPath(ctx, x, y + lip, w, h, r); ctx.fillStyle = R.deep; ctx.fill(); if (lw) { ctx.lineWidth = lw; ctx.strokeStyle = o.line || INK; ctx.stroke(); } }
-  const g = ctx.createLinearGradient(0, y, 0, y + h); g.addColorStop(0, R.lit); g.addColorStop(0.5, R.base); g.addColorStop(1, R.shade);
+  const g = ctx.createLinearGradient(0, y, 0, y + h); g.addColorStop(0, R.lit); g.addColorStop(0.5, R.base); g.addColorStop(1, o.end || R.shade); // v0.8.1 F13: o.end overrides the bottom stop (cream panels end at #fff0e6, not dusty pink)
   rrPath(ctx, x, y, w, h, r); ctx.fillStyle = g; ctx.fill();
   if (lw) { ctx.lineWidth = lw; ctx.strokeStyle = o.line || INK; ctx.stroke(); }
   if (h >= 14 && w >= 14) { // inner top highlight + inner bottom shade (inset, so it stays inside the corners)
@@ -113,13 +115,13 @@ export function bakedBox(ctx, key, x, y, w, h, pad, draw, cap = 96) {
 // ---- pill button (spec §6.5): lip + beveled face + top gloss strip. state: normal / pressed (face drops 3, lip hidden) / disabled ----
 export function drawPillButton(ctx, x, y, w, h, family, o = {}) {
   const press = o.pressed ? 3 : 0, dis = !!o.disabled, r = o.r === undefined ? Math.min(h / 2, 16) : o.r;
-  const fam = dis ? CANDY.grey : (typeof family === 'string' && CANDY[family]) || (Array.isArray(family) ? family : candyOf(family || '#ffb3c1'));
+  const fam = dis ? CANDY.dis : (typeof family === 'string' && CANDY[family]) || (Array.isArray(family) ? family : candyOf(family || '#ffb3c1'));
   bakedBox(ctx, 'pill|' + fam.join(',') + '|' + (o.pressed ? 1 : 0) + '|' + r, x, y, w, h + 5, 4, (g, bw, bh) => {
     const hh = bh - 5, ph = press;
-    rrPath(g, 0, 4, bw, hh, r); g.fillStyle = fam[2]; g.fill(); g.lineWidth = 2.5; g.strokeStyle = INK; g.stroke();
-    const gr = g.createLinearGradient(0, ph, 0, ph + hh); gr.addColorStop(0, fam[0]); gr.addColorStop(0.55, fam[1]); gr.addColorStop(1, mixHex(fam[1], fam[2], 0.42));
+    rrPath(g, 0, o.pressed && fam[3] ? 1 : 4, bw, hh, r); g.fillStyle = fam[2]; g.fill(); g.lineWidth = 2.5; g.strokeStyle = INK; g.stroke();
+    const gr = g.createLinearGradient(0, ph, 0, ph + hh); gr.addColorStop(0, o.pressed && fam[3] ? '#f4e3d3' : fam[0]); gr.addColorStop(0.55, o.pressed && fam[3] ? '#f4e3d3' : fam[1]); gr.addColorStop(1, fam[3] || mixHex(fam[1], fam[2], 0.42)); // v0.8.1 F7: the neutral family has its own shade stop and a #f4e3d3 pressed face
     rrPath(g, 0, ph, bw, hh, r); g.fillStyle = gr; g.fill(); g.lineWidth = 2.5; g.strokeStyle = INK; g.stroke();
-    rrPath(g, 5, ph + 3.5, bw - 10, Math.max(6, hh * 0.3), Math.min(8, hh * 0.18)); g.fillStyle = 'rgba(255,255,255,0.42)'; g.fill(); // the gloss strip (< 25% of the face)
+    if (!dis) { rrPath(g, 5, ph + 3.5, bw - 10, Math.max(6, hh * 0.3), Math.min(8, hh * 0.18)); g.fillStyle = 'rgba(255,255,255,0.42)'; g.fill(); } // the gloss strip (< 25% of the face); none on a disabled pill
     g.beginPath(); g.moveTo(r * 0.8, ph + hh - 4.5); g.lineTo(bw - r * 0.8, ph + hh - 4.5); g.lineWidth = 2; g.strokeStyle = fam[2]; g.globalAlpha = 0.3; g.stroke(); g.globalAlpha = 1;
   });
 }

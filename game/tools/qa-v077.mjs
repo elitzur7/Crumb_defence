@@ -4,7 +4,7 @@
 import puppeteer from 'puppeteer-core';
 import fs from 'node:fs';
 import { serve } from './serve.mjs';
-const OUT = '/workspace/ant-td/qa/v0.8.0/suites/v077'; const SH = `${OUT}/shots`; fs.mkdirSync(SH, { recursive: true });
+const OUT = '/workspace/ant-td/qa/v0.8.1/suites/v077'; const SH = `${OUT}/shots`; fs.mkdirSync(SH, { recursive: true });
 await serve(8894, 'www-test');
 const browser = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: true, args: ['--no-sandbox'] });
 let fails = 0; const R = [];
@@ -58,7 +58,7 @@ const FN = `(function(li){
     await G((li) => { const g = window.__game; g.go('map'); g.startBattle(li, ['slingshot'], [], 1); }, li); await sleep(100);
     cont.push(await G(`${FN}(${li})`));
   }
-  ok(n === 40, `${n} maps measured (20 + the 10 W3 maps + the 10 W4 maps)`);
+  ok(n === 50, `${n} maps measured (20 + the 10 W3 maps + the 10 W4 maps + the 10 W5 maps)`);
   const mn = (k) => Math.min(...cont.map((c) => c[k])), mx = (k) => Math.max(...cont.map((c) => c[k]));
   ok(mn('trailVsGround') >= 1.40, `A1 trail vs ground mean >= 1.40 (min ${mn('trailVsGround')})`);
   ok(mn('trailVsLightest') >= 1.25, `A2 trail vs lightest ground tile >= 1.25 (min ${mn('trailVsLightest')}; v0.7.5 1.27)`);
@@ -115,7 +115,7 @@ const FN = `(function(li){
   }
   const sideOnly = res.flatMap((x) => x.r.towers.filter((t) => ['slingshot', 'spray', 'sound', 'ball', 'fan', 'lizard', 'laser', 'zapper', 'tractor'].includes(t.id)).map((t) => ({ th: x.th, ...t })));
   const pathOnly = res.flatMap((x) => x.r.towers.filter((t) => !['slingshot', 'spray', 'sound', 'ball', 'fan', 'lizard', 'laser', 'zapper', 'tractor'].includes(t.id)));
-  ok(res.length === 8 && res.every((x) => x.r.side === 9) && sideOnly.length === 72, `V2 9 side towers x ${res.length} themes = ${sideOnly.length} samples`);
+  ok(res.length === 9 && res.every((x) => x.r.side === 9) && sideOnly.length === 81, `V2 9 side towers x ${res.length} themes = ${sideOnly.length} samples`);
   ok(sideOnly.every((t) => t.ring), `V2 the INK ring stroke is drawn under every side tower on every theme (${sideOnly.filter((t) => !t.ring).map((t) => t.id + '@' + t.th)} missing)`);
   ok(sideOnly.every((t) => t.lowerMinX >= -21 && t.lowerMaxX <= 21 && t.maxY <= 21.5), `V2 ring stays inside the 40px tile (lower x ${Math.min(...sideOnly.map((t) => t.lowerMinX))}..${Math.max(...sideOnly.map((t) => t.lowerMaxX))}, max y ${Math.max(...sideOnly.map((t) => t.maxY))})`);
   ok(pathOnly.every((t) => !t.ring), `V2 path items (${[...new Set(pathOnly.map((t) => t.id))]}) get no ring`);

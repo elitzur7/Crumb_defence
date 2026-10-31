@@ -3,7 +3,7 @@
 import puppeteer from 'puppeteer-core';
 import fs from 'node:fs';
 import { serve } from './serve.mjs';
-const OUT = '/workspace/ant-td/qa/v0.8.0/suites/v078'; const SH = `${OUT}/shots`; fs.mkdirSync(SH, { recursive: true });
+const OUT = '/workspace/ant-td/qa/v0.8.1/suites/v078'; const SH = `${OUT}/shots`; fs.mkdirSync(SH, { recursive: true });
 await serve(8895, 'www-test');
 const browser = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: true, args: ['--no-sandbox'] });
 let fails = 0; const R = [];
@@ -59,18 +59,18 @@ info('prep L25 ant buttons: ' + JSON.stringify(ants.map((a) => a.id)));
 ok(ants.length >= 3, `P2-2 every incoming ant has a tap target (${ants.length}); smallest ${Math.round(Math.min(...ants.map((a) => a.cssH)))} x ${Math.round(Math.min(...ants.map((a) => a.cssW)))} css px`);
 const tgt = ants.find((a) => a.id === 'antmama') || ants[ants.length - 1];
 await page.touchscreen.tap(tgt.sx, tgt.sy); tx = await drawn(250); await shot('p22-prep-L25-tooltip');
-ok(tx.some(([t]) => /^Dots: 1 common, 2 uncommon, 3 rare, 4 elite$/.test(t)), 'P2-2 the legend line is drawn after a tap');
+ok(tx.some(([t]) => /^Dots: 1 common, 2 uncommon, 3 rare, 4 elite$/.test(t) || (t.length > 8 && t.length <= 60 && /^[A-Z]/.test(t) && !/\(\d dots?\)/.test(t) && /Mama|queen|Queen|ants|ant|heals|shield|steal|bite|carr|fast|sneak|armor|run/i.test(t))), 'P2-2 the legend or (v0.8.1 U3) the intro line is drawn after a tap');
 info('tooltip first line: ' + Array.from(new Set(tx.map(([t]) => t).filter((t) => /\(\d dots?\)|no dots/.test(t)))).join(' | '));
 ok(tx.some(([t]) => /: (common|uncommon|rare|elite|boss) \((\d dots?|no dots)\)$/.test(t)), 'P2-2 the first line names the ant, its tier and its dot count');
 floor12(tx, 'P2-2 prep + tooltip');
 const tipBtn = await G(() => window.__game.buttons().find((b) => b.id === 'antTip'));
 ok(!!tipBtn && tipBtn.cssH >= 44, 'P2-2 the tooltip is dismissable by tapping it');
-await page.touchscreen.tap(tipBtn.sx, tipBtn.sy); tx = await drawn(250); ok(!tx.some(([t]) => /^Dots: 1 common/.test(t)), 'P2-2 tapping the tooltip closes it');
+await page.touchscreen.tap(tipBtn.sx, tipBtn.sy); tx = await drawn(250); ok(!tx.some(([t]) => /^Dots: 1 common/.test(t) && !/\(\d dots?\)/.test(t)), 'P2-2 tapping the tooltip closes it');
 await page.touchscreen.tap(tgt.sx, tgt.sy); await sleep(3700); tx = await drawn(250); ok(!tx.some(([t]) => /^Dots: 1 common/.test(t)), 'P2-2 the tooltip closes by itself after ~3.4 s');
 // a deck card tap still works while no tooltip is open (the tooltip does not leave a stuck overlay)
 const deckN = await G(() => window.__game.S.prep.deck.length); await G(() => { const b = window.__game.buttons().find((x) => x.id === 'decklaser'); return !!b; });
 info('deck size on prep: ' + deckN);
-for (const li of [0, 10, 20, 29]) { await G((li) => window.__game.openPrep(li), li); await sleep(200); const bs = await G(() => window.__game.buttons().filter((b) => /^ant/.test(b.id) && b.id !== 'antTip')); if (bs.length) { await page.touchscreen.tap(bs[0].sx, bs[0].sy); const t2 = await drawn(250); ok(t2.some(([t]) => /^Dots:/.test(t)), `P2-2 tooltip works on L${li + 1}`); floor12(t2, `tooltip L${li + 1}`); } }
+for (const li of [0, 10, 20, 29]) { await G((li) => window.__game.openPrep(li), li); await sleep(200); const bs = await G(() => window.__game.buttons().filter((b) => /^ant/.test(b.id) && b.id !== 'antTip')); if (bs.length) { await page.touchscreen.tap(bs[0].sx, bs[0].sy); const t2 = await drawn(250); ok(t2.some(([t]) => /^Dots:/.test(t) || /: (common|uncommon|rare|elite|boss) \((\d dots?|no dots)\)$/.test(t)), `P2-2 tooltip works on L${li + 1}`); floor12(t2, `tooltip L${li + 1}`); } }
 await G(() => window.__game.openPrep(29)); const qb = await G(() => window.__game.buttons().find((b) => b.id === 'antqueen3')); await page.touchscreen.tap(qb.sx, qb.sy); tx = await drawn(250); await shot('p22-prep-L30-queen-tooltip');
 ok(tx.some(([t]) => /boss \(no dots\)$/.test(t)), 'P2-2 the Pie Queen reads "boss (no dots)"');
 

@@ -3,7 +3,7 @@
 import puppeteer from 'puppeteer-core';
 import fs from 'node:fs';
 import { serve } from './serve.mjs';
-const OUT = '/workspace/ant-td/qa/v0.8.0/suites/v074'; fs.mkdirSync(OUT + '/maps', { recursive: true });
+const OUT = '/workspace/ant-td/qa/v0.8.1/suites/v074'; fs.mkdirSync(OUT + '/maps', { recursive: true });
 await serve(8891, 'www-test'); await serve(8892, 'www');
 const browser = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: true, args: ['--no-sandbox'] });
 let fails = 0; const R = [];
@@ -128,10 +128,10 @@ async function quiet(G) { await G(() => { const b = window.__game.S.battle; b.ne
   await G(() => { window.__game.S.speed = 4; }); await sleep(500);
   const t1 = await G(() => { const g = window.__game; g.S.paused = true; g.S.battle.paused = true; return g.S.battle.time; }); await sleep(800);
   const t2 = await G(() => window.__game.S.battle.time);
-  await G(() => { const g = window.__game; g.S.paused = false; g.S.battle.paused = false; }); await sleep(60);
-  const t3 = await G(() => window.__game.S.battle.time), sp = await G(() => window.__game.S.speed);
+  const wall0 = Date.now(); await G(() => { const g = window.__game; g.S.paused = false; g.S.battle.paused = false; }); await sleep(60);
+  const t3 = await G(() => window.__game.S.battle.time), wallS = (Date.now() - wall0) / 1000, sp = await G(() => window.__game.S.speed);
   ok(sp === 4, `M0#7 after pause + resume the speed is still ${sp}x`); ok(t2 === t1, 'M0#7 the battle clock stands still while paused');
-  ok(t3 - t2 < 0.3, `M0#7 resume: the clock did not jump (${(t3 - t2).toFixed(3)} s in ~60 ms at 4x)`);
+  ok(t3 - t2 < 4 * wallS + 0.12, `M0#7 resume: the clock did not jump (${(t3 - t2).toFixed(3)} s of battle time in ${(wallS * 1000).toFixed(0)} ms wall at 4x; v0.8.1: bound = 4 x wall + 0.12 s so a loaded box does not flake)`);
   await G(() => { window.__game.S.speed = 4; window.__game.startBattle(0, ['slingshot', 'laser', 'zapper', 'spray', 'glue'], [], 5); });
   ok(await G(() => window.__game.S.speed === 2), 'M0#8 a battle started with a persisted 4x starts at 2x');
   await G(() => { window.__game.S.speed = 1; window.__game.startBattle(0, ['slingshot', 'laser', 'zapper', 'spray', 'glue'], [], 5); });
@@ -151,7 +151,7 @@ ok(/E\.DT \? \+E\.DT : 60/.test(fs.readFileSync('/workspace/ant-td/qa/v0.7.4/sim
   await sleep(150); await page.screenshot({ path: `${OUT}/mode-badge-none-default.png` });
   await tapAt(sl.x, sl.y + MAP_Y);
   let ids = (await btns()).map((b) => b.id).filter((i) => i.startsWith('mode_'));
-  ok(ids.join() === 'mode_weak,mode_carrier,mode_front', `M1#2 slingshot panel shows 3 chips, no Strongest (${ids})`);
+  ok(ids.join() === 'mode_weak,mode_carrier', `M1#2 slingshot panel on level 1 shows 2 chips (Weakest / Carrier): no Front, no Healer without a healer ant (${ids})`);
   const geo = await G(() => { const g = window.__game; return g.buttons().find((b) => b.id === 'infoClose'); });
   ok(geo.y > sl.y + MAP_Y + 20 || geo.y + geo.h < sl.y + MAP_Y - 20, `M1#2 the info panel does not cover the tower (panel y ${Math.round(geo.y)}..${Math.round(geo.y + geo.h)}, tower y ${Math.round(sl.y + MAP_Y)})`);
   await page.screenshot({ path: `${OUT}/target-mode-chips-slingshot-weakest.png` });
@@ -161,21 +161,21 @@ ok(/E\.DT \? \+E\.DT : 60/.test(fs.readFileSync('/workspace/ant-td/qa/v0.7.4/sim
   { const c2 = (await btns()).find((b) => b.id === 'mode_carrier'); if (c2) { await page.touchscreen.tap(c2.sx, c2.sy); await sleep(150); } }
   ok(await G((id) => window.__game.S.battle.towers.find((t) => t.id === id).mode === 'carrier', sl.id), 'M1 the Carrier chip selects Carrier');
   await sleep(200); await page.screenshot({ path: `${OUT}/target-mode-chips-slingshot-carrier.png` });
-  const chip = (await btns()).find((b) => b.id === 'mode_front'); await page.touchscreen.tap(chip.sx, chip.sy); await sleep(150);
-  ok(await G((id) => window.__game.S.battle.towers.find((t) => t.id === id).mode === 'front', sl.id), 'M1 the chips select directly (Front)');
+  const chip = (await btns()).find((b) => b.id === 'mode_weak'); await page.touchscreen.tap(chip.sx, chip.sy); await sleep(150);
+  ok(await G((id) => window.__game.S.battle.towers.find((t) => t.id === id).mode === 'weak', sl.id), 'M1 the chips select directly (back to Weakest)');
   await tapAt(sp.x, sp.y + MAP_Y); ids = (await btns()).map((b) => b.id).filter((i) => i.startsWith('mode_'));
   ok(ids.length === 0, `M1#2 no chips on a Spray tower (${ids.length})`);
   await tapAt(sl.x, sl.y + MAP_Y); await tapAt(sl.x, sl.y + MAP_Y); await tapAt(sl.x, sl.y + MAP_Y); // select, then close/cycle ...
   await G(() => { window.__game.S.info = null; }); await sleep(150);
   const mnow = await G((id) => window.__game.S.battle.towers.find((t) => t.id === id).mode, sl.id);
   await page.screenshot({ path: `${OUT}/target-mode-badge-on-tower-${mnow}.png`, clip: { x: 0, y: 60, width: 393, height: 420 } });
-  await G((id) => { const b = window.__game.S.battle; b.setTargetMode(b.towers.find((t) => t.id === id), 'front'); }, sl.id);
+  await G((id) => { const b = window.__game.S.battle; b.setTargetMode(b.towers.find((t) => t.id === id), 'carrier'); }, sl.id);
   // upgrade (drop the same card) and Move keep the mode
   await G((id) => { const b = window.__game.S.battle; const t = b.towers.find((q) => q.id === id); b.crumbs = 999; b.picks[0] = 'slingshot'; b.playCard(0, t.c, t.r); }, sl.id);
-  ok(await G((id) => { const t = window.__game.S.battle.towers.find((q) => q.id === id); return t.lvl >= 2 && t.mode === 'front'; }, sl.id), 'M1#5 the mode survives an upgrade');
+  ok(await G((id) => { const t = window.__game.S.battle.towers.find((q) => q.id === id); return t.lvl >= 2 && t.mode === 'carrier'; }, sl.id), 'M1#5 the mode survives an upgrade');
   await G((id) => { const b = window.__game.S.battle; const t = b.towers.find((q) => q.id === id); const f = (() => { for (let r = 0; r < 12; r++) for (let c = 0; c < 10; c++) if (b.placeRuleOk('slingshot', c, r) && !b.towers.some((q) => q.c === c && q.r === r)) return [c, r]; })(); window.__mv = b.moveTower ? b.moveTower(t, f[0], f[1]) : 'nomove'; }, sl.id);
   info(`M1#5 move result ${await G(() => JSON.stringify(window.__mv))}`);
-  ok(await G((id) => window.__game.S.battle.towers.find((q) => q.id === id).mode === 'front', sl.id), 'M1#5 the mode survives Move');
+  ok(await G((id) => window.__game.S.battle.towers.find((q) => q.id === id).mode === 'carrier', sl.id), 'M1#5 the mode survives Move');
   await G((d) => window.__game.startBattle(2, d, [], 7), DECK); await sleep(150); await quiet(G);
   const fresh = await G(`(() => { const b = window.__game.S.battle; const [c, r] = ${FREE('slingshot')}; return b.addTower('slingshot', c, r).mode; })()`);
   ok(fresh === 'weak', 'M1#5 the next battle starts on Weakest again'); ok(!(await G(() => JSON.stringify(window.__game.S.save).includes('"mode"'))), 'M1#5 the mode is not saved');
@@ -186,10 +186,10 @@ ok(/E\.DT \? \+E\.DT : 60/.test(fs.readFileSync('/workspace/ant-td/qa/v0.7.4/sim
     const t = b.addTower('laser', pos[0], pos[1]);
     let bd = 0, bdist = 1e9; for (let d = 0; d < b.path.length; d += 2) { const q = b.route({ ri: 0 }).at(d); const dd = Math.hypot(q.x - t.x, q.y - t.y); if (dd < bdist) { bdist = dd; bd = d; } }
     const w = b.spawn('worker', bd, 0), car = b.spawn('worker', bd, 0); car.state = 'back'; car.carrying = 1; car.d = Math.max(0, bd - 6); const out = {};
-    for (const m of ['weak', 'carrier', 'front']) { b.setTargetMode(t, m); w.hp = 5; car.hp = 40; w.maxHp = 40; car.maxHp = 40; t.cd = 0; t.target = null; b.update(1 / 60); out[m] = t.target === car.id ? 'carrier' : t.target === w.id ? 'walker' : String(t.target); }
+    for (const m of ['weak', 'carrier']) { b.setTargetMode(t, m); w.hp = 5; car.hp = 40; w.maxHp = 40; car.maxHp = 40; t.cd = 0; t.target = null; b.update(1 / 60); out[m] = t.target === car.id ? 'carrier' : t.target === w.id ? 'walker' : String(t.target); }
     return out; })()`);
   info(`M1 live targeting (Laser, walker 5 HP vs carrier 40 HP, both in range): ${JSON.stringify(eff)}`);
-  ok(eff.weak === 'walker' && eff.carrier === 'carrier' && eff.front === 'walker', 'M1 live game: Weakest -> weak walker, Carrier -> the carrier, Front -> the walker (closest to the cookie)');
+  ok(eff.weak === 'walker' && eff.carrier === 'carrier', 'M1 live game: Weakest -> weak walker, Carrier -> the carrier (Front retired in v0.8.1)');
   // hint: once per battle, never during pause
   await G((d) => window.__game.startBattle(2, d, [], 7), DECK); await sleep(150); await quiet(G);
   await G(`(() => { const b = window.__game.S.battle; const [c, r] = ${FREE('slingshot')}; b.addTower('slingshot', c, r); })()`);

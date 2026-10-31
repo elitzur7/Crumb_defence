@@ -38,5 +38,6 @@
 
     <!-- Permissions -->
 
-    <!-- No permissions: the game is fully offline. -->
+    <!-- v0.8.1 J10: the only permission is VIBRATE (a normal, install-time permission - no prompt) for the optional haptics. The game is fully offline (no network permission). -->
+    <uses-permission android:name="android.permission.VIBRATE" />
 </manifest>
