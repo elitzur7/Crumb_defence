@@ -937,7 +937,14 @@ export class Battle {
     this.foodStored -= steal;               // the cookie loses the piece immediately
     this.stats.stolen += steal;
     this.emit({ type: 'steal', x: a.x, y: a.y, n: steal, ant: a.type });
-    if (this.cfg.carryBack && steal > 0) { a.state = 'back'; a.carrying = steal; a.d = this.route(a).length - 0.01; }
+    if (this.cfg.carryBack && steal > 0) {
+      a.state = 'back'; a.carrying = steal; a.d = this.route(a).length - 0.01;
+      // v0.7.10 (Crumb Design): the cookie pick-up beat. The piece is taken on arrival (unchanged), then the ant stands at the cookie for `cookiePause` s
+      // (queens: `cookiePauseBoss`, default the same) before it turns home. Same timer as the nest wait (waitT): it ticks while slowed, glued or frozen and never
+      // stacks with a stun; the carrier is already a priority target, so every tower in range gets that extra window. Every arrival, every trip.
+      const F = this.cfg.forage, cp = F && F.on ? ((C.ANTS[a.type].boss && F.cookiePauseBoss != null) ? F.cookiePauseBoss : (F.cookiePause || 0)) : 0;
+      if (cp > 0) { a.waitT = Math.max(a.waitT, cp); this.stats.pickups = (this.stats.pickups || 0) + 1; this.emit({ type: 'pickup', x: a.x, y: a.y, n: steal, ant: a.type, t: cp }); }
+    }
     else { if (!this.cfg.carryBack) this.foodDelivered += steal; a.dead = true; a.escaped = true; }
   }
   get stars() { return this.result === 'win' ? starsFor(this.foodStored, this.cfg.foodHP) : 0; }

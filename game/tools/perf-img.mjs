@@ -1,0 +1,16 @@
+import puppeteer from 'puppeteer-core';
+import { serve } from './serve.mjs';
+const [dir, port, level = '16'] = process.argv.slice(2);
+await serve(+port, dir);
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const browser = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: true, args: ['--no-sandbox'] });
+const page = await browser.newPage();
+await page.emulate({ viewport: { width: 393, height: 852, deviceScaleFactor: 2, isMobile: true, hasTouch: true }, userAgent: 'Mozilla/5.0 (Linux; Android 14) Mobile' });
+await page.evaluateOnNewDocument(() => { try { localStorage.clear(); } catch (e) {} });
+await page.goto(`http://127.0.0.1:${port}/index.html`); await page.waitForFunction(() => window.__game); await sleep(800);
+const res = await page.evaluate((li) => { const g = window.__game; g.S.cal = null; g.S.save.onboard.cardsHint = 'done'; g.go('map'); g.startBattle(+li, ['slingshot', 'laser', 'spray', 'fan', 'glue'], ['bomb', 'freeze'], 3); g.S.paused = false; g.setAutoBot(false);
+  const b = g.S.battle; b.crumbs = 600; g.simulate(40, true); for (let i = 0; i < 60; i++) g.renderOnce(1/60);
+  const P = CanvasRenderingContext2D.prototype, o = P.drawImage, L = []; P.drawImage = function (im, ...a) { const m = this.getTransform(); let w, h; if (a.length >= 8) { w = a[6]; h = a[7]; } else if (a.length >= 4) { w = a[2]; h = a[3]; } else { w = im.width; h = im.height; } const sc = Math.hypot(m.a, m.b); if (Math.round(h*sc)===330) L.stack = new Error().stack; L.push([Math.round(w * sc), Math.round(h * sc), Math.round(w*sc*h*sc)]); return o.call(this, im, ...a); };
+  g.renderOnce(1/60); P.drawImage = o; const tot = L.reduce((s, x) => s + x[2], 0); L.sort((a, b) => b[2] - a[2]); return { stack: L.stack, n: L.length, totalPx: tot, top: L.slice(0, 8).map((x) => x.slice(0, 2).join('x')), small: L.filter((x) => x[2] < 20000).length, smallPx: L.filter((x) => x[2] < 20000).reduce((s, x) => s + x[2], 0) }; }, level);
+console.log(JSON.stringify(res));
+await browser.close(); process.exit(0);

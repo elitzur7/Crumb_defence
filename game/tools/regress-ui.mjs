@@ -389,7 +389,7 @@ for (const [w, h, dpr] of VIEWPORTS) {
   {
     await G(() => { const g = window.__game; const s = g.M.newSave(); s.levels[0] = { cleared: true, stars: 3 }; g.Cal.touch(s, g.now()); g.Cal.claim(s, g.now(), () => 0); g.setSave(s); g.S.cal = null; g.S.reveal = [];
       g.startBattle(1, ['slingshot', 'spray', 'glue', 'fan', 'ball'], ['bomb', 'freeze'], 1); const b = g.S.battle; b.foodStored = 95; b.stats.stolen = 5; b.nextWave = b.waves.length; b.time = 200; g.simulate(0.1, false); });
-    await sleep(1900);
+    await sleep(4400);
     const { tx } = await texts(150);
     ok(tx.some((t) => /^Time survived/.test(t)), `${vp} v0.6 item 1 results show a "Time survived" line`);
     if (w === 393) await page.screenshot({ path: `${OUT}/v0.6.2/regress/results-time-coins-393x852.png` });

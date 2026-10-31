@@ -14,9 +14,9 @@ const tuning = JSON.parse(readFileSync(new URL('../../tuning/tuning.json', impor
 const W3_FIRST = 20, W3_QUEEN = 29;
 
 test('version 0.7.7 or later (the current release, 0.7.9 / versionCode 24, is asserted in v078.test.js)', () => {
-  assert.match(C.VERSION, /^0\.7\.[789]$/);
-  assert.match(rd('android/app/build.gradle'), /versionCode 2[234]\b/); assert.match(rd('android/app/build.gradle'), /versionName "0\.7\.[789]"/);
-  assert.match(JSON.parse(rd('package.json')).version, /^0\.7\.[789]$/);
+  assert.match(C.VERSION, /^0\.(7|8)\.\d+$/);
+  assert.match(rd('android/app/build.gradle'), /versionCode (2[0-9]|[3-9]\d)\b/); assert.match(rd('android/app/build.gradle'), /versionName "0\.(7|8)\.\d+"/);
+  assert.match(JSON.parse(rd('package.json')).version, /^0\.(7|8)\.\d+$/);
 });
 
 // ---------- splitInto ----------
@@ -114,7 +114,7 @@ test('W3 ants: Greasy hp 24 slowResist 0.75; Mama hp 60; Pie Queen hp 2300 steal
   for (const id of ['greasy', 'mama', 'queen3']) assert.ok(C.ANTS[id].name && C.ANTS[id].desc && C.ANTS[id].name !== id, `text for ${id}`);
 });
 test('W3 hpMuls and wave counts follow the design table (hp77.json; L30 eased 1.2 -> 1.15 after the 1000-seed sims, see JOB-v0.7.7.md); Mama debuts in L25, Greasy in L22', () => {
-  const hp = [3.3, 4.3, 5.2, 4.9, 8, 6, 8, 6, 8.8, 1.45] /* v0.7.8 re-tune; v0.7.7 was [3, 4, 4.5, 3.2, 4.5, 6, 6, 4, 6, 1.15] */, wv = [6, 7, 7, 7, 7, 6, 8, 8, 9, 9];
+  const hp = [3.3, 4.3, 5.2, 4.9, 8, 6, 8, 6, 8.7, 1.45] /* v0.7.10: L29 8.8 -> 8.7; v0.7.8 re-tune; v0.7.7 was [3, 4, 4.5, 3.2, 4.5, 6, 6, 4, 6, 1.15] */, wv = [6, 7, 7, 7, 7, 6, 8, 8, 9, 9];
   C.LEVELS.slice(W3_FIRST, W3_FIRST + 10).forEach((L, k) => { assert.equal(L.hpMul, hp[k], `L${21 + k} hpMul`); assert.equal(L.waveCount, wv[k], `L${21 + k} waves`); });
   const first = (t) => 1 + C.LEVELS.findIndex((_, i) => S.levelAntTypes(i).includes(t));
   assert.equal(first('greasy'), 22); assert.equal(first('mama'), 25);

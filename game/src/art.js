@@ -1,9 +1,11 @@
 // Procedural, soft & cute art. Everything is drawn with canvas paths - no external assets.
 import * as C from './config.js';
+import * as R8 from './recipes.js';
+import { INK, FONT_BODY, FONT_DISPLAY, mixHex, drawGlossyBlob, drawCoin, ramp, candyStar, bakedBox } from './recipes.js';
+export * from './recipes.js'; // v0.8.0: the shared candy recipes (ramp, drawGlossyBlob, drawBeveledTile, drawPillButton, drawChunkyText, contactShadow, lightBurst, coin / pile, ...)
 
 export const CRUMB_OUTLINE = '#2e1a12'; // v0.7.4 P: the carried crumb's outline (INK is #523c4b)
-export const INK = '#523c4b';           // warm dark outline (v0.3: a touch softer)
-export const FONT = "'Trebuchet MS','Nunito','Arial Rounded MT Bold','Segoe UI',Roboto,sans-serif";
+export const FONT = FONT_DISPLAY; // v0.8.0: Lilita One first (bundled, OFL), then the old Trebuchet stack as the fallback
 
 export function rr(ctx, x, y, w, h, r) {
   r = Math.min(r, w / 2, h / 2);
@@ -18,13 +20,10 @@ export function shade(hex, amt) {
   const f = (v) => Math.max(0, Math.min(255, Math.round(amt > 0 ? v + (255 - v) * amt : v * (1 + amt))));
   return `rgb(${f(r)},${f(g)},${f(b)})`;
 }
-// soft shaded blob with outline
-export function blob(ctx, x, y, rx, ry, color, lw = 2, rot = 0) {
-  const g = ctx.createRadialGradient(x - rx * 0.35, y - ry * 0.45, Math.max(1, Math.min(rx, ry) * 0.12), x, y, Math.max(rx, ry) * 1.15);
-  g.addColorStop(0, shade(color, 0.28)); g.addColorStop(0.6, color); g.addColorStop(1, shade(color, -0.2)); // v0.7.5 C18: 3 stops
-  ctx.beginPath(); ctx.ellipse(x, y, rx, ry, rot, 0, Math.PI * 2);
-  ctx.fillStyle = g; ctx.fill();
-  if (lw) { ctx.lineWidth = lw; ctx.strokeStyle = INK; ctx.stroke(); }
+// v0.8.0: every blob in the game is now the glossy-candy blob (spec 6.3): 4-stop body ramp, bounce light, INK outline, ONE gloss (+ dot).
+// opt: { gloss: 0..1 (default 1), cool, rim } as the 8th argument.
+export function blob(ctx, x, y, rx, ry, color, lw = 2, rot = 0, opt) {
+  drawGlossyBlob(ctx, x, y, rx, ry, color, opt ? { lw, rot, ...opt } : { lw, rot });
 }
 // soft radial contact shadow (v0.3: feathered edge instead of a hard ellipse)
 export function shadow(ctx, x, y, rx, ry = rx * 0.35, a = 0.2) {
@@ -48,6 +47,7 @@ function eye(ctx, x, y, r, look = 0.5, blink = false) {
   ctx.lineWidth = 1.5; ctx.strokeStyle = INK; ctx.stroke();
   ctx.beginPath(); ctx.arc(x + r * 0.35 * look, y + r * 0.1, r * 0.6, 0, Math.PI * 2); ctx.fillStyle = '#2b1d28'; ctx.fill();
   ctx.beginPath(); ctx.arc(x + r * 0.35 * look - r * 0.22, y - r * 0.2, r * 0.22, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill();
+  ctx.beginPath(); ctx.arc(x + r * 0.35 * look + r * 0.2, y + r * 0.34, r * 0.1, 0, Math.PI * 2); ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.fill(); // v0.8.0: bead eye, second small highlight
 }
 
 // ---------------- crumb icon ----------------
@@ -59,13 +59,7 @@ export function crumbIcon(ctx, x, y, s = 1, dark = false) { // dark: the crumb a
   ctx.fillStyle = '#7a4a2a'; for (const [a, b] of [[-3, -2], [2, 1], [-1, 3]]) { ctx.beginPath(); ctx.arc(a, b, 1.1, 0, 7); ctx.fill(); }
   ctx.restore();
 }
-export function coinIcon(ctx, x, y, s = 1) {
-  ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
-  blob(ctx, 0, 0, 8, 8, '#ffd45e', 1.8);
-  ctx.beginPath(); ctx.arc(0, 0, 5, 0, 7); ctx.strokeStyle = '#d99a1e'; ctx.lineWidth = 1.4; ctx.stroke();
-  ctx.fillStyle = '#d99a1e'; ctx.font = `bold 8px ${FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('C', 0, 0.5);
-  ctx.restore();
-}
+export function coinIcon(ctx, x, y, s = 1) { drawCoin(ctx, x, y, Math.round(8 * s * 2) / 2); } // v0.8.0: the embossed-star coin (baked sprite per size)
 // diamond (premium currency, earned from Daily Rewards only - no real money)
 export function diamondIcon(ctx, x, y, s = 1) {
   ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ctx.lineJoin = 'round';
@@ -172,7 +166,7 @@ export function mapNode(ctx, x, y, i, st, t = 0) {
   ctx.beginPath(); ctx.ellipse(x, y + 1, R * 0.66, R * 0.6, 0, 0, 7); ctx.lineWidth = 2; ctx.strokeStyle = `rgba(255,255,255,${st.open ? 0.55 : 0.3})`; ctx.stroke();
   ctx.beginPath(); ctx.ellipse(x - R * 0.38, y - R * 0.5, R * 0.36, R * 0.16, -0.4, 0, 7); ctx.fillStyle = 'rgba(255,255,255,0.6)'; ctx.fill();
   if (st.open) {
-    text(ctx, String(i + 1), x, y + 1, 23, '#fff');
+    R8.drawChunkyText(ctx, String(i + 1), x, y + 1, 25, { mode: 'num' });
     nodeOrnament(ctx, NODE_ORN[i % NODE_ORN.length], x + R * 0.72, y - R * 0.72, t);
     if (st.stars >= 3 && !st.boss) miniCrown(ctx, x, y - R - 3, 1.1);
   } else {
@@ -180,23 +174,19 @@ export function mapNode(ctx, x, y, i, st, t = 0) {
   }
   ctx.restore();
 }
-export function starShape(ctx, x, y, r, fill, lw = 2) {
-  ctx.beginPath();
-  for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5; const rr2 = i % 2 ? r * 0.48 : r; ctx.lineTo(x + Math.cos(a) * rr2, y + Math.sin(a) * rr2); }
-  ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); ctx.lineJoin = 'round'; ctx.lineWidth = lw; ctx.strokeStyle = INK; ctx.stroke();
-}
+export function starShape(ctx, x, y, r, fill, lw = 2) { candyStar(ctx, x, y, r, fill, lw); } // v0.8.0: a gloss-ramped candy star (same call shape)
 
 // ---------------- ANTS (chibi, side/3-4 view, facing right) ----------------
 // Warm caramel palette, big heads, glossy eyes, thick clean outlines.
 export const ANT_COL = { small: '#f8c07e', worker: '#f0994d', big: '#d97a3f', gasmask: '#f0994d', armored: '#e48a47', flyer: '#f9b878', queen: '#f59b9b', queen2: '#c7a6f5', sprinter: '#f0994d', heavy: '#b95b34', greasy: '#ee9f45', mama: '#d9774a', queen3: '#e9b05c', nurse: '#f2b49b', queen4: '#f4b9c8' }; // v0.7.5 C18: value ladder small > worker > big > heavy; v0.7.6 V1 (A5): small #fbc98a -> #f8c07e (>= 1.447 vs the trail on all 20 maps; ladder 1.37 / 1.38 / 1.48)
 const ALW = 2.4; // ant outline width (v0.3: thinner = softer)
 
-function softBlob(ctx, x, y, rx, ry, col, lw = ALW) {
-  blob(ctx, x, y, rx, ry, col, lw);
-  ctx.beginPath(); ctx.ellipse(x - rx * 0.28, y - ry * 0.46, rx * 0.4, ry * 0.22, -0.35, 0, 7);
-  ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.fill();
-}
-function glossyEye(ctx, x, y, rx, ry, blink) {
+function softBlob(ctx, x, y, rx, ry, col, lw = ALW, gloss = 1) { drawGlossyBlob(ctx, x, y, rx, ry, col, { lw, gloss }); }
+// v0.8.0 bead eye: a tall dark oval, a big upper-left highlight + a small lower-right one. mood: '' | 'hurt' (> <) | 'dizzy' (spiral) | 'cheer' (^ ^)
+function glossyEye(ctx, x, y, rx, ry, blink, mood = '', side = 1) {
+  if (mood === 'hurt') { ctx.beginPath(); ctx.moveTo(x - rx * 0.9 * side, y - ry * 0.55); ctx.lineTo(x + rx * 0.7 * side, y); ctx.lineTo(x - rx * 0.9 * side, y + ry * 0.55); ctx.lineWidth = 2.1; ctx.strokeStyle = INK; ctx.stroke(); return; }
+  if (mood === 'dizzy') { ctx.beginPath(); for (let k = 0; k <= 18; k++) { const a = k / 18 * Math.PI * 4, q = k / 18 * rx * 1.05; ctx.lineTo(x + Math.cos(a) * q, y + Math.sin(a) * q); } ctx.lineWidth = 1.5; ctx.strokeStyle = INK; ctx.stroke(); return; }
+  if (mood === 'cheer') { ctx.beginPath(); ctx.moveTo(x - rx, y + ry * 0.25); ctx.quadraticCurveTo(x, y - ry * 0.95, x + rx, y + ry * 0.25); ctx.lineWidth = 2.3; ctx.strokeStyle = INK; ctx.stroke(); return; }
   if (blink) {
     ctx.beginPath(); ctx.moveTo(x - rx, y + 0.5); ctx.quadraticCurveTo(x, y + ry * 0.9, x + rx, y + 0.5);
     ctx.lineWidth = 1.9; ctx.strokeStyle = INK; ctx.stroke(); return;
@@ -204,15 +194,16 @@ function glossyEye(ctx, x, y, rx, ry, blink) {
   ctx.beginPath(); ctx.ellipse(x, y, rx, ry, 0, 0, 7);
   const g = ctx.createLinearGradient(0, y - ry, 0, y + ry); g.addColorStop(0, '#24151f'); g.addColorStop(0.65, '#3b2533'); g.addColorStop(1, '#7a4f62');
   ctx.fillStyle = g; ctx.fill();
-  ctx.beginPath(); ctx.ellipse(x - rx * 0.22, y - ry * 0.32, rx * 0.46, ry * 0.36, -0.3, 0, 7); ctx.fillStyle = '#ffffff'; ctx.fill();
-  ctx.beginPath(); ctx.arc(x + rx * 0.38, y + ry * 0.36, rx * 0.2, 0, 7); ctx.fillStyle = 'rgba(255,255,255,0.9)'; ctx.fill();
+  ctx.beginPath(); ctx.ellipse(x - rx * 0.26, y - ry * 0.36, rx * 0.48, ry * 0.3, -0.3, 0, 7); ctx.fillStyle = '#ffffff'; ctx.fill();
+  ctx.beginPath(); ctx.arc(x + rx * 0.4, y + ry * 0.42, rx * 0.22, 0, 7); ctx.fillStyle = 'rgba(255,255,255,0.92)'; ctx.fill();
 }
-function cheek(ctx, x, y, r = 2.4) { ctx.beginPath(); ctx.ellipse(x, y, r, r * 0.62, 0, 0, 7); ctx.fillStyle = 'rgba(255,112,140,0.55)'; ctx.fill(); }
-function leg(ctx, x0, y0, x1, y1, col) {
+function cheek(ctx, x, y, r = 2.8) { ctx.beginPath(); ctx.ellipse(x, y, r, r * 0.66, 0, 0, 7); ctx.fillStyle = 'rgba(255,100,130,0.6)'; ctx.fill(); }
+function leg(ctx, x0, y0, x1, y1, col) { // v0.8.0: short, thick, with a round mitten foot
   ctx.lineCap = 'round';
-  ctx.beginPath(); ctx.moveTo(x0, y0); ctx.quadraticCurveTo((x0 + x1) / 2 + 1, (y0 + y1) / 2 + 1, x1, y1);
-  ctx.lineWidth = 4.8; ctx.strokeStyle = INK; ctx.stroke();
-  ctx.lineWidth = 2.6; ctx.strokeStyle = col; ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x0, y0); ctx.quadraticCurveTo((x0 + x1) / 2 + 0.6, (y0 + y1) / 2 + 0.6, x1, y1);
+  ctx.lineWidth = 5.6; ctx.strokeStyle = INK; ctx.stroke();
+  ctx.lineWidth = 3.4; ctx.strokeStyle = col; ctx.stroke();
+  ctx.beginPath(); ctx.ellipse(x1 + 0.7, y1 + 0.5, 2.7, 1.9, 0, 0, 7); ctx.fillStyle = col; ctx.fill(); ctx.lineWidth = 1.7; ctx.strokeStyle = INK; ctx.stroke();
 }
 
 // v0.4 item 14e: Sprint Knight sneakers (white with a red swoosh-free stripe)
@@ -243,6 +234,7 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
   // v0.4 item 14: 'big' and 'heavy' are the LARGE size class (2x a regular ant, was ~3x); armour = shell + helmet
   const big = type === 'big' || type === 'heavy' || mama, shell = type === 'armored' || type === 'heavy' || type === 'sprinter';
   const sprinter = type === 'sprinter', heavy = type === 'heavy';
+  const cheer = opt.pose === 'cheer'; // v0.8.0 hero pose (defeat screen + queen taunt only): both arms up, closed happy eyes, open mouth
   ctx.save();
   ctx.scale(S, S); ctx.lineJoin = 'round'; ctx.lineCap = 'round';
   if (!flying) shadow(ctx, 0, 10.5, 15 - hop * 2, 4, 0.2); else shadow(ctx, 0, 21, 10, 3, 0.13);
@@ -278,12 +270,12 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
     ctx.beginPath(); ctx.moveTo(-22, 6.5); ctx.quadraticCurveTo(-10, 10, 1.5, 4.5); ctx.lineWidth = 3.4; ctx.strokeStyle = '#ffffff'; ctx.stroke();
     ctx.fillStyle = INK; for (const [a, b] of [[-17, 6.8], [-10, 8], [-4, 6.6]]) { ctx.beginPath(); ctx.arc(a, b, 0.9, 0, 7); ctx.fill(); }
   }
-  const legY = 3, footY = flying ? 7.5 : 10;
-  for (let i = 0; i < 3; i++) { const sw = (i % 2 ? -1 : 1) * step * 2.4; leg(ctx, -7 + i * 4.5, legY, -6 + i * 4.5 - sw, footY - 0.5, farCol); if (sprinter) sneaker(ctx, -6 + i * 4.5 - sw, footY - 0.5, true); }
+  const legY = 4.2, footY = flying ? 8.2 : 10.4;
+  for (let i = 0; i < 3; i++) { const sw = (i % 2 ? -1 : 1) * step * 2.0; leg(ctx, -8 + i * 4.8, legY, -7 + i * 4.8 - sw, footY - 0.5, farCol); if (sprinter) sneaker(ctx, -7 + i * 4.8 - sw, footY - 0.5, true); }
 
   // ---- body
-  const abRx = queen ? 12 : big ? 11.5 : 9.5, abRy = queen ? 10 : big ? 9.5 : 8;
-  softBlob(ctx, -10, 0.5, abRx, abRy, col);
+  const abRx = queen ? 13 : big ? 12 : 11, abRy = queen ? 11 : big ? 10 : 9.5; // v0.8.0 chibi: one plump abdomen
+  softBlob(ctx, -10, 0.5, abRx, abRy, col, ALW, 0.85);
   ctx.save(); ctx.beginPath(); ctx.ellipse(-10, 0.5, abRx - 1, abRy - 1, 0, 0, 7); ctx.clip();
   ctx.strokeStyle = shade(col, -0.14); ctx.lineWidth = 2;
   for (const sx of [-15, -10.5]) { ctx.beginPath(); ctx.ellipse(sx - (big ? 1.5 : 0), 0.5, 2, abRy + 2, 0, -1.3, 1.3); ctx.stroke(); }
@@ -299,21 +291,29 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
     if (heavy) { ctx.beginPath(); ctx.ellipse(-10, -2.5, abRx * 0.8, 1.4, 0, Math.PI * 1.1, Math.PI * 1.9); ctx.lineWidth = 1.6; ctx.strokeStyle = '#f4b632'; ctx.stroke(); }
     ctx.restore();
   }
-  softBlob(ctx, -1, 1.5, 5.2, 4.8, col);
-  if (opt.carrying) crumbIcon(ctx, -10, -11, 1.3, true);
+  softBlob(ctx, -1, 1.5, 6.5, 6, col, ALW, 0);
+  if (opt.carrying) crumbIcon(ctx, -10.5, -12.5, 1.4, true);
   // near legs (in front of the body)
-  for (let i = 0; i < 3; i++) { const sw = (i % 2 ? 1 : -1) * step * 2.6; leg(ctx, -5 + i * 4.5, legY + 1, -4 + i * 4.5 + sw, footY + 0.5, legCol); if (sprinter) sneaker(ctx, -4 + i * 4.5 + sw, footY + 0.5, false); if (big) blob(ctx, -4 + i * 4.5 + sw, footY + 0.8, 2.2, 1.6, shade(col, -0.3), 1.4); }
+  for (let i = 0; i < 3; i++) { const sw = (i % 2 ? 1 : -1) * step * 2.2; if (cheer && i === 2) continue; leg(ctx, -6 + i * 4.8, legY + 1.2, -5 + i * 4.8 + sw, footY + 0.5, legCol); if (sprinter) sneaker(ctx, -5 + i * 4.8 + sw, footY + 0.5, false); }
+  if (cheer) { // two raised arms with round mitts (the front near leg is the right arm; one more comes from behind the thorax)
+    const wv = Math.sin(P * 2) * 1.6;
+    for (const [sx0, sy0, mx, my, c0] of [[-3, 0, -9 + wv, -25, farCol], [3, 0, 27 - wv, -20, legCol]]) {
+      ctx.beginPath(); ctx.moveTo(sx0, sy0); ctx.quadraticCurveTo((sx0 + mx) / 2 + (mx > 0 ? 8 : -5), (sy0 + my) / 2 + 2, mx, my);
+      ctx.lineWidth = 6.4; ctx.strokeStyle = INK; ctx.stroke(); ctx.lineWidth = 4; ctx.strokeStyle = c0; ctx.stroke();
+      blob(ctx, mx, my, 3.4, 3.2, c0, 1.8, 0, { gloss: 0.6 });
+    }
+  }
   // Sprint Knight jersey: a sporty striped vest with a number on the thorax
   if (sprinter) {
-    ctx.save(); ctx.beginPath(); ctx.ellipse(-1, 1.5, 5.2, 4.8, 0, 0, 7); ctx.clip();
+    ctx.save(); ctx.beginPath(); ctx.ellipse(-1, 1.5, 6.5, 6, 0, 0, 7); ctx.clip();
     ctx.fillStyle = '#4fb4ff'; ctx.fillRect(-7, -4, 12, 12); ctx.fillStyle = '#ffffff'; ctx.fillRect(-7, -0.6, 12, 1.6);
-    ctx.restore(); ctx.beginPath(); ctx.ellipse(-1, 1.5, 5.2, 4.8, 0, 0, 7); ctx.lineWidth = ALW; ctx.strokeStyle = INK; ctx.stroke();
+    ctx.restore(); ctx.beginPath(); ctx.ellipse(-1, 1.5, 6.5, 6, 0, 0, 7); ctx.lineWidth = ALW; ctx.strokeStyle = INK; ctx.stroke();
     ctx.font = `bold 5px ${FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = '#ffffff'; ctx.fillText('7', -1, 4.2);
   }
 
   // ---- head
-  const hr = type === 'small' ? 11.5 : big ? 11.5 : queen ? 11 : 10.8;
-  const hx = 8, hy = -9;
+  const hr = 12.5; // v0.8.0 chibi head: rx 12.5, ry 11.5
+  const hx = 8, hy = -10;
   // antennae (behind the head)
   const bob = Math.sin(P * 2 + 0.6) * 1.4;
   if (type !== 'armored' && type !== 'heavy' && type !== 'small') {
@@ -321,15 +321,15 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
       const bx0 = hx - 3 + k * 6, by0 = hy - hr + 3;
       const tx = hx - 4.5 + k * 10 + bob * (k ? 1 : -0.6), ty = hy - hr - 4.5 + k * 0.5 - Math.abs(bob) * 0.5;
       ctx.beginPath(); ctx.moveTo(bx0, by0); ctx.quadraticCurveTo(bx0 + (k ? 3 : -2), ty + 3, tx, ty);
-      ctx.lineWidth = 3.8; ctx.strokeStyle = INK; ctx.stroke(); ctx.lineWidth = 1.5; ctx.strokeStyle = legCol; ctx.stroke();
-      blob(ctx, tx, ty, 2.5, 2.5, shade(col, 0.25), 2);
+      ctx.lineWidth = 4.6; ctx.strokeStyle = INK; ctx.stroke(); ctx.lineWidth = 2.2; ctx.strokeStyle = legCol; ctx.stroke();
+      blob(ctx, tx, ty, 3.1, 3.1, shade(col, 0.25), 2, 0, { gloss: 0.8 });
     }
   }
-  softBlob(ctx, hx, hy, hr, hr * 0.94, col);
+  softBlob(ctx, hx, hy, hr, hr * 0.92, col);
 
   // ---- face
-  const e1x = hx + 0.5, e2x = hx + 7.3, ey = hy + 0.8;
-  const blink = opt.blink;
+  const e1x = hx + 0.2, e2x = hx + 8.6, ey = hy + 1.6;
+  const blink = opt.blink, mood = opt.mood || (cheer ? 'cheer' : '');
   if (type === 'gasmask') {
     // strap
     ctx.beginPath(); ctx.moveTo(hx - hr + 1, hy - 3); ctx.quadraticCurveTo(hx - 2, hy - 6, e1x, ey - 1); ctx.lineWidth = 3; ctx.strokeStyle = '#6f6a7c'; ctx.stroke();
@@ -343,16 +343,21 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
     ctx.fillStyle = '#7d8592'; for (const dx of [-1.8, 0.4, 2.6]) { ctx.beginPath(); ctx.arc(hx + 5 + dx, hy + 7.6, 0.8, 0, 7); ctx.fill(); }
     blob(ctx, hx + 10.5, hy + 9.2, 2.8, 3.1, '#7fd3ad', 2.2);
   } else {
-    glossyEye(ctx, e1x, ey, 3.1, 3.9, blink);
-    glossyEye(ctx, e2x, ey - 0.3, 2.7, 3.6, blink);
-    cheek(ctx, hx - 3, hy + 5.6); cheek(ctx, hx + 10, hy + 5.2, 2);
+    glossyEye(ctx, e1x, ey, 3.3, 4.6, blink, mood, -1);
+    glossyEye(ctx, e2x, ey - 0.3, 3.0, 4.3, blink, mood, 1);
+    cheek(ctx, hx - 4.2, hy + 7); cheek(ctx, hx + 12.2, hy + 6.6, 2.4);
+    if (opt.carrying && !mood) { for (const [bx, k] of [[e1x, -1], [e2x, 1]]) { ctx.beginPath(); ctx.moveTo(bx - 3.2 * k, ey - 6.9 + 0.3); ctx.lineTo(bx + 3 * k, ey - 6.4 - 0.9); ctx.lineWidth = 1.8; ctx.strokeStyle = INK; ctx.stroke(); } } // carrying: a determined little brow
     if (big && !mama) {
       ctx.beginPath(); ctx.moveTo(hx + 1, hy + 6.2); ctx.quadraticCurveTo(hx + 4, hy + 3.6, hx + 4.2, hy + 5.4); ctx.quadraticCurveTo(hx + 4.6, hy + 3.6, hx + 8, hy + 6.2); ctx.quadraticCurveTo(hx + 4.4, hy + 8, hx + 1, hy + 6.2);
       ctx.fillStyle = '#8a4b33'; ctx.fill(); ctx.lineWidth = 1.3; ctx.strokeStyle = INK; ctx.stroke();
     } else {
-      ctx.beginPath(); ctx.moveTo(hx + 2.6, hy + 5.6); ctx.quadraticCurveTo(hx + 4.3, hy + 8.4, hx + 6, hy + 5.6);
-      ctx.lineWidth = 1.8; ctx.strokeStyle = INK; ctx.stroke();
-      if (queen) { ctx.beginPath(); ctx.ellipse(hx + 4.3, hy + 6.6, 1.3, 0.8, 0, 0, 7); ctx.fillStyle = '#ff6f91'; ctx.fill(); }
+      if (cheer || mood === 'hurt') { // open mouth: a big happy D (cheer) or a small round 'o' (hurt)
+        const w = cheer ? 4.6 : 2.2; ctx.beginPath(); if (cheer) { ctx.moveTo(hx + 4.4 - w, hy + 6.6); ctx.quadraticCurveTo(hx + 4.4, hy + 7.4, hx + 4.4 + w, hy + 6.6); ctx.quadraticCurveTo(hx + 4.4 + w * 0.6, hy + 12.6, hx + 4.4, hy + 12.6); ctx.quadraticCurveTo(hx + 4.4 - w * 0.6, hy + 12.6, hx + 4.4 - w, hy + 6.6); } else ctx.ellipse(hx + 4.4, hy + 8.4, 2.1, 2.6, 0, 0, 7);
+        ctx.fillStyle = '#7a3040'; ctx.fill(); ctx.lineWidth = 1.7; ctx.strokeStyle = INK; ctx.stroke();
+        if (cheer) { ctx.beginPath(); ctx.ellipse(hx + 4.4, hy + 11, 2.4, 1.3, 0, 0, 7); ctx.fillStyle = '#ff8fa0'; ctx.fill(); }
+      } else if (mood === 'dizzy') { ctx.beginPath(); ctx.moveTo(hx + 1.4, hy + 7.4); for (let k = 1; k <= 4; k++) ctx.lineTo(hx + 1.4 + k * 1.9, hy + 7.4 + (k % 2 ? 1.4 : -0.4)); ctx.lineWidth = 1.8; ctx.strokeStyle = INK; ctx.stroke(); }
+      else { ctx.beginPath(); ctx.moveTo(hx + 2.4, hy + 7.4); ctx.quadraticCurveTo(hx + 4.4, hy + 10.4, hx + 6.4, hy + 7.4); ctx.lineWidth = 1.9; ctx.strokeStyle = INK; ctx.stroke(); }
+      if (queen && !cheer) { ctx.beginPath(); ctx.ellipse(hx + 4.4, hy + 8.6, 1.6, 0.9, 0, 0, 7); ctx.fillStyle = '#ff6f91'; ctx.fill(); }
     }
     if (queen) {
       ctx.lineWidth = 1.5; ctx.strokeStyle = INK;
@@ -396,10 +401,10 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
     ctx.fillStyle = '#ff8fb0'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = INK; ctx.stroke();
     ctx.beginPath(); ctx.ellipse(hx - 4, top + 3.2, 2.4, 1.2, -0.4, 0, 7); ctx.fillStyle = 'rgba(255,255,255,0.75)'; ctx.fill();
   } else if (type === 'big') { // sweatband
-    ctx.save(); ctx.beginPath(); ctx.ellipse(hx, hy, hr, hr * 0.94, 0, 0, 7); ctx.clip();
+    ctx.save(); ctx.beginPath(); ctx.ellipse(hx, hy, hr, hr * 0.92, 0, 0, 7); ctx.clip();
     ctx.fillStyle = '#ff6f91'; ctx.fillRect(hx - hr - 1, hy - 7.5, hr * 2 + 2, 4); ctx.fillStyle = '#ffffff'; ctx.fillRect(hx - hr - 1, hy - 6.2, hr * 2 + 2, 1.2);
     ctx.restore();
-    ctx.beginPath(); ctx.ellipse(hx, hy, hr, hr * 0.94, 0, 0, 7); ctx.lineWidth = ALW; ctx.strokeStyle = INK; ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(hx, hy, hr, hr * 0.92, 0, 0, 7); ctx.lineWidth = ALW; ctx.strokeStyle = INK; ctx.stroke();
     ctx.beginPath(); ctx.moveTo(hx - hr + 0.5, hy - 5.5); ctx.quadraticCurveTo(hx - hr - 4, hy - 4 + step, hx - hr - 5, hy + 0.5); ctx.lineWidth = 3; ctx.strokeStyle = '#ff6f91'; ctx.stroke();
   } else if (sprinter) { // light racing helmet with a visor stripe (sporty, still a knight)
     ctx.beginPath(); ctx.ellipse(hx, hy - 3.4, hr * 1.0, hr * 0.8, 0, Math.PI, 0); ctx.closePath();
@@ -467,7 +472,7 @@ export function antSprite(type, frame, carrying, dpr, variant = '') {
   const cv = makeCanvas(Math.ceil(w * dpr), Math.ceil(h * dpr));
   const g = cv.getContext('2d');
   g.scale(dpr, dpr); g.translate(w / 2, h * 0.66);
-  drawAnt(g, type, frame / ANT_FRAMES, { carrying, blink: frame === 7 && !C.isQueen(type), grey: variant === 'g' });
+  drawAnt(g, type, frame / ANT_FRAMES, { carrying, blink: frame === 7 && !C.isQueen(type), grey: variant === 'g', mood: variant === 'h' ? 'hurt' : variant === 'd' ? 'dizzy' : '', pose: variant === 'cheer' ? 'cheer' : '' }); // v0.8.0 variants: h = hurt face, d = dizzy face, cheer = the hero pose
   s = { cv, w, h, ox: w / 2, oy: h * 0.66 };
   spriteCache.set(key, s);
   return s;
@@ -479,6 +484,15 @@ export function makeCanvas(w, h) {
 
 // ---------------- TOWERS ----------------
 export const CARD_COLORS = Object.fromEntries(Object.entries(C.TOWERS).map(([k, v]) => [k, v.color]));
+
+// v0.8.0 (spec 9.1): every tower carries ONE hero gloss on its main body (white lens + dot), baked once per type, drawn over the body, under the crown.
+const HERO_GLOSS = { spray: [-5.5, -16, 2.6, 6.2], sound: [-9, -19, 5.5, 2.2], heart: [-4, -16, 2, 5], zapper: [-5.4, -29, 2.2, 6], tractor: [-8, -21.5, 5, 2], slingshot: [-5.6, -14, 1.5, 4.5], ball: [-5, -34, 2.2, 3.6], gate: [-2, -20, 1.2, 5], fan: [-7, -19, 3, 5], laser: [-4, -22, 3.6, 2.2], lizard: null, glue: null, lava: null };
+function heroGloss(ctx, type, lvl) {
+  const h = HERO_GLOSS[type]; if (!h) return;
+  // two flat fills drawn directly: cheaper than another drawImage per tower per frame
+  ctx.save(); ctx.beginPath(); ctx.ellipse(h[0], h[1], h[2], h[3], -0.2, 0, 7); ctx.fillStyle = 'rgba(255,255,255,0.62)'; ctx.fill();
+  ctx.beginPath(); ctx.arc(h[0] + h[2] * 0.4, h[1] + h[3] + 2.4, 1.1, 0, 7); ctx.fillStyle = 'rgba(255,255,255,0.8)'; ctx.fill(); ctx.restore();
+}
 
 // ---------------- tower body sprite cache (v0.6.1, research item 10) ----------------
 // Every static part of a tower (pad, plinth, trim ring, the body itself, the level-2/3/5 parts, crown, pennant pole, studs)
@@ -528,13 +542,13 @@ function pad(ctx, color) { baked(ctx, 'pad' + color, (g) => padPaths(g, color));
 function padPaths(ctx, color) {
   shadow(ctx, 0, 11, 18, 6.5, 0.24);
   // two-tier base: darker skirt + glossy top
-  ctx.beginPath(); ctx.ellipse(0, 8, 16, 8.5, 0, 0, 7); ctx.fillStyle = shade(color, -0.22); ctx.fill(); ctx.lineWidth = 3.0; ctx.strokeStyle = INK; ctx.stroke();
-  blob(ctx, 0, 5.5, 15.5, 8, shade(color, -0.02), 3.0);
+  ctx.beginPath(); ctx.ellipse(0, 9.6, 16.4, 8.6, 0, 0, 7); ctx.fillStyle = shade(color, -0.3); ctx.fill(); ctx.lineWidth = 3.0; ctx.strokeStyle = INK; ctx.stroke(); // v0.8.0: the slab's lip
+  blob(ctx, 0, 5.5, 15.5, 8, shade(color, -0.02), 3.0, 0, { gloss: 0.55 });
   const g = ctx.createRadialGradient(-4, 3, 1, 0, 5, 12); g.addColorStop(0, shade(color, 0.6)); g.addColorStop(1, shade(color, 0.2));
   ctx.beginPath(); ctx.ellipse(0, 4.5, 11, 5, 0, 0, 7); ctx.fillStyle = g; ctx.fill();
   rim(ctx, 0, 5.5, 15.5, 8, 0.75);
   // tiny rivets
-  ctx.fillStyle = shade(color, -0.35); for (const a of [0.35, 1.2, 1.95, 2.8]) { ctx.beginPath(); ctx.arc(Math.cos(a) * 13.2, 6.5 + Math.sin(a) * 6.3, 0.9, 0, 7); ctx.fill(); }
+  for (const a of [0.35, 1.2, 1.95, 2.8]) { const rx = Math.cos(a) * 13.2, ry = 6.5 + Math.sin(a) * 6.3; ctx.beginPath(); ctx.arc(rx, ry, 1.35, 0, 7); ctx.fillStyle = shade(color, -0.38); ctx.fill(); ctx.beginPath(); ctx.arc(rx - 0.4, ry - 0.45, 0.45, 0, 7); ctx.fillStyle = 'rgba(255,255,255,0.8)'; ctx.fill(); } // v0.8.0: glossy rivet dots (r 1.35 + spec dot)
 }
 const lvKey = (lvl) => (lvl >= 5 ? 5 : lvl >= 3 ? 3 : lvl >= 2 ? 2 : 1); // the visual steps of the level parts
 const r2 = (v) => Math.round(v * 100) / 100;
@@ -551,10 +565,10 @@ export function drawTower(ctx, type, t = 0, tw = null) {
   // visible parts that change the silhouette: L2 + L3 tower-specific parts, L4 a studded stone plinth, L5 a third part,
   // L6 (max) the crown + a pennant.
   // v0.7.6 V2 (A10): one contact ring under every side tower (fan, lizard, tractor included; path items get none), drawn first
-  if (T.place === 'side') baked(ctx, 'ring76', (g) => { g.beginPath(); g.ellipse(0, 9, 19.5, 10.5, 0, 0, 7); g.fillStyle = '#a67c5c'; g.fill(); g.lineWidth = 3; g.strokeStyle = INK; g.stroke(); });
+  if (T.place === 'side') baked(ctx, 'ring76', (g) => { g.beginPath(); g.ellipse(0, 10.2, 19.2, 9.6, 0, 0, 7); g.fillStyle = '#7d5a40'; g.fill(); g.lineWidth = 3; g.strokeStyle = INK; g.stroke(); drawGlossyBlob(g, 0, 9, 19.5, 10.5, '#a67c5c', { lw: 2.6, gloss: 0.5 }); }); // v0.8.0: a slab with a lip (darker skirt below the #a67c5c contact ring, which the spec keeps)
   if (lvl >= 4 && T.place === 'side') baked(ctx, 'plinth', plinthPaths);
   if (lvl >= 2 && T.place === 'side') {
-    baked(ctx, 'trim', (g) => { g.beginPath(); g.ellipse(0, 7, 19, 10.5, 0, 0, 7); g.lineWidth = 3.2; g.strokeStyle = '#f4b632'; g.stroke(); });
+    baked(ctx, 'trim', (g) => { g.beginPath(); g.ellipse(0, 8.1, 19, 10.5, 0, 0, Math.PI); g.lineWidth = 3.2; g.strokeStyle = '#b8700a'; g.stroke(); g.beginPath(); g.ellipse(0, 7, 19, 10.5, 0, 0, 7); g.lineWidth = 3.2; g.strokeStyle = '#f4b632'; g.stroke(); g.beginPath(); g.ellipse(0, 6.6, 19, 10.5, 0, Math.PI * 1.05, Math.PI * 1.75); g.lineWidth = 1.3; g.strokeStyle = '#ffe566'; g.stroke(); }); // v0.8.0: bevelled gold ring (lite #ffe566 / base #f4b632 / deep #b8700a)
     ctx.beginPath(); ctx.ellipse(0, 7, 19, 10.5, 0, Math.PI * 1.1 + (t % 3) * 0.6, Math.PI * 1.3 + (t % 3) * 0.6); ctx.lineWidth = 2; ctx.strokeStyle = '#fff6c0'; ctx.stroke();
   }
   if (lvl > 1) ctx.scale(1 + 0.03 * (lvl - 1), 1 + 0.03 * (lvl - 1));
@@ -776,6 +790,7 @@ export function drawTower(ctx, type, t = 0, tw = null) {
         blob(g, -2, 2, 12, 8, '#b8e07a');
         g.fillStyle = '#8cc456'; for (const [a, b] of [[-6, 0], [-1, -2], [3, 1]]) { g.beginPath(); g.arc(a, b, 1.6, 0, 7); g.fill(); }
         for (const fx2 of [-9, 6]) blob(g, fx2, 9, 3.5, 2.2, '#a7d96a', 1.5);
+        g.beginPath(); g.ellipse(-1, 5.4, 7.5, 2.6, 0, 0, 7); g.fillStyle = 'rgba(230,247,184,0.85)'; g.fill(); // v0.8.0: belly lite #e6f7b8
       });
       const hb = chew ? Math.sin(t * 25) * 1.5 : 0;
       ctx.save(); ctx.translate(0, hb); baked(ctx, 'liz:head', (g) => blob(g, 9, -6, 9, 7.5, '#c4ea86')); ctx.restore();
@@ -822,6 +837,7 @@ export function drawTower(ctx, type, t = 0, tw = null) {
         g.beginPath(); g.moveTo(0, -6); g.lineTo(4.4, -1); g.lineTo(0, 4.5); g.lineTo(-4.4, -1); g.closePath();
         const gr = g.createLinearGradient(-4, -6, 4, 4); gr.addColorStop(0, '#fff2f5'); gr.addColorStop(0.5, '#ff6f8f'); gr.addColorStop(1, '#c8324f'); g.fillStyle = gr; g.fill(); g.lineWidth = 1.5; g.strokeStyle = INK; g.stroke();
         g.beginPath(); g.moveTo(-1.6, -3.6); g.lineTo(-3, -1.2); g.lineWidth = 1.2; g.strokeStyle = '#fff'; g.stroke();
+        g.beginPath(); g.moveTo(0, -6); g.lineTo(0, 4.5); g.lineTo(4.4, -1); g.closePath(); g.fillStyle = 'rgba(160,30,60,0.28)'; g.fill(); // v0.8.0: second facet (shade side)
       });
       ctx.restore();
       if (lk >= 2) { ctx.save(); ctx.translate(0, -13); ctx.rotate(aim); baked(ctx, 'laser:hood', (g) => { rr(g, 15, -7, 8, 14, 3); g.fillStyle = 'rgba(80,70,100,0.85)'; g.fill(); g.lineWidth = 1.4; g.strokeStyle = INK; g.stroke(); }, 2); ctx.restore(); } // lens hood
@@ -862,7 +878,7 @@ export function drawTower(ctx, type, t = 0, tw = null) {
       baked(ctx, 'zap:stem', (g) => { rr(g, -3, -8, 6, 12, 2); g.fillStyle = '#9aa3b5'; g.fill(); g.lineWidth = 1.8; g.strokeStyle = INK; g.stroke(); });
       const glow = 0.5 + Math.sin(t * 6) * 0.2 + (fx > 0 ? 0.5 : 0);
       ctx.beginPath(); ctx.arc(0, -20, 15, 0, 7); ctx.fillStyle = `rgba(150,200,255,${0.25 * glow})`; ctx.fill();
-      baked(ctx, 'zap:box', (g) => { rr(g, -11, -31, 22, 22, 7); g.fillStyle = '#6a7ad8'; g.fill(); g.lineWidth = 2.2; g.strokeStyle = INK; g.stroke(); });
+      baked(ctx, 'zap:box', (g) => { rr(g, -11, -29, 22, 22, 7); g.fillStyle = '#4a58b0'; g.fill(); g.lineWidth = 2.2; g.strokeStyle = INK; g.stroke(); rr(g, -11, -31, 22, 22, 7); g.fillStyle = '#6a7ad8'; g.fill(); g.stroke(); g.beginPath(); g.moveTo(-7, -29.2); g.lineTo(7, -29.2); g.lineWidth = 1.6; g.strokeStyle = 'rgba(255,255,255,0.5)'; g.stroke(); }); // v0.8.0: bevelled tile (lip +2, top light)
       rr(ctx, -7.5, -27.5, 15, 15, 4); ctx.fillStyle = `rgba(190,170,255,${0.7 + 0.3 * glow})`; ctx.fill();
       baked(ctx, 'zap:top' + (lk >= 5 ? 5 : lk >= 2 ? 2 : 1), (g) => {
         g.strokeStyle = '#f2f4ff'; g.lineWidth = 1.3;
@@ -878,6 +894,7 @@ export function drawTower(ctx, type, t = 0, tw = null) {
       break;
     }
   }
+  heroGloss(ctx, type, lvl);
   if (lvl >= 6) {
     // little crown for max level (v0.6: max is now level 6) + a pennant on side towers
     const side = T.place === 'side';
@@ -907,6 +924,7 @@ function tractorBodyPaths(ctx) {
   // body + hood
   rr(ctx, -12, -10, 25, 13, 5); let g = ctx.createLinearGradient(0, -10, 0, 3); g.addColorStop(0, '#ffe39e'); g.addColorStop(1, '#f2b84a');
   ctx.fillStyle = g; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = INK; ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-8, -8.2); ctx.lineTo(9, -8.2); ctx.lineWidth = 1.5; ctx.strokeStyle = 'rgba(255,255,255,0.55)'; ctx.stroke(); // v0.8.0: bevel light along the hood
   // cab with window and a pink roof
   rr(ctx, -13, -23, 13, 15, 3); ctx.fillStyle = '#ffd27a'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = INK; ctx.stroke();
   rr(ctx, -10.5, -20.5, 8, 8, 2); ctx.fillStyle = '#bfe6ff'; ctx.fill(); ctx.lineWidth = 1.3; ctx.stroke();
@@ -920,7 +938,8 @@ function tractorBodyPaths(ctx) {
   for (const [wx, wy, r] of [[-7, 3, 8.5], [8, 5.5, 5.2]]) {
     ctx.beginPath(); ctx.arc(wx, wy, r, 0, 7); ctx.fillStyle = '#5a4652'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = INK; ctx.stroke();
     for (let k = 0; k < 8; k++) { const a = k * Math.PI / 4; ctx.beginPath(); ctx.moveTo(wx + Math.cos(a) * (r - 1.6), wy + Math.sin(a) * (r - 1.6)); ctx.lineTo(wx + Math.cos(a) * r, wy + Math.sin(a) * r); ctx.lineWidth = 1.4; ctx.strokeStyle = '#3d2a36'; ctx.stroke(); }
-    ctx.beginPath(); ctx.arc(wx, wy, r * 0.48, 0, 7); ctx.fillStyle = '#ffd45e'; ctx.fill(); ctx.lineWidth = 1.3; ctx.strokeStyle = INK; ctx.stroke();
+    ctx.beginPath(); ctx.arc(wx, wy, r * 0.48, 0, 7); ctx.fillStyle = '#c9b6a0'; ctx.fill(); ctx.lineWidth = 1.3; ctx.strokeStyle = INK; ctx.stroke();
+    ctx.beginPath(); ctx.arc(wx, wy, r * 0.82, Math.PI * 1.1, Math.PI * 1.45); ctx.lineWidth = 1.5; ctx.strokeStyle = 'rgba(255,255,255,0.4)'; ctx.stroke(); // v0.8.0: glossy tyre arc, #c9b6a0 hubs
     ctx.beginPath(); ctx.arc(wx, wy, r * 0.16, 0, 7); ctx.fillStyle = INK; ctx.fill();
   }
   g = null;
@@ -1170,6 +1189,19 @@ function reactMotion(react, t) {
   }
   return { dx: 0, dy: 0, sx: 1, sy: 1 };
 }
+// v0.8.0 (spec 9.4): one hero gloss (a soft white lens + dot) and a thin bevel light on the upper-left rim of every treat; skipped on the bitten side
+function treatGloss(ctx, kind, r, pct) {
+  const bites = kind === 'cake' ? 0 : Math.round((1 - pct) * 9);
+  ctx.save();
+  if (kind === 'cake') {
+    ctx.beginPath(); ctx.ellipse(-r * 0.55, -r * 0.2, r * 0.36, 2.2, -0.05, 0, 7); ctx.fillStyle = 'rgba(255,255,255,0.55)'; ctx.fill();
+  } else if (bites < 6) {
+    ctx.beginPath(); ctx.arc(0, 0, r - 4.2, Math.PI * 1.08, Math.PI * 1.46); ctx.lineWidth = 2.2; ctx.lineCap = 'round'; ctx.strokeStyle = 'rgba(255,255,255,0.5)'; ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(-r * 0.46, -r * 0.55, 6.5, 3, -0.7, 0, 7); ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.fill();
+    ctx.beginPath(); ctx.arc(-r * 0.22, -r * 0.8, 1.5, 0, 7); ctx.fillStyle = 'rgba(255,255,255,0.7)'; ctx.fill();
+  }
+  ctx.restore();
+}
 // opts: legacy bool or { face, ouch, react: { face, age }, kind }  (v0.5 item 3: faces only, no text)
 export function drawTreat(ctx, kind, x, y, pct, t, opts = {}) {
   if (typeof opts === 'boolean') opts = {};
@@ -1180,6 +1212,7 @@ export function drawTreat(ctx, kind, x, y, pct, t, opts = {}) {
   shadow(ctx, 0, r * 0.75, r * 1.05 * (1 - Math.min(0.2, -m.dy / 40)), r * 0.32, 0.25);
   ctx.save(); ctx.translate(m.dx, m.dy + r * 0.75); ctx.scale(m.sx, m.sy); ctx.translate(0, -r * 0.75);
   (TREAT_BODIES[kind] || cookieBody)(ctx, r, pct);
+  treatGloss(ctx, kind, r, pct);
   if (react) drawTreatFace(ctx, react.face, t, react.age);
   else drawCookieFace(ctx, opts.ouch ? 'ouch' : face, t);
   ctx.restore();
@@ -1310,17 +1343,26 @@ export function drawCookieFace(ctx, face, t) {
 }
 
 // ---------------- NEST ----------------
-export function drawNest(ctx, x, y, t) {
+export function drawNest(ctx, x, y, t) { // v0.8.0 (spec 9.5): a glossy dirt mound on a lipped base, lit doorway, pebbles, a pennant on a ball-topped pole
   ctx.save(); ctx.translate(x, y);
-  shadow(ctx, 0, 12, 30, 8, 0.2);
-  ctx.beginPath(); ctx.moveTo(-30, 12); ctx.quadraticCurveTo(-24, -14, 0, -16); ctx.quadraticCurveTo(24, -14, 30, 12); ctx.closePath();
-  const g = ctx.createLinearGradient(0, -16, 0, 12); g.addColorStop(0, '#d9a77a'); g.addColorStop(1, '#a8754e');
+  // everything except the waving cloth is baked once per scale (the mound has gradients; the live part is flat fills only)
+  bakedBox(ctx, 'nest', -40, -42, 80, 68, 4, (ctx) => { ctx.translate(40, 42);
+  shadow(ctx, 0, 13, 32, 8, 0.24);
+  ctx.beginPath(); ctx.ellipse(0, 10.5, 32, 7.5, 0, 0, 7); ctx.fillStyle = '#7d5436'; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = INK; ctx.stroke(); // base lip
+  ctx.beginPath(); ctx.moveTo(-30, 10); ctx.quadraticCurveTo(-25, -15, 0, -17); ctx.quadraticCurveTo(25, -15, 30, 10); ctx.quadraticCurveTo(0, 16, -30, 10); ctx.closePath();
+  const g = ctx.createRadialGradient(-9, -10, 2, 0, -2, 38); g.addColorStop(0, '#f1c79a'); g.addColorStop(0.45, '#d29a69'); g.addColorStop(1, '#a8754e');
   ctx.fillStyle = g; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = INK; ctx.stroke();
-  ctx.fillStyle = '#c08a5e'; for (const [a, b] of [[-15, 2], [12, -4], [18, 6], [-6, -8]]) { ctx.beginPath(); ctx.arc(a, b, 2, 0, 7); ctx.fill(); }
-  ctx.beginPath(); ctx.ellipse(0, 4, 10, 7, 0, 0, 7); ctx.fillStyle = '#3c2630'; ctx.fill(); ctx.lineWidth = 2; ctx.stroke();
-  // tiny flag
-  ctx.beginPath(); ctx.moveTo(14, -10); ctx.lineTo(14, -30); ctx.lineWidth = 2; ctx.strokeStyle = INK; ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(14, -30); ctx.quadraticCurveTo(22, -28 + Math.sin(t * 4) * 2, 28, -26); ctx.lineTo(14, -22); ctx.closePath(); ctx.fillStyle = '#ff7a8a'; ctx.fill(); ctx.lineWidth = 1.6; ctx.stroke();
+  ctx.beginPath(); ctx.ellipse(-12, -8.5, 8.5, 3.2, -0.55, 0, 7); ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.fill(); // hero gloss
+  ctx.beginPath(); ctx.arc(-4.5, -13, 1.4, 0, 7); ctx.fillStyle = 'rgba(255,255,255,0.7)'; ctx.fill();
+  for (const [a, b, r] of [[-20, 4, 2.4], [17, -3, 2.2], [22, 6, 2.6], [-6, -9, 1.8], [8, -11, 1.6]]) blob(ctx, a, b, r, r * 0.8, '#d9a77a', 1.2, 0, { gloss: 0 });
+  // doorway: a dark arch with a lit lower lip
+  ctx.beginPath(); ctx.ellipse(0, 5, 10.5, 7.5, 0, 0, 7); const dg = ctx.createLinearGradient(0, -2, 0, 12); dg.addColorStop(0, '#2c1a24'); dg.addColorStop(1, '#4a2e3a'); ctx.fillStyle = dg; ctx.fill(); ctx.lineWidth = 2.4; ctx.strokeStyle = INK; ctx.stroke();
+  ctx.beginPath(); ctx.ellipse(0, 5, 8.6, 5.7, 0, 0.25, Math.PI - 0.25); ctx.lineWidth = 1.5; ctx.strokeStyle = 'rgba(255,214,170,0.8)'; ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(14, -11); ctx.lineTo(14, -31); ctx.lineWidth = 2.4; ctx.strokeStyle = INK; ctx.stroke();
+  blob(ctx, 14, -32, 2.2, 2.2, '#ffd45e', 1.4, 0, { gloss: 0.8 });
+  });
+  ctx.beginPath(); ctx.moveTo(14, -31); ctx.quadraticCurveTo(22, -29 + Math.sin(t * 4) * 2, 29, -26); ctx.lineTo(14, -21.5); ctx.closePath(); ctx.fillStyle = '#ff6f86'; ctx.fill(); ctx.lineWidth = 1.8; ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(16, -28.5); ctx.quadraticCurveTo(21, -27.2 + Math.sin(t * 4) * 1.4, 24, -26); ctx.lineWidth = 1.3; ctx.strokeStyle = 'rgba(255,255,255,0.65)'; ctx.stroke();
   ctx.restore();
 }
 
@@ -1383,6 +1425,9 @@ export function renderMapBackground(routes, theme, w, h, dpr, props = []) {
   strokeAll(36, INK);
   g.save(); g.translate(0, 1.5); strokeAll(32, shade(th.edge, -0.28)); g.restore();
   strokeAll(30, th.edge); strokeAll(25, th.trail);
+  // v0.8.0 (spec 9.3): the trail is a soft raised path - a lit upper band and a shaded lower band inside the edge
+  g.save(); g.globalAlpha = 0.34; g.translate(-2, -2); strokeAll(15, mixHex(th.trail, '#ffffff', 0.5)); g.restore();
+  g.save(); g.globalAlpha = 0.16; g.translate(6.5, 6.5); strokeAll(5, shade(th.trail, -0.4)); g.restore();
   // ant footprints and sprinkled crumbs along the trail
   for (const path of routes) {
     for (let d = 14; d < path.length; d += 15) {
@@ -1405,6 +1450,11 @@ export function renderMapBackground(routes, theme, w, h, dpr, props = []) {
   vg.addColorStop(0, 'rgba(80,40,50,0)'); vg.addColorStop(1, 'rgba(80,40,50,0.18)');
   g.fillStyle = vg; g.fillRect(0, 0, w, h);
   { const ig = g.createLinearGradient(0, 0, 0, 12); ig.addColorStop(0, 'rgba(70,35,50,0.22)'); ig.addColorStop(1, 'rgba(70,35,50,0)'); g.fillStyle = ig; g.fillRect(0, 0, w, 12); } // v0.7.5 C18: inset top edge (the board sits below the HUD)
+  // v0.8.0 (spec 9.3): the board rim - a 5 px bevelled wooden-cream frame (palette #f0d0a4 / #e6bf8f / #c99a68) with an INK inner edge; drawn last on the baked board, entities draw above it
+  { const RW = 5; g.save(); g.beginPath(); g.rect(0, 0, w, h); g.rect(RW, RW, w - 2 * RW, h - 2 * RW); const rg = g.createLinearGradient(0, 0, 0, h); rg.addColorStop(0, '#f0d0a4'); rg.addColorStop(0.5, '#e6bf8f'); rg.addColorStop(1, '#c99a68'); g.fillStyle = rg; g.fill('evenodd');
+    g.lineWidth = 2; g.strokeStyle = INK; g.strokeRect(RW, RW, w - 2 * RW, h - 2 * RW);
+    g.lineWidth = 1.4; g.strokeStyle = 'rgba(255,246,222,0.85)'; g.beginPath(); g.moveTo(1.5, h - 2); g.lineTo(1.5, 1.5); g.lineTo(w - 2, 1.5); g.stroke();
+    g.restore(); }
   return cv;
 }
 function tuft(g, x, y, s) {

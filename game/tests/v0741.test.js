@@ -13,7 +13,7 @@ const styles = rd('android/app/src/main/res/values/styles.xml');
 const manifest = rd('android/app/src/main/AndroidManifest.xml');
 
 test('v0.7.4.1 version + versionCode 19', () => {
-  assert.match(C.VERSION, /^0\.7\.(4\.1|5|6|7|8|9)$/); // v0.7.6: the hotfix version is superseded; v076.test.js asserts the new one
+  assert.match(C.VERSION, /^0\.(7\.(4\.1|5|6|7|8|9)|8\.\d+)$/); // v0.7.6: the hotfix version is superseded; v076.test.js asserts the new one
   assert.ok(+/versionCode (\d+)/.exec(rd('android/app/build.gradle'))[1] >= 19);
   assert.equal(JSON.parse(rd('package.json')).version, C.VERSION);
 });

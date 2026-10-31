@@ -17,9 +17,9 @@ const Lm = (h) => { const n = parseInt(h.slice(1), 16); return 0.2126 * lin((n >
 const ratio = (a, b) => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
 
 test('version 0.7.6 or later (the current release, 0.7.9 / versionCode 24, is asserted in v078.test.js)', () => {
-  assert.match(C.VERSION, /^0\.7\.[6789]$/);
-  assert.match(rd('android/app/build.gradle'), /versionCode 2[1234]/); assert.match(rd('android/app/build.gradle'), /versionName "0\.7\.[6789]"/);
-  assert.match(JSON.parse(rd('package.json')).version, /^0\.7\.[6789]$/);
+  assert.match(C.VERSION, /^0\.(7|8)\.\d+$/);
+  assert.match(rd('android/app/build.gradle'), /versionCode (2[0-9]|[3-9]\d)/); assert.match(rd('android/app/build.gradle'), /versionName "0\.(7|8)\.\d+"/);
+  assert.match(JSON.parse(rd('package.json')).version, /^0\.(7|8)\.\d+$/);
 });
 test('V1: small ant #f8c07e; ladder stays >= 1.30 and small keeps its distance from worker', () => {
   assert.equal(A.ANT_COL.small, '#f8c07e');
@@ -32,7 +32,7 @@ test('V2: one ring sprite, drawn first for side towers only (9 of them); spec 19
   assert.deepEqual(side.sort(), ['ball', 'fan', 'laser', 'lizard', 'slingshot', 'sound', 'spray', 'tractor', 'zapper']);
   const a = src('art.js');
   assert.match(a, /T\.place === 'side'\) baked\(ctx, 'ring76'/);
-  assert.match(a, /ellipse\(0, 9, 19\.5, 10\.5/);
+  assert.match(a, /ellipse\(0, 10\.2, 19\.2, 9\.6/); assert.match(a, /drawGlossyBlob\(g, 0, 9, 19\.5, 10\.5, '#a67c5c'/); // v0.8.0: lipped slab, the #a67c5c ring kept
   assert.match(a, /#a67c5c/);
   assert.ok(a.indexOf("'ring76'") < a.indexOf("baked(ctx, 'plinth'"), 'the ring is drawn before the level plinth/trim');
   assert.equal((a.match(/ring76/g) || []).length, 1, 'one ring sprite, no per-tower copies');
@@ -63,13 +63,13 @@ test('V5: the warning text is measured at the 12 px it is drawn at', () => {
 test('E1: star coins are paid once, from the stored stars (no retroactive grant)', () => {
   const s = M.newSave();
   let o = win(s, 0, 1); assert.equal(o.starCoins, 0);
-  o = win(s, 0, 3); assert.equal(o.starCoins, 40, '1 star -> 3 stars pays 15 + 25 (E-A5)');
+  o = win(s, 0, 3); assert.equal(o.starCoins, 90, '1 star -> 3 stars pays 15 + 75 (E-A5; the 3-star bonus is 75 since v0.7.10)');
   o = win(s, 0, 3); assert.equal(o.starCoins, 0, '3 -> 3 pays 0 (E-A5)');
-  const t = M.newSave(); assert.equal(win(t, 1, 2).starCoins, 15); assert.equal(win(t, 1, 3).starCoins, 25); assert.equal(win(t, 1, 2).starCoins, 0);
-  const u = M.newSave(); assert.equal(win(u, 2, 3).starCoins, 40);
+  const t = M.newSave(); assert.equal(win(t, 1, 2).starCoins, 15); assert.equal(win(t, 1, 3).starCoins, 75); assert.equal(win(t, 1, 2).starCoins, 0);
+  const u = M.newSave(); assert.equal(win(u, 2, 3).starCoins, 90);
   const c0 = s.coins; const l = M.newSave(); l.levels[0].stars = 3; l.levels[0].cleared = true; const c1 = l.coins; assert.equal(l.coins, c1);
   assert.equal(M.applyBattleResult(l, 0, 'lose', 0, {}, () => 0).starCoins, 0); assert.ok(c0 >= 0);
-  assert.equal(C.ECONOMY.starBonus[2], 15); assert.equal(C.ECONOMY.starBonus[3], 25);
+  assert.equal(C.ECONOMY.starBonus[2], 15); assert.equal(C.ECONOMY.starBonus[3], 75);
 });
 test('E-A5: an existing save loads with the same coins, diamonds and stars (nothing is paid on load)', () => {
   const store = new Map(); const st = { getItem: (k) => store.get(k) ?? null, setItem: (k, v) => store.set(k, v) };
@@ -111,7 +111,7 @@ test('E4: W1 cap 4, W2 cap 5; the prep screen has the cap line (v0.7.7 P1-1: the
   assert.match(g, /acts as L\$\{capW\} in this world/); assert.doesNotMatch(g, /acts as L\$\{opt\.capNote\}/);
 });
 test('E5: tuning.json carries the star bonus, calendar ladder, boss gems and worlds[].coinMul; coinMul scales win coins only', () => {
-  assert.deepEqual(tuning.economy.starBonus, { 2: 15, 3: 25 });
+  assert.deepEqual(tuning.economy.starBonus, { 2: 15, 3: 75 });
   assert.deepEqual(tuning.economy.calendar.coinsByStreak, [30, 60, 90, 120]); assert.equal(tuning.economy.calendar.worldStep, 0.5);
   assert.deepEqual(tuning.economy.bossGems, { firstClear: 10, firstThreeStars: 5 });
   assert.ok(tuning.worlds.slice(0, 2).every((w) => w.coinMul === 1));

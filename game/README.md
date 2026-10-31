@@ -1,9 +1,9 @@
-# Crumb Defense v0.4.0 (prototype)
+# Crumb Defense v0.8.0 (Colony-Flow art pass)
 
 A cute, offline ant tower-defense game for Android phones (portrait). Ants march from their nest toward a cookie on a kitchen counter. You stop them with towers and traps.
 
 - Engine: a hand-made HTML5 canvas engine in plain JavaScript (ES modules), bundled with esbuild.
-- Art: all procedural canvas drawing (`src/art.js`). No image, font or audio files, and no third-party assets.
+- Art: all procedural canvas drawing (`src/art.js`). No image or audio files. v0.8.0 bundles one local font, Lilita One (SIL OFL 1.1, `fonts/OFL.txt`); it is never fetched from the internet.
 - Sound: tiny WebAudio synth blips (`src/audio.js`), with a Sound switch in the map's settings panel (gear, top right).
 - Android: Capacitor 8 wrapper (`android/`). It requests **no permissions** (not even INTERNET). The page CSP also sets `connect-src 'none'`.
 - No ads, analytics, network calls or monetization. The save lives in `localStorage` (`crumbdefense.save.v1`).
@@ -17,6 +17,8 @@ A cute, offline ant tower-defense game for Android phones (portrait). Ants march
 | `src/bot.js` | Simple "smart" and "random" bots for headless level checks |
 | `src/game.js` | Screens, touch input, rendering, effects |
 | `src/art.js` | Procedural art (ants with gear, towers, treats + faces, nest, kitchen counters, calendar boxes, map markers) |
+| `src/recipes.js` | v0.8.0: shared canvas recipes (glossy blob, bevelled tile, pill button, chunky text, coin pile, light burst, candy star, ramp/palette) |
+| `src/uitext.js` | v0.8.0: pure UI-text helpers (level header dedupe) |
 | `src/treat.js` | v0.4: the treat's animated bite reactions (rules shared by every world's treat) |
 | `src/calendar.js` | Reward Calendar rules (pure, clock passed in) |
 | `tests/logic.test.js`, `tests/regress.test.js` | Unit + audit regression tests (`npm test`) |

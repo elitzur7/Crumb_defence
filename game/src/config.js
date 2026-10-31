@@ -25,7 +25,10 @@ export const BATTLE = {
   // v0.7.2 C14 'shuttle until death': an ant that drops its piece at the nest (lost for good) waits `pause` s and walks back to the cookie
   // for another piece. It only stops by dying (HP 0). Queens loop too. The level is won when no ant is alive after the last wave,
   // lost when the cookie is empty (so a level can never be endless).
-  forage: { on: true, pause: 0.3, queenLoop: true },
+  forage: { on: true, pause: 0.3, queenLoop: true,
+    // v0.7.10 cookie pick-up beat: seconds an ant stands at the treat after taking its piece, before it turns home (every trip). 0 = off (v0.7.9 behaviour). v0.7.10 ships 0.5.
+    // cookiePauseBoss: same for queens (omit = same as cookiePause).
+    cookiePause: 0.5 },
   // v0.7.2 C13 cookie guard (fly swatter): free, automatic, fixed on the cookie. One swat every `interval` s (the timer waits while nothing is in range)
   // of `damage` (armour applies, min 1) at an ant within `range` px of the cookie; carrier nearest the cookie first, else nearest ant; hits flyers.
   swatter: { on: true, damage: 4, interval: 4, range: 72, first: 4, air: true },
@@ -154,7 +157,7 @@ export const TARGET_MODE_TEXT = {
   laser: { carrier: 'Aims at ants carrying food first, then fewest HP. Heat: +12% per hit on the same ant.', front: 'Aims at the walking ant closest to the cookie. Heat: +12% per hit on the same ant.' },
   zapper: { carrier: 'First zap: food carriers first, then fewest HP. Chains to the nearest flyers (60% each jump).', front: 'First zap: the flyer closest to the cookie. Chains to the nearest flyers (60% each jump).' },
 };
-export const VERSION = '0.7.9'; // v0.7: shown on the map screen (keep in step with package.json + android versionName)
+export const VERSION = '0.8.0'; // v0.7: shown on the map screen (keep in step with package.json + android versionName)
 export const ANT_SIZES = { ...TUNING.antSizes };
 const ANT_TEXT = {
   small: { name: 'Scout Ant', desc: 'Tiny, fast, comes in swarms.' },
@@ -236,6 +239,7 @@ export const ECONOMY = {
   firstClearBonus: 25,
   // v0.7.6 E1: coins paid ONCE per level the first time it reaches 2 / 3 stars (tuning.json economy.starBonus); a 1 -> 3 star jump pays both
   starBonus: { 2: TUNING.economy.starBonus['2'], 3: TUNING.economy.starBonus['3'] },
+  starBonusScale: TUNING.economy.starBonusScale, // v0.7.10 R1: 'coinMul' = bonus x world coinMul (rounded to 5)
   // v0.7.6 E3: diamonds on the first clear of a world's boss level (its last level) and on the first 3 stars there (tuning.json economy.bossGems)
   bossGems: { firstClear: TUNING.economy.bossGems.firstClear, firstThreeStars: TUNING.economy.bossGems.firstThreeStars },
   // v0.6 item 1: + floor(battle time / secondsPerCoin) for the time survived - its own results line, on a win AND on a loss.

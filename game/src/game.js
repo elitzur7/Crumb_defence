@@ -4,6 +4,7 @@ import { Battle, TARGET_MODES, hasTargetModes, levelAntTypes, towerStat, upgrade
 import * as Cal from './calendar.js';
 import * as M from './meta.js';
 import * as A from './art.js';
+import { levelHeaderLine } from './uitext.js';
 import { initAudio, sfx, setMuted, setAudioSpeed } from './audio.js';
 import { STEP, advanceFrame, newClock, nextSpeed, startSpeed } from './loop.js';
 import { smartBotStep } from './bot.js';
@@ -89,25 +90,17 @@ let buttons = [], prevButtons = [];
 function button(id, x, y, w, h, onTap, opt = {}) { buttons.push({ id, x, y, w, h, onTap, ...opt }); }
 function hit(list, x, y) { for (let i = list.length - 1; i >= 0; i--) { const b = list[i]; if (x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h) return b; } return null; }
 function drawButton(x, y, w, h, label, col = '#ffb3c1', opt = {}) {
-  const press = opt.pressed ? 3 : 0; // v0.7.5 C18: the body moves 3 px when pressed (was 2)
+  // v0.8.0 (spec 6.5): a glossy pill - lip + candy face + gloss strip (baked per size/colour/state), label in chunky 'btn' text. Disabled = grey candy (a different colour, not transparency).
+  const press = opt.pressed ? 3 : 0;
   ctx.save();
-  if (opt.disabled) { col = '#d8cfd6'; } // v0.7.5 C18: disabled = a different colour, not transparency
-  A.rr(ctx, x, y + 4, w, h, opt.r ?? 14); ctx.fillStyle = A.shade(col, -0.35); ctx.fill();
-  A.rr(ctx, x, y + press, w, h, opt.r ?? 14);
-  const g = ctx.createLinearGradient(0, y, 0, y + h); g.addColorStop(0, A.shade(col, 0.35)); g.addColorStop(1, col);
-  ctx.fillStyle = g; ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = A.INK; ctx.stroke();
-  A.rr(ctx, x + 6, y + 4 + press, w - 12, h * 0.32, 8); ctx.fillStyle = 'rgba(255,255,255,0.35)'; ctx.fill();
-  if (label) { if (opt.disabled) A.text(ctx, label, x + w / 2, y + h / 2 + press + 1, opt.size || 17, '#9a8a95', 'center', null); else A.text(ctx, label, x + w / 2, y + h / 2 + press + 1, opt.size || 17); }
+  A.drawPillButton(ctx, x, y, w, h, opt.disabled ? 'grey' : col, { pressed: !!opt.pressed, disabled: !!opt.disabled, r: opt.r ?? Math.min(14, h / 2) });
+  if (label) { if (opt.disabled) A.drawChunkyText(ctx, label, x + w / 2, y + h / 2 + press + 1, opt.size || 17, { mode: 'plain', fill: '#a89aa5' }); else A.drawChunkyText(ctx, label, x + w / 2, y + h / 2 + press + 1, opt.size || 17, { mode: 'btn' }); }
   ctx.restore();
 }
-function panel(x, y, w, h, col = '#fff6ee', r = 18) {
-  A.rr(ctx, x, y + 4, w, h, r); ctx.fillStyle = 'rgba(74,52,66,0.25)'; ctx.fill();
-  A.rr(ctx, x, y, w, h, r); ctx.fillStyle = col; ctx.fill();
-  if (h >= 28) { // v0.7.5 C18: the button vocabulary - an inner bottom lip + a 1.5 px top highlight (no clip(): the lip is inset to stay inside the rounded corners)
-    ctx.fillStyle = 'rgba(120,80,95,0.10)'; A.rr(ctx, x + r * 0.55, y + h - 7, w - r * 1.1, 5.5, 2.7); ctx.fill();
-    ctx.fillStyle = 'rgba(255,255,255,0.55)'; ctx.fillRect(x + r * 0.5, y + 2, w - r, 1.5);
-  }
-  A.rr(ctx, x, y, w, h, r); ctx.lineWidth = 3; ctx.strokeStyle = A.INK; ctx.stroke(); // v0.7.5 C18: hero outline 3.0 (was 2.5)
+// v0.8.0 (spec 6.4): panels are beveled tiles - lip below, top-lit face, inner highlight, INK outline; opt.gold adds the champagne-gold rim used by reward cards
+function panel(x, y, w, h, col = '#fff6ee', r = 18, opt = {}) {
+  A.drawBeveledTile(ctx, x, y, w, h, col, { lip: h >= 28 ? 4 : 3, r, lw: 3, hi: 0.55 });
+  if (opt.gold) { A.rr(ctx, x + 3.5, y + 3.5, w - 7, h - 7, Math.max(4, r - 3)); ctx.lineWidth = 3; ctx.strokeStyle = '#f6c648'; ctx.stroke(); A.rr(ctx, x + 6, y + 6, w - 12, h - 12, Math.max(3, r - 5)); ctx.lineWidth = 1.2; ctx.strokeStyle = 'rgba(255,248,200,0.9)'; ctx.stroke(); }
 }
 // Notices: in battle a small pill just above the tray (never covers the map centre); elsewhere a compact box.
 function toast(msg, col = '#fff') { const small = S.screen === 'battle'; S.toast = { msg, t: small ? C.UI.toastTime : C.UI.menuToastTime, col, small }; }
@@ -210,6 +203,10 @@ function startBattle(levelIndex = S.levelIndex, deck = S.prep.deck, bonuses = S.
   S.fx = []; S.swatQ = []; S.ui = []; S.result = null; setPaused(false); S.speed = startSpeed(S.speed, C.UI.speedMaxAtStart); clock.acc = 0; S.sel = null; S.info = null; S.mode = null; S.queenDown = null; S.modeHint = false; S.nurseTip = false; S.battle.rescueScale = S.speed;
   go('battle');
 }
+// v0.8.0 result-screen constants: star confetti <= 36 (spec 6.8), the 3-star moment timeline (ms): 0-200 drop, 200-450 shake, 450-600 burst, 600-1500 count-up, 1500 land, 1500-1900 hold, 1900-2250 fly, 2250+ buttons
+const CONFETTI_MAX = 36, MOMENT_MS = 2250, MOMENT_T = { drop: 0.2, shake: 0.45, burst: 0.6, count: 1.5, hold: 1.9, fly: 2.25 };
+// coin-pile placement on the result screen (recorded in JOB-v0.8.0.md): 78x30 pile (scaled 0.8-1.2), bottom centre (200, 250); the hero treat sits on it at (200, 201) scaled 1.1
+const RESULT_PILE = { x: 200, y: 250 }, RESULT_TREAT = { x: 200, y: 201, k: 1.1 };
 function finishBattle() {
   const b = S.battle;
   // bonuses were already deducted from the save at the moment of use
@@ -220,13 +217,17 @@ function finishBattle() {
   const queenKilled = win && Object.keys(b.stats.byType).some((t) => C.isQueen(t)); // v0.5.1: queen celebration only when the level is won
   const hold = queenKilled ? C.UI.queenCheerHold : 0; // v0.6.2 item 14: the result panel waits for the queen celebration
   S.result = { win, stars: b.stars, out, t: 0, hold, crumbsLeft: b.crumbs, perfect: out.perfect, kills: b.stats.kills, confetti: [], fullFood, queenKilled };
+  // v0.7.10 / v0.8.0: the gold 3-star bonus card moment (first 3 stars only; amount = round(75 x coinMul / 5) x 5) - T0 = 1.00 s after the result starts (1.80 s on a Perfect); the first tap skips it
+  { const sp = out.starParts || { s2: 0, s3: 0 };
+    if (win && b.stars >= 3 && sp.s3 > 0) S.result.moment = { amount: sp.s3, t0: out.perfect ? C.UI.perfectAnimTime : 1.0, dur: MOMENT_MS / 1000, sfx: 0 };
+    if (win && sp.s2 > 0) S.result.chip2 = sp.s2; }
   // v0.5 item 16: 3 stars -> confetti; a full score (100 food = the whole treat) -> confetti + fireworks; queen beaten -> fireworks + text
-  if (win && (b.stars >= 3 || fullFood || out.perfect)) for (let i = 0; i < 90; i++) S.result.confetti.push({ x: 200 + (Math.random() - 0.5) * 60, y: 230, vx: (Math.random() - 0.5) * 420, vy: -150 - Math.random() * 320, r: Math.random() * 6, c: ['#ff8fab', '#ffd45e', '#8fe388', '#9fd3f2', '#c9b6f2'][i % 5] });
+  if (win && (b.stars >= 3 || fullFood || out.perfect)) for (let i = 0; i < CONFETTI_MAX; i++) S.result.confetti.push({ x: 200 + (Math.random() - 0.5) * 60, y: 230, vx: (Math.random() - 0.5) * 420, vy: -150 - Math.random() * 320, r: Math.random() * 6, c: ['#ff8fab', '#ffd45e', '#8fe388', '#9fd3f2', '#c9b6f2'][i % 5] });
   if (win && fullFood) launchFireworks(9, 2.6);
   if (queenKilled) { launchFireworks(10, 3); S.queenDown = { t: S.t, world: C.worldOf(b.levelIndex) }; }
   // v0.5 item 7: a won card that is a new type / new level gets the big NEW CARD reveal (after the Perfect celebration)
-  if (out.prize && out.prize.kind === 'cards' && out.prize.reveal) queueReveal(out.prize.id, out.prize.level, out.prize.newCard, S.t + hold + C.UI.perfectAnimTime + 0.4);
-  if (out.bossGift && out.bossGift.reveal) queueReveal(out.bossGift.id, out.bossGift.level, out.bossGift.newCard, S.t + hold + C.UI.perfectAnimTime + (out.prize && out.prize.reveal ? 2.4 : 0.4)); // v0.7.7 S1: the boss gift reveal (after the Perfect prize one, if any)
+  if (out.prize && out.prize.kind === 'cards' && out.prize.reveal) queueReveal(out.prize.id, out.prize.level, out.prize.newCard, S.t + hold + C.UI.perfectAnimTime + 0.4 + (S.result.moment ? S.result.moment.dur + 0.1 : 0));
+  if (out.bossGift && out.bossGift.reveal) queueReveal(out.bossGift.id, out.bossGift.level, out.bossGift.newCard, S.t + hold + C.UI.perfectAnimTime + (out.prize && out.prize.reveal ? 2.4 : 0.4) + (S.result.moment ? S.result.moment.dur + 0.1 : 0)); // v0.7.7 S1: the boss gift reveal (after the Perfect prize one, if any)
   sfx(win ? 'win' : 'lose');
 }
 
@@ -407,6 +408,7 @@ function consumeEvents() {
         if (e.n) addFloatText(S.fx, { key: 'steal', x: e.x, y: e.y - 20, n: e.n, fmt: (n) => `-${fmtFood(n)}`, col: '#ff7a7a', life: 1 }); sfx('steal'); break;
       case 'foodReturn': addFloatText(S.fx, { key: 'food', x: e.x, y: e.y - 18, n: e.n, fmt: (n) => `+${fmtFood(n)} food back!`, col: '#8fe388', life: 1.1 }); sfx('return'); break;
       case 'place': case 'upgrade': {
+        if (e.type === 'place' && !reducedMotion()) for (let i = 0; i < (S.speed >= 4 ? 2 : 4); i++) addFx({ k: 'dust', x: e.x + (Math.random() - 0.5) * 26, y: e.y + 9 + (Math.random() - 0.5) * 6, life: 0.45, max: 0.45 }); // v0.8.0: placement dust (<= 6 particles)
         // purchase feedback: the card flies from its tray slot to the tile, the price flies out of the crumb counter
         const delay = e.pick != null ? 0.28 : 0;
         if (e.pick != null) {
@@ -461,6 +463,14 @@ function consumeEvents() {
         const fast = S.speed >= 4;
         for (const k of e.kids) for (let i = 0; i < (fast ? 1 : 3); i++) addFx({ k: 'puff', x: k.x + (Math.random() - 0.5) * 8, y: k.y + (Math.random() - 0.5) * 5, vx: (Math.random() - 0.5) * 50, vy: -Math.random() * 34, r: 3 + Math.random() * 3, life: 0.45, max: 0.45 });
         addFloatText(S.fx, { key: 'split', x: e.x, y: e.y - 26, n: 1, fmt: () => 'Babies!', col: '#ffd0e0', life: 0.9 }); break;
+      }
+      case 'pickup': { // v0.7.10 cookie pause: the ant pauses at the treat - a crumb pop (1 puff at 4x), a small squash-hop, a rate-limited tick. Reduced motion: one still puff, no hop.
+        const rm = reducedMotion(), fast = S.speed >= 4;
+        let near = null, nd = 99; for (const q of b.ants) { const d = Math.abs(q.x - e.x) + Math.abs(q.y - e.y); if (d < nd) { nd = d; near = q; } }
+        if (near && nd < 6 && !rm) near._hopT = S.t;
+        for (let i = 0; i < (rm || fast ? 1 : 3); i++) addFx({ k: 'puff', x: e.x + (Math.random() - 0.5) * 8, y: e.y - 8 - Math.random() * 4, vx: rm ? 0 : (Math.random() - 0.5) * 36, vy: rm ? 0 : -14 - Math.random() * 18, r: 2.2, life: 0.4, max: 0.4 });
+        if (!fast && S.t - (S._pickTick || -9) > 0.14) { S._pickTick = S.t; sfx('pop'); }
+        break;
       }
       case 'immune': addFloatText(S.fx, { key: 'immune', x: e.x, y: e.y - 22, n: 1, fmt: () => 'immune!', col: '#c9f5c0', life: 0.8 }); break;
     }
@@ -633,13 +643,17 @@ function bakeBackdrop() {
   const k = Math.min(1, 2 / dpr), cv = document.createElement('canvas');
   cv.width = Math.max(1, Math.round(canvas.width * k)); cv.height = Math.max(1, Math.round(canvas.height * k));
   const g = cv.getContext('2d'); g.setTransform(dpr * scale * k, 0, 0, dpr * scale * k, offX * dpr * k, offY * dpr * k);
-  const gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, '#fff1e6'); gr.addColorStop(1, '#fbd9cf');
-  g.fillStyle = gr; g.fillRect(-2000, -2000, W + 4000, H + 4000);
-  const x0 = Math.floor((-offX / scale) / CLOTH.tile) * CLOTH.tile, x1 = (cw - offX) / scale, y0 = Math.floor((-offY / scale) / CLOTH.tile) * CLOTH.tile, y1 = (ch - offY) / scale;
-  for (let ty = y0; ty < y1; ty += CLOTH.tile) for (let tx = x0; tx < x1; tx += CLOTH.tile) {
-    g.fillStyle = CLOTH.a; g.fillRect(tx, ty, 40, 40); g.fillRect(tx + 40, ty + 40, 40, 40);
-    g.fillStyle = CLOTH.b; g.fillRect(tx, ty, 80, 40); g.fillRect(tx, ty, 40, 80);
-  }
+  // v0.8.0 (spec 9.2): the warm peach DIAMOND table (palette: table #ffc98f / #fbc085), a soft top light and a gentle edge vignette. Baked once per layout; only the drifting bubbles are live.
+  g.fillStyle = '#ffc98f'; g.fillRect(-2000, -2000, W + 4000, H + 4000);
+  const x0 = -offX / scale, x1 = (cw - offX) / scale, y0 = -offY / scale, y1 = (ch - offY) / scale, DS = 44;
+  g.save(); g.translate(W / 2, H / 2); g.rotate(Math.PI / 4); g.fillStyle = '#fbc085';
+  const reach = Math.hypot(Math.max(Math.abs(x0 - W / 2), Math.abs(x1 - W / 2)), Math.max(Math.abs(y0 - H / 2), Math.abs(y1 - H / 2))), nC = Math.ceil(reach / DS) + 1;
+  for (let j = -nC; j <= nC; j++) for (let i = -nC; i <= nC; i++) if (((i + j) & 1) !== 0) g.fillRect(i * DS - DS / 2, j * DS - DS / 2, DS, DS);
+  g.restore();
+  const tl = g.createLinearGradient(0, y0, 0, y0 + H * 0.6); tl.addColorStop(0, 'rgba(255,244,226,0.42)'); tl.addColorStop(1, 'rgba(255,244,226,0)');
+  g.fillStyle = tl; g.fillRect(x0 - 4, y0 - 4, x1 - x0 + 8, H * 0.6 + 4);
+  const vg = g.createRadialGradient(W / 2, H * 0.48, H * 0.34, W / 2, H * 0.48, H * 0.82); vg.addColorStop(0, 'rgba(190,110,70,0)'); vg.addColorStop(1, 'rgba(190,110,70,0.2)');
+  g.fillStyle = vg; g.fillRect(x0 - 4, y0 - 4, x1 - x0 + 8, y1 - y0 + 8);
   return cv;
 }
 function drawBackdrop() {
@@ -647,7 +661,15 @@ function drawBackdrop() {
   if (!S.bdCache) S.bdCache = {};
   let bd = S.bdCache[key];
   if (!bd) { if (Object.keys(S.bdCache).length >= 3) S.bdCache = {}; bd = S.bdCache[key] = bakeBackdrop(); }
-  ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.drawImage(bd, 0, 0, bd.width, bd.height, 0, 0, canvas.width, canvas.height); ctx.restore();
+  ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0);
+  if (S.screen === 'battle') { // perf (v0.8.0): the opaque board covers the middle of the screen, so only the strips around it are blitted (saves ~20% of the frame's blit area)
+    const m = dpr * scale, ix = 2, tx0 = Math.max(0, Math.ceil(offX * dpr + ix)), tx1 = Math.min(canvas.width, Math.floor((offX + MAP_W * scale) * dpr - ix)), ty0 = Math.max(0, Math.ceil((offY + MAP_Y * scale) * dpr + ix)), ty1 = Math.min(canvas.height, Math.floor((offY + (MAP_Y + MAP_H) * scale) * dpr - ix));
+    const kx = bd.width / canvas.width, ky = bd.height / canvas.height;
+    const strip = (x0, y0, x1, y1) => { if (x1 > x0 && y1 > y0) ctx.drawImage(bd, x0 * kx, y0 * ky, (x1 - x0) * kx, (y1 - y0) * ky, x0, y0, x1 - x0, y1 - y0); };
+    if (tx1 > tx0 && ty1 > ty0 && m > 0) { strip(0, 0, canvas.width, ty0); strip(0, ty1, canvas.width, canvas.height); strip(0, ty0, tx0, ty1); strip(tx1, ty0, canvas.width, ty1); }
+    else strip(0, 0, canvas.width, canvas.height);
+  } else ctx.drawImage(bd, 0, 0, bd.width, bd.height, 0, 0, canvas.width, canvas.height);
+  ctx.restore();
   ctx.save();
   ctx.globalAlpha = 0.35; ctx.fillStyle = '#ffffff';
   for (let i = 0; i < 14; i++) { const x = (i * 97) % W, y = (i * 173 + S.t * 6) % (H + 40) - 20; ctx.beginPath(); ctx.arc(x, y, 6 + (i % 3) * 3, 0, 7); ctx.fill(); }
@@ -984,8 +1006,8 @@ function antIcon(type, x, y, s = 1) { ctx.save(); ctx.translate(x, y); ctx.scale
 function renderPrep() {
   const i = S.levelIndex, L = C.LEVELS[i];
   panel(12, 12, 376, 696, '#fff6ee');
-  A.text(ctx, `Level ${i + 1}`, 200, 40, 26, '#ffb3c1');
-  A.text(ctx, `${L.name}  -  ${C.MAPS[L.map].name}`, 200, 66, 13, '#7a5a6a', 'center', null);
+  A.drawChunkyText(ctx, `Level ${i + 1}`, 200, 40, 28, { mode: 'title' });
+  A.text(ctx, levelHeaderLine(L, C.MAPS), 200, 66, 13, '#7a5a6a', 'center', null); // v0.7.10: the map name is shown once when it equals the level name
   // enemy preview
   const ants = levelAntTypes(i);
   A.text(ctx, 'Incoming ants', 30, 92, 14, '#7a5a6a', 'left', null);
@@ -1417,6 +1439,10 @@ function drawQueenCheer(age, world) {
   ctx.save(); ctx.globalAlpha = fade; ctx.translate(200, MAP_Y + 210); const sc = 0.6 + 0.4 * k + Math.sin(age * 5) * 0.03; ctx.scale(sc, sc);
   A.rr(ctx, -170, -48, 340, 96, 24); ctx.fillStyle = 'rgba(90,64,88,0.82)'; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = '#ffd45e'; ctx.stroke();
   A.text(ctx, msg[0], 0, -18, 26, '#ffe36e'); A.text(ctx, msg[1], 0, 16, 24, '#ffffff');
+  for (const [ax, ty, sg] of [[-146, 'worker', 1], [146, 'small', -1]]) { // v0.8.0 (spec CF-B5, Option A): the hero cheer pose appears on defeat and here
+    const sp = A.antSprite(ty, 0, false, pxRatio * 1.2, 'cheer'), hop = reducedMotion() ? 0 : Math.abs(Math.sin(age * 6 + (sg > 0 ? 0 : 1.3))) * 6;
+    ctx.save(); ctx.translate(ax, -34 - hop); ctx.scale(1.2 * sg, 1.2); ctx.drawImage(sp.cv, -sp.ox, -sp.oy, sp.w, sp.h); ctx.restore();
+  }
   ctx.restore();
 }
 // v0.7.6 V3: fitText / plainFit never draw below MIN_FONT (12 px); a string that does not fit at 12 must be wrapped, shortened or given more room by the caller
@@ -1438,8 +1464,8 @@ function drawTowerObj(tw) {
   ctx.save(); ctx.translate(tw.x, tw.y);
   const age = S.battle.time - (tw.born ?? (tw.born = S.battle.time));
   if (reducedMotion()) { /* no pop in reduced motion */ }
-  else if (age < 0.22) { // v0.7.5 juice table: placed = squash (1.15, 0.85) -> (0.95, 1.05) -> 1 over 220 ms (was a 250 ms grow-in)
-    const k = age / 0.22, a = k < 0.4 ? k / 0.4 : (k - 0.4) / 0.6, sx = k < 0.4 ? 1.15 + (0.95 - 1.15) * a : 0.95 + 0.05 * a, sy = k < 0.4 ? 0.85 + (1.05 - 0.85) * a : 1.05 - 0.05 * a;
+  else if (age < 0.26) { // v0.8.0 (spec s12): placed = squash (1.22, 0.78) -> (0.95, 1.06) -> 1 over 260 ms (v0.7.5 was 1.15/0.85 over 220 ms)
+    const k = age / 0.26, a = k < 0.4 ? k / 0.4 : (k - 0.4) / 0.6, sx = k < 0.4 ? 1.22 + (0.95 - 1.22) * a : 0.95 + 0.05 * a, sy = k < 0.4 ? 0.78 + (1.06 - 0.78) * a : 1.06 - 0.06 * a;
     ctx.scale(sx, sy);
   }
   if (C.TOWERS[tw.type].place === 'path') ctx.translate(tw.px - tw.x, tw.py - tw.y);
@@ -1499,13 +1525,15 @@ function drawAntObj(a, ghost = false) {
   const still = frozen || a.stunT > 0;
   const fr = still ? 0 : Math.floor(((b.time + a.id * 0.37) * speedK * A.ANT_FRAMES)) % A.ANT_FRAMES;
   const H = C.ANTS[a.type].heal, spent = !!H && (frozen || a.healCd > 0); // v0.7.9: a recharging / frozen nurse wears the grey cap
-  const spr = A.antSprite(a.type, fr, a.carrying > 0, pxRatio, spent ? 'g' : '');
+  const mood = spent ? 'g' : (a.hitFlash > 0.02 && !reducedMotion()) ? 'h' : a.stunT > 0 ? 'd' : ''; // v0.8.0: hurt face (> <) on a hit, dizzy face while stunned (baked lazily per type/frame)
+  const spr = A.antSprite(a.type, fr, a.carrying > 0, pxRatio, mood);
   const breathe = still ? 1 + Math.sin(S.t * 5 + a.id) * 0.035 : 1;
   // tiny lateral offset per id so crowds don't stack perfectly
   let lat = ((a.id * 37) % 9 - 4) * 1.2;
   if (a.state === 'back') lat = C.UI.carrierLane + lat * 0.4; // v0.7.4 P: returning carriers ride ~5 px to one side of the lane so they separate from inbound ants
   const x = a.x + p.dy * lat, y = a.y - p.dx * lat;
-  ctx.save(); ctx.translate(x, y + 4); ctx.scale(face / breathe, breathe);
+  let hopY = 0, hopS = 1; if (a._hopT && !reducedMotion()) { const hk = (S.t - a._hopT) / 0.24; if (hk >= 0 && hk < 1) { hopY = -Math.sin(hk * Math.PI) * 4; hopS = 1 + 0.1 * Math.sin(hk * Math.PI * 2) * (1 - hk); } } // v0.7.10 cookie-pause hop
+  ctx.save(); ctx.translate(x, y + 4 + hopY); ctx.scale(face / breathe, breathe * hopS);
   if (a.hitFlash > 0 && !reducedMotion()) { const q = Math.min(1, a.hitFlash / 0.12), sq = 0.12 * q * q; ctx.scale(1 + sq, 1 - sq); } // v0.7.5 juice: hit squash (1.12, 0.88) easing out over 120 ms (easeOutQuad)
   ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h);
   if (a.hitFlash > 0.04) { ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = 0.6; ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h); } // hit flash: white-add 0.6 for the first 80 ms
@@ -1709,7 +1737,14 @@ function plainText(s, x, y, size, col, align = 'left', weight = '500') {
 const TRAY = { cardY: 6, cardH: 94, waveY: 6, waveH: 48, rerollY: 58, rerollH: 36, rowY: 108, rowH: 44 };
 function renderTray(b) {
   const y0 = TRAY_Y, L = TRAY;
-  panel(4, y0, 392, H - y0 - 4, '#ffe9df', 18);
+  // v0.8.0 (spec 10): the tray is a beveled gingham tile (#ffe3d2 / #ffd5bf), baked once per scale
+  A.bakedBox(ctx, 'tray', 4, y0, 392, H - y0 - 8, 4, (g, w, h) => {
+    A.drawBeveledTile(g, 0, 0, w, h, '#ffe3d2', { lip: 4, r: 18, lw: 3, hi: 0.6 });
+    g.save(); A.rrPath(g, 3, 3, w - 6, h - 6, 15); g.clip(); g.fillStyle = 'rgba(255,213,191,0.55)';
+    for (let x = 0; x < w; x += 24) g.fillRect(x + 6, 0, 12, h);
+    for (let y = 0; y < h; y += 24) g.fillRect(0, y + 6, w, 12);
+    g.restore(); A.rrPath(g, 0, 0, w, h, 18); g.lineWidth = 3; g.strokeStyle = A.INK; g.stroke();
+  });
   const cost = b.nextCardCost; const afford = b.crumbs >= cost;
   // 3 picks
   for (let i = 0; i < b.picks.length; i++) {
@@ -1785,6 +1820,32 @@ function renderPause() {
   drawButton(90, 350, 220, 48, 'Restart', '#ffd27a'); button('restart', 90, 350, 220, 48, () => startBattle(S.levelIndex, S.battle.deck, S.battle.bonusTypes));
   drawButton(90, 410, 220, 48, 'Quit to map', '#ffb3b3'); button('quit', 90, 410, 220, 48, () => { S.battle = null; go('map'); });
 }
+// v0.8.0 (v0.7.10 plan 1.3 / spec 11.2): the gold 3-star bonus card. rt = seconds since T0. Reduced motion: a 200 ms fade-in, a 300 ms count, a single 'win' (no shake / burst / fly / particles).
+function drawStarMoment(MO, rt, tRes) {
+  const rm = reducedMotion(), CX = 200, CY = 345, T = MOMENT_T;
+  const amount = rm ? Math.round(MO.amount * Math.min(1, Math.max(0, (rt - 0.2) / 0.3))) : Math.round(MO.amount * (1 - Math.pow(1 - Math.min(1, Math.max(0, (rt - T.burst) / (T.count - T.burst))), 3)));
+  let x = CX, y = CY, sc = 1, rot = 0, al = 1;
+  if (rm) { al = rt < 0.2 ? rt / 0.2 : rt > 0.85 ? Math.max(0, 1 - (rt - 0.85) / 0.25) : 1; }
+  else if (rt < T.drop) { const k = rt / T.drop; y = 150 + (CY - 150) * A.easeOutBack(k); sc = 0.6 + 0.4 * k; al = Math.min(1, k * 3); }
+  else if (rt < T.shake) { const k = (rt - T.drop) / (T.shake - T.drop); rot = Math.sin(k * Math.PI * 6) * 0.07 * (1 - k); }
+  else if (rt >= T.hold) { const k = Math.min(1, (rt - T.hold) / (T.fly - T.hold)), e = k * k; x = CX + (240 - CX) * e; y = CY + (468 - CY) * e; sc = 1 - 0.7 * e; al = 1 - 0.85 * e; }
+  else if (rt >= T.count && rt < T.count + 0.12) { const k = (rt - T.count) / 0.12; sc = 1 + 0.08 * Math.sin(k * Math.PI); } // land squash
+  if (!rm && rt >= T.shake - 0.01 && rt < T.burst + 0.2) { A.lightBurst(ctx, CX, CY, 150 * Math.min(1, (rt - T.shake + 0.05) / 0.3), tRes * 2, { alpha: 0.7, rays: 12 }); }
+  if (!rm && rt >= T.burst && rt < T.burst + 0.35 && MO.sfx < 1) { MO.sfx = 1; sfx('upgrade'); }
+  if (rm && rt >= 0.2 && MO.sfx < 1) { MO.sfx = 1; sfx('win'); }
+  if (!rm && rt >= T.burst && rt < T.count) { const n = Math.floor((rt - T.burst) / 0.15); if (n > MO.sfx - 1 && n < 7) { MO.sfx = n + 2; sfx('pop'); } } // a rate-limited tick (<= 6) while the number counts
+  ctx.save(); ctx.globalAlpha = Math.max(0, al); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(sc, sc);
+  A.drawBeveledTile(ctx, -76, -49, 152, 98, '#ffe58a', { lip: 5, r: 18, lw: 3, hi: 0.8 });
+  A.rr(ctx, -72, -45, 144, 90, 15); ctx.lineWidth = 3; ctx.strokeStyle = '#f2a81d'; ctx.stroke();
+  for (let i = 0; i < 3; i++) A.candyStar(ctx, -26 + i * 26, i === 1 ? -33 : -29, i === 1 ? 11 : 9, '#ffd23f', 1.8);
+  A.coinIcon(ctx, -42, 4, 1.5);
+  A.drawChunkyText(ctx, `+${amount}`, 10, 4, 38, { mode: 'title' });
+  A.drawChunkyText(ctx, '3-STAR REWARD', 0, 35, 14, { mode: 'btn' });
+  ctx.restore();
+  if (!rm && rt >= T.burst && rt < T.burst + 0.5) { // <= 12 sparkles flung out of the card at the burst
+    const k = (rt - T.burst) / 0.5; for (let i = 0; i < 12; i++) { const a = i * Math.PI / 6 + 0.3, d = 40 + 70 * k * (0.7 + (i % 3) * 0.15); A.sparkle(ctx, CX + Math.cos(a) * d, CY + Math.sin(a) * d * 0.8, 5 * (1 - k * 0.6), i % 2 ? '#fff7a8' : '#ffe27a', a); }
+  }
+}
 function renderResult(dt) {
   const R = S.result; const out = R.out;
   // v0.6.2 item 14: on a queen-level win, hold the result panel and its buttons until the 'Way to go' cheer + fireworks end.
@@ -1796,21 +1857,35 @@ function renderResult(dt) {
     return;
   }
   R.t += dt;
-  ctx.fillStyle = 'rgba(60,40,55,0.5)'; ctx.fillRect(-2000, -2000, W + 4000, H + 4000);
-  button('resultBlock', -2000, -2000, W + 4000, H + 4000, () => {}); // swallow taps on everything underneath (tray, bonuses, pause)
+  const MO = R.moment || null, rtM = MO ? (R.skipped ? 99 : R.t - MO.t0) : 99, momentBusy = !!MO && !R.skipped && rtM < MO.dur; // v0.8.0: the 3-star card moment
+  ctx.fillStyle = 'rgba(38,28,16,0.72)'; ctx.fillRect(-2000, -2000, W + 4000, H + 4000); // v0.8.0 palette: reward dim
+  button('resultBlock', -2000, -2000, W + 4000, H + 4000, () => { if (momentBusy) R.skipped = true; }); // swallow taps on everything underneath (tray, bonuses, pause); the first tap skips the 3-star moment
+  if (R.win && !reducedMotion()) A.lightBurst(ctx, RESULT_TREAT.x, RESULT_TREAT.y, 230, R.t, { alpha: 0.5 }); // v0.8.0: the light burst behind the panel (rays peek out around it)
   const celebrating = R.perfect && R.t < C.UI.perfectAnimTime;
   const pop = Math.min(1, R.t * 4); ctx.save(); ctx.translate(200, 360); ctx.scale(0.7 + pop * 0.3, 0.7 + pop * 0.3); ctx.translate(-200, -360);
-  panel(36, 120, 328, 480, '#fff6ee');
+  panel(36, 120, 328, 480, '#fff6ee', 18, { gold: R.win });
   const tk = C.treatOf(S.battle.levelIndex), TN = TREAT_NAME[tk] || 'Cookie';
   const title = R.perfect ? `Perfect ${TN}!` : R.win ? `${TN} saved!` : `${TN} eaten!`;
   const ts = R.perfect ? 30 + Math.max(0, 0.3 - R.t) * 30 + Math.sin(R.t * 6) * 1.5 : 28;
-  A.text(ctx, title, 200, 156, ts, R.perfect ? '#ffd45e' : R.win ? '#9fe0b5' : '#ff9a9a');
+  if (R.win) A.drawChunkyText(ctx, title, 200, 156, ts, { mode: 'title' }); else A.drawChunkyText(ctx, title, 200, 156, ts, { mode: 'plain', fill: '#ffb4ac' }); // v0.8.0: chunky title
   if (R.perfect) { ctx.save(); ctx.globalAlpha = 0.35 + Math.sin(R.t * 4) * 0.15; const g = ctx.createRadialGradient(200, 212, 10, 200, 212, 70); g.addColorStop(0, '#fff6a8'); g.addColorStop(1, 'rgba(255,246,168,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(200, 212, 70, 0, 7); ctx.fill(); ctx.restore();
     for (let i = 0; i < 8; i++) { const a = R.t * 0.8 + i * Math.PI / 4; A.starShape(ctx, 200 + Math.cos(a) * 52, 212 + Math.sin(a) * 40, 4, '#ffe36e', 1); } }
-  A.drawTreat(ctx, tk, 200, 212, R.win ? S.battle.foodStored / S.battle.cfg.foodHP : 0.05, S.t, R.win ? { face: 'happy' } : {});
+  if (R.win) { // v0.8.0 Option A: the treat is the hero - a coin pile under it (size grows with the coins won), then the treat at 1.1x
+    const pk = 0.9 + Math.min(0.3, (out.coins || 0) / 600); A.drawCoinPile(ctx, RESULT_PILE.x, RESULT_PILE.y, Math.round(pk * 4) / 4);
+    ctx.save(); ctx.translate(RESULT_TREAT.x, RESULT_TREAT.y); ctx.scale(RESULT_TREAT.k, RESULT_TREAT.k); A.drawTreat(ctx, tk, 0, 0, S.battle.foodStored / S.battle.cfg.foodHP, S.t, { face: 'happy' }); ctx.restore();
+  } else { // defeat: the (nearly eaten) treat and TWO cheering ants - the only place the hero chibi pose is used besides the queen's taunt
+    A.drawTreat(ctx, tk, 200, 205, 0.05, S.t, {});
+    const hop = (k) => reducedMotion() ? 0 : Math.abs(Math.sin(S.t * 5 + k)) * 5;
+    for (const [ax, k, ty] of [[92, 0, 'worker'], [308, 1.7, 'small']]) { const sp = A.antSprite(ty, 0, false, pxRatio * 1.25, 'cheer'); ctx.save(); ctx.translate(ax, 240 - hop(k)); ctx.scale(1.25 * (k ? -1 : 1), 1.25); ctx.drawImage(sp.cv, -sp.ox, -sp.oy, sp.w, sp.h); ctx.restore(); A.contactShadow(ctx, ax, 244, 20, 5, 0.22); }
+  }
   if (R.queenKilled) plainFit(tk === 'cake' ? 'Way to go, you saved the cake!' : tk === 'pie' ? 'Way to go, you saved the pie!' : tk === 'sundae' ? 'Way to go, you saved the sundae!' : 'Way to go, you saved the cookies!', 200, 180, 300, 13, '#e0607e', 'center', '800'); // v0.5 item 16
   for (let s = 0; s < 3; s++) { const on = s < R.stars && R.t > 0.3 + s * 0.25; const sc = on ? 1 + Math.max(0, 0.2 - (R.t - 0.3 - s * 0.25)) * 3 : 1; A.starShape(ctx, 140 + s * 60, 270, 18 * sc, on ? '#ffd45e' : '#e8dde4', 2.5); }
+  if (R.chip2 && R.t > 0.55) { // the 2-star chip: a small coin pill beside the stars, pops when the second star lands
+    const k = Math.min(1, (R.t - 0.55) * 5), cx2 = 322, cy2 = 270; ctx.save(); ctx.translate(cx2, cy2); ctx.scale(0.6 + 0.4 * A.easeOutBack(k), 0.6 + 0.4 * A.easeOutBack(k)); A.drawBeveledTile(ctx, -30, -12, 60, 24, '#ffe9a8', { lip: 2, r: 12, lw: 2, hi: 0.6 }); A.coinIcon(ctx, -17, 0, 1); A.drawChunkyText(ctx, `+${R.chip2}`, 6, 0, 14, { mode: 'num' }); ctx.restore();
+  }
+  const bodyA = MO && !R.skipped ? Math.max(0, Math.min(1, (rtM - MOMENT_T.hold) / 0.35)) : 1; // rows / coin total fade in after the card has flown
   A.text(ctx, `Food left: ${fmtFood(S.battle.foodStored)}/${S.battle.cfg.foodHP}   Ants beaten: ${R.kills}`, 200, 302, 12, '#7a5a6a', 'center', null);
+  ctx.save(); ctx.globalAlpha = bodyA;
   // coin breakdown: win = food + kills (+ level, first clear) + time; loss = kills + time (capped together)
   // v0.6 item 1: "Time survived" = floor(battle seconds / 3) - its own line, on a win and on a loss
   const P = out.parts || {}; const rows = [];
@@ -1851,10 +1926,12 @@ function renderResult(dt) {
     const k = Math.min(1, (R.t - C.UI.perfectAnimTime) * 4); strip(yy + 12 + (out.prize ? 34 : 0), out.bossGift, cardLabel(out.bossGift, 'Boss gift'), k);
   }
   if (!(out.prize && !celebrating) && !gift && R.win && !R.perfect && S.battle.stats.stolen > 0) A.text(ctx, 'Tip: lose no food at all for a Perfect prize', 200, yy + 10, 12, '#a08090', 'center', null);
+  ctx.restore(); // bodyA
   ctx.restore();
+  if (MO && rtM > -0.01 && rtM < MO.dur) drawStarMoment(MO, rtM, R.t); // the gold 3-star card (above everything in the panel)
   // confetti (v0.5 item 16: 3 stars or a full score; the Perfect win too)
-  for (const c of R.confetti) { c.vy += 420 * dt; c.x += c.vx * dt; c.y += c.vy * dt; c.r += dt * 8; if (c.y < 760) { ctx.save(); ctx.translate(c.x, c.y); ctx.rotate(c.r); ctx.fillStyle = c.c; ctx.fillRect(-4, -2.5, 8, 5); ctx.restore(); } }
-  if (celebrating) return; // buttons appear after the celebration (the panel title is the only Perfect Cookie title)
+  for (const c of R.confetti) { c.vy += 420 * dt; c.x += c.vx * dt; c.y += c.vy * dt; c.r += dt * 8; if (c.y < 760) A.candyStar(ctx, c.x, c.y, 4 + (c.r * 7 % 3), c.c, 1.2, c.r); } // v0.8.0: <= 36 candy stars (was 90 rects)
+  if (celebrating || (MO && !R.skipped && R.t < MO.t0 + MO.dur)) return; // buttons appear after the celebration (and after the 3-star moment, 2250 ms, or its first-tap skip) (the panel title is the only Perfect Cookie title)
   const by = 540;
   if (out.zapperGift && M.zapperGiftPending(S.save)) { // v0.6 item 5: first win of stage 2 -> straight to the map, where the gift waits
     drawButton(100, by, 200, 50, 'Continue', '#9fe0b5'); button('rcontinue', 100, by, 200, 50, () => { S.battle = null; go('map'); });
@@ -2405,4 +2482,6 @@ if (__TEST_HOOKS__) window.__game = {
 heartbeat(true); maybeShowCalendar();
 // v0.6 item 5: an existing player past stage 2 without a Bug Zapper got one on load - show it with the NEW CARD popup
 if (S.save.onboard && S.save.onboard.grantedOnLoad) { queueReveal('zapper', 1, true, S.t + 0.4); S.save.onboard.grantedOnLoad = false; persist(); }
+// v0.8.0: the bundled display font (Lilita One, from 'self'); text sprites are rebuilt once it is ready. Never fetched from the internet.
+try { if (document.fonts && document.fonts.load) document.fonts.load("22px 'Lilita One'").then(() => { A.setFontReady(true); S.bdCache = null; }, () => {}); } catch (e) { /* the fallback stack is used */ }
 requestAnimationFrame(frame);

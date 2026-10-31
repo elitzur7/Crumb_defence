@@ -4,7 +4,7 @@
 import puppeteer from 'puppeteer-core';
 import fs from 'node:fs';
 import { serve } from './serve.mjs';
-const OUT = '/workspace/ant-td/qa/v0.7.9'; const SH = `${OUT}/shots`; fs.mkdirSync(SH, { recursive: true });
+const OUT = '/workspace/ant-td/qa/v0.8.0/suites/v079'; fs.mkdirSync(OUT, { recursive: true }); const SH = `${OUT}/shots`; fs.mkdirSync(SH, { recursive: true });
 await serve(8895, 'www-test');
 const browser = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: true, args: ['--no-sandbox'] });
 let fails = 0; const R = [];

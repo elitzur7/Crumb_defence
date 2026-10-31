@@ -342,8 +342,10 @@ export function applyBattleResult(save, levelIndex, result, stars, info = {}, rn
     out.coins = c.total; out.parts = c.parts;
     // v0.7.6 E1: first-time star coins. The stored `stars` of an existing save count as already paid (no retroactive grant, nothing is paid on load).
     // A jump 1 -> 3 stars pays both steps; a repeat pays nothing.
-    const before = lv.stars || 0; const SB = E.starBonus;
-    out.starCoins = (before < 2 && stars >= 2 ? SB[2] : 0) + (before < 3 && stars >= 3 ? SB[3] : 0);
+    // v0.7.10 R1: the bonus is scaled by the world's coinMul (tuning economy.starBonusScale = 'coinMul'; anything else = flat) and rounded to 5.
+    const before = lv.stars || 0; const SB = E.starBonus; const sm = E.starBonusScale === 'coinMul' ? (((lvW && lvW.coinMul) ?? 1)) : 1; const sbv = (k) => Math.round(SB[k] * sm / 5) * 5;
+    out.starParts = { s2: before < 2 && stars >= 2 ? sbv(2) : 0, s3: before < 3 && stars >= 3 ? sbv(3) : 0 };
+    out.starCoins = out.starParts.s2 + out.starParts.s3;
     if (out.starCoins) { out.coins += out.starCoins; out.parts.stars = out.starCoins; }
     // v0.7.6 E3: gems from play - the first clear of a world's boss level, and the first 3 stars there
     out.gems = 0;

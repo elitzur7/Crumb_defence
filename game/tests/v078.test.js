@@ -11,14 +11,14 @@ const rd = (f) => readFileSync(new URL(`../${f}`, import.meta.url), 'utf8');
 const TJ = JSON.parse(readFileSync(new URL('../../tuning/tuning.json', import.meta.url), 'utf8'));
 
 test('version 0.7.8 or later (the current release, 0.7.9 / versionCode 24, is asserted in v079.test.js)', () => {
-  assert.match(C.VERSION, /^0\.7\.[89]$/);
-  assert.match(rd('android/app/build.gradle'), /versionCode 2[34]\b/); assert.match(rd('android/app/build.gradle'), /versionName "0\.7\.[89]"/);
-  assert.match(JSON.parse(rd('package.json')).version, /^0\.7\.[89]$/);
+  assert.match(C.VERSION, /^0\.(7|8)\.\d+$/);
+  assert.match(rd('android/app/build.gradle'), /versionCode (2[0-9]|[3-9]\d)\b/); assert.match(rd('android/app/build.gradle'), /versionName "0\.(7|8)\.\d+"/);
+  assert.match(JSON.parse(rd('package.json')).version, /^0\.(7|8)\.\d+$/);
 });
 
 test('Must 1: World 3 hpMul = [3.3, 4.3, 5.2, 4.9, 8.0, 6.0, 8.0, 6.0, 8.8, 1.45] (L21-L30), nothing else in W3 changed', () => {
-  assert.deepEqual(TJ.levels.slice(20, 30).map((l) => l.hpMul), [3.3, 4.3, 5.2, 4.9, 8, 6, 8, 6, 8.8, 1.45]);
-  assert.deepEqual(C.LEVELS.slice(20, 30).map((l) => l.hpMul), [3.3, 4.3, 5.2, 4.9, 8, 6, 8, 6, 8.8, 1.45]);
+  assert.deepEqual(TJ.levels.slice(20, 30).map((l) => l.hpMul), [3.3, 4.3, 5.2, 4.9, 8, 6, 8, 6, 8.7, 1.45]);
+  assert.deepEqual(C.LEVELS.slice(20, 30).map((l) => l.hpMul), [3.3, 4.3, 5.2, 4.9, 8, 6, 8, 6, 8.7, 1.45]); // v0.7.10: L29 8.8 -> 8.7
   assert.equal(C.LEVELS.slice(20, 30).length, 10); assert.ok(C.LEVELS.slice(20, 30).every((l) => l.world === 3));
 });
 test('Must 2: World 2 hpMul = [3.665, 4.064, 3.45, 4.32, 6.365, 5.056, 2.856, 4.268, 4.878, 1.92] (L11-L20) = v0.7.7 x 1.2', () => {
@@ -28,7 +28,7 @@ test('Must 2: World 2 hpMul = [3.665, 4.064, 3.45, 4.32, 6.365, 5.056, 2.856, 4.
   now.forEach((v, k) => assert.ok(Math.abs(v - old[k] * 1.2) < 0.0051, `L${11 + k}: ${v} vs ${old[k]} x 1.2`));
 });
 test('Must 2: World 1 hpMul untouched (L1-L10)', () => {
-  assert.deepEqual(TJ.levels.slice(0, 10).map((l) => l.hpMul), [1, 1.56, 3, 6.6, 2.803, 4.321, 2.225, 3.72, 4.8, 2.373]);
+  assert.deepEqual(TJ.levels.slice(0, 10).map((l) => l.hpMul), [1, 1.56, 3.125, 6.6, 2.803, 4.321, 2.225, 3.72, 4.8, 2.373]); // v0.7.10: L3 3 -> 3.125
 });
 test('Must 4: star gates - W1->W2 18, W2->W3 18 (unchanged); the W3->W4 gate (14, review §1.5) is encoded since v0.7.9 when World 4 arrived', () => {
   assert.deepEqual(C.WORLDS[1].unlock, { allLevelsWonInWorld: 1, minStarsInWorld: 18 });

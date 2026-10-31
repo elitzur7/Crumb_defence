@@ -15,7 +15,7 @@ const lum = (hex) => { const n = parseInt(hex.slice(1), 16); return 0.2126 * lin
 const ratio = (a, b) => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
 
 test('v0.7.5 version + versionCode (>= 20; the current release is asserted in v076.test.js)', () => {
-  assert.match(C.VERSION, /^0\.7\.[56789]$/);
+  assert.match(C.VERSION, /^0\.(7|8)\.\d+$/);
   assert.ok(+/versionCode (\d+)/.exec(rd('android/app/build.gradle'))[1] >= 20);
 });
 
@@ -36,7 +36,8 @@ test('C18: the trail is baked into the cached map background (no per-frame trail
 
 test('C18: blob() uses three gradient stops (was four) and the ground has half the flowers', () => {
   const a = src('art.js'); const b = a.slice(a.indexOf('function blob('), a.indexOf('// soft radial contact shadow'));
-  assert.equal((b.match(/addColorStop/g) || []).length, 3);
+  assert.match(b, /drawGlossyBlob/); // v0.8.0: blob() is the shared glossy recipe; its gradient stops live in recipes.js
+  { const r = src('recipes.js'); const k = r.indexOf('export function drawGlossyBlob'); assert.ok((r.slice(k, r.indexOf('export function', k + 10)).match(/addColorStop/g) || []).length <= 4); }
   assert.match(a, /k < 10/);
 });
 
@@ -94,8 +95,8 @@ test('A16: with reduced motion the hit flash stays but squash / rise / pop / dea
 
 test('outline weights: hero shapes (cookie, nest, pads) are 3.0', () => {
   const a = src('art.js');
-  assert.match(a, /ctx\.fillStyle = shade\(color, -0\.22\); ctx\.fill\(\); ctx\.lineWidth = 3\.0/);
-  assert.match(a, /ctx\.fill\(\); ctx\.lineWidth = 3; ctx\.strokeStyle = INK; ctx\.stroke\(\);\n  ctx\.fillStyle = '#c08a5e'/);
+  assert.match(a, /ring76'[^\n]*g\.lineWidth = 3; g\.strokeStyle = INK/); // v0.8.0: the contact slab keeps a 3 px INK outline
+  assert.match(a, /function drawNest[\s\S]{0,1200}lineWidth = 3/); // v0.8.0: the nest keeps its 3 px INK outline
 });
 
 test('HUD compact preview exists for when the strip has no room; the strip eases sideways instead of jumping', () => {

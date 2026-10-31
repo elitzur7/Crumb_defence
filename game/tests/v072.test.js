@@ -28,7 +28,7 @@ test('C14: an ant shuttles - delivers, drops the food, walks back and steals aga
 });
 test('C14: the food an ant drops at the nest is lost for the player (delivered, not returned)', () => {
   const b = mk({}, offSw); const a = b.spawn('worker', b.path.length - 0.5);
-  step(b, 0.2); assert.equal(a.state, 'back'); const st = C.ANTS.worker.steal;
+  step(b, 0.2); assert.equal(a.state, 'back'); const st = C.ANTS.worker.steal; a.waitT = 0; // v0.7.10: the 0.5 s cookie pause is tested in v080.test.js
   assert.ok(Math.abs(b.foodStored - (b.cfg.foodHP - st)) < 1e-9);
   a.d = 0.05; step(b, 0.1);
   assert.ok(Math.abs(b.foodDelivered - st) < 1e-9, 'delivered'); assert.equal(a.carrying, 0); assert.equal(a.state, 'go'); assert.equal(a.trips, 1);
@@ -123,8 +123,8 @@ test('C16: the old bottom buttons are gone from the map / cards / shop code', ()
   assert.ok(g.includes("button('gear'") && g.includes("button('setSound'") && g.includes("button('setReset'"), 'sound + reset live in the settings panel');
 });
 test('C16: version 0.7.4 / versionCode 21 everywhere (updated in v0.7.6)', () => {
-  assert.match(C.VERSION, /^0\.7\.[6789]$/);
-  assert.match(JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version, /^0\.7\.[6789]$/);
+  assert.match(C.VERSION, /^0\.(7|8)\.\d+$/);
+  assert.match(JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version, /^0\.(7|8)\.\d+$/);
   const gr = readFileSync(new URL('../android/app/build.gradle', import.meta.url), 'utf8');
-  assert.ok(/versionCode 2[1234]\b/.test(gr) && /versionName "0\.7\.[6789]"/.test(gr));
+  assert.ok(/versionCode (2[0-9]|[3-9]\d)\b/.test(gr) && /versionName "0\.(7|8)\.\d+"/.test(gr));
 });

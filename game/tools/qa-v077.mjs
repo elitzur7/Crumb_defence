@@ -4,7 +4,7 @@
 import puppeteer from 'puppeteer-core';
 import fs from 'node:fs';
 import { serve } from './serve.mjs';
-const OUT = '/workspace/ant-td/qa/v0.7.9/suites/v077'; const SH = `${OUT}/shots`; fs.mkdirSync(SH, { recursive: true });
+const OUT = '/workspace/ant-td/qa/v0.8.0/suites/v077'; const SH = `${OUT}/shots`; fs.mkdirSync(SH, { recursive: true });
 await serve(8894, 'www-test');
 const browser = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: true, args: ['--no-sandbox'] });
 let fails = 0; const R = [];
@@ -209,7 +209,7 @@ const FN = `(function(li){
   };
   const rLose = await result('results: loss', 2, false, 0, true, 'screen-results-loss'); info(`results loss: ${JSON.stringify(rLose)}`);
   const rE1 = await result('results: first win 3 stars (E1 Star bonus)', 0, true, 3, true, 'screen-results-star-coins'); info(`E1 results L1 3-star: ${JSON.stringify(rE1)}`);
-  ok(rE1.starCoins === 40, `E1 first win with 3 stars pays 15 + 25 = 40 star coins (got ${rE1.starCoins})`);
+  ok(rE1.starCoins === 90, `E1 (v0.8.0) first win with 3 stars pays 15 + 75 = 90 star coins (got ${rE1.starCoins})`);
   const t1 = await G(() => window.__game.S.battle && 1); await sleep(50);
   const rE1b = await result('results: first win 2 stars', 1, true, 2, true, 'screen-results-2star'); ok(rE1b.starCoins === 15, `E1 first win with 2 stars pays 15 (got ${rE1b.starCoins})`);
   const rE1c = await result('results: first win 1 star', 3, true, 1, true, null); ok(rE1c.starCoins === 0, `E1 first win with 1 star pays 0 star coins (got ${rE1c.starCoins})`);

@@ -3,7 +3,7 @@
 // (layout math, hit areas, taps, hidden in battle / modals), reduced motion, production build hygiene. Screenshots -> /workspace/ant-td/qa/v0.7.2/
 import puppeteer from 'puppeteer-core';
 import { serve } from './serve.mjs';
-const OUT = '/workspace/ant-td/qa/v0.7.9/suites/v072';
+const OUT = '/workspace/ant-td/qa/v0.8.0/suites/v072';
 await serve(8881, 'www-test'); await serve(8882, 'www');
 const browser = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: true, args: ['--no-sandbox'] });
 let fails = 0; const R = [];
@@ -51,7 +51,7 @@ const DECK = ['slingshot', 'spray', 'glue', 'fan', 'ball'];
   await G((d) => window.__game.startBattle(0, d, [], 7), DECK); await sleep(200);
   const res = await G(() => { const b = window.__game.S.battle; b.cfg.swatter = { ...b.cfg.swatter, on: false }; b.towers.length = 0; b.nextWaveAt = 1e9;
     b.foodStored = 12; const a = b.spawn('worker', b.path.length - 2); let escaped = false, maxTrips = 0, t = 0;
-    for (; t < 60 * 900 && !b.result; t++) { b.update(1 / 60); maxTrips = Math.max(maxTrips, a.trips); if (b.ants.some((x) => x.escaped)) escaped = true; }
+    for (; t < 60 * 1500 && !b.result; t++) { b.update(1 / 60); maxTrips = Math.max(maxTrips, a.trips); if (b.ants.some((x) => x.escaped)) escaped = true; }
     return { result: b.result, trips: a.trips, escaped, food: b.foodStored, delivered: b.foodDelivered, secs: t / 60, dead: a.dead }; });
   ok(res.result === 'lose' && res.trips >= 10 && !res.escaped && !res.dead, `one ant shuttles until the food is gone: ${JSON.stringify(res)}`);
   // a shuttling ant on screen (state 'back' carrying + one on its 2nd trip), screenshot

@@ -12,17 +12,17 @@ const rd = (f) => readFileSync(new URL(`../${f}`, import.meta.url), 'utf8');
 const TJ = JSON.parse(readFileSync(new URL('../../tuning/tuning.json', import.meta.url), 'utf8'));
 const DECK = ['slingshot', 'spray', 'glue', 'fan', 'ball'];
 
-test('version 0.7.9 / versionCode 24', () => {
-  assert.equal(C.VERSION, '0.7.9');
-  assert.match(rd('android/app/build.gradle'), /versionCode 24\b/); assert.match(rd('android/app/build.gradle'), /versionName "0\.7\.9"/);
-  assert.equal(JSON.parse(rd('package.json')).version, '0.7.9');
+test('version 0.7.9 or later (the current release, 0.8.0 / versionCode 25, is asserted in v080.test.js)', () => {
+  assert.ok(C.VERSION >= '0.7.9');
+  assert.match(rd('android/app/build.gradle'), /versionCode (2[4-9]|[3-9]\d)\b/);
+  assert.ok(JSON.parse(rd('package.json')).version >= '0.7.9');
 });
 
 test('W4 data: Ice-Cream Parlour, treat sundae, queen4, L31-L40, cap 6, coinMul 1.5, hpMul table, gate 14', () => {
   const w = C.WORLDS[3]; assert.equal(w.id, 4); assert.equal(w.name, 'Ice-Cream Parlour'); assert.equal(w.treat, 'sundae'); assert.equal(w.queen, 'queen4'); assert.equal(w.levels, 10);
   assert.equal(w.cardLevelCap, 6); assert.equal(w.coinMul, 1.5); assert.deepEqual(w.unlock, { allLevelsWonInWorld: 3, minStarsInWorld: 14 });
   assert.equal(C.WORLDS.length, 4); assert.equal(C.LEVELS.length, 40); assert.equal(C.WORLD_START[4], 30); assert.ok(C.isBossLevel(39)); assert.ok(!C.isBossLevel(38));
-  assert.deepEqual(C.LEVELS.slice(30).map((l) => l.hpMul), [3.9, 4.5, 7.4, 7.25, 6.6, 7.7, 5.85, 7.4, 5.45, 0.8]);
+  assert.deepEqual(C.LEVELS.slice(30).map((l) => l.hpMul), [3.9, 4.5, 7.4, 7.25, 6.65, 7.7, 5.9, 7.4, 5.35, 0.8] /* v0.7.10 retune: L35 6.6 -> 6.65, L37 5.85 -> 5.9, L39 5.45 -> 5.35 */);
   assert.ok(C.LEVELS.slice(30).every((l) => l.world === 4));
   // W1-W3 untouched
   assert.deepEqual([C.WORLDS[0].coinMul, C.WORLDS[1].coinMul, C.WORLDS[2].coinMul, C.WORLDS[0].cardLevelCap, C.WORLDS[1].cardLevelCap, C.WORLDS[2].cardLevelCap], [1, 1, 1.25, 4, 5, 5]);

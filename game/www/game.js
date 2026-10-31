@@ -19,7 +19,8 @@ var tuning_default = {
   },
   economy: {
     _about: "v0.7.6 E1/E2/E3/E5. starBonus: coins paid ONCE per level the first time it reaches 2 (key 2) and 3 (key 3) stars (a 1 -> 3 star jump pays both; stored stars count as already paid, no retroactive grant). bossGems: diamonds on the FIRST clear of a world's last level (its queen) and on the first 3 stars there. calendar.coinsByStreak: coins of the 1st, 2nd, 3rd, 4th+ coin prize of a streak, multiplied by 1 + worldStep x (highest unlocked world - 1), rounded to a multiple of roundTo. worlds[].coinMul (default 1) multiplies the win coins of that world's levels (not the first-clear bonus, not loss coins).",
-    starBonus: { "2": 15, "3": 25 },
+    starBonus: { "2": 15, "3": 75 },
+    starBonusScale: "coinMul",
     bossGems: { firstClear: 10, firstThreeStars: 5 },
     calendar: { coinsByStreak: [30, 60, 90, 120], worldStep: 0.5, roundTo: 5 }
   },
@@ -531,16 +532,40 @@ var tuning_default = {
       name: "Gas Masks On",
       map: "hook",
       waveCount: 5,
-      hpMul: 3,
-      base: 7.8,
-      growth: 1.75,
+      hpMul: 3.125,
       interval: 1,
-      mix: [
-        { type: "worker", w: 3 },
-        { type: "small", w: 3 },
-        { type: "gasmask", w: 2, from: 2 },
-        { type: "small_gasmask", w: 2 },
-        { type: "small_fly", w: 1, from: 3 }
+      waves: [
+        [
+          { type: "worker", count: 4, interval: 1, delay: 0 },
+          { type: "small", count: 6, interval: 0.45, delay: 0 },
+          { type: "small_gasmask", count: 2, interval: 0.45, delay: 0 }
+        ],
+        [
+          { type: "small_gasmask", count: 6, interval: 0.45, delay: 0 },
+          { type: "small_fly", count: 2, interval: 0.5, delay: 0 },
+          { type: "worker", count: 4, interval: 1, delay: 0 },
+          { type: "gasmask", count: 3, interval: 1, delay: 0 }
+        ],
+        [
+          { type: "worker", count: 3, interval: 1, delay: 0 },
+          { type: "small", count: 6, interval: 0.45, delay: 0 },
+          { type: "small_fly", count: 4, interval: 0.5, delay: 0 },
+          { type: "small_gasmask", count: 8, interval: 0.45, delay: 0 },
+          { type: "gasmask", count: 1, interval: 1, delay: 0 }
+        ],
+        [
+          { type: "worker", count: 7, interval: 1, delay: 0 },
+          { type: "small_fly", count: 5, interval: 0.5, delay: 0 },
+          { type: "small", count: 8, interval: 0.45, delay: 0 },
+          { type: "gasmask", count: 1, interval: 1, delay: 0 }
+        ],
+        [
+          { type: "worker", count: 3, interval: 1, delay: 0 },
+          { type: "small", count: 14, interval: 0.45, delay: 0 },
+          { type: "small_fly", count: 5, interval: 0.5, delay: 0 },
+          { type: "small_gasmask", count: 6, interval: 0.45, delay: 0 },
+          { type: "gasmask", count: 2, interval: 1, delay: 0 }
+        ]
       ]
     },
     {
@@ -1128,7 +1153,7 @@ var tuning_default = {
       name: "Everything Pie",
       map: "w3_every",
       waveCount: 9,
-      hpMul: 8.8,
+      hpMul: 8.7,
       interval: 1,
       waves: [
         [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
@@ -1389,7 +1414,7 @@ var tuning_default = {
       name: "Waffle Grid",
       map: "w4_waffle",
       waveCount: 7,
-      hpMul: 6.6,
+      hpMul: 6.65,
       interval: 1,
       waves: [
         [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
@@ -1467,7 +1492,7 @@ var tuning_default = {
       name: "Fudge Fork",
       map: "w4_fudge",
       waveCount: 8,
-      hpMul: 5.85,
+      hpMul: 5.9,
       interval: 1,
       waves: [
         [{ type: "worker", count: 5, interval: 1, delay: 0 }, { type: "small_gasmask", count: 8, interval: 0.45, delay: 1 }],
@@ -1570,7 +1595,7 @@ var tuning_default = {
       name: "Banana Split",
       map: "w4_banana",
       waveCount: 9,
-      hpMul: 5.45,
+      hpMul: 5.35,
       interval: 1,
       waves: [
         [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
@@ -2270,7 +2295,14 @@ var TILE = 40, GRID_COLS = 10, GRID_ROWS = 12, BATTLE = {
   // v0.7.2 C14 'shuttle until death': an ant that drops its piece at the nest (lost for good) waits `pause` s and walks back to the cookie
   // for another piece. It only stops by dying (HP 0). Queens loop too. The level is won when no ant is alive after the last wave,
   // lost when the cookie is empty (so a level can never be endless).
-  forage: { on: !0, pause: 0.3, queenLoop: !0 },
+  forage: {
+    on: !0,
+    pause: 0.3,
+    queenLoop: !0,
+    // v0.7.10 cookie pick-up beat: seconds an ant stands at the treat after taking its piece, before it turns home (every trip). 0 = off (v0.7.9 behaviour). v0.7.10 ships 0.5.
+    // cookiePauseBoss: same for queens (omit = same as cookiePause).
+    cookiePause: 0.5
+  },
   // v0.7.2 C13 cookie guard (fly swatter): free, automatic, fixed on the cookie. One swat every `interval` s (the timer waits while nothing is in range)
   // of `damage` (armour applies, min 1) at an ant within `range` px of the cookie; carrier nearest the cookie first, else nearest ant; hits flyers.
   swatter: { on: !0, damage: 4, interval: 4, range: 72, first: 4, air: !0 },
@@ -2504,7 +2536,7 @@ var AIR_COUNTERS = ["laser", "zapper"], TARGET_MODE_TEXT = {
   lizard: { carrier: "Targets ants carrying food first, then fewest HP left; chews after kills.", front: "Targets the walking ant closest to the cookie; chews after kills." },
   laser: { carrier: "Aims at ants carrying food first, then fewest HP. Heat: +12% per hit on the same ant.", front: "Aims at the walking ant closest to the cookie. Heat: +12% per hit on the same ant." },
   zapper: { carrier: "First zap: food carriers first, then fewest HP. Chains to the nearest flyers (60% each jump).", front: "First zap: the flyer closest to the cookie. Chains to the nearest flyers (60% each jump)." }
-}, VERSION = "0.7.9", ANT_SIZES = { ...tuning_default.antSizes }, ANT_TEXT = {
+}, VERSION = "0.8.0", ANT_SIZES = { ...tuning_default.antSizes }, ANT_TEXT = {
   small: { name: "Scout Ant", desc: "Tiny, fast, comes in swarms." },
   worker: { name: "Worker Ant", desc: "The regular. Hard hat included." },
   big: { name: "Big Ant", desc: "Slow, chunky, a bit of armor." },
@@ -2557,6 +2589,8 @@ var BONUSES = {
   firstClearBonus: 25,
   // v0.7.6 E1: coins paid ONCE per level the first time it reaches 2 / 3 stars (tuning.json economy.starBonus); a 1 -> 3 star jump pays both
   starBonus: { 2: tuning_default.economy.starBonus[2], 3: tuning_default.economy.starBonus[3] },
+  starBonusScale: tuning_default.economy.starBonusScale,
+  // v0.7.10 R1: 'coinMul' = bonus x world coinMul (rounded to 5)
   // v0.7.6 E3: diamonds on the first clear of a world's boss level (its last level) and on the first 3 stars there (tuning.json economy.bossGems)
   bossGems: { firstClear: tuning_default.economy.bossGems.firstClear, firstThreeStars: tuning_default.economy.bossGems.firstThreeStars },
   // v0.6 item 1: + floor(battle time / secondsPerCoin) for the time survived - its own results line, on a win AND on a loss.
@@ -3583,7 +3617,12 @@ var NEXT_ID = 1, Battle = class {
   }
   reachFood(a) {
     let steal = Math.min(ANTS[a.type].steal, this.foodStored);
-    this.foodStored -= steal, this.stats.stolen += steal, this.emit({ type: "steal", x: a.x, y: a.y, n: steal, ant: a.type }), this.cfg.carryBack && steal > 0 ? (a.state = "back", a.carrying = steal, a.d = this.route(a).length - 0.01) : (this.cfg.carryBack || (this.foodDelivered += steal), a.dead = !0, a.escaped = !0);
+    if (this.foodStored -= steal, this.stats.stolen += steal, this.emit({ type: "steal", x: a.x, y: a.y, n: steal, ant: a.type }), this.cfg.carryBack && steal > 0) {
+      a.state = "back", a.carrying = steal, a.d = this.route(a).length - 0.01;
+      let F = this.cfg.forage, cp = F && F.on ? ANTS[a.type].boss && F.cookiePauseBoss != null ? F.cookiePauseBoss : F.cookiePause || 0 : 0;
+      cp > 0 && (a.waitT = Math.max(a.waitT, cp), this.stats.pickups = (this.stats.pickups || 0) + 1, this.emit({ type: "pickup", x: a.x, y: a.y, n: steal, ant: a.type, t: cp }));
+    } else
+      this.cfg.carryBack || (this.foodDelivered += steal), a.dead = !0, a.escaped = !0;
   }
   get stars() {
     return this.result === "win" ? starsFor(this.foodStored, this.cfg.foodHP) : 0;
@@ -3898,8 +3937,8 @@ function applyBattleResult(save, levelIndex, result, stars, info = {}, rng = Mat
     out.firstClear = !lv.cleared;
     let lvW = WORLDS.find((x) => x.id === worldOf(levelIndex)), c = battleCoins("win", { kills: info.kills || 0, foodLeft: info.foodLeft ?? BATTLE.foodHP, levelIndex, firstClear: out.firstClear, time: info.time || 0, coinMul: (lvW && lvW.coinMul) ?? 1 });
     out.coins = c.total, out.parts = c.parts;
-    let before = lv.stars || 0, SB = E.starBonus;
-    if (out.starCoins = (before < 2 && stars >= 2 ? SB[2] : 0) + (before < 3 && stars >= 3 ? SB[3] : 0), out.starCoins && (out.coins += out.starCoins, out.parts.stars = out.starCoins), out.gems = 0, isBossLevel(levelIndex) && (out.gems = (out.firstClear ? E.bossGems.firstClear : 0) + (before < 3 && stars >= 3 ? E.bossGems.firstThreeStars : 0)), out.gems && (save.diamonds = (save.diamonds || 0) + out.gems), out.firstClear) {
+    let before = lv.stars || 0, SB = E.starBonus, sm = E.starBonusScale === "coinMul" ? (lvW && lvW.coinMul) ?? 1 : 1, sbv = (k) => Math.round(SB[k] * sm / 5) * 5;
+    if (out.starParts = { s2: before < 2 && stars >= 2 ? sbv(2) : 0, s3: before < 3 && stars >= 3 ? sbv(3) : 0 }, out.starCoins = out.starParts.s2 + out.starParts.s3, out.starCoins && (out.coins += out.starCoins, out.parts.stars = out.starCoins), out.gems = 0, isBossLevel(levelIndex) && (out.gems = (out.firstClear ? E.bossGems.firstClear : 0) + (before < 3 && stars >= 3 ? E.bossGems.firstThreeStars : 0)), out.gems && (save.diamonds = (save.diamonds || 0) + out.gems), out.firstClear) {
       let fb = (E.firstClearBoosters || {})[levelIndex];
       if (fb && (out.booster = grantBooster(save, fb, 1)), E.bonusRewardOnFirstClear && !out.booster) {
         let b = BONUS_TYPES[Math.floor(rng() * BONUS_TYPES.length)];
@@ -4017,8 +4056,203 @@ function claim(save, now2, rng = Math.random, K = CALENDAR) {
   return c.streak = streak, c.coinStep = base + (isCoins ? 1 : 0), c.lastClaimDay = today, c.lastClaimTs = now2, c.lastSeenTs = now2, c.broken = !1, c.weekClaimed[tile] = !0, c.weekGot = c.weekGot || [], c.weekGot[tile] = prize && prize.count != null ? { kind: prize.kind, count: prize.count } : null, c.log = [...c.log || [], { day: today, tile, streak, prize: prize && prize.kind }].slice(-40), { ok: !0, tile, streak, prize, extra, milestone };
 }
 
+// src/recipes.js
+var INK = "#523c4b", FONT_BODY = "'Trebuchet MS','Nunito','Arial Rounded MT Bold','Segoe UI',Roboto,sans-serif", FONT_DISPLAY = `'Lilita One','Trebuchet MS','Arial Rounded MT Bold',${FONT_BODY}`, _pc = /* @__PURE__ */ new Map();
+function parseColor(c) {
+  let v = _pc.get(c);
+  if (v) return v;
+  let r = 0, g = 0, b = 0;
+  if (c[0] === "#") {
+    let h = c.slice(1);
+    h.length === 3 && (h = h.split("").map((x) => x + x).join(""));
+    let n = parseInt(h.slice(0, 6), 16);
+    r = n >> 16 & 255, g = n >> 8 & 255, b = n & 255;
+  } else {
+    let m = c.match(/-?[\d.]+/g);
+    m && (r = +m[0], g = +m[1], b = +m[2]);
+  }
+  return v = [r, g, b], _pc.size > 600 && _pc.clear(), _pc.set(c, v), v;
+}
+var hx = (n) => (n = Math.max(0, Math.min(255, Math.round(n))), (n < 16 ? "0" : "") + n.toString(16));
+function toHex(rgb) {
+  return "#" + hx(rgb[0]) + hx(rgb[1]) + hx(rgb[2]);
+}
+function mixHex(a, b, t) {
+  let p = parseColor(a), q = parseColor(b);
+  return toHex([p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t, p[2] + (q[2] - p[2]) * t]);
+}
+function hueOf(c) {
+  let [r, g, b] = parseColor(c).map((v) => v / 255), mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+  if (d < 1e-3) return [0, 0];
+  let h = mx === r ? (g - b) / d % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
+  return h *= 60, h < 0 && (h += 360), [h, d / (mx || 1)];
+}
+var _ramp = /* @__PURE__ */ new Map();
+function ramp(base, cool) {
+  let key = base + (cool === void 0 ? "" : cool ? "|c" : "|w"), r = _ramp.get(key);
+  if (r) return r;
+  if (cool === void 0) {
+    let [h, s] = hueOf(base);
+    cool = s > 0.12 && h >= 85 && h <= 285;
+  }
+  return r = cool ? { hi: mixHex(base, "#ffffff", 0.7), lit: mixHex(base, "#fffdf0", 0.32), base, shade: mixHex(base, "#6f6aa8", 0.34), deep: mixHex(base, "#4a3f7a", 0.56), line: INK } : { hi: mixHex(base, "#fffdf0", 0.7), lit: mixHex(base, "#fffdf0", 0.32), base, shade: mixHex(base, "#8c3f4f", 0.3), deep: mixHex(base, "#5a2438", 0.5), line: INK }, _ramp.size > 500 && _ramp.clear(), _ramp.set(key, r), r;
+}
+var CANDY = {
+  green: ["#b6f08a", "#6fd44a", "#2f9a3a"],
+  gold: ["#fff0a0", "#ffd23f", "#d98a14"],
+  orange: ["#ffd29a", "#ff9a3c", "#d8561a"],
+  pink: ["#ffc4d8", "#ff7fa8", "#d1497b"],
+  cyan: ["#c4f6ff", "#6fd8ef", "#2a98c0"],
+  blue: ["#c8dcff", "#7ba8ff", "#3f66d6"],
+  red: ["#ffb0a4", "#ff6a5a", "#c93030"],
+  purple: ["#e2d0ff", "#b896f5", "#7a4cc2"],
+  grey: ["#eee6ea", "#d8cfd6", "#a89aa6"]
+}, COL2CANDY = { "#9fe0b5": "green", "#ffd27a": "gold", "#d9cfe0": "purple", "#ffb3c1": "pink", "#b5d8ff": "blue", "#ff9a9a": "red", "#ffd0d0": "red", "#8fd0ff": "cyan", "#ffb3b3": "red", "#d8cfd6": "grey" };
+function candyOf(col) {
+  let k = COL2CANDY[col.toLowerCase()];
+  if (k) return CANDY[k];
+  let r = ramp(col);
+  return [r.lit, col, r.shade];
+}
+function contactShadow(ctx2, x, y, rx, ry = rx * 0.34, a = 0.2) {
+  ctx2.save(), ctx2.translate(x, y), ctx2.scale(1, ry / Math.max(rx, 0.01));
+  let g = ctx2.createRadialGradient(0, 0, 0, 0, 0, rx * 1.15);
+  g.addColorStop(0, `rgba(74,40,60,${a * 1.25})`), g.addColorStop(0.55, `rgba(74,40,60,${a * 0.85})`), g.addColorStop(1, "rgba(74,40,60,0)"), ctx2.beginPath(), ctx2.arc(0, 0, rx * 1.15, 0, Math.PI * 2), ctx2.fillStyle = g, ctx2.fill(), ctx2.restore();
+}
+function drawGlossyBlob(ctx2, x, y, rx, ry, base, o = {}) {
+  let lw = o.lw === void 0 ? 2 : o.lw, rot = o.rot || 0, m = Math.min(rx, ry), gl = o.gloss === void 0 ? 1 : o.gloss, R = ramp(base, o.cool), g = ctx2.createRadialGradient(x - rx * 0.36, y - ry * 0.46, Math.max(0.6, m * 0.1), x, y, Math.max(rx, ry) * 1.18);
+  g.addColorStop(0, R.lit), g.addColorStop(0.42, R.base), g.addColorStop(0.82, R.shade), g.addColorStop(1, R.deep), ctx2.beginPath(), ctx2.ellipse(x, y, rx, ry, rot, 0, Math.PI * 2), ctx2.fillStyle = g, ctx2.fill(), m >= 5 && o.rim !== !1 && (ctx2.beginPath(), ctx2.ellipse(x, y, rx * 0.8, ry * 0.8, rot, Math.PI * 0.12, Math.PI * 0.62), ctx2.lineWidth = Math.max(1, m * 0.13), ctx2.lineCap = "round", ctx2.strokeStyle = mixHex(R.base, "#fffdf0", 0.38), ctx2.globalAlpha = 0.55, ctx2.stroke(), ctx2.globalAlpha = 1), lw && (ctx2.beginPath(), ctx2.ellipse(x, y, rx, ry, rot, 0, Math.PI * 2), ctx2.lineWidth = lw, ctx2.strokeStyle = o.line || INK, ctx2.stroke()), gl > 0 && m >= 3.2 && (ctx2.save(), ctx2.translate(x, y), ctx2.rotate(rot), ctx2.beginPath(), ctx2.ellipse(-rx * 0.32, -ry * 0.44, rx * 0.34, ry * 0.2, -0.5, 0, Math.PI * 2), ctx2.fillStyle = R.hi, ctx2.globalAlpha = 0.78 * gl, ctx2.fill(), m >= 6 && (ctx2.beginPath(), ctx2.arc(-rx * 0.6, -ry * 0.12, Math.max(0.8, m * 0.07), 0, Math.PI * 2), ctx2.globalAlpha = 0.85 * gl, ctx2.fillStyle = "#ffffff", ctx2.fill()), ctx2.restore(), ctx2.globalAlpha = 1);
+}
+function rrPath(ctx2, x, y, w, h, r) {
+  r = Math.min(r, w / 2, h / 2), ctx2.beginPath(), ctx2.moveTo(x + r, y), ctx2.arcTo(x + w, y, x + w, y + h, r), ctx2.arcTo(x + w, y + h, x, y + h, r), ctx2.arcTo(x, y + h, x, y, r), ctx2.arcTo(x, y, x + w, y, r), ctx2.closePath();
+}
+function drawBeveledTile(ctx2, x, y, w, h, base, o = {}) {
+  let lip = o.lip === void 0 ? 4 : o.lip, r = o.r === void 0 ? Math.min(10, h / 3) : o.r, lw = o.lw === void 0 ? 2.2 : o.lw, R = ramp(base, o.cool);
+  lip && (rrPath(ctx2, x, y + lip, w, h, r), ctx2.fillStyle = R.deep, ctx2.fill(), lw && (ctx2.lineWidth = lw, ctx2.strokeStyle = o.line || INK, ctx2.stroke()));
+  let g = ctx2.createLinearGradient(0, y, 0, y + h);
+  g.addColorStop(0, R.lit), g.addColorStop(0.5, R.base), g.addColorStop(1, R.shade), rrPath(ctx2, x, y, w, h, r), ctx2.fillStyle = g, ctx2.fill(), lw && (ctx2.lineWidth = lw, ctx2.strokeStyle = o.line || INK, ctx2.stroke()), h >= 14 && w >= 14 && (ctx2.lineCap = "round", ctx2.beginPath(), ctx2.moveTo(x + r * 0.7 + 1, y + lw + 1.2), ctx2.lineTo(x + w - r * 0.7 - 1, y + lw + 1.2), ctx2.lineWidth = 1.6, ctx2.strokeStyle = R.hi, ctx2.globalAlpha = o.hi === void 0 ? 0.8 : o.hi, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(x + r * 0.7 + 1, y + h - lw - 1.4), ctx2.lineTo(x + w - r * 0.7 - 1, y + h - lw - 1.4), ctx2.lineWidth = 2.2, ctx2.strokeStyle = R.deep, ctx2.globalAlpha = 0.28, ctx2.stroke(), ctx2.globalAlpha = 1);
+}
+var _spr = /* @__PURE__ */ new Map(), _sprCount = 0;
+var _mk = null;
+function mkCanvas(w, h) {
+  if (_mk) return _mk(w, h);
+  if (typeof OffscreenCanvas < "u") return new OffscreenCanvas(w, h);
+  let c = document.createElement("canvas");
+  return c.width = w, c.height = h, c;
+}
+function devScale(ctx2) {
+  let m = ctx2.getTransform();
+  return Math.min(4, Math.max(0.5, Math.round(Math.hypot(m.a, m.b) * 4) / 4));
+}
+function bakedBox(ctx2, key, x, y, w, h, pad2, draw, cap = 96) {
+  let sc = devScale(ctx2), k = key + "@" + sc + "|" + w + "x" + h, e = _spr.get(k);
+  if (e)
+    _spr.delete(k);
+  else {
+    let cv = mkCanvas(Math.ceil((w + pad2 * 2) * sc), Math.ceil((h + pad2 * 2) * sc)), g = cv.getContext("2d");
+    g.scale(sc, sc), g.translate(pad2, pad2), g.lineJoin = "round", g.lineCap = "round", draw(g, w, h), e = { cv, sc }, _sprCount++, _spr.size >= cap && _spr.delete(_spr.keys().next().value);
+  }
+  _spr.set(k, e), ctx2.drawImage(e.cv, x - pad2, y - pad2, w + pad2 * 2, h + pad2 * 2);
+}
+function drawPillButton(ctx2, x, y, w, h, family, o = {}) {
+  let press = o.pressed ? 3 : 0, dis = !!o.disabled, r = o.r === void 0 ? Math.min(h / 2, 16) : o.r, fam = dis ? CANDY.grey : typeof family == "string" && CANDY[family] || (Array.isArray(family) ? family : candyOf(family || "#ffb3c1"));
+  bakedBox(ctx2, "pill|" + fam.join(",") + "|" + (o.pressed ? 1 : 0) + "|" + r, x, y, w, h + 5, 4, (g, bw, bh) => {
+    let hh = bh - 5, ph = press;
+    rrPath(g, 0, 4, bw, hh, r), g.fillStyle = fam[2], g.fill(), g.lineWidth = 2.5, g.strokeStyle = INK, g.stroke();
+    let gr = g.createLinearGradient(0, ph, 0, ph + hh);
+    gr.addColorStop(0, fam[0]), gr.addColorStop(0.55, fam[1]), gr.addColorStop(1, mixHex(fam[1], fam[2], 0.42)), rrPath(g, 0, ph, bw, hh, r), g.fillStyle = gr, g.fill(), g.lineWidth = 2.5, g.strokeStyle = INK, g.stroke(), rrPath(g, 5, ph + 3.5, bw - 10, Math.max(6, hh * 0.3), Math.min(8, hh * 0.18)), g.fillStyle = "rgba(255,255,255,0.42)", g.fill(), g.beginPath(), g.moveTo(r * 0.8, ph + hh - 4.5), g.lineTo(bw - r * 0.8, ph + hh - 4.5), g.lineWidth = 2, g.strokeStyle = fam[2], g.globalAlpha = 0.3, g.stroke(), g.globalAlpha = 1;
+  });
+}
+var TEXT_MODES = {
+  title: { fill: "#fff6d8", inner: "#f59a2a", outer: "#b8531a", ink: INK, drop: 3 },
+  num: { fill: "#fffdf0", inner: null, outer: INK, ink: INK, drop: 1.5 },
+  btn: { fill: "#ffffff", inner: null, outer: INK, ink: INK, drop: 2 },
+  plain: { fill: "#fffdf0", inner: null, outer: INK, ink: INK, drop: 0 }
+}, _fontEpoch = 0, _fontOk = !1;
+function setFontReady(v) {
+  v !== _fontOk && (_fontOk = v, _fontEpoch++, _spr.clear());
+}
+function drawChunkyText(ctx2, str, x, y, size, o = {}) {
+  let M = TEXT_MODES[o.mode || "btn"], fill = o.fill || M.fill, align = o.align || "center";
+  ctx2.save(), ctx2.font = `${size}px ${FONT_DISPLAY}`, ctx2.textAlign = align, ctx2.textBaseline = "middle", ctx2.lineJoin = "round", ctx2.miterLimit = 2;
+  let ow = o.outline || Math.max(2.4, size * 0.16);
+  if (M.drop && (ctx2.lineWidth = ow * 2, ctx2.strokeStyle = "rgba(60,30,40,0.30)", ctx2.strokeText(str, x, y + M.drop)), ctx2.lineWidth = ow * 2, ctx2.strokeStyle = M.ink, ctx2.strokeText(str, x, y), M.inner && (ctx2.lineWidth = ow * 1.35, ctx2.strokeStyle = M.outer, ctx2.strokeText(str, x, y)), M.inner && size >= 20) {
+    let lit = mixHex(fill, "#ffffff", 0.35), g = ctx2.createLinearGradient(0, y - size * 0.5, 0, y + size * 0.5);
+    g.addColorStop(0, lit), g.addColorStop(0.45, lit), g.addColorStop(0.46, fill), g.addColorStop(1, fill), ctx2.fillStyle = g;
+  } else ctx2.fillStyle = fill;
+  ctx2.fillText(str, x, y), ctx2.restore();
+}
+function sparkle(ctx2, x, y, r, col = "#fff7a8", rot = 0) {
+  ctx2.save(), ctx2.translate(x, y), ctx2.rotate(rot), ctx2.beginPath();
+  for (let i = 0; i < 8; i++) {
+    let a = i * Math.PI / 4, rr2 = i % 2 ? r * 0.28 : r;
+    ctx2.lineTo(Math.cos(a) * rr2, Math.sin(a) * rr2);
+  }
+  ctx2.closePath(), ctx2.fillStyle = col, ctx2.fill(), ctx2.lineWidth = Math.max(0.8, r * 0.14), ctx2.strokeStyle = INK, ctx2.lineJoin = "round", ctx2.stroke(), ctx2.restore();
+}
+function candyStar(ctx2, x, y, r, base = "#ffd23f", lw = 1.6, rot = 0) {
+  let rr2 = r >= 6 ? Math.round(r) : Math.round(r * 2) / 2, S2 = rr2 + lw + 1;
+  ctx2.save(), ctx2.translate(x, y), ctx2.rotate(rot), bakedBox(ctx2, "star" + rr2 + base + lw, -S2, -S2, 2 * S2, 2 * S2, 1, (g) => {
+    g.translate(S2, S2), candyStarRaw(g, 0, 0, rr2, base, lw, 0);
+  }, 128), ctx2.restore();
+}
+function candyStarRaw(ctx2, x, y, r, base, lw, rot) {
+  ctx2.save(), ctx2.translate(x, y), ctx2.rotate(rot), ctx2.lineJoin = "round", ctx2.beginPath();
+  for (let i = 0; i < 10; i++) {
+    let a = -Math.PI / 2 + i * Math.PI / 5, rr2 = i % 2 ? r * 0.5 : r;
+    ctx2.lineTo(Math.cos(a) * rr2, Math.sin(a) * rr2);
+  }
+  ctx2.closePath();
+  let R = ramp(base, !1), g = ctx2.createLinearGradient(0, -r, 0, r);
+  g.addColorStop(0, R.lit), g.addColorStop(0.55, R.base), g.addColorStop(1, R.shade), ctx2.fillStyle = g, ctx2.fill(), lw && (ctx2.lineWidth = lw, ctx2.strokeStyle = INK, ctx2.stroke()), r >= 6 && (ctx2.beginPath(), ctx2.moveTo(-r * 0.3, -r * 0.35), ctx2.lineTo(-r * 0.08, -r * 0.68), ctx2.lineWidth = Math.max(1, r * 0.12), ctx2.strokeStyle = "rgba(255,255,255,0.8)", ctx2.lineCap = "round", ctx2.stroke()), ctx2.restore();
+}
+var easeOutBack = (k) => {
+  k = Math.max(0, Math.min(1, k));
+  let c1 = 1.70158;
+  return 1 + (c1 + 1) * Math.pow(k - 1, 3) + c1 * Math.pow(k - 1, 2);
+};
+function lightBurst(ctx2, x, y, R, t, o = {}) {
+  let n = o.rays || 14, a0 = (o.spin === void 0 ? 0.25 : o.spin) * t, al = o.alpha === void 0 ? 0.42 : o.alpha;
+  ctx2.save(), ctx2.translate(x, y), ctx2.rotate(a0);
+  let g = ctx2.createRadialGradient(0, 0, 4, 0, 0, R);
+  g.addColorStop(0, `rgba(255,248,196,${al})`), g.addColorStop(0.6, `rgba(255,236,150,${al * 0.55})`), g.addColorStop(1, "rgba(255,236,150,0)"), ctx2.beginPath();
+  for (let i = 0; i < n; i++) {
+    let a = i * Math.PI * 2 / n, w = Math.PI / n * 0.62;
+    ctx2.moveTo(0, 0), ctx2.lineTo(Math.cos(a - w) * R, Math.sin(a - w) * R), ctx2.lineTo(Math.cos(a + w) * R, Math.sin(a + w) * R), ctx2.closePath();
+  }
+  ctx2.fillStyle = g, ctx2.fill(), ctx2.restore();
+}
+function coinDraw(g, cx, cy, r, th) {
+  let ry = r * 0.92;
+  if (g.beginPath(), g.ellipse(cx, cy + th, r, ry, 0, 0, Math.PI * 2), g.fillStyle = "#c47a10", g.fill(), g.lineWidth = Math.max(1.4, r * 0.2), g.strokeStyle = INK, g.stroke(), drawGlossyBlob(g, cx, cy, r, ry, "#ffd23f", { lw: Math.max(1.4, r * 0.2), gloss: 0.9, cool: !1 }), g.beginPath(), g.ellipse(cx, cy, r * 0.7, ry * 0.7, 0, 0, Math.PI * 2), g.lineWidth = Math.max(0.8, r * 0.1), g.strokeStyle = "#d98a14", g.stroke(), r >= 4.5) {
+    g.save(), g.translate(cx, cy + 0.2);
+    let sr = r * 0.46;
+    for (let [dx, dy, col] of [[0.6, 0.7, "#b8741a"], [-0.3, -0.4, "#fff6b8"]]) {
+      g.beginPath();
+      for (let i = 0; i < 10; i++) {
+        let a = -Math.PI / 2 + i * Math.PI / 5, q = i % 2 ? sr * 0.5 : sr;
+        g.lineTo(dx + Math.cos(a) * q, dy + Math.sin(a) * q);
+      }
+      g.closePath(), g.fillStyle = col, g.fill();
+    }
+    g.restore();
+  }
+}
+function drawCoin(ctx2, x, y, r = 8) {
+  bakedBox(ctx2, "coin" + r, x - r - 1, y - r - 1, 2 * r + 2, 2 * r + 3, 2, (g) => coinDraw(g, r + 1, r + 1, r, Math.max(1.2, r * 0.22)));
+}
+var PILE = { w: 78, h: 30 };
+function drawCoinPile(ctx2, x, y, k = 1) {
+  bakedBox(ctx2, "pile", x - PILE.w / 2 * k, y - PILE.h * k, PILE.w * k, PILE.h * k, 6, (g) => {
+    g.save(), g.scale(k, k);
+    let rows = [[[-24, 19], [-8, 19.5], [8, 19.5], [24, 19]], [[-16, 13], [0, 13.5], [16, 13]], [[-7, 8], [8, 8]], [[0, 3.2]]];
+    for (let row of rows) for (let [px, py] of row) coinDraw(g, PILE.w / 2 + px, py, 8, 3);
+    g.restore();
+  });
+}
+
 // src/art.js
-var CRUMB_OUTLINE = "#2e1a12", INK = "#523c4b", FONT = "'Trebuchet MS','Nunito','Arial Rounded MT Bold','Segoe UI',Roboto,sans-serif";
+var CRUMB_OUTLINE = "#2e1a12", FONT = FONT_DISPLAY;
 function rr(ctx2, x, y, w, h, r) {
   r = Math.min(r, w / 2, h / 2), ctx2.beginPath(), ctx2.moveTo(x + r, y), ctx2.arcTo(x + w, y, x + w, y + h, r), ctx2.arcTo(x + w, y + h, x, y + h, r), ctx2.arcTo(x, y + h, x, y, r), ctx2.arcTo(x, y, x + w, y, r), ctx2.closePath();
 }
@@ -4028,9 +4262,8 @@ function shade(hex, amt) {
   let n = parseInt(c, 16), r = n >> 16 & 255, g = n >> 8 & 255, b = n & 255, f = (v) => Math.max(0, Math.min(255, Math.round(amt > 0 ? v + (255 - v) * amt : v * (1 + amt))));
   return `rgb(${f(r)},${f(g)},${f(b)})`;
 }
-function blob(ctx2, x, y, rx, ry, color, lw = 2, rot = 0) {
-  let g = ctx2.createRadialGradient(x - rx * 0.35, y - ry * 0.45, Math.max(1, Math.min(rx, ry) * 0.12), x, y, Math.max(rx, ry) * 1.15);
-  g.addColorStop(0, shade(color, 0.28)), g.addColorStop(0.6, color), g.addColorStop(1, shade(color, -0.2)), ctx2.beginPath(), ctx2.ellipse(x, y, rx, ry, rot, 0, Math.PI * 2), ctx2.fillStyle = g, ctx2.fill(), lw && (ctx2.lineWidth = lw, ctx2.strokeStyle = INK, ctx2.stroke());
+function blob(ctx2, x, y, rx, ry, color, lw = 2, rot = 0, opt) {
+  drawGlossyBlob(ctx2, x, y, rx, ry, color, opt ? { lw, rot, ...opt } : { lw, rot });
 }
 function shadow(ctx2, x, y, rx, ry = rx * 0.35, a = 0.2) {
   ctx2.save(), ctx2.translate(x, y), ctx2.scale(1, ry / Math.max(rx, 0.01));
@@ -4048,7 +4281,7 @@ function eye(ctx2, x, y, r, look = 0.5, blink = !1) {
     ctx2.beginPath(), ctx2.moveTo(x - r, y), ctx2.quadraticCurveTo(x, y + r * 0.7, x + r, y), ctx2.lineWidth = 1.6, ctx2.strokeStyle = INK, ctx2.stroke();
     return;
   }
-  ctx2.beginPath(), ctx2.ellipse(x, y, r, r * 1.12, 0, 0, Math.PI * 2), ctx2.fillStyle = "#fff", ctx2.fill(), ctx2.lineWidth = 1.5, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.arc(x + r * 0.35 * look, y + r * 0.1, r * 0.6, 0, Math.PI * 2), ctx2.fillStyle = "#2b1d28", ctx2.fill(), ctx2.beginPath(), ctx2.arc(x + r * 0.35 * look - r * 0.22, y - r * 0.2, r * 0.22, 0, Math.PI * 2), ctx2.fillStyle = "#fff", ctx2.fill();
+  ctx2.beginPath(), ctx2.ellipse(x, y, r, r * 1.12, 0, 0, Math.PI * 2), ctx2.fillStyle = "#fff", ctx2.fill(), ctx2.lineWidth = 1.5, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.arc(x + r * 0.35 * look, y + r * 0.1, r * 0.6, 0, Math.PI * 2), ctx2.fillStyle = "#2b1d28", ctx2.fill(), ctx2.beginPath(), ctx2.arc(x + r * 0.35 * look - r * 0.22, y - r * 0.2, r * 0.22, 0, Math.PI * 2), ctx2.fillStyle = "#fff", ctx2.fill(), ctx2.beginPath(), ctx2.arc(x + r * 0.35 * look + r * 0.2, y + r * 0.34, r * 0.1, 0, Math.PI * 2), ctx2.fillStyle = "rgba(255,255,255,0.85)", ctx2.fill();
 }
 function crumbIcon(ctx2, x, y, s = 1, dark = !1) {
   ctx2.save(), ctx2.translate(x, y), ctx2.scale(s, s), ctx2.beginPath(), ctx2.moveTo(-7, 3), ctx2.quadraticCurveTo(-8, -5, -1, -7), ctx2.quadraticCurveTo(7, -7, 7, 0), ctx2.quadraticCurveTo(7, 6, 0, 6), ctx2.quadraticCurveTo(-6, 7, -7, 3), ctx2.closePath();
@@ -4059,7 +4292,7 @@ function crumbIcon(ctx2, x, y, s = 1, dark = !1) {
   ctx2.restore();
 }
 function coinIcon(ctx2, x, y, s = 1) {
-  ctx2.save(), ctx2.translate(x, y), ctx2.scale(s, s), blob(ctx2, 0, 0, 8, 8, "#ffd45e", 1.8), ctx2.beginPath(), ctx2.arc(0, 0, 5, 0, 7), ctx2.strokeStyle = "#d99a1e", ctx2.lineWidth = 1.4, ctx2.stroke(), ctx2.fillStyle = "#d99a1e", ctx2.font = `bold 8px ${FONT}`, ctx2.textAlign = "center", ctx2.textBaseline = "middle", ctx2.fillText("C", 0, 0.5), ctx2.restore();
+  drawCoin(ctx2, x, y, Math.round(8 * s * 2) / 2);
 }
 function diamondIcon(ctx2, x, y, s = 1) {
   ctx2.save(), ctx2.translate(x, y), ctx2.scale(s, s), ctx2.lineJoin = "round";
@@ -4174,34 +4407,46 @@ function mapNode(ctx2, x, y, i, st, t = 0) {
     ctx2.ellipse(x, y, R, R * 0.9, 0, 0, Math.PI);
   } else ctx2.ellipse(x, y, R, R * 0.9, 0, 0, 7);
   let g = ctx2.createRadialGradient(x - R * 0.35, y - R * 0.4, 2, x, y, R * 1.1);
-  g.addColorStop(0, shade(base, 0.55)), g.addColorStop(0.6, base), g.addColorStop(1, shade(base, -0.12)), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = 3, ctx2.strokeStyle = st.cleared ? "#e0a830" : INK, ctx2.stroke(), st.cleared && (ctx2.beginPath(), ctx2.ellipse(x, y, R - 2.5, R * 0.9 - 2.5, 0, 0, 7), ctx2.lineWidth = 2, ctx2.strokeStyle = "#ffe9a0", ctx2.stroke()), ctx2.beginPath(), ctx2.ellipse(x, y + 1, R * 0.66, R * 0.6, 0, 0, 7), ctx2.lineWidth = 2, ctx2.strokeStyle = `rgba(255,255,255,${st.open ? 0.55 : 0.3})`, ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(x - R * 0.38, y - R * 0.5, R * 0.36, R * 0.16, -0.4, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.6)", ctx2.fill(), st.open ? (text(ctx2, String(i + 1), x, y + 1, 23, "#fff"), nodeOrnament(ctx2, NODE_ORN[i % NODE_ORN.length], x + R * 0.72, y - R * 0.72, t), st.stars >= 3 && !st.boss && miniCrown(ctx2, x, y - R - 3, 1.1)) : (rr(ctx2, x - 8, y - 3, 16, 13, 3), ctx2.fillStyle = "#8c8090", ctx2.fill(), ctx2.beginPath(), ctx2.arc(x, y - 4, 5.5, Math.PI, 0), ctx2.lineWidth = 3, ctx2.strokeStyle = "#8c8090", ctx2.stroke()), ctx2.restore();
+  g.addColorStop(0, shade(base, 0.55)), g.addColorStop(0.6, base), g.addColorStop(1, shade(base, -0.12)), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = 3, ctx2.strokeStyle = st.cleared ? "#e0a830" : INK, ctx2.stroke(), st.cleared && (ctx2.beginPath(), ctx2.ellipse(x, y, R - 2.5, R * 0.9 - 2.5, 0, 0, 7), ctx2.lineWidth = 2, ctx2.strokeStyle = "#ffe9a0", ctx2.stroke()), ctx2.beginPath(), ctx2.ellipse(x, y + 1, R * 0.66, R * 0.6, 0, 0, 7), ctx2.lineWidth = 2, ctx2.strokeStyle = `rgba(255,255,255,${st.open ? 0.55 : 0.3})`, ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(x - R * 0.38, y - R * 0.5, R * 0.36, R * 0.16, -0.4, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.6)", ctx2.fill(), st.open ? (drawChunkyText(ctx2, String(i + 1), x, y + 1, 25, { mode: "num" }), nodeOrnament(ctx2, NODE_ORN[i % NODE_ORN.length], x + R * 0.72, y - R * 0.72, t), st.stars >= 3 && !st.boss && miniCrown(ctx2, x, y - R - 3, 1.1)) : (rr(ctx2, x - 8, y - 3, 16, 13, 3), ctx2.fillStyle = "#8c8090", ctx2.fill(), ctx2.beginPath(), ctx2.arc(x, y - 4, 5.5, Math.PI, 0), ctx2.lineWidth = 3, ctx2.strokeStyle = "#8c8090", ctx2.stroke()), ctx2.restore();
 }
 function starShape(ctx2, x, y, r, fill, lw = 2) {
-  ctx2.beginPath();
-  for (let i = 0; i < 10; i++) {
-    let a = -Math.PI / 2 + i * Math.PI / 5, rr2 = i % 2 ? r * 0.48 : r;
-    ctx2.lineTo(x + Math.cos(a) * rr2, y + Math.sin(a) * rr2);
-  }
-  ctx2.closePath(), ctx2.fillStyle = fill, ctx2.fill(), ctx2.lineJoin = "round", ctx2.lineWidth = lw, ctx2.strokeStyle = INK, ctx2.stroke();
+  candyStar(ctx2, x, y, r, fill, lw);
 }
 var ANT_COL = { small: "#f8c07e", worker: "#f0994d", big: "#d97a3f", gasmask: "#f0994d", armored: "#e48a47", flyer: "#f9b878", queen: "#f59b9b", queen2: "#c7a6f5", sprinter: "#f0994d", heavy: "#b95b34", greasy: "#ee9f45", mama: "#d9774a", queen3: "#e9b05c", nurse: "#f2b49b", queen4: "#f4b9c8" }, ALW = 2.4;
-function softBlob(ctx2, x, y, rx, ry, col, lw = ALW) {
-  blob(ctx2, x, y, rx, ry, col, lw), ctx2.beginPath(), ctx2.ellipse(x - rx * 0.28, y - ry * 0.46, rx * 0.4, ry * 0.22, -0.35, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.5)", ctx2.fill();
+function softBlob(ctx2, x, y, rx, ry, col, lw = ALW, gloss = 1) {
+  drawGlossyBlob(ctx2, x, y, rx, ry, col, { lw, gloss });
 }
-function glossyEye(ctx2, x, y, rx, ry, blink) {
+function glossyEye(ctx2, x, y, rx, ry, blink, mood = "", side = 1) {
+  if (mood === "hurt") {
+    ctx2.beginPath(), ctx2.moveTo(x - rx * 0.9 * side, y - ry * 0.55), ctx2.lineTo(x + rx * 0.7 * side, y), ctx2.lineTo(x - rx * 0.9 * side, y + ry * 0.55), ctx2.lineWidth = 2.1, ctx2.strokeStyle = INK, ctx2.stroke();
+    return;
+  }
+  if (mood === "dizzy") {
+    ctx2.beginPath();
+    for (let k = 0; k <= 18; k++) {
+      let a = k / 18 * Math.PI * 4, q = k / 18 * rx * 1.05;
+      ctx2.lineTo(x + Math.cos(a) * q, y + Math.sin(a) * q);
+    }
+    ctx2.lineWidth = 1.5, ctx2.strokeStyle = INK, ctx2.stroke();
+    return;
+  }
+  if (mood === "cheer") {
+    ctx2.beginPath(), ctx2.moveTo(x - rx, y + ry * 0.25), ctx2.quadraticCurveTo(x, y - ry * 0.95, x + rx, y + ry * 0.25), ctx2.lineWidth = 2.3, ctx2.strokeStyle = INK, ctx2.stroke();
+    return;
+  }
   if (blink) {
     ctx2.beginPath(), ctx2.moveTo(x - rx, y + 0.5), ctx2.quadraticCurveTo(x, y + ry * 0.9, x + rx, y + 0.5), ctx2.lineWidth = 1.9, ctx2.strokeStyle = INK, ctx2.stroke();
     return;
   }
   ctx2.beginPath(), ctx2.ellipse(x, y, rx, ry, 0, 0, 7);
   let g = ctx2.createLinearGradient(0, y - ry, 0, y + ry);
-  g.addColorStop(0, "#24151f"), g.addColorStop(0.65, "#3b2533"), g.addColorStop(1, "#7a4f62"), ctx2.fillStyle = g, ctx2.fill(), ctx2.beginPath(), ctx2.ellipse(x - rx * 0.22, y - ry * 0.32, rx * 0.46, ry * 0.36, -0.3, 0, 7), ctx2.fillStyle = "#ffffff", ctx2.fill(), ctx2.beginPath(), ctx2.arc(x + rx * 0.38, y + ry * 0.36, rx * 0.2, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.9)", ctx2.fill();
+  g.addColorStop(0, "#24151f"), g.addColorStop(0.65, "#3b2533"), g.addColorStop(1, "#7a4f62"), ctx2.fillStyle = g, ctx2.fill(), ctx2.beginPath(), ctx2.ellipse(x - rx * 0.26, y - ry * 0.36, rx * 0.48, ry * 0.3, -0.3, 0, 7), ctx2.fillStyle = "#ffffff", ctx2.fill(), ctx2.beginPath(), ctx2.arc(x + rx * 0.4, y + ry * 0.42, rx * 0.22, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.92)", ctx2.fill();
 }
-function cheek(ctx2, x, y, r = 2.4) {
-  ctx2.beginPath(), ctx2.ellipse(x, y, r, r * 0.62, 0, 0, 7), ctx2.fillStyle = "rgba(255,112,140,0.55)", ctx2.fill();
+function cheek(ctx2, x, y, r = 2.8) {
+  ctx2.beginPath(), ctx2.ellipse(x, y, r, r * 0.66, 0, 0, 7), ctx2.fillStyle = "rgba(255,100,130,0.6)", ctx2.fill();
 }
 function leg(ctx2, x0, y0, x1, y1, col) {
-  ctx2.lineCap = "round", ctx2.beginPath(), ctx2.moveTo(x0, y0), ctx2.quadraticCurveTo((x0 + x1) / 2 + 1, (y0 + y1) / 2 + 1, x1, y1), ctx2.lineWidth = 4.8, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.lineWidth = 2.6, ctx2.strokeStyle = col, ctx2.stroke();
+  ctx2.lineCap = "round", ctx2.beginPath(), ctx2.moveTo(x0, y0), ctx2.quadraticCurveTo((x0 + x1) / 2 + 0.6, (y0 + y1) / 2 + 0.6, x1, y1), ctx2.lineWidth = 5.6, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.lineWidth = 3.4, ctx2.strokeStyle = col, ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(x1 + 0.7, y1 + 0.5, 2.7, 1.9, 0, 0, 7), ctx2.fillStyle = col, ctx2.fill(), ctx2.lineWidth = 1.7, ctx2.strokeStyle = INK, ctx2.stroke();
 }
 function sneaker(ctx2, x, y, far) {
   ctx2.beginPath(), ctx2.ellipse(x + 1, y + 0.6, 2.8, 1.7, 0, 0, 7), ctx2.fillStyle = far ? "#e6e6ee" : "#ffffff", ctx2.fill(), ctx2.lineWidth = 1.3, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(x - 0.8, y + 0.4), ctx2.lineTo(x + 2.4, y + 0.1), ctx2.lineWidth = 1.1, ctx2.strokeStyle = "#ff5a6e", ctx2.stroke();
@@ -4214,7 +4459,7 @@ function plusShape(ctx2, x, y, s, fill, lw = 1.5) {
 function drawAnt(ctx2, type, phase = 0, opt = {}) {
   let S2 = ANTS[type].size;
   type = ANT_LOOK[type] || type;
-  let col = ANT_COL[type], legCol = shade(col, -0.18), farCol = shade(col, -0.32), P = phase * Math.PI * 2, step = Math.sin(P), hop = Math.abs(Math.sin(P)), flying = type === "flyer", queen = type === "queen" || type === "queen2" || type === "queen3" || type === "queen4", swiftQueen = type === "queen2", mama = type === "mama", greasy = type === "greasy", pieQueen = type === "queen3", nurse = type === "nurse", sundaeQueen = type === "queen4", big = type === "big" || type === "heavy" || mama, shell = type === "armored" || type === "heavy" || type === "sprinter", sprinter = type === "sprinter", heavy = type === "heavy";
+  let col = ANT_COL[type], legCol = shade(col, -0.18), farCol = shade(col, -0.32), P = phase * Math.PI * 2, step = Math.sin(P), hop = Math.abs(Math.sin(P)), flying = type === "flyer", queen = type === "queen" || type === "queen2" || type === "queen3" || type === "queen4", swiftQueen = type === "queen2", mama = type === "mama", greasy = type === "greasy", pieQueen = type === "queen3", nurse = type === "nurse", sundaeQueen = type === "queen4", big = type === "big" || type === "heavy" || mama, shell = type === "armored" || type === "heavy" || type === "sprinter", sprinter = type === "sprinter", heavy = type === "heavy", cheer = opt.pose === "cheer";
   ctx2.save(), ctx2.scale(S2, S2), ctx2.lineJoin = "round", ctx2.lineCap = "round", flying ? shadow(ctx2, 0, 21, 10, 3, 0.13) : shadow(ctx2, 0, 10.5, 15 - hop * 2, 4, 0.2);
   let lift = flying ? 9 + Math.sin(P * 2) * 2 : big ? hop * 1.8 : hop * 3.2;
   if (big && !flying && (ctx2.translate(0, 10), ctx2.rotate(Math.sin(P) * 0.06), ctx2.translate(0, -10), hop < 0.18)) {
@@ -4248,13 +4493,13 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
     for (let [a, b] of [[-17, 6.8], [-10, 8], [-4, 6.6]])
       ctx2.beginPath(), ctx2.arc(a, b, 0.9, 0, 7), ctx2.fill();
   }
-  let legY = 3, footY = flying ? 7.5 : 10;
+  let legY = 4.2, footY = flying ? 8.2 : 10.4;
   for (let i = 0; i < 3; i++) {
-    let sw = (i % 2 ? -1 : 1) * step * 2.4;
-    leg(ctx2, -7 + i * 4.5, legY, -6 + i * 4.5 - sw, footY - 0.5, farCol), sprinter && sneaker(ctx2, -6 + i * 4.5 - sw, footY - 0.5, !0);
+    let sw = (i % 2 ? -1 : 1) * step * 2;
+    leg(ctx2, -8 + i * 4.8, legY, -7 + i * 4.8 - sw, footY - 0.5, farCol), sprinter && sneaker(ctx2, -7 + i * 4.8 - sw, footY - 0.5, !0);
   }
-  let abRx = queen ? 12 : big ? 11.5 : 9.5, abRy = queen ? 10 : big ? 9.5 : 8;
-  softBlob(ctx2, -10, 0.5, abRx, abRy, col), ctx2.save(), ctx2.beginPath(), ctx2.ellipse(-10, 0.5, abRx - 1, abRy - 1, 0, 0, 7), ctx2.clip(), ctx2.strokeStyle = shade(col, -0.14), ctx2.lineWidth = 2;
+  let abRx = queen ? 13 : big ? 12 : 11, abRy = queen ? 11 : big ? 10 : 9.5;
+  softBlob(ctx2, -10, 0.5, abRx, abRy, col, ALW, 0.85), ctx2.save(), ctx2.beginPath(), ctx2.ellipse(-10, 0.5, abRx - 1, abRy - 1, 0, 0, 7), ctx2.clip(), ctx2.strokeStyle = shade(col, -0.14), ctx2.lineWidth = 2;
   for (let sx of [-15, -10.5])
     ctx2.beginPath(), ctx2.ellipse(sx - (big ? 1.5 : 0), 0.5, 2, abRy + 2, 0, -1.3, 1.3), ctx2.stroke();
   if (ctx2.restore(), mama)
@@ -4268,94 +4513,118 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
       ctx2.beginPath(), ctx2.arc(rx, -3, 1.1, 0, 7), ctx2.fill();
     heavy && (ctx2.beginPath(), ctx2.ellipse(-10, -2.5, abRx * 0.8, 1.4, 0, Math.PI * 1.1, Math.PI * 1.9), ctx2.lineWidth = 1.6, ctx2.strokeStyle = "#f4b632", ctx2.stroke()), ctx2.restore();
   }
-  softBlob(ctx2, -1, 1.5, 5.2, 4.8, col), opt.carrying && crumbIcon(ctx2, -10, -11, 1.3, !0);
+  softBlob(ctx2, -1, 1.5, 6.5, 6, col, ALW, 0), opt.carrying && crumbIcon(ctx2, -10.5, -12.5, 1.4, !0);
   for (let i = 0; i < 3; i++) {
-    let sw = (i % 2 ? 1 : -1) * step * 2.6;
-    leg(ctx2, -5 + i * 4.5, legY + 1, -4 + i * 4.5 + sw, footY + 0.5, legCol), sprinter && sneaker(ctx2, -4 + i * 4.5 + sw, footY + 0.5, !1), big && blob(ctx2, -4 + i * 4.5 + sw, footY + 0.8, 2.2, 1.6, shade(col, -0.3), 1.4);
+    let sw = (i % 2 ? 1 : -1) * step * 2.2;
+    cheer && i === 2 || (leg(ctx2, -6 + i * 4.8, legY + 1.2, -5 + i * 4.8 + sw, footY + 0.5, legCol), sprinter && sneaker(ctx2, -5 + i * 4.8 + sw, footY + 0.5, !1));
   }
-  sprinter && (ctx2.save(), ctx2.beginPath(), ctx2.ellipse(-1, 1.5, 5.2, 4.8, 0, 0, 7), ctx2.clip(), ctx2.fillStyle = "#4fb4ff", ctx2.fillRect(-7, -4, 12, 12), ctx2.fillStyle = "#ffffff", ctx2.fillRect(-7, -0.6, 12, 1.6), ctx2.restore(), ctx2.beginPath(), ctx2.ellipse(-1, 1.5, 5.2, 4.8, 0, 0, 7), ctx2.lineWidth = ALW, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.font = `bold 5px ${FONT}`, ctx2.textAlign = "center", ctx2.textBaseline = "middle", ctx2.fillStyle = "#ffffff", ctx2.fillText("7", -1, 4.2));
-  let hr = type === "small" || big ? 11.5 : queen ? 11 : 10.8, hx = 8, hy = -9, bob = Math.sin(P * 2 + 0.6) * 1.4;
+  if (cheer) {
+    let wv = Math.sin(P * 2) * 1.6;
+    for (let [sx0, sy0, mx, my, c0] of [[-3, 0, -9 + wv, -25, farCol], [3, 0, 27 - wv, -20, legCol]])
+      ctx2.beginPath(), ctx2.moveTo(sx0, sy0), ctx2.quadraticCurveTo((sx0 + mx) / 2 + (mx > 0 ? 8 : -5), (sy0 + my) / 2 + 2, mx, my), ctx2.lineWidth = 6.4, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.lineWidth = 4, ctx2.strokeStyle = c0, ctx2.stroke(), blob(ctx2, mx, my, 3.4, 3.2, c0, 1.8, 0, { gloss: 0.6 });
+  }
+  sprinter && (ctx2.save(), ctx2.beginPath(), ctx2.ellipse(-1, 1.5, 6.5, 6, 0, 0, 7), ctx2.clip(), ctx2.fillStyle = "#4fb4ff", ctx2.fillRect(-7, -4, 12, 12), ctx2.fillStyle = "#ffffff", ctx2.fillRect(-7, -0.6, 12, 1.6), ctx2.restore(), ctx2.beginPath(), ctx2.ellipse(-1, 1.5, 6.5, 6, 0, 0, 7), ctx2.lineWidth = ALW, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.font = `bold 5px ${FONT}`, ctx2.textAlign = "center", ctx2.textBaseline = "middle", ctx2.fillStyle = "#ffffff", ctx2.fillText("7", -1, 4.2));
+  let hr = 12.5, hx2 = 8, hy = -10, bob = Math.sin(P * 2 + 0.6) * 1.4;
   if (type !== "armored" && type !== "heavy" && type !== "small")
     for (let k of [0, 1]) {
-      let bx0 = hx - 3 + k * 6, by0 = hy - hr + 3, tx = hx - 4.5 + k * 10 + bob * (k ? 1 : -0.6), ty = hy - hr - 4.5 + k * 0.5 - Math.abs(bob) * 0.5;
-      ctx2.beginPath(), ctx2.moveTo(bx0, by0), ctx2.quadraticCurveTo(bx0 + (k ? 3 : -2), ty + 3, tx, ty), ctx2.lineWidth = 3.8, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.lineWidth = 1.5, ctx2.strokeStyle = legCol, ctx2.stroke(), blob(ctx2, tx, ty, 2.5, 2.5, shade(col, 0.25), 2);
+      let bx0 = hx2 - 3 + k * 6, by0 = hy - hr + 3, tx = hx2 - 4.5 + k * 10 + bob * (k ? 1 : -0.6), ty = hy - hr - 4.5 + k * 0.5 - Math.abs(bob) * 0.5;
+      ctx2.beginPath(), ctx2.moveTo(bx0, by0), ctx2.quadraticCurveTo(bx0 + (k ? 3 : -2), ty + 3, tx, ty), ctx2.lineWidth = 4.6, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.lineWidth = 2.2, ctx2.strokeStyle = legCol, ctx2.stroke(), blob(ctx2, tx, ty, 3.1, 3.1, shade(col, 0.25), 2, 0, { gloss: 0.8 });
     }
-  softBlob(ctx2, hx, hy, hr, hr * 0.94, col);
-  let e1x = hx + 0.5, e2x = hx + 7.3, ey = hy + 0.8, blink = opt.blink;
+  softBlob(ctx2, hx2, hy, hr, hr * 0.92, col);
+  let e1x = hx2 + 0.2, e2x = hx2 + 8.6, ey = hy + 1.6, blink = opt.blink, mood = opt.mood || (cheer ? "cheer" : "");
   if (type === "gasmask") {
-    ctx2.beginPath(), ctx2.moveTo(hx - hr + 1, hy - 3), ctx2.quadraticCurveTo(hx - 2, hy - 6, e1x, ey - 1), ctx2.lineWidth = 3, ctx2.strokeStyle = "#6f6a7c", ctx2.stroke();
+    ctx2.beginPath(), ctx2.moveTo(hx2 - hr + 1, hy - 3), ctx2.quadraticCurveTo(hx2 - 2, hy - 6, e1x, ey - 1), ctx2.lineWidth = 3, ctx2.strokeStyle = "#6f6a7c", ctx2.stroke();
     for (let [ex, r] of [[e1x, 4.6], [e2x, 4.1]])
       ctx2.beginPath(), ctx2.arc(ex, ey - 0.3, r, 0, 7), ctx2.fillStyle = "#d9f3ff", ctx2.fill(), ctx2.lineWidth = 2.6, ctx2.strokeStyle = "#5d5a6b", ctx2.stroke(), glossyEye(ctx2, ex + 0.3, ey - 0.2, r * 0.55, r * 0.68, blink), ctx2.beginPath(), ctx2.arc(ex - r * 0.35, ey - r * 0.45, r * 0.22, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.8)", ctx2.fill();
-    blob(ctx2, hx + 5, hy + 7.4, 5.2, 3.8, "#a7afbb", 2.4), ctx2.fillStyle = "#7d8592";
+    blob(ctx2, hx2 + 5, hy + 7.4, 5.2, 3.8, "#a7afbb", 2.4), ctx2.fillStyle = "#7d8592";
     for (let dx of [-1.8, 0.4, 2.6])
-      ctx2.beginPath(), ctx2.arc(hx + 5 + dx, hy + 7.6, 0.8, 0, 7), ctx2.fill();
-    blob(ctx2, hx + 10.5, hy + 9.2, 2.8, 3.1, "#7fd3ad", 2.2);
-  } else if (glossyEye(ctx2, e1x, ey, 3.1, 3.9, blink), glossyEye(ctx2, e2x, ey - 0.3, 2.7, 3.6, blink), cheek(ctx2, hx - 3, hy + 5.6), cheek(ctx2, hx + 10, hy + 5.2, 2), big && !mama ? (ctx2.beginPath(), ctx2.moveTo(hx + 1, hy + 6.2), ctx2.quadraticCurveTo(hx + 4, hy + 3.6, hx + 4.2, hy + 5.4), ctx2.quadraticCurveTo(hx + 4.6, hy + 3.6, hx + 8, hy + 6.2), ctx2.quadraticCurveTo(hx + 4.4, hy + 8, hx + 1, hy + 6.2), ctx2.fillStyle = "#8a4b33", ctx2.fill(), ctx2.lineWidth = 1.3, ctx2.strokeStyle = INK, ctx2.stroke()) : (ctx2.beginPath(), ctx2.moveTo(hx + 2.6, hy + 5.6), ctx2.quadraticCurveTo(hx + 4.3, hy + 8.4, hx + 6, hy + 5.6), ctx2.lineWidth = 1.8, ctx2.strokeStyle = INK, ctx2.stroke(), queen && (ctx2.beginPath(), ctx2.ellipse(hx + 4.3, hy + 6.6, 1.3, 0.8, 0, 0, 7), ctx2.fillStyle = "#ff6f91", ctx2.fill())), queen) {
-    ctx2.lineWidth = 1.5, ctx2.strokeStyle = INK;
-    for (let [ex, k] of [[e1x - 2.4, 0], [e1x - 1, 1], [e2x + 1.8, 2]])
-      ctx2.beginPath(), ctx2.moveTo(ex, ey - 3), ctx2.lineTo(ex + (k === 2 ? 1.6 : -1.2), ey - 5.2), ctx2.stroke();
+      ctx2.beginPath(), ctx2.arc(hx2 + 5 + dx, hy + 7.6, 0.8, 0, 7), ctx2.fill();
+    blob(ctx2, hx2 + 10.5, hy + 9.2, 2.8, 3.1, "#7fd3ad", 2.2);
+  } else {
+    if (glossyEye(ctx2, e1x, ey, 3.3, 4.6, blink, mood, -1), glossyEye(ctx2, e2x, ey - 0.3, 3, 4.3, blink, mood, 1), cheek(ctx2, hx2 - 4.2, hy + 7), cheek(ctx2, hx2 + 12.2, hy + 6.6, 2.4), opt.carrying && !mood)
+      for (let [bx, k] of [[e1x, -1], [e2x, 1]])
+        ctx2.beginPath(), ctx2.moveTo(bx - 3.2 * k, ey - 6.9 + 0.3), ctx2.lineTo(bx + 3 * k, ey - 6.4 - 0.9), ctx2.lineWidth = 1.8, ctx2.strokeStyle = INK, ctx2.stroke();
+    if (big && !mama)
+      ctx2.beginPath(), ctx2.moveTo(hx2 + 1, hy + 6.2), ctx2.quadraticCurveTo(hx2 + 4, hy + 3.6, hx2 + 4.2, hy + 5.4), ctx2.quadraticCurveTo(hx2 + 4.6, hy + 3.6, hx2 + 8, hy + 6.2), ctx2.quadraticCurveTo(hx2 + 4.4, hy + 8, hx2 + 1, hy + 6.2), ctx2.fillStyle = "#8a4b33", ctx2.fill(), ctx2.lineWidth = 1.3, ctx2.strokeStyle = INK, ctx2.stroke();
+    else {
+      if (cheer || mood === "hurt") {
+        let w = cheer ? 4.6 : 2.2;
+        ctx2.beginPath(), cheer ? (ctx2.moveTo(hx2 + 4.4 - w, hy + 6.6), ctx2.quadraticCurveTo(hx2 + 4.4, hy + 7.4, hx2 + 4.4 + w, hy + 6.6), ctx2.quadraticCurveTo(hx2 + 4.4 + w * 0.6, hy + 12.6, hx2 + 4.4, hy + 12.6), ctx2.quadraticCurveTo(hx2 + 4.4 - w * 0.6, hy + 12.6, hx2 + 4.4 - w, hy + 6.6)) : ctx2.ellipse(hx2 + 4.4, hy + 8.4, 2.1, 2.6, 0, 0, 7), ctx2.fillStyle = "#7a3040", ctx2.fill(), ctx2.lineWidth = 1.7, ctx2.strokeStyle = INK, ctx2.stroke(), cheer && (ctx2.beginPath(), ctx2.ellipse(hx2 + 4.4, hy + 11, 2.4, 1.3, 0, 0, 7), ctx2.fillStyle = "#ff8fa0", ctx2.fill());
+      } else if (mood === "dizzy") {
+        ctx2.beginPath(), ctx2.moveTo(hx2 + 1.4, hy + 7.4);
+        for (let k = 1; k <= 4; k++) ctx2.lineTo(hx2 + 1.4 + k * 1.9, hy + 7.4 + (k % 2 ? 1.4 : -0.4));
+        ctx2.lineWidth = 1.8, ctx2.strokeStyle = INK, ctx2.stroke();
+      } else
+        ctx2.beginPath(), ctx2.moveTo(hx2 + 2.4, hy + 7.4), ctx2.quadraticCurveTo(hx2 + 4.4, hy + 10.4, hx2 + 6.4, hy + 7.4), ctx2.lineWidth = 1.9, ctx2.strokeStyle = INK, ctx2.stroke();
+      queen && !cheer && (ctx2.beginPath(), ctx2.ellipse(hx2 + 4.4, hy + 8.6, 1.6, 0.9, 0, 0, 7), ctx2.fillStyle = "#ff6f91", ctx2.fill());
+    }
+    if (queen) {
+      ctx2.lineWidth = 1.5, ctx2.strokeStyle = INK;
+      for (let [ex, k] of [[e1x - 2.4, 0], [e1x - 1, 1], [e2x + 1.8, 2]])
+        ctx2.beginPath(), ctx2.moveTo(ex, ey - 3), ctx2.lineTo(ex + (k === 2 ? 1.6 : -1.2), ey - 5.2), ctx2.stroke();
+    }
   }
   let top = hy - hr;
   if (type === "worker") {
-    ctx2.beginPath(), ctx2.ellipse(hx, hy - 3.6, hr * 0.98, hr * 0.78, 0, Math.PI, 0), ctx2.closePath();
+    ctx2.beginPath(), ctx2.ellipse(hx2, hy - 3.6, hr * 0.98, hr * 0.78, 0, Math.PI, 0), ctx2.closePath();
     let g = ctx2.createLinearGradient(0, top - 1, 0, hy - 3);
-    g.addColorStop(0, "#fff3a3"), g.addColorStop(1, "#f6c33a"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = 2.5, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(hx - 1, top + 0.5), ctx2.quadraticCurveTo(hx, hy - 7, hx - 0.5, hy - 3.8), ctx2.lineWidth = 2.2, ctx2.strokeStyle = "#e2a521", ctx2.stroke(), rr(ctx2, hx - hr - 1.5, hy - 5.2, hr * 2 + 5, 3.6, 1.8), ctx2.fillStyle = "#f6c33a", ctx2.fill(), ctx2.lineWidth = 2.2, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(hx - 4, top + 3.5, 2.5, 1.3, -0.5, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.7)", ctx2.fill();
+    g.addColorStop(0, "#fff3a3"), g.addColorStop(1, "#f6c33a"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = 2.5, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(hx2 - 1, top + 0.5), ctx2.quadraticCurveTo(hx2, hy - 7, hx2 - 0.5, hy - 3.8), ctx2.lineWidth = 2.2, ctx2.strokeStyle = "#e2a521", ctx2.stroke(), rr(ctx2, hx2 - hr - 1.5, hy - 5.2, hr * 2 + 5, 3.6, 1.8), ctx2.fillStyle = "#f6c33a", ctx2.fill(), ctx2.lineWidth = 2.2, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(hx2 - 4, top + 3.5, 2.5, 1.3, -0.5, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.7)", ctx2.fill();
   } else if (type === "small") {
-    ctx2.beginPath(), ctx2.ellipse(hx - 0.5, hy - 4.2, hr * 0.92, hr * 0.7, 0, Math.PI, 0), ctx2.closePath(), ctx2.fillStyle = "#8fd0f7", ctx2.fill(), ctx2.lineWidth = 2.4, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.save(), ctx2.beginPath(), ctx2.ellipse(hx - 0.5, hy - 4.2, hr * 0.92, hr * 0.7, 0, Math.PI, 0), ctx2.clip(), ctx2.fillStyle = "#ff9fb8", ctx2.fillRect(hx - 4, top - 4, 3.2, 14), ctx2.fillStyle = "#ffe27a", ctx2.fillRect(hx + 3, top - 4, 3.2, 14), ctx2.restore(), ctx2.beginPath(), ctx2.ellipse(hx - 0.5, hy - 4.2, hr * 0.92, hr * 0.7, 0, Math.PI, 0), ctx2.lineWidth = 2.4, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(hx - 0.5, top + 1.5), ctx2.lineTo(hx - 0.5, top - 3), ctx2.lineWidth = 2, ctx2.stroke();
+    ctx2.beginPath(), ctx2.ellipse(hx2 - 0.5, hy - 4.2, hr * 0.92, hr * 0.7, 0, Math.PI, 0), ctx2.closePath(), ctx2.fillStyle = "#8fd0f7", ctx2.fill(), ctx2.lineWidth = 2.4, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.save(), ctx2.beginPath(), ctx2.ellipse(hx2 - 0.5, hy - 4.2, hr * 0.92, hr * 0.7, 0, Math.PI, 0), ctx2.clip(), ctx2.fillStyle = "#ff9fb8", ctx2.fillRect(hx2 - 4, top - 4, 3.2, 14), ctx2.fillStyle = "#ffe27a", ctx2.fillRect(hx2 + 3, top - 4, 3.2, 14), ctx2.restore(), ctx2.beginPath(), ctx2.ellipse(hx2 - 0.5, hy - 4.2, hr * 0.92, hr * 0.7, 0, Math.PI, 0), ctx2.lineWidth = 2.4, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(hx2 - 0.5, top + 1.5), ctx2.lineTo(hx2 - 0.5, top - 3), ctx2.lineWidth = 2, ctx2.stroke();
     let sp = Math.cos(P * 3);
-    ctx2.beginPath(), ctx2.ellipse(hx - 0.5 - 3.6 * sp, top - 3.5, 3.8 * Math.abs(sp) + 0.8, 1.5, 0, 0, 7), ctx2.ellipse(hx - 0.5 + 3.6 * sp, top - 3.5, 3.8 * Math.abs(sp) + 0.8, 1.5, 0, 0, 7), ctx2.fillStyle = "#ff7f9e", ctx2.fill(), ctx2.lineWidth = 1.5, ctx2.stroke(), blob(ctx2, hx - 0.5, top - 3.5, 1.4, 1.4, "#ffe27a", 1.2);
+    ctx2.beginPath(), ctx2.ellipse(hx2 - 0.5 - 3.6 * sp, top - 3.5, 3.8 * Math.abs(sp) + 0.8, 1.5, 0, 0, 7), ctx2.ellipse(hx2 - 0.5 + 3.6 * sp, top - 3.5, 3.8 * Math.abs(sp) + 0.8, 1.5, 0, 0, 7), ctx2.fillStyle = "#ff7f9e", ctx2.fill(), ctx2.lineWidth = 1.5, ctx2.stroke(), blob(ctx2, hx2 - 0.5, top - 3.5, 1.4, 1.4, "#ffe27a", 1.2);
   } else if (greasy) {
     let ty = top + 1.5;
-    ctx2.beginPath(), ctx2.moveTo(hx - 6.5, ty), ctx2.lineTo(hx + 7.5, ty), ctx2.lineTo(hx + 7.5, ty - 6.5), ctx2.lineTo(hx - 6.5, ty - 6.5), ctx2.closePath(), ctx2.fillStyle = "#fff3a8", ctx2.fill(), ctx2.lineWidth = 2.2, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(hx + 7.5, ty - 1), ctx2.quadraticCurveTo(hx + 11, ty + 1, hx + 9.6, ty + 5 + Math.abs(step) * 0.8), ctx2.quadraticCurveTo(hx + 8, ty + 6, hx + 7.5, ty + 2.5), ctx2.fillStyle = "#ffe36a", ctx2.fill(), ctx2.lineWidth = 1.8, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(hx - 4.5, ty - 4.6), ctx2.lineTo(hx + 1.5, ty - 4.6), ctx2.lineWidth = 1.6, ctx2.strokeStyle = "#ffffff", ctx2.stroke(), ctx2.fillStyle = "rgba(255,255,255,0.8)";
+    ctx2.beginPath(), ctx2.moveTo(hx2 - 6.5, ty), ctx2.lineTo(hx2 + 7.5, ty), ctx2.lineTo(hx2 + 7.5, ty - 6.5), ctx2.lineTo(hx2 - 6.5, ty - 6.5), ctx2.closePath(), ctx2.fillStyle = "#fff3a8", ctx2.fill(), ctx2.lineWidth = 2.2, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(hx2 + 7.5, ty - 1), ctx2.quadraticCurveTo(hx2 + 11, ty + 1, hx2 + 9.6, ty + 5 + Math.abs(step) * 0.8), ctx2.quadraticCurveTo(hx2 + 8, ty + 6, hx2 + 7.5, ty + 2.5), ctx2.fillStyle = "#ffe36a", ctx2.fill(), ctx2.lineWidth = 1.8, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(hx2 - 4.5, ty - 4.6), ctx2.lineTo(hx2 + 1.5, ty - 4.6), ctx2.lineWidth = 1.6, ctx2.strokeStyle = "#ffffff", ctx2.stroke(), ctx2.fillStyle = "rgba(255,255,255,0.8)";
     for (let [gx, gy, gr] of [[-8, 1, 1.5], [-3, 6, 1.1], [-12, -3, 1]])
-      ctx2.beginPath(), ctx2.arc(hx + gx + 2, hy + gy, gr, 0, 7), ctx2.fill();
+      ctx2.beginPath(), ctx2.arc(hx2 + gx + 2, hy + gy, gr, 0, 7), ctx2.fill();
   } else if (mama) {
-    ctx2.beginPath(), ctx2.ellipse(hx, hy - 3.4, hr * 1, hr * 0.8, 0, Math.PI, 0), ctx2.closePath(), ctx2.fillStyle = "#ff8fb0", ctx2.fill(), ctx2.lineWidth = 2.5, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.fillStyle = "#ffffff";
+    ctx2.beginPath(), ctx2.ellipse(hx2, hy - 3.4, hr * 1, hr * 0.8, 0, Math.PI, 0), ctx2.closePath(), ctx2.fillStyle = "#ff8fb0", ctx2.fill(), ctx2.lineWidth = 2.5, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.fillStyle = "#ffffff";
     for (let [dx, dy] of [[-6, -9], [0, -11.5], [6, -9], [-2, -6.2], [4, -5.6]])
-      ctx2.beginPath(), ctx2.arc(hx + dx, hy + dy + 1, 1.15, 0, 7), ctx2.fill();
-    ctx2.beginPath(), ctx2.moveTo(hx - hr + 1, hy - 4.5), ctx2.quadraticCurveTo(hx - hr - 6, hy - 9, hx - hr - 7, hy - 3 + step), ctx2.quadraticCurveTo(hx - hr - 3, hy - 4, hx - hr + 1, hy - 1.6), ctx2.fillStyle = "#ff8fb0", ctx2.fill(), ctx2.lineWidth = 2, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(hx - 4, top + 3.2, 2.4, 1.2, -0.4, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.75)", ctx2.fill();
+      ctx2.beginPath(), ctx2.arc(hx2 + dx, hy + dy + 1, 1.15, 0, 7), ctx2.fill();
+    ctx2.beginPath(), ctx2.moveTo(hx2 - hr + 1, hy - 4.5), ctx2.quadraticCurveTo(hx2 - hr - 6, hy - 9, hx2 - hr - 7, hy - 3 + step), ctx2.quadraticCurveTo(hx2 - hr - 3, hy - 4, hx2 - hr + 1, hy - 1.6), ctx2.fillStyle = "#ff8fb0", ctx2.fill(), ctx2.lineWidth = 2, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(hx2 - 4, top + 3.2, 2.4, 1.2, -0.4, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.75)", ctx2.fill();
   } else if (type === "big")
-    ctx2.save(), ctx2.beginPath(), ctx2.ellipse(hx, hy, hr, hr * 0.94, 0, 0, 7), ctx2.clip(), ctx2.fillStyle = "#ff6f91", ctx2.fillRect(hx - hr - 1, hy - 7.5, hr * 2 + 2, 4), ctx2.fillStyle = "#ffffff", ctx2.fillRect(hx - hr - 1, hy - 6.2, hr * 2 + 2, 1.2), ctx2.restore(), ctx2.beginPath(), ctx2.ellipse(hx, hy, hr, hr * 0.94, 0, 0, 7), ctx2.lineWidth = ALW, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(hx - hr + 0.5, hy - 5.5), ctx2.quadraticCurveTo(hx - hr - 4, hy - 4 + step, hx - hr - 5, hy + 0.5), ctx2.lineWidth = 3, ctx2.strokeStyle = "#ff6f91", ctx2.stroke();
+    ctx2.save(), ctx2.beginPath(), ctx2.ellipse(hx2, hy, hr, hr * 0.92, 0, 0, 7), ctx2.clip(), ctx2.fillStyle = "#ff6f91", ctx2.fillRect(hx2 - hr - 1, hy - 7.5, hr * 2 + 2, 4), ctx2.fillStyle = "#ffffff", ctx2.fillRect(hx2 - hr - 1, hy - 6.2, hr * 2 + 2, 1.2), ctx2.restore(), ctx2.beginPath(), ctx2.ellipse(hx2, hy, hr, hr * 0.92, 0, 0, 7), ctx2.lineWidth = ALW, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(hx2 - hr + 0.5, hy - 5.5), ctx2.quadraticCurveTo(hx2 - hr - 4, hy - 4 + step, hx2 - hr - 5, hy + 0.5), ctx2.lineWidth = 3, ctx2.strokeStyle = "#ff6f91", ctx2.stroke();
   else if (sprinter) {
-    ctx2.beginPath(), ctx2.ellipse(hx, hy - 3.4, hr * 1, hr * 0.8, 0, Math.PI, 0), ctx2.closePath();
+    ctx2.beginPath(), ctx2.ellipse(hx2, hy - 3.4, hr * 1, hr * 0.8, 0, Math.PI, 0), ctx2.closePath();
     let g = ctx2.createLinearGradient(0, top - 1, 0, hy - 3);
-    g.addColorStop(0, "#e6f4ff"), g.addColorStop(1, "#4fb4ff"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = 2.4, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(hx - hr + 1, hy - 6), ctx2.quadraticCurveTo(hx, top - 0.5, hx + hr - 1, hy - 6), ctx2.lineWidth = 2, ctx2.strokeStyle = "#ffffff", ctx2.stroke(), rr(ctx2, hx - 2, hy - 5.8, hr + 3, 2.8, 1.4), ctx2.fillStyle = "#ffe27a", ctx2.fill(), ctx2.lineWidth = 1.6, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(hx - 4, top + 3, 2.4, 1.1, -0.4, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.85)", ctx2.fill();
+    g.addColorStop(0, "#e6f4ff"), g.addColorStop(1, "#4fb4ff"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = 2.4, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(hx2 - hr + 1, hy - 6), ctx2.quadraticCurveTo(hx2, top - 0.5, hx2 + hr - 1, hy - 6), ctx2.lineWidth = 2, ctx2.strokeStyle = "#ffffff", ctx2.stroke(), rr(ctx2, hx2 - 2, hy - 5.8, hr + 3, 2.8, 1.4), ctx2.fillStyle = "#ffe27a", ctx2.fill(), ctx2.lineWidth = 1.6, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(hx2 - 4, top + 3, 2.4, 1.1, -0.4, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.85)", ctx2.fill();
   } else if (type === "armored" || heavy) {
-    ctx2.beginPath(), ctx2.moveTo(hx - hr - 1, hy - 3.5), ctx2.quadraticCurveTo(hx - hr - 1.5, top - 2.5, hx, top - 2.5), ctx2.quadraticCurveTo(hx + hr + 1.5, top - 2.5, hx + hr + 1, hy - 4.5), ctx2.closePath();
+    ctx2.beginPath(), ctx2.moveTo(hx2 - hr - 1, hy - 3.5), ctx2.quadraticCurveTo(hx2 - hr - 1.5, top - 2.5, hx2, top - 2.5), ctx2.quadraticCurveTo(hx2 + hr + 1.5, top - 2.5, hx2 + hr + 1, hy - 4.5), ctx2.closePath();
     let g = ctx2.createLinearGradient(0, top - 2, 0, hy - 1);
-    if (g.addColorStop(0, "#ffffff"), g.addColorStop(1, heavy ? "#8c96ae" : "#aeb8cc"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = 2.6, ctx2.strokeStyle = INK, ctx2.stroke(), rr(ctx2, hx - hr - 2, hy - 6.6, hr * 2 + 4, 3.6, 1.8), ctx2.fillStyle = heavy ? "#f4c84a" : "#cfd6e4", ctx2.fill(), ctx2.lineWidth = 2.2, ctx2.stroke(), heavy) for (let sx of [-1, 1])
-      ctx2.beginPath(), ctx2.moveTo(hx + sx * (hr - 2), top + 2), ctx2.quadraticCurveTo(hx + sx * (hr + 4), top - 2, hx + sx * (hr + 3), top - 7), ctx2.quadraticCurveTo(hx + sx * (hr + 0.5), top - 2, hx + sx * (hr - 5), top + 1), ctx2.closePath(), ctx2.fillStyle = "#fff6dc", ctx2.fill(), ctx2.lineWidth = 1.8, ctx2.strokeStyle = INK, ctx2.stroke();
+    if (g.addColorStop(0, "#ffffff"), g.addColorStop(1, heavy ? "#8c96ae" : "#aeb8cc"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = 2.6, ctx2.strokeStyle = INK, ctx2.stroke(), rr(ctx2, hx2 - hr - 2, hy - 6.6, hr * 2 + 4, 3.6, 1.8), ctx2.fillStyle = heavy ? "#f4c84a" : "#cfd6e4", ctx2.fill(), ctx2.lineWidth = 2.2, ctx2.stroke(), heavy) for (let sx of [-1, 1])
+      ctx2.beginPath(), ctx2.moveTo(hx2 + sx * (hr - 2), top + 2), ctx2.quadraticCurveTo(hx2 + sx * (hr + 4), top - 2, hx2 + sx * (hr + 3), top - 7), ctx2.quadraticCurveTo(hx2 + sx * (hr + 0.5), top - 2, hx2 + sx * (hr - 5), top + 1), ctx2.closePath(), ctx2.fillStyle = "#fff6dc", ctx2.fill(), ctx2.lineWidth = 1.8, ctx2.strokeStyle = INK, ctx2.stroke();
     ctx2.fillStyle = "#8992aa";
     for (let dx of [-6, 0, 6])
-      ctx2.beginPath(), ctx2.arc(hx + dx, hy - 4.8, 0.9, 0, 7), ctx2.fill();
-    ctx2.beginPath(), ctx2.moveTo(hx - 2, top - 1.5), ctx2.quadraticCurveTo(hx - 5, top - 11, hx - 13, top - 8 + step), ctx2.quadraticCurveTo(hx - 8, top - 5, hx - 6, top), ctx2.quadraticCurveTo(hx - 3.5, top - 3, hx - 2, top - 1.5), ctx2.fillStyle = heavy ? "#b48cf0" : "#ff7b7b", ctx2.fill(), ctx2.lineWidth = 2, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(hx - 4, top + 2, 2.6, 1.2, -0.4, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.8)", ctx2.fill();
+      ctx2.beginPath(), ctx2.arc(hx2 + dx, hy - 4.8, 0.9, 0, 7), ctx2.fill();
+    ctx2.beginPath(), ctx2.moveTo(hx2 - 2, top - 1.5), ctx2.quadraticCurveTo(hx2 - 5, top - 11, hx2 - 13, top - 8 + step), ctx2.quadraticCurveTo(hx2 - 8, top - 5, hx2 - 6, top), ctx2.quadraticCurveTo(hx2 - 3.5, top - 3, hx2 - 2, top - 1.5), ctx2.fillStyle = heavy ? "#b48cf0" : "#ff7b7b", ctx2.fill(), ctx2.lineWidth = 2, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(hx2 - 4, top + 2, 2.6, 1.2, -0.4, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.8)", ctx2.fill();
   } else if (flying) {
-    ctx2.beginPath(), ctx2.ellipse(hx, hy - 3, hr * 0.97, hr * 0.8, 0, Math.PI * 0.98, Math.PI * 2.02), ctx2.closePath(), ctx2.fillStyle = "#b9805a", ctx2.fill(), ctx2.lineWidth = 2.4, ctx2.strokeStyle = INK, ctx2.stroke();
-    for (let [gx, r] of [[hx - 1, 3.3], [hx + 6, 3]])
+    ctx2.beginPath(), ctx2.ellipse(hx2, hy - 3, hr * 0.97, hr * 0.8, 0, Math.PI * 0.98, Math.PI * 2.02), ctx2.closePath(), ctx2.fillStyle = "#b9805a", ctx2.fill(), ctx2.lineWidth = 2.4, ctx2.strokeStyle = INK, ctx2.stroke();
+    for (let [gx, r] of [[hx2 - 1, 3.3], [hx2 + 6, 3]])
       blob(ctx2, gx, hy - 5.8, r, r, "#bfe8ff", 2.2), ctx2.beginPath(), ctx2.arc(gx - 1, hy - 7, 0.9, 0, 7), ctx2.fillStyle = "#fff", ctx2.fill();
-    ctx2.beginPath(), ctx2.moveTo(hx + 2.3, hy - 5.8), ctx2.lineTo(hx + 3, hy - 5.8), ctx2.lineWidth = 2, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(1, -2), ctx2.quadraticCurveTo(-7, -4 + step * 2, -15, -8 + step * 3), ctx2.lineWidth = 5.6, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.lineWidth = 3.2, ctx2.strokeStyle = "#ff7f9e", ctx2.stroke();
+    ctx2.beginPath(), ctx2.moveTo(hx2 + 2.3, hy - 5.8), ctx2.lineTo(hx2 + 3, hy - 5.8), ctx2.lineWidth = 2, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(1, -2), ctx2.quadraticCurveTo(-7, -4 + step * 2, -15, -8 + step * 3), ctx2.lineWidth = 5.6, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.lineWidth = 3.2, ctx2.strokeStyle = "#ff7f9e", ctx2.stroke();
   } else if (nurse) {
     let grey = !!opt.grey;
-    ctx2.beginPath(), ctx2.ellipse(hx, hy - 3.4, hr * 0.98, hr * 0.8, 0, Math.PI, 0), ctx2.closePath();
+    ctx2.beginPath(), ctx2.ellipse(hx2, hy - 3.4, hr * 0.98, hr * 0.8, 0, Math.PI, 0), ctx2.closePath();
     let g = ctx2.createLinearGradient(0, top - 1, 0, hy - 3);
-    g.addColorStop(0, grey ? "#e3e3ea" : "#ffffff"), g.addColorStop(1, grey ? "#b9bac6" : "#eef3f6"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = 2.5, ctx2.strokeStyle = INK, ctx2.stroke(), rr(ctx2, hx - hr - 1, hy - 5.2, hr * 2 + 2, 3.2, 1.6), ctx2.fillStyle = grey ? "#b9bac6" : "#ffffff", ctx2.fill(), ctx2.lineWidth = 2, ctx2.strokeStyle = INK, ctx2.stroke(), plusShape(ctx2, hx, hy - 12.6, 4.6, grey ? "#9a9ba8" : "#ff5a7e", 1.5), ctx2.beginPath(), ctx2.ellipse(hx - 5.6, top + 3.6, 2, 1, -0.5, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.85)", ctx2.fill();
+    g.addColorStop(0, grey ? "#e3e3ea" : "#ffffff"), g.addColorStop(1, grey ? "#b9bac6" : "#eef3f6"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = 2.5, ctx2.strokeStyle = INK, ctx2.stroke(), rr(ctx2, hx2 - hr - 1, hy - 5.2, hr * 2 + 2, 3.2, 1.6), ctx2.fillStyle = grey ? "#b9bac6" : "#ffffff", ctx2.fill(), ctx2.lineWidth = 2, ctx2.strokeStyle = INK, ctx2.stroke(), plusShape(ctx2, hx2, hy - 12.6, 4.6, grey ? "#9a9ba8" : "#ff5a7e", 1.5), ctx2.beginPath(), ctx2.ellipse(hx2 - 5.6, top + 3.6, 2, 1, -0.5, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.85)", ctx2.fill();
   } else if (queen) {
     let cy = top + 3;
     if (sundaeQueen) {
-      ctx2.beginPath(), ctx2.moveTo(hx - 8.5, cy - 8.5), ctx2.lineTo(hx + 8.5, cy - 8.5), ctx2.lineTo(hx + 1.2, cy + 1), ctx2.lineTo(hx - 1.2, cy + 1), ctx2.closePath();
+      ctx2.beginPath(), ctx2.moveTo(hx2 - 8.5, cy - 8.5), ctx2.lineTo(hx2 + 8.5, cy - 8.5), ctx2.lineTo(hx2 + 1.2, cy + 1), ctx2.lineTo(hx2 - 1.2, cy + 1), ctx2.closePath();
       let gc = ctx2.createLinearGradient(0, cy - 9, 0, cy + 1);
-      gc.addColorStop(0, "#f6cf8a"), gc.addColorStop(1, "#d99a4a"), ctx2.fillStyle = gc, ctx2.fill(), ctx2.lineWidth = 2.3, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.save(), ctx2.beginPath(), ctx2.moveTo(hx - 8.5, cy - 8.5), ctx2.lineTo(hx + 8.5, cy - 8.5), ctx2.lineTo(hx + 1.2, cy + 1), ctx2.lineTo(hx - 1.2, cy + 1), ctx2.closePath(), ctx2.clip(), ctx2.lineWidth = 1, ctx2.strokeStyle = "rgba(122,70,30,0.7)";
+      gc.addColorStop(0, "#f6cf8a"), gc.addColorStop(1, "#d99a4a"), ctx2.fillStyle = gc, ctx2.fill(), ctx2.lineWidth = 2.3, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.save(), ctx2.beginPath(), ctx2.moveTo(hx2 - 8.5, cy - 8.5), ctx2.lineTo(hx2 + 8.5, cy - 8.5), ctx2.lineTo(hx2 + 1.2, cy + 1), ctx2.lineTo(hx2 - 1.2, cy + 1), ctx2.closePath(), ctx2.clip(), ctx2.lineWidth = 1, ctx2.strokeStyle = "rgba(122,70,30,0.7)";
       for (let k of [-6, -2, 2, 6])
-        ctx2.beginPath(), ctx2.moveTo(hx + k - 4, cy - 9), ctx2.lineTo(hx + k + 4, cy + 1), ctx2.moveTo(hx + k + 4, cy - 9), ctx2.lineTo(hx + k - 4, cy + 1), ctx2.stroke();
-      ctx2.restore(), blob(ctx2, hx, cy - 11, 8.2, 5.6, "#ff9ec0", 2.2), blob(ctx2, hx - 1.6, cy - 12.6, 2.6, 1.4, "#ffd3e2", 0.1), ctx2.beginPath(), ctx2.moveTo(hx - 6.5, cy - 8.6);
-      for (let k = 0; k < 4; k++) ctx2.quadraticCurveTo(hx - 6.5 + k * 4.4 + 1.6, cy - 5.6, hx - 6.5 + (k + 1) * 4.4, cy - 8.6);
-      ctx2.lineWidth = 1.6, ctx2.strokeStyle = INK, ctx2.stroke(), blob(ctx2, hx + 1, cy - 17.4, 2.6, 2.6, "#e8304e", 1.6), ctx2.beginPath(), ctx2.moveTo(hx + 1, cy - 19.6), ctx2.quadraticCurveTo(hx + 2.5, cy - 23, hx + 5, cy - 23.4), ctx2.lineWidth = 1.6, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.restore();
+        ctx2.beginPath(), ctx2.moveTo(hx2 + k - 4, cy - 9), ctx2.lineTo(hx2 + k + 4, cy + 1), ctx2.moveTo(hx2 + k + 4, cy - 9), ctx2.lineTo(hx2 + k - 4, cy + 1), ctx2.stroke();
+      ctx2.restore(), blob(ctx2, hx2, cy - 11, 8.2, 5.6, "#ff9ec0", 2.2), blob(ctx2, hx2 - 1.6, cy - 12.6, 2.6, 1.4, "#ffd3e2", 0.1), ctx2.beginPath(), ctx2.moveTo(hx2 - 6.5, cy - 8.6);
+      for (let k = 0; k < 4; k++) ctx2.quadraticCurveTo(hx2 - 6.5 + k * 4.4 + 1.6, cy - 5.6, hx2 - 6.5 + (k + 1) * 4.4, cy - 8.6);
+      ctx2.lineWidth = 1.6, ctx2.strokeStyle = INK, ctx2.stroke(), blob(ctx2, hx2 + 1, cy - 17.4, 2.6, 2.6, "#e8304e", 1.6), ctx2.beginPath(), ctx2.moveTo(hx2 + 1, cy - 19.6), ctx2.quadraticCurveTo(hx2 + 2.5, cy - 23, hx2 + 5, cy - 23.4), ctx2.lineWidth = 1.6, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.restore();
       return;
     }
-    ctx2.beginPath(), ctx2.moveTo(hx - 7, cy), ctx2.lineTo(hx - 8, cy - 9), ctx2.lineTo(hx - 3.5, cy - 4.5), ctx2.lineTo(hx, cy - 11), ctx2.lineTo(hx + 3.5, cy - 4.5), ctx2.lineTo(hx + 8, cy - 9), ctx2.lineTo(hx + 7, cy), ctx2.closePath();
+    ctx2.beginPath(), ctx2.moveTo(hx2 - 7, cy), ctx2.lineTo(hx2 - 8, cy - 9), ctx2.lineTo(hx2 - 3.5, cy - 4.5), ctx2.lineTo(hx2, cy - 11), ctx2.lineTo(hx2 + 3.5, cy - 4.5), ctx2.lineTo(hx2 + 8, cy - 9), ctx2.lineTo(hx2 + 7, cy), ctx2.closePath();
     let g = ctx2.createLinearGradient(0, cy - 11, 0, cy);
-    g.addColorStop(0, pieQueen ? "#ff8aa0" : "#fff5ad"), g.addColorStop(1, pieQueen ? "#d93a5c" : "#f4b632"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = 2.3, ctx2.strokeStyle = INK, ctx2.stroke(), blob(ctx2, hx, cy - 2.6, 1.8, 1.8, "#ff6f91", 1.2), blob(ctx2, hx - 5, cy - 2.2, 1.2, 1.2, "#7cc6f2", 1), blob(ctx2, hx + 5, cy - 2.2, 1.2, 1.2, "#7cc6f2", 1);
-    for (let [x, y] of [[hx - 8, cy - 9], [hx, cy - 11], [hx + 8, cy - 9]]) blob(ctx2, x, y, 1.4, 1.4, "#fff5ad", 1.2);
+    g.addColorStop(0, pieQueen ? "#ff8aa0" : "#fff5ad"), g.addColorStop(1, pieQueen ? "#d93a5c" : "#f4b632"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = 2.3, ctx2.strokeStyle = INK, ctx2.stroke(), blob(ctx2, hx2, cy - 2.6, 1.8, 1.8, "#ff6f91", 1.2), blob(ctx2, hx2 - 5, cy - 2.2, 1.2, 1.2, "#7cc6f2", 1), blob(ctx2, hx2 + 5, cy - 2.2, 1.2, 1.2, "#7cc6f2", 1);
+    for (let [x, y] of [[hx2 - 8, cy - 9], [hx2, cy - 11], [hx2 + 8, cy - 9]]) blob(ctx2, x, y, 1.4, 1.4, "#fff5ad", 1.2);
   }
   ctx2.restore();
 }
@@ -4364,18 +4633,23 @@ function antSprite(type, frame2, carrying, dpr2, variant = "") {
   let key = type + frame2 + (carrying ? "c" : "") + dpr2 + variant, s = spriteCache.get(key);
   if (s) return s;
   let S2 = ANTS[type].size, w = Math.ceil(80 * S2), h = Math.ceil(84 * S2), cv = makeCanvas(Math.ceil(w * dpr2), Math.ceil(h * dpr2)), g = cv.getContext("2d");
-  return g.scale(dpr2, dpr2), g.translate(w / 2, h * 0.66), drawAnt(g, type, frame2 / ANT_FRAMES, { carrying, blink: frame2 === 7 && !isQueen(type), grey: variant === "g" }), s = { cv, w, h, ox: w / 2, oy: h * 0.66 }, spriteCache.set(key, s), s;
+  return g.scale(dpr2, dpr2), g.translate(w / 2, h * 0.66), drawAnt(g, type, frame2 / ANT_FRAMES, { carrying, blink: frame2 === 7 && !isQueen(type), grey: variant === "g", mood: variant === "h" ? "hurt" : variant === "d" ? "dizzy" : "", pose: variant === "cheer" ? "cheer" : "" }), s = { cv, w, h, ox: w / 2, oy: h * 0.66 }, spriteCache.set(key, s), s;
 }
 function makeCanvas(w, h) {
   if (typeof OffscreenCanvas < "u") return new OffscreenCanvas(w, h);
   let c = document.createElement("canvas");
   return c.width = w, c.height = h, c;
 }
-var CARD_COLORS = Object.fromEntries(Object.entries(TOWERS).map(([k, v]) => [k, v.color])), partCache = /* @__PURE__ */ new Map(), partHits = 0, partMisses = 0, partBytes = 0, partClipped = 0, BAKE_BOX = [-44, -60, 44, 36];
+var CARD_COLORS = Object.fromEntries(Object.entries(TOWERS).map(([k, v]) => [k, v.color])), HERO_GLOSS = { spray: [-5.5, -16, 2.6, 6.2], sound: [-9, -19, 5.5, 2.2], heart: [-4, -16, 2, 5], zapper: [-5.4, -29, 2.2, 6], tractor: [-8, -21.5, 5, 2], slingshot: [-5.6, -14, 1.5, 4.5], ball: [-5, -34, 2.2, 3.6], gate: [-2, -20, 1.2, 5], fan: [-7, -19, 3, 5], laser: [-4, -22, 3.6, 2.2], lizard: null, glue: null, lava: null };
+function heroGloss(ctx2, type, lvl) {
+  let h = HERO_GLOSS[type];
+  h && (ctx2.save(), ctx2.beginPath(), ctx2.ellipse(h[0], h[1], h[2], h[3], -0.2, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.62)", ctx2.fill(), ctx2.beginPath(), ctx2.arc(h[0] + h[2] * 0.4, h[1] + h[3] + 2.4, 1.1, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.8)", ctx2.fill(), ctx2.restore());
+}
+var partCache = /* @__PURE__ */ new Map(), partHits = 0, partMisses = 0, partBytes = 0, partClipped = 0, BAKE_BOX = [-44, -60, 44, 36];
 function clearTowerCache() {
   partCache.clear(), partBytes = 0;
 }
-function devScale(ctx2) {
+function devScale2(ctx2) {
   let sc = 1;
   if (ctx2.getTransform) {
     let m = ctx2.getTransform();
@@ -4384,7 +4658,7 @@ function devScale(ctx2) {
   return sc <= 4 ? Math.max(1, Math.ceil(sc * 4 - 1e-6) / 4) : Math.min(8, +Math.pow(2, Math.ceil(Math.log2(sc) * 4 - 1e-6) / 4).toFixed(3));
 }
 function baked(ctx2, key, draw, os = 1) {
-  let sc = devScale(ctx2) * os, k = key + "@" + sc, e = partCache.get(k);
+  let sc = devScale2(ctx2) * os, k = key + "@" + sc, e = partCache.get(k);
   if (e)
     partHits++;
   else {
@@ -4414,19 +4688,21 @@ function pad(ctx2, color) {
   baked(ctx2, "pad" + color, (g) => padPaths(g, color));
 }
 function padPaths(ctx2, color) {
-  shadow(ctx2, 0, 11, 18, 6.5, 0.24), ctx2.beginPath(), ctx2.ellipse(0, 8, 16, 8.5, 0, 0, 7), ctx2.fillStyle = shade(color, -0.22), ctx2.fill(), ctx2.lineWidth = 3, ctx2.strokeStyle = INK, ctx2.stroke(), blob(ctx2, 0, 5.5, 15.5, 8, shade(color, -0.02), 3);
+  shadow(ctx2, 0, 11, 18, 6.5, 0.24), ctx2.beginPath(), ctx2.ellipse(0, 9.6, 16.4, 8.6, 0, 0, 7), ctx2.fillStyle = shade(color, -0.3), ctx2.fill(), ctx2.lineWidth = 3, ctx2.strokeStyle = INK, ctx2.stroke(), blob(ctx2, 0, 5.5, 15.5, 8, shade(color, -0.02), 3, 0, { gloss: 0.55 });
   let g = ctx2.createRadialGradient(-4, 3, 1, 0, 5, 12);
-  g.addColorStop(0, shade(color, 0.6)), g.addColorStop(1, shade(color, 0.2)), ctx2.beginPath(), ctx2.ellipse(0, 4.5, 11, 5, 0, 0, 7), ctx2.fillStyle = g, ctx2.fill(), rim(ctx2, 0, 5.5, 15.5, 8, 0.75), ctx2.fillStyle = shade(color, -0.35);
-  for (let a of [0.35, 1.2, 1.95, 2.8])
-    ctx2.beginPath(), ctx2.arc(Math.cos(a) * 13.2, 6.5 + Math.sin(a) * 6.3, 0.9, 0, 7), ctx2.fill();
+  g.addColorStop(0, shade(color, 0.6)), g.addColorStop(1, shade(color, 0.2)), ctx2.beginPath(), ctx2.ellipse(0, 4.5, 11, 5, 0, 0, 7), ctx2.fillStyle = g, ctx2.fill(), rim(ctx2, 0, 5.5, 15.5, 8, 0.75);
+  for (let a of [0.35, 1.2, 1.95, 2.8]) {
+    let rx = Math.cos(a) * 13.2, ry = 6.5 + Math.sin(a) * 6.3;
+    ctx2.beginPath(), ctx2.arc(rx, ry, 1.35, 0, 7), ctx2.fillStyle = shade(color, -0.38), ctx2.fill(), ctx2.beginPath(), ctx2.arc(rx - 0.4, ry - 0.45, 0.45, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.8)", ctx2.fill();
+  }
 }
 var lvKey = (lvl) => lvl >= 5 ? 5 : lvl >= 3 ? 3 : lvl >= 2 ? 2 : 1, r2 = (v) => Math.round(v * 100) / 100;
 function drawTower(ctx2, type, t = 0, tw = null) {
   let T = TOWERS[type], aim = tw ? tw.aim : -0.6, fx = tw ? tw.fireFx : 0, lvl = tw && tw.lvl || 1, lk = lvKey(lvl);
   switch (ctx2.save(), ctx2.lineJoin = "round", ctx2.lineCap = "round", T.place === "side" && baked(ctx2, "ring76", (g) => {
-    g.beginPath(), g.ellipse(0, 9, 19.5, 10.5, 0, 0, 7), g.fillStyle = "#a67c5c", g.fill(), g.lineWidth = 3, g.strokeStyle = INK, g.stroke();
+    g.beginPath(), g.ellipse(0, 10.2, 19.2, 9.6, 0, 0, 7), g.fillStyle = "#7d5a40", g.fill(), g.lineWidth = 3, g.strokeStyle = INK, g.stroke(), drawGlossyBlob(g, 0, 9, 19.5, 10.5, "#a67c5c", { lw: 2.6, gloss: 0.5 });
   }), lvl >= 4 && T.place === "side" && baked(ctx2, "plinth", plinthPaths), lvl >= 2 && T.place === "side" && (baked(ctx2, "trim", (g) => {
-    g.beginPath(), g.ellipse(0, 7, 19, 10.5, 0, 0, 7), g.lineWidth = 3.2, g.strokeStyle = "#f4b632", g.stroke();
+    g.beginPath(), g.ellipse(0, 8.1, 19, 10.5, 0, 0, Math.PI), g.lineWidth = 3.2, g.strokeStyle = "#b8700a", g.stroke(), g.beginPath(), g.ellipse(0, 7, 19, 10.5, 0, 0, 7), g.lineWidth = 3.2, g.strokeStyle = "#f4b632", g.stroke(), g.beginPath(), g.ellipse(0, 6.6, 19, 10.5, 0, Math.PI * 1.05, Math.PI * 1.75), g.lineWidth = 1.3, g.strokeStyle = "#ffe566", g.stroke();
   }), ctx2.beginPath(), ctx2.ellipse(0, 7, 19, 10.5, 0, Math.PI * 1.1 + t % 3 * 0.6, Math.PI * 1.3 + t % 3 * 0.6), ctx2.lineWidth = 2, ctx2.strokeStyle = "#fff6c0", ctx2.stroke()), lvl > 1 && ctx2.scale(1 + 0.03 * (lvl - 1), 1 + 0.03 * (lvl - 1)), lvl >= 4 && T.place === "path" && pathStuds(ctx2, t), type) {
     case "slingshot": {
       pad(ctx2, "#f6c99a");
@@ -4635,6 +4911,7 @@ function drawTower(ctx2, type, t = 0, tw = null) {
         for (let [a, b] of [[-6, 0], [-1, -2], [3, 1]])
           g.beginPath(), g.arc(a, b, 1.6, 0, 7), g.fill();
         for (let fx2 of [-9, 6]) blob(g, fx2, 9, 3.5, 2.2, "#a7d96a", 1.5);
+        g.beginPath(), g.ellipse(-1, 5.4, 7.5, 2.6, 0, 0, 7), g.fillStyle = "rgba(230,247,184,0.85)", g.fill();
       });
       let hb = chew ? Math.sin(t * 25) * 1.5 : 0;
       ctx2.save(), ctx2.translate(0, hb), baked(ctx2, "liz:head", (g) => blob(g, 9, -6, 9, 7.5, "#c4ea86")), ctx2.restore();
@@ -4667,7 +4944,7 @@ function drawTower(ctx2, type, t = 0, tw = null) {
       }, 2), ctx2.restore(), ctx2.save(), ctx2.translate(0, -15), ctx2.beginPath(), ctx2.arc(0, 0, 7 + charge * 1.5, 0, 7), ctx2.fillStyle = `rgba(255,80,120,${0.12 + 0.18 * charge})`, ctx2.fill(), baked(ctx2, "laser:gem", (g) => {
         g.beginPath(), g.moveTo(0, -6), g.lineTo(4.4, -1), g.lineTo(0, 4.5), g.lineTo(-4.4, -1), g.closePath();
         let gr = g.createLinearGradient(-4, -6, 4, 4);
-        gr.addColorStop(0, "#fff2f5"), gr.addColorStop(0.5, "#ff6f8f"), gr.addColorStop(1, "#c8324f"), g.fillStyle = gr, g.fill(), g.lineWidth = 1.5, g.strokeStyle = INK, g.stroke(), g.beginPath(), g.moveTo(-1.6, -3.6), g.lineTo(-3, -1.2), g.lineWidth = 1.2, g.strokeStyle = "#fff", g.stroke();
+        gr.addColorStop(0, "#fff2f5"), gr.addColorStop(0.5, "#ff6f8f"), gr.addColorStop(1, "#c8324f"), g.fillStyle = gr, g.fill(), g.lineWidth = 1.5, g.strokeStyle = INK, g.stroke(), g.beginPath(), g.moveTo(-1.6, -3.6), g.lineTo(-3, -1.2), g.lineWidth = 1.2, g.strokeStyle = "#fff", g.stroke(), g.beginPath(), g.moveTo(0, -6), g.lineTo(0, 4.5), g.lineTo(4.4, -1), g.closePath(), g.fillStyle = "rgba(160,30,60,0.28)", g.fill();
       }), ctx2.restore(), lk >= 2 && (ctx2.save(), ctx2.translate(0, -13), ctx2.rotate(aim), baked(ctx2, "laser:hood", (g) => {
         rr(g, 15, -7, 8, 14, 3), g.fillStyle = "rgba(80,70,100,0.85)", g.fill(), g.lineWidth = 1.4, g.strokeStyle = INK, g.stroke();
       }, 2), ctx2.restore()), lk >= 3) {
@@ -4712,7 +4989,7 @@ function drawTower(ctx2, type, t = 0, tw = null) {
       });
       let glow = 0.5 + Math.sin(t * 6) * 0.2 + (fx > 0 ? 0.5 : 0);
       if (ctx2.beginPath(), ctx2.arc(0, -20, 15, 0, 7), ctx2.fillStyle = `rgba(150,200,255,${0.25 * glow})`, ctx2.fill(), baked(ctx2, "zap:box", (g) => {
-        rr(g, -11, -31, 22, 22, 7), g.fillStyle = "#6a7ad8", g.fill(), g.lineWidth = 2.2, g.strokeStyle = INK, g.stroke();
+        rr(g, -11, -29, 22, 22, 7), g.fillStyle = "#4a58b0", g.fill(), g.lineWidth = 2.2, g.strokeStyle = INK, g.stroke(), rr(g, -11, -31, 22, 22, 7), g.fillStyle = "#6a7ad8", g.fill(), g.stroke(), g.beginPath(), g.moveTo(-7, -29.2), g.lineTo(7, -29.2), g.lineWidth = 1.6, g.strokeStyle = "rgba(255,255,255,0.5)", g.stroke();
       }), rr(ctx2, -7.5, -27.5, 15, 15, 4), ctx2.fillStyle = `rgba(190,170,255,${0.7 + 0.3 * glow})`, ctx2.fill(), baked(ctx2, "zap:top" + (lk >= 5 ? 5 : lk >= 2 ? 2 : 1), (g) => {
         g.strokeStyle = "#f2f4ff", g.lineWidth = 1.3;
         for (let k = -1; k <= 1; k++)
@@ -4730,7 +5007,7 @@ function drawTower(ctx2, type, t = 0, tw = null) {
       break;
     }
   }
-  if (lvl >= 6) {
+  if (heroGloss(ctx2, type, lvl), lvl >= 6) {
     let side = T.place === "side";
     if (baked(ctx2, "crown" + (side ? "s" : "p"), (g) => {
       g.translate(side ? 13 : 11, side ? -24 : -14), g.beginPath(), g.moveTo(-5, 3), g.lineTo(-6, -4), g.lineTo(-2.5, -1), g.lineTo(0, -6), g.lineTo(2.5, -1), g.lineTo(6, -4), g.lineTo(5, 3), g.closePath(), g.fillStyle = "#ffd45e", g.fill(), g.lineWidth = 1.6, g.strokeStyle = INK, g.stroke();
@@ -4752,7 +5029,7 @@ function plinthPaths(ctx2) {
 function tractorBodyPaths(ctx2) {
   shadow(ctx2, 0, 9, 18, 5, 0.24), rr(ctx2, -12, -10, 25, 13, 5);
   let g = ctx2.createLinearGradient(0, -10, 0, 3);
-  g.addColorStop(0, "#ffe39e"), g.addColorStop(1, "#f2b84a"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = 2, ctx2.strokeStyle = INK, ctx2.stroke(), rr(ctx2, -13, -23, 13, 15, 3), ctx2.fillStyle = "#ffd27a", ctx2.fill(), ctx2.lineWidth = 2, ctx2.strokeStyle = INK, ctx2.stroke(), rr(ctx2, -10.5, -20.5, 8, 8, 2), ctx2.fillStyle = "#bfe6ff", ctx2.fill(), ctx2.lineWidth = 1.3, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(-9, -19), ctx2.lineTo(-6, -16), ctx2.lineWidth = 1.2, ctx2.strokeStyle = "#ffffff", ctx2.stroke(), rr(ctx2, -15, -25.5, 17, 4, 2), ctx2.fillStyle = "#ff8fab", ctx2.fill(), ctx2.lineWidth = 1.6, ctx2.strokeStyle = INK, ctx2.stroke();
+  g.addColorStop(0, "#ffe39e"), g.addColorStop(1, "#f2b84a"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = 2, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(-8, -8.2), ctx2.lineTo(9, -8.2), ctx2.lineWidth = 1.5, ctx2.strokeStyle = "rgba(255,255,255,0.55)", ctx2.stroke(), rr(ctx2, -13, -23, 13, 15, 3), ctx2.fillStyle = "#ffd27a", ctx2.fill(), ctx2.lineWidth = 2, ctx2.strokeStyle = INK, ctx2.stroke(), rr(ctx2, -10.5, -20.5, 8, 8, 2), ctx2.fillStyle = "#bfe6ff", ctx2.fill(), ctx2.lineWidth = 1.3, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(-9, -19), ctx2.lineTo(-6, -16), ctx2.lineWidth = 1.2, ctx2.strokeStyle = "#ffffff", ctx2.stroke(), rr(ctx2, -15, -25.5, 17, 4, 2), ctx2.fillStyle = "#ff8fab", ctx2.fill(), ctx2.lineWidth = 1.6, ctx2.strokeStyle = INK, ctx2.stroke();
   for (let ex of [6, 10.5])
     ctx2.beginPath(), ctx2.ellipse(ex, -5.5, 1.7, 2.1, 0, 0, 7), ctx2.fillStyle = INK, ctx2.fill(), ctx2.beginPath(), ctx2.arc(ex + 0.5, -6.3, 0.6, 0, 7), ctx2.fillStyle = "#fff", ctx2.fill();
   ctx2.beginPath(), ctx2.arc(8.3, -2.6, 2, 0.2, Math.PI - 0.2), ctx2.lineWidth = 1.2, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(3.5, -2.5, 1.6, 1, 0, 0, 7), ctx2.fillStyle = "rgba(255,112,140,0.55)", ctx2.fill();
@@ -4762,7 +5039,7 @@ function tractorBodyPaths(ctx2) {
       let a = k * Math.PI / 4;
       ctx2.beginPath(), ctx2.moveTo(wx + Math.cos(a) * (r - 1.6), wy + Math.sin(a) * (r - 1.6)), ctx2.lineTo(wx + Math.cos(a) * r, wy + Math.sin(a) * r), ctx2.lineWidth = 1.4, ctx2.strokeStyle = "#3d2a36", ctx2.stroke();
     }
-    ctx2.beginPath(), ctx2.arc(wx, wy, r * 0.48, 0, 7), ctx2.fillStyle = "#ffd45e", ctx2.fill(), ctx2.lineWidth = 1.3, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.arc(wx, wy, r * 0.16, 0, 7), ctx2.fillStyle = INK, ctx2.fill();
+    ctx2.beginPath(), ctx2.arc(wx, wy, r * 0.48, 0, 7), ctx2.fillStyle = "#c9b6a0", ctx2.fill(), ctx2.lineWidth = 1.3, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.arc(wx, wy, r * 0.82, Math.PI * 1.1, Math.PI * 1.45), ctx2.lineWidth = 1.5, ctx2.strokeStyle = "rgba(255,255,255,0.4)", ctx2.stroke(), ctx2.beginPath(), ctx2.arc(wx, wy, r * 0.16, 0, 7), ctx2.fillStyle = INK, ctx2.fill();
   }
   g = null;
 }
@@ -4990,10 +5267,14 @@ function reactMotion(react, t) {
   }
   return { dx: 0, dy: 0, sx: 1, sy: 1 };
 }
+function treatGloss(ctx2, kind, r, pct) {
+  let bites = kind === "cake" ? 0 : Math.round((1 - pct) * 9);
+  ctx2.save(), kind === "cake" ? (ctx2.beginPath(), ctx2.ellipse(-r * 0.55, -r * 0.2, r * 0.36, 2.2, -0.05, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.55)", ctx2.fill()) : bites < 6 && (ctx2.beginPath(), ctx2.arc(0, 0, r - 4.2, Math.PI * 1.08, Math.PI * 1.46), ctx2.lineWidth = 2.2, ctx2.lineCap = "round", ctx2.strokeStyle = "rgba(255,255,255,0.5)", ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(-r * 0.46, -r * 0.55, 6.5, 3, -0.7, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.5)", ctx2.fill(), ctx2.beginPath(), ctx2.arc(-r * 0.22, -r * 0.8, 1.5, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.7)", ctx2.fill()), ctx2.restore();
+}
 function drawTreat(ctx2, kind, x, y, pct, t, opts = {}) {
   typeof opts == "boolean" && (opts = {});
   let face = opts.face || cookieFace(pct), react = opts.react || null, r = 26, m = reactMotion(react, t);
-  ctx2.save(), ctx2.translate(x, y), shadow(ctx2, 0, r * 0.75, r * 1.05 * (1 - Math.min(0.2, -m.dy / 40)), r * 0.32, 0.25), ctx2.save(), ctx2.translate(m.dx, m.dy + r * 0.75), ctx2.scale(m.sx, m.sy), ctx2.translate(0, -r * 0.75), (TREAT_BODIES[kind] || cookieBody)(ctx2, r, pct), react ? drawTreatFace(ctx2, react.face, t, react.age) : drawCookieFace(ctx2, opts.ouch ? "ouch" : face, t), ctx2.restore(), ctx2.restore();
+  ctx2.save(), ctx2.translate(x, y), shadow(ctx2, 0, r * 0.75, r * 1.05 * (1 - Math.min(0.2, -m.dy / 40)), r * 0.32, 0.25), ctx2.save(), ctx2.translate(m.dx, m.dy + r * 0.75), ctx2.scale(m.sx, m.sy), ctx2.translate(0, -r * 0.75), (TREAT_BODIES[kind] || cookieBody)(ctx2, r, pct), treatGloss(ctx2, kind, r, pct), react ? drawTreatFace(ctx2, react.face, t, react.age) : drawCookieFace(ctx2, opts.ouch ? "ouch" : face, t), ctx2.restore(), ctx2.restore();
 }
 function drawCookie(ctx2, x, y, pct, t, opts = {}) {
   return drawTreat(ctx2, "cookie", x, y, pct, t, opts);
@@ -5125,12 +5406,15 @@ function drawCookieFace(ctx2, face, t) {
   }
 }
 function drawNest(ctx2, x, y, t) {
-  ctx2.save(), ctx2.translate(x, y), shadow(ctx2, 0, 12, 30, 8, 0.2), ctx2.beginPath(), ctx2.moveTo(-30, 12), ctx2.quadraticCurveTo(-24, -14, 0, -16), ctx2.quadraticCurveTo(24, -14, 30, 12), ctx2.closePath();
-  let g = ctx2.createLinearGradient(0, -16, 0, 12);
-  g.addColorStop(0, "#d9a77a"), g.addColorStop(1, "#a8754e"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = 3, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.fillStyle = "#c08a5e";
-  for (let [a, b] of [[-15, 2], [12, -4], [18, 6], [-6, -8]])
-    ctx2.beginPath(), ctx2.arc(a, b, 2, 0, 7), ctx2.fill();
-  ctx2.beginPath(), ctx2.ellipse(0, 4, 10, 7, 0, 0, 7), ctx2.fillStyle = "#3c2630", ctx2.fill(), ctx2.lineWidth = 2, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(14, -10), ctx2.lineTo(14, -30), ctx2.lineWidth = 2, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(14, -30), ctx2.quadraticCurveTo(22, -28 + Math.sin(t * 4) * 2, 28, -26), ctx2.lineTo(14, -22), ctx2.closePath(), ctx2.fillStyle = "#ff7a8a", ctx2.fill(), ctx2.lineWidth = 1.6, ctx2.stroke(), ctx2.restore();
+  ctx2.save(), ctx2.translate(x, y), bakedBox(ctx2, "nest", -40, -42, 80, 68, 4, (ctx3) => {
+    ctx3.translate(40, 42), shadow(ctx3, 0, 13, 32, 8, 0.24), ctx3.beginPath(), ctx3.ellipse(0, 10.5, 32, 7.5, 0, 0, 7), ctx3.fillStyle = "#7d5436", ctx3.fill(), ctx3.lineWidth = 3, ctx3.strokeStyle = INK, ctx3.stroke(), ctx3.beginPath(), ctx3.moveTo(-30, 10), ctx3.quadraticCurveTo(-25, -15, 0, -17), ctx3.quadraticCurveTo(25, -15, 30, 10), ctx3.quadraticCurveTo(0, 16, -30, 10), ctx3.closePath();
+    let g = ctx3.createRadialGradient(-9, -10, 2, 0, -2, 38);
+    g.addColorStop(0, "#f1c79a"), g.addColorStop(0.45, "#d29a69"), g.addColorStop(1, "#a8754e"), ctx3.fillStyle = g, ctx3.fill(), ctx3.lineWidth = 3, ctx3.strokeStyle = INK, ctx3.stroke(), ctx3.beginPath(), ctx3.ellipse(-12, -8.5, 8.5, 3.2, -0.55, 0, 7), ctx3.fillStyle = "rgba(255,255,255,0.5)", ctx3.fill(), ctx3.beginPath(), ctx3.arc(-4.5, -13, 1.4, 0, 7), ctx3.fillStyle = "rgba(255,255,255,0.7)", ctx3.fill();
+    for (let [a, b, r] of [[-20, 4, 2.4], [17, -3, 2.2], [22, 6, 2.6], [-6, -9, 1.8], [8, -11, 1.6]]) blob(ctx3, a, b, r, r * 0.8, "#d9a77a", 1.2, 0, { gloss: 0 });
+    ctx3.beginPath(), ctx3.ellipse(0, 5, 10.5, 7.5, 0, 0, 7);
+    let dg = ctx3.createLinearGradient(0, -2, 0, 12);
+    dg.addColorStop(0, "#2c1a24"), dg.addColorStop(1, "#4a2e3a"), ctx3.fillStyle = dg, ctx3.fill(), ctx3.lineWidth = 2.4, ctx3.strokeStyle = INK, ctx3.stroke(), ctx3.beginPath(), ctx3.ellipse(0, 5, 8.6, 5.7, 0, 0.25, Math.PI - 0.25), ctx3.lineWidth = 1.5, ctx3.strokeStyle = "rgba(255,214,170,0.8)", ctx3.stroke(), ctx3.beginPath(), ctx3.moveTo(14, -11), ctx3.lineTo(14, -31), ctx3.lineWidth = 2.4, ctx3.strokeStyle = INK, ctx3.stroke(), blob(ctx3, 14, -32, 2.2, 2.2, "#ffd45e", 1.4, 0, { gloss: 0.8 });
+  }), ctx2.beginPath(), ctx2.moveTo(14, -31), ctx2.quadraticCurveTo(22, -29 + Math.sin(t * 4) * 2, 29, -26), ctx2.lineTo(14, -21.5), ctx2.closePath(), ctx2.fillStyle = "#ff6f86", ctx2.fill(), ctx2.lineWidth = 1.8, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(16, -28.5), ctx2.quadraticCurveTo(21, -27.2 + Math.sin(t * 4) * 1.4, 24, -26), ctx2.lineWidth = 1.3, ctx2.strokeStyle = "rgba(255,255,255,0.65)", ctx2.stroke(), ctx2.restore();
 }
 var THEMES = [
   { name: "gingham", a: "#f7d3ca", b: "#f1c7bd", check: "rgba(222,112,122,0.10)", grout: "rgba(200,160,130,0.18)", trail: "#fff8ec", edge: "#d9a08c", dot: "#e7a3a3" },
@@ -5199,7 +5483,7 @@ function renderMapBackground(routes, theme, w, h, dpr2, props = []) {
       g.lineWidth = lw, g.strokeStyle = col, g.lineJoin = "round", g.lineCap = "round", g.setLineDash(dash || []), g.stroke(), g.setLineDash([]);
     }
   };
-  g.save(), g.translate(0, 5), strokeAll(40, "rgba(70,35,50,0.26)"), g.restore(), strokeAll(36, INK), g.save(), g.translate(0, 1.5), strokeAll(32, shade(th.edge, -0.28)), g.restore(), strokeAll(30, th.edge), strokeAll(25, th.trail);
+  g.save(), g.translate(0, 5), strokeAll(40, "rgba(70,35,50,0.26)"), g.restore(), strokeAll(36, INK), g.save(), g.translate(0, 1.5), strokeAll(32, shade(th.edge, -0.28)), g.restore(), strokeAll(30, th.edge), strokeAll(25, th.trail), g.save(), g.globalAlpha = 0.34, g.translate(-2, -2), strokeAll(15, mixHex(th.trail, "#ffffff", 0.5)), g.restore(), g.save(), g.globalAlpha = 0.16, g.translate(6.5, 6.5), strokeAll(5, shade(th.trail, -0.4)), g.restore();
   for (let path of routes) {
     for (let d = 14; d < path.length; d += 15) {
       let p = path.at(d), side = (Math.floor(d / 15) % 2 ? 1 : -1) * 4;
@@ -5223,6 +5507,11 @@ function renderMapBackground(routes, theme, w, h, dpr2, props = []) {
   {
     let ig = g.createLinearGradient(0, 0, 0, 12);
     ig.addColorStop(0, "rgba(70,35,50,0.22)"), ig.addColorStop(1, "rgba(70,35,50,0)"), g.fillStyle = ig, g.fillRect(0, 0, w, 12);
+  }
+  {
+    g.save(), g.beginPath(), g.rect(0, 0, w, h), g.rect(5, 5, w - 10, h - 10);
+    let rg = g.createLinearGradient(0, 0, 0, h);
+    rg.addColorStop(0, "#f0d0a4"), rg.addColorStop(0.5, "#e6bf8f"), rg.addColorStop(1, "#c99a68"), g.fillStyle = rg, g.fill("evenodd"), g.lineWidth = 2, g.strokeStyle = INK, g.strokeRect(5, 5, w - 10, h - 10), g.lineWidth = 1.4, g.strokeStyle = "rgba(255,246,222,0.85)", g.beginPath(), g.moveTo(1.5, h - 2), g.lineTo(1.5, 1.5), g.lineTo(w - 2, 1.5), g.stroke(), g.restore();
   }
   return cv;
 }
@@ -5261,13 +5550,19 @@ function drawProp(g, kind, x, y) {
 }
 function drawSwatter(ctx2, x, y, ang = 0, sc = 1, flash = 0) {
   ctx2.save(), ctx2.translate(x, y), ctx2.rotate(ang), ctx2.scale(sc, sc), ctx2.lineJoin = "round", ctx2.lineCap = "round", shadow(ctx2, 0, 2, 9, 3, 0.22), rr(ctx2, -3.2, -34, 6.4, 34, 3.2), ctx2.fillStyle = "#d9a066", ctx2.fill(), ctx2.lineWidth = 2.2, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(-1, -6), ctx2.lineTo(-1, -28), ctx2.lineWidth = 1.4, ctx2.strokeStyle = "rgba(255,240,210,0.55)", ctx2.stroke(), ctx2.beginPath(), ctx2.arc(0, -2.5, 1.7, 0, 7), ctx2.fillStyle = "#b97f48", ctx2.fill();
-  let hx = -15, hy = -78, hw = 30, hh = 46;
-  rr(ctx2, hx, hy, hw, hh, 12), ctx2.fillStyle = "#ff9fb6", ctx2.fill(), ctx2.lineWidth = 2.6, ctx2.strokeStyle = INK, ctx2.stroke(), rr(ctx2, hx + 4, hy + 4, hw - 8, hh - 8, 8), ctx2.fillStyle = "#fff6ee", ctx2.fill(), ctx2.lineWidth = 1.6, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.save(), rr(ctx2, hx + 4, hy + 4, hw - 8, hh - 8, 8), ctx2.clip(), ctx2.lineWidth = 1, ctx2.strokeStyle = "rgba(255,159,182,0.75)";
+  let hx2 = -15, hy = -78, hw = 30, hh = 46;
+  rr(ctx2, hx2, hy, hw, hh, 12), ctx2.fillStyle = "#ff9fb6", ctx2.fill(), ctx2.lineWidth = 2.6, ctx2.strokeStyle = INK, ctx2.stroke(), rr(ctx2, hx2 + 4, hy + 4, hw - 8, hh - 8, 8), ctx2.fillStyle = "#fff6ee", ctx2.fill(), ctx2.lineWidth = 1.6, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.save(), rr(ctx2, hx2 + 4, hy + 4, hw - 8, hh - 8, 8), ctx2.clip(), ctx2.lineWidth = 1, ctx2.strokeStyle = "rgba(255,159,182,0.75)";
   for (let k = 1; k < 4; k++)
-    ctx2.beginPath(), ctx2.moveTo(hx + 4 + k * 5.5, hy + 4), ctx2.lineTo(hx + 4 + k * 5.5, hy + hh - 4), ctx2.stroke();
+    ctx2.beginPath(), ctx2.moveTo(hx2 + 4 + k * 5.5, hy + 4), ctx2.lineTo(hx2 + 4 + k * 5.5, hy + hh - 4), ctx2.stroke();
   for (let k = 1; k < 6; k++)
-    ctx2.beginPath(), ctx2.moveTo(hx + 4, hy + 4 + k * 6), ctx2.lineTo(hx + hw - 4, hy + 4 + k * 6), ctx2.stroke();
-  ctx2.restore(), ctx2.fillStyle = INK, ctx2.beginPath(), ctx2.arc(-4.6, hy + 20, 2.3, 0, 7), ctx2.arc(4.6, hy + 20, 2.3, 0, 7), ctx2.fill(), ctx2.fillStyle = "#fff", ctx2.beginPath(), ctx2.arc(-5.3, hy + 19.2, 0.8, 0, 7), ctx2.arc(3.9, hy + 19.2, 0.8, 0, 7), ctx2.fill(), ctx2.fillStyle = "rgba(255,111,145,0.45)", ctx2.beginPath(), ctx2.ellipse(-8.6, hy + 25, 2.6, 1.7, 0, 0, 7), ctx2.ellipse(8.6, hy + 25, 2.6, 1.7, 0, 0, 7), ctx2.fill(), flash > 0 && (rr(ctx2, hx, hy, hw, hh, 12), ctx2.globalAlpha = flash * 0.7, ctx2.fillStyle = "#fff", ctx2.fill()), ctx2.restore();
+    ctx2.beginPath(), ctx2.moveTo(hx2 + 4, hy + 4 + k * 6), ctx2.lineTo(hx2 + hw - 4, hy + 4 + k * 6), ctx2.stroke();
+  ctx2.restore(), ctx2.fillStyle = INK, ctx2.beginPath(), ctx2.arc(-4.6, hy + 20, 2.3, 0, 7), ctx2.arc(4.6, hy + 20, 2.3, 0, 7), ctx2.fill(), ctx2.fillStyle = "#fff", ctx2.beginPath(), ctx2.arc(-5.3, hy + 19.2, 0.8, 0, 7), ctx2.arc(3.9, hy + 19.2, 0.8, 0, 7), ctx2.fill(), ctx2.fillStyle = "rgba(255,111,145,0.45)", ctx2.beginPath(), ctx2.ellipse(-8.6, hy + 25, 2.6, 1.7, 0, 0, 7), ctx2.ellipse(8.6, hy + 25, 2.6, 1.7, 0, 0, 7), ctx2.fill(), flash > 0 && (rr(ctx2, hx2, hy, hw, hh, 12), ctx2.globalAlpha = flash * 0.7, ctx2.fillStyle = "#fff", ctx2.fill()), ctx2.restore();
+}
+
+// src/uitext.js
+function levelHeaderLine(level, maps) {
+  let map = maps[level.map] ? maps[level.map].name : "";
+  return !map || map === level.name ? level.name : `${level.name}  -  ${map}`;
 }
 
 // src/audio.js
@@ -5675,12 +5970,10 @@ function hit(list, x, y) {
 }
 function drawButton(x, y, w, h, label, col = "#ffb3c1", opt = {}) {
   let press = opt.pressed ? 3 : 0;
-  ctx.save(), opt.disabled && (col = "#d8cfd6"), rr(ctx, x, y + 4, w, h, opt.r ?? 14), ctx.fillStyle = shade(col, -0.35), ctx.fill(), rr(ctx, x, y + press, w, h, opt.r ?? 14);
-  let g = ctx.createLinearGradient(0, y, 0, y + h);
-  g.addColorStop(0, shade(col, 0.35)), g.addColorStop(1, col), ctx.fillStyle = g, ctx.fill(), ctx.lineWidth = 2.5, ctx.strokeStyle = INK, ctx.stroke(), rr(ctx, x + 6, y + 4 + press, w - 12, h * 0.32, 8), ctx.fillStyle = "rgba(255,255,255,0.35)", ctx.fill(), label && (opt.disabled ? text(ctx, label, x + w / 2, y + h / 2 + press + 1, opt.size || 17, "#9a8a95", "center", null) : text(ctx, label, x + w / 2, y + h / 2 + press + 1, opt.size || 17)), ctx.restore();
+  ctx.save(), drawPillButton(ctx, x, y, w, h, opt.disabled ? "grey" : col, { pressed: !!opt.pressed, disabled: !!opt.disabled, r: opt.r ?? Math.min(14, h / 2) }), label && (opt.disabled ? drawChunkyText(ctx, label, x + w / 2, y + h / 2 + press + 1, opt.size || 17, { mode: "plain", fill: "#a89aa5" }) : drawChunkyText(ctx, label, x + w / 2, y + h / 2 + press + 1, opt.size || 17, { mode: "btn" })), ctx.restore();
 }
-function panel(x, y, w, h, col = "#fff6ee", r = 18) {
-  rr(ctx, x, y + 4, w, h, r), ctx.fillStyle = "rgba(74,52,66,0.25)", ctx.fill(), rr(ctx, x, y, w, h, r), ctx.fillStyle = col, ctx.fill(), h >= 28 && (ctx.fillStyle = "rgba(120,80,95,0.10)", rr(ctx, x + r * 0.55, y + h - 7, w - r * 1.1, 5.5, 2.7), ctx.fill(), ctx.fillStyle = "rgba(255,255,255,0.55)", ctx.fillRect(x + r * 0.5, y + 2, w - r, 1.5)), rr(ctx, x, y, w, h, r), ctx.lineWidth = 3, ctx.strokeStyle = INK, ctx.stroke();
+function panel(x, y, w, h, col = "#fff6ee", r = 18, opt = {}) {
+  drawBeveledTile(ctx, x, y, w, h, col, { lip: h >= 28 ? 4 : 3, r, lw: 3, hi: 0.55 }), opt.gold && (rr(ctx, x + 3.5, y + 3.5, w - 7, h - 7, Math.max(4, r - 3)), ctx.lineWidth = 3, ctx.strokeStyle = "#f6c648", ctx.stroke(), rr(ctx, x + 6, y + 6, w - 12, h - 12, Math.max(3, r - 5)), ctx.lineWidth = 1.2, ctx.strokeStyle = "rgba(255,248,200,0.9)", ctx.stroke());
 }
 function toast(msg, col = "#fff") {
   let small = S.screen === "battle";
@@ -5812,12 +6105,18 @@ function startBattle(levelIndex = S.levelIndex, deck = S.prep.deck, bonuses = S.
     }
   }), S.battleStartStock = { ...S.save.bonusStock }, S.fx = [], S.swatQ = [], S.ui = [], S.result = null, setPaused(!1), S.speed = startSpeed(S.speed, UI.speedMaxAtStart), clock.acc = 0, S.sel = null, S.info = null, S.mode = null, S.queenDown = null, S.modeHint = !1, S.nurseTip = !1, S.battle.rescueScale = S.speed, go("battle");
 }
+var CONFETTI_MAX = 36, MOMENT_MS = 2250, MOMENT_T = { drop: 0.2, shake: 0.45, burst: 0.6, count: 1.5, hold: 1.9, fly: 2.25 }, RESULT_PILE = { x: 200, y: 250 }, RESULT_TREAT = { x: 200, y: 201, k: 1.1 };
 function finishBattle() {
   let b = S.battle, out = applyBattleResult(S.save, b.levelIndex, b.result, b.stars, { kills: b.stats.kills, foodLeft: b.foodStored, perfect: b.perfect, time: b.time });
   b.result === "lose" && noteLossForCardBlink(S.save), persist();
   let win = b.result === "win", fullFood = b.foodStored >= b.cfg.foodHP - 1e-6, queenKilled = win && Object.keys(b.stats.byType).some((t) => isQueen(t)), hold = queenKilled ? UI.queenCheerHold : 0;
-  if (S.result = { win, stars: b.stars, out, t: 0, hold, crumbsLeft: b.crumbs, perfect: out.perfect, kills: b.stats.kills, confetti: [], fullFood, queenKilled }, win && (b.stars >= 3 || fullFood || out.perfect)) for (let i = 0; i < 90; i++) S.result.confetti.push({ x: 200 + (Math.random() - 0.5) * 60, y: 230, vx: (Math.random() - 0.5) * 420, vy: -150 - Math.random() * 320, r: Math.random() * 6, c: ["#ff8fab", "#ffd45e", "#8fe388", "#9fd3f2", "#c9b6f2"][i % 5] });
-  win && fullFood && launchFireworks(9, 2.6), queenKilled && (launchFireworks(10, 3), S.queenDown = { t: S.t, world: worldOf(b.levelIndex) }), out.prize && out.prize.kind === "cards" && out.prize.reveal && queueReveal(out.prize.id, out.prize.level, out.prize.newCard, S.t + hold + UI.perfectAnimTime + 0.4), out.bossGift && out.bossGift.reveal && queueReveal(out.bossGift.id, out.bossGift.level, out.bossGift.newCard, S.t + hold + UI.perfectAnimTime + (out.prize && out.prize.reveal ? 2.4 : 0.4)), sfx(win ? "win" : "lose");
+  S.result = { win, stars: b.stars, out, t: 0, hold, crumbsLeft: b.crumbs, perfect: out.perfect, kills: b.stats.kills, confetti: [], fullFood, queenKilled };
+  {
+    let sp = out.starParts || { s2: 0, s3: 0 };
+    win && b.stars >= 3 && sp.s3 > 0 && (S.result.moment = { amount: sp.s3, t0: out.perfect ? UI.perfectAnimTime : 1, dur: MOMENT_MS / 1e3, sfx: 0 }), win && sp.s2 > 0 && (S.result.chip2 = sp.s2);
+  }
+  if (win && (b.stars >= 3 || fullFood || out.perfect)) for (let i = 0; i < CONFETTI_MAX; i++) S.result.confetti.push({ x: 200 + (Math.random() - 0.5) * 60, y: 230, vx: (Math.random() - 0.5) * 420, vy: -150 - Math.random() * 320, r: Math.random() * 6, c: ["#ff8fab", "#ffd45e", "#8fe388", "#9fd3f2", "#c9b6f2"][i % 5] });
+  win && fullFood && launchFireworks(9, 2.6), queenKilled && (launchFireworks(10, 3), S.queenDown = { t: S.t, world: worldOf(b.levelIndex) }), out.prize && out.prize.kind === "cards" && out.prize.reveal && queueReveal(out.prize.id, out.prize.level, out.prize.newCard, S.t + hold + UI.perfectAnimTime + 0.4 + (S.result.moment ? S.result.moment.dur + 0.1 : 0)), out.bossGift && out.bossGift.reveal && queueReveal(out.bossGift.id, out.bossGift.level, out.bossGift.newCard, S.t + hold + UI.perfectAnimTime + (out.prize && out.prize.reveal ? 2.4 : 0.4) + (S.result.moment ? S.result.moment.dur + 0.1 : 0)), sfx(win ? "win" : "lose");
 }
 function tileAt(p) {
   let x = p.x, y = p.y - MAP_Y;
@@ -6043,6 +6342,7 @@ function consumeEvents() {
         break;
       case "place":
       case "upgrade": {
+        if (e.type === "place" && !reducedMotion()) for (let i = 0; i < (S.speed >= 4 ? 2 : 4); i++) addFx({ k: "dust", x: e.x + (Math.random() - 0.5) * 26, y: e.y + 9 + (Math.random() - 0.5) * 6, life: 0.45, max: 0.45 });
         let delay = e.pick != null ? 0.28 : 0;
         if (e.pick != null) {
           let sx = 12 + e.pick * 94 + 44, sy = TRAY_Y + 6 + 47;
@@ -6118,6 +6418,17 @@ function consumeEvents() {
         let fast = S.speed >= 4;
         for (let k of e.kids) for (let i = 0; i < (fast ? 1 : 3); i++) addFx({ k: "puff", x: k.x + (Math.random() - 0.5) * 8, y: k.y + (Math.random() - 0.5) * 5, vx: (Math.random() - 0.5) * 50, vy: -Math.random() * 34, r: 3 + Math.random() * 3, life: 0.45, max: 0.45 });
         addFloatText(S.fx, { key: "split", x: e.x, y: e.y - 26, n: 1, fmt: () => "Babies!", col: "#ffd0e0", life: 0.9 });
+        break;
+      }
+      case "pickup": {
+        let rm = reducedMotion(), fast = S.speed >= 4, near = null, nd = 99;
+        for (let q of b.ants) {
+          let d = Math.abs(q.x - e.x) + Math.abs(q.y - e.y);
+          d < nd && (nd = d, near = q);
+        }
+        near && nd < 6 && !rm && (near._hopT = S.t);
+        for (let i = 0; i < (rm || fast ? 1 : 3); i++) addFx({ k: "puff", x: e.x + (Math.random() - 0.5) * 8, y: e.y - 8 - Math.random() * 4, vx: rm ? 0 : (Math.random() - 0.5) * 36, vy: rm ? 0 : -14 - Math.random() * 18, r: 2.2, life: 0.4, max: 0.4 });
+        !fast && S.t - (S._pickTick || -9) > 0.14 && (S._pickTick = S.t, sfx("pop"));
         break;
       }
       case "immune":
@@ -6217,24 +6528,32 @@ function renderSettings() {
     S.confirmReset > S.t ? (S.save = newSave(), touch(S.save, now()), persist(), S.confirmReset = 0, S.cardsBlinkUntil = 0, closeSettings(), toast("Progress reset")) : S.confirmReset = S.t + 3;
   }), drawButton(x + 24, y + 190, w - 48, 48, "Close", "#d9cfe0", { size: 17 }), button("setClose", x + 24, y + 184, w - 48, 64, () => closeSettings());
 }
-var CLOTH = { a: "rgba(236,140,150,0.08)", b: "rgba(230,130,140,0.05)", tile: 80 };
 function bakeBackdrop() {
   let k = Math.min(1, 2 / dpr), cv = document.createElement("canvas");
   cv.width = Math.max(1, Math.round(canvas.width * k)), cv.height = Math.max(1, Math.round(canvas.height * k));
   let g = cv.getContext("2d");
-  g.setTransform(dpr * scale * k, 0, 0, dpr * scale * k, offX * dpr * k, offY * dpr * k);
-  let gr = g.createLinearGradient(0, 0, 0, H);
-  gr.addColorStop(0, "#fff1e6"), gr.addColorStop(1, "#fbd9cf"), g.fillStyle = gr, g.fillRect(-2e3, -2e3, W + 4e3, H + 4e3);
-  let x0 = Math.floor(-offX / scale / CLOTH.tile) * CLOTH.tile, x1 = (cw - offX) / scale, y0 = Math.floor(-offY / scale / CLOTH.tile) * CLOTH.tile, y1 = (ch - offY) / scale;
-  for (let ty = y0; ty < y1; ty += CLOTH.tile) for (let tx = x0; tx < x1; tx += CLOTH.tile)
-    g.fillStyle = CLOTH.a, g.fillRect(tx, ty, 40, 40), g.fillRect(tx + 40, ty + 40, 40, 40), g.fillStyle = CLOTH.b, g.fillRect(tx, ty, 80, 40), g.fillRect(tx, ty, 40, 80);
-  return cv;
+  g.setTransform(dpr * scale * k, 0, 0, dpr * scale * k, offX * dpr * k, offY * dpr * k), g.fillStyle = "#ffc98f", g.fillRect(-2e3, -2e3, W + 4e3, H + 4e3);
+  let x0 = -offX / scale, x1 = (cw - offX) / scale, y0 = -offY / scale, y1 = (ch - offY) / scale, DS = 44;
+  g.save(), g.translate(W / 2, H / 2), g.rotate(Math.PI / 4), g.fillStyle = "#fbc085";
+  let reach = Math.hypot(Math.max(Math.abs(x0 - W / 2), Math.abs(x1 - W / 2)), Math.max(Math.abs(y0 - H / 2), Math.abs(y1 - H / 2))), nC = Math.ceil(reach / DS) + 1;
+  for (let j = -nC; j <= nC; j++) for (let i = -nC; i <= nC; i++) (i + j & 1) !== 0 && g.fillRect(i * DS - DS / 2, j * DS - DS / 2, DS, DS);
+  g.restore();
+  let tl = g.createLinearGradient(0, y0, 0, y0 + H * 0.6);
+  tl.addColorStop(0, "rgba(255,244,226,0.42)"), tl.addColorStop(1, "rgba(255,244,226,0)"), g.fillStyle = tl, g.fillRect(x0 - 4, y0 - 4, x1 - x0 + 8, H * 0.6 + 4);
+  let vg = g.createRadialGradient(W / 2, H * 0.48, H * 0.34, W / 2, H * 0.48, H * 0.82);
+  return vg.addColorStop(0, "rgba(190,110,70,0)"), vg.addColorStop(1, "rgba(190,110,70,0.2)"), g.fillStyle = vg, g.fillRect(x0 - 4, y0 - 4, x1 - x0 + 8, y1 - y0 + 8), cv;
 }
 function drawBackdrop() {
   let key = `${canvas.width}x${canvas.height}|${dpr}|${scale.toFixed(4)}|${offX.toFixed(2)}|${offY.toFixed(2)}`;
   S.bdCache || (S.bdCache = {});
   let bd = S.bdCache[key];
-  bd || (Object.keys(S.bdCache).length >= 3 && (S.bdCache = {}), bd = S.bdCache[key] = bakeBackdrop()), ctx.save(), ctx.setTransform(1, 0, 0, 1, 0, 0), ctx.drawImage(bd, 0, 0, bd.width, bd.height, 0, 0, canvas.width, canvas.height), ctx.restore(), ctx.save(), ctx.globalAlpha = 0.35, ctx.fillStyle = "#ffffff";
+  if (bd || (Object.keys(S.bdCache).length >= 3 && (S.bdCache = {}), bd = S.bdCache[key] = bakeBackdrop()), ctx.save(), ctx.setTransform(1, 0, 0, 1, 0, 0), S.screen === "battle") {
+    let m = dpr * scale, ix = 2, tx0 = Math.max(0, Math.ceil(offX * dpr + ix)), tx1 = Math.min(canvas.width, Math.floor((offX + MAP_W * scale) * dpr - ix)), ty0 = Math.max(0, Math.ceil((offY + MAP_Y * scale) * dpr + ix)), ty1 = Math.min(canvas.height, Math.floor((offY + (MAP_Y + MAP_H) * scale) * dpr - ix)), kx = bd.width / canvas.width, ky = bd.height / canvas.height, strip = (x0, y0, x1, y1) => {
+      x1 > x0 && y1 > y0 && ctx.drawImage(bd, x0 * kx, y0 * ky, (x1 - x0) * kx, (y1 - y0) * ky, x0, y0, x1 - x0, y1 - y0);
+    };
+    tx1 > tx0 && ty1 > ty0 && m > 0 ? (strip(0, 0, canvas.width, ty0), strip(0, ty1, canvas.width, canvas.height), strip(0, ty0, tx0, ty1), strip(tx1, ty0, canvas.width, ty1)) : strip(0, 0, canvas.width, canvas.height);
+  } else ctx.drawImage(bd, 0, 0, bd.width, bd.height, 0, 0, canvas.width, canvas.height);
+  ctx.restore(), ctx.save(), ctx.globalAlpha = 0.35, ctx.fillStyle = "#ffffff";
   for (let i = 0; i < 14; i++) {
     let x = i * 97 % W, y = (i * 173 + S.t * 6) % (H + 40) - 20;
     ctx.beginPath(), ctx.arc(x, y, 6 + i % 3 * 3, 0, 7), ctx.fill();
@@ -6461,7 +6780,7 @@ function antIcon(type, x, y, s = 1) {
 }
 function renderPrep() {
   let i = S.levelIndex, L = LEVELS[i];
-  panel(12, 12, 376, 696, "#fff6ee"), text(ctx, `Level ${i + 1}`, 200, 40, 26, "#ffb3c1"), text(ctx, `${L.name}  -  ${MAPS[L.map].name}`, 200, 66, 13, "#7a5a6a", "center", null);
+  panel(12, 12, 376, 696, "#fff6ee"), drawChunkyText(ctx, `Level ${i + 1}`, 200, 40, 28, { mode: "title" }), text(ctx, levelHeaderLine(L, MAPS), 200, 66, 13, "#7a5a6a", "center", null);
   let ants = levelAntTypes(i);
   text(ctx, "Incoming ants", 30, 92, 14, "#7a5a6a", "left", null), text(ctx, `${L.waveCount} waves`, 370, 92, 14, "#7a5a6a", "right", null), levelHasFlyers(i) && (rr(ctx, 152, 82, 132, 20, 10), ctx.fillStyle = "#d7ecff", ctx.fill(), ctx.lineWidth = 1.6, ctx.strokeStyle = "#5a9fe0", ctx.stroke(), plainText("Flyers in this level", 218, 92.5, 12, "#2f6fae", "center", "800")), S.layoutPrepAnts = [];
   let n = ants.length, slot = Math.min(76, 340 / n), x0 = 200 - slot * (n - 1) / 2;
@@ -6778,7 +7097,12 @@ function drawQueenCheer(age, world) {
   let k = Math.min(1, age / 0.35), fade = age > 3.8 ? Math.max(0, 1 - (age - 3.8) / 0.7) : 1, msg = world === 4 ? ["Way to go,", "you saved the sundae!"] : world === 3 ? ["Way to go,", "you saved the pie!"] : world === 2 ? ["Way to go,", "you saved the cake!"] : ["Way to go,", "you saved the cookies!"];
   ctx.save(), ctx.globalAlpha = fade, ctx.translate(200, MAP_Y + 210);
   let sc = 0.6 + 0.4 * k + Math.sin(age * 5) * 0.03;
-  ctx.scale(sc, sc), rr(ctx, -170, -48, 340, 96, 24), ctx.fillStyle = "rgba(90,64,88,0.82)", ctx.fill(), ctx.lineWidth = 3, ctx.strokeStyle = "#ffd45e", ctx.stroke(), text(ctx, msg[0], 0, -18, 26, "#ffe36e"), text(ctx, msg[1], 0, 16, 24, "#ffffff"), ctx.restore();
+  ctx.scale(sc, sc), rr(ctx, -170, -48, 340, 96, 24), ctx.fillStyle = "rgba(90,64,88,0.82)", ctx.fill(), ctx.lineWidth = 3, ctx.strokeStyle = "#ffd45e", ctx.stroke(), text(ctx, msg[0], 0, -18, 26, "#ffe36e"), text(ctx, msg[1], 0, 16, 24, "#ffffff");
+  for (let [ax, ty, sg] of [[-146, "worker", 1], [146, "small", -1]]) {
+    let sp = antSprite(ty, 0, !1, pxRatio * 1.2, "cheer"), hop = reducedMotion() ? 0 : Math.abs(Math.sin(age * 6 + (sg > 0 ? 0 : 1.3))) * 6;
+    ctx.save(), ctx.translate(ax, -34 - hop), ctx.scale(1.2 * sg, 1.2), ctx.drawImage(sp.cv, -sp.ox, -sp.oy, sp.w, sp.h), ctx.restore();
+  }
+  ctx.restore();
 }
 var MIN_FONT = 12;
 function fitSize(str, maxW, size, weight) {
@@ -6795,8 +7119,8 @@ function drawTowerObj(tw) {
   ctx.save(), ctx.translate(tw.x, tw.y);
   let age = S.battle.time - (tw.born ?? (tw.born = S.battle.time));
   if (!reducedMotion()) {
-    if (age < 0.22) {
-      let k = age / 0.22, a = k < 0.4 ? k / 0.4 : (k - 0.4) / 0.6, sx = k < 0.4 ? 1.15 + (0.95 - 1.15) * a : 0.95 + 0.05 * a, sy = k < 0.4 ? 0.85 + (1.05 - 0.85) * a : 1.05 - 0.05 * a;
+    if (age < 0.26) {
+      let k = age / 0.26, a = k < 0.4 ? k / 0.4 : (k - 0.4) / 0.6, sx = k < 0.4 ? 1.22 + (0.95 - 1.22) * a : 0.95 + 0.05 * a, sy = k < 0.4 ? 0.78 + (1.06 - 0.78) * a : 1.06 - 0.06 * a;
       ctx.scale(sx, sy);
     }
   }
@@ -6843,10 +7167,14 @@ function drawNurseHud(a, H2, x, y, frozen) {
 function drawAntObj(a, ghost = !1) {
   let b = S.battle, frozen = b.time < b.freezeUntil, p = b.route(a).at(a.d);
   Math.abs(p.dx) > 0.3 && (a._face = p.dx * (a.dir || 1) >= 0 ? 1 : -1);
-  let face = a._face ?? 1, speedK2 = a.type === "small" ? 2.2 : a.type === "sprinter" ? 2.4 : a.type === "queen" ? 0.6 : a.type === "big" ? 1 : a.type === "heavy" ? 0.9 : 1.5, still = frozen || a.stunT > 0, fr = still ? 0 : Math.floor((b.time + a.id * 0.37) * speedK2 * ANT_FRAMES) % ANT_FRAMES, H2 = ANTS[a.type].heal, spent = !!H2 && (frozen || a.healCd > 0), spr = antSprite(a.type, fr, a.carrying > 0, pxRatio, spent ? "g" : ""), breathe = still ? 1 + Math.sin(S.t * 5 + a.id) * 0.035 : 1, lat = (a.id * 37 % 9 - 4) * 1.2;
+  let face = a._face ?? 1, speedK2 = a.type === "small" ? 2.2 : a.type === "sprinter" ? 2.4 : a.type === "queen" ? 0.6 : a.type === "big" ? 1 : a.type === "heavy" ? 0.9 : 1.5, still = frozen || a.stunT > 0, fr = still ? 0 : Math.floor((b.time + a.id * 0.37) * speedK2 * ANT_FRAMES) % ANT_FRAMES, H2 = ANTS[a.type].heal, mood = !!H2 && (frozen || a.healCd > 0) ? "g" : a.hitFlash > 0.02 && !reducedMotion() ? "h" : a.stunT > 0 ? "d" : "", spr = antSprite(a.type, fr, a.carrying > 0, pxRatio, mood), breathe = still ? 1 + Math.sin(S.t * 5 + a.id) * 0.035 : 1, lat = (a.id * 37 % 9 - 4) * 1.2;
   a.state === "back" && (lat = UI.carrierLane + lat * 0.4);
-  let x = a.x + p.dy * lat, y = a.y - p.dx * lat;
-  if (ctx.save(), ctx.translate(x, y + 4), ctx.scale(face / breathe, breathe), a.hitFlash > 0 && !reducedMotion()) {
+  let x = a.x + p.dy * lat, y = a.y - p.dx * lat, hopY = 0, hopS = 1;
+  if (a._hopT && !reducedMotion()) {
+    let hk = (S.t - a._hopT) / 0.24;
+    hk >= 0 && hk < 1 && (hopY = -Math.sin(hk * Math.PI) * 4, hopS = 1 + 0.1 * Math.sin(hk * Math.PI * 2) * (1 - hk));
+  }
+  if (ctx.save(), ctx.translate(x, y + 4 + hopY), ctx.scale(face / breathe, breathe * hopS), a.hitFlash > 0 && !reducedMotion()) {
     let q = Math.min(1, a.hitFlash / 0.12), sq = 0.12 * q * q;
     ctx.scale(1 + sq, 1 - sq);
   }
@@ -7103,7 +7431,12 @@ function plainText(s, x, y, size, col, align = "left", weight = "500") {
 var TRAY = { cardY: 6, cardH: 94, waveY: 6, waveH: 48, rerollY: 58, rerollH: 36, rowY: 108, rowH: 44 };
 function renderTray(b) {
   let y0 = TRAY_Y, L = TRAY;
-  panel(4, y0, 392, H - y0 - 4, "#ffe9df", 18);
+  bakedBox(ctx, "tray", 4, y0, 392, H - y0 - 8, 4, (g, w, h) => {
+    drawBeveledTile(g, 0, 0, w, h, "#ffe3d2", { lip: 4, r: 18, lw: 3, hi: 0.6 }), g.save(), rrPath(g, 3, 3, w - 6, h - 6, 15), g.clip(), g.fillStyle = "rgba(255,213,191,0.55)";
+    for (let x = 0; x < w; x += 24) g.fillRect(x + 6, 0, 12, h);
+    for (let y = 0; y < h; y += 24) g.fillRect(0, y + 6, w, 12);
+    g.restore(), rrPath(g, 0, 0, w, h, 18), g.lineWidth = 3, g.strokeStyle = INK, g.stroke();
+  });
   let cost = b.nextCardCost, afford = b.crumbs >= cost;
   for (let i = 0; i < b.picks.length; i++) {
     let x = 12 + i * 94, y = y0 + L.cardY, w = 88, h = L.cardH, selected = S.sel && S.sel.kind === "card" && S.sel.i === i || S.drag && S.drag.i === i;
@@ -7166,6 +7499,37 @@ function renderPause() {
     S.battle = null, go("map");
   });
 }
+function drawStarMoment(MO, rt, tRes) {
+  let rm = reducedMotion(), CX = 200, CY = 345, T = MOMENT_T, amount = Math.round(rm ? MO.amount * Math.min(1, Math.max(0, (rt - 0.2) / 0.3)) : MO.amount * (1 - Math.pow(1 - Math.min(1, Math.max(0, (rt - T.burst) / (T.count - T.burst))), 3))), x = CX, y = CY, sc = 1, rot = 0, al = 1;
+  if (rm)
+    al = rt < 0.2 ? rt / 0.2 : rt > 0.85 ? Math.max(0, 1 - (rt - 0.85) / 0.25) : 1;
+  else if (rt < T.drop) {
+    let k = rt / T.drop;
+    y = 150 + (CY - 150) * easeOutBack(k), sc = 0.6 + 0.4 * k, al = Math.min(1, k * 3);
+  } else if (rt < T.shake) {
+    let k = (rt - T.drop) / (T.shake - T.drop);
+    rot = Math.sin(k * Math.PI * 6) * 0.07 * (1 - k);
+  } else if (rt >= T.hold) {
+    let k = Math.min(1, (rt - T.hold) / (T.fly - T.hold)), e = k * k;
+    x = CX + (240 - CX) * e, y = CY + (468 - CY) * e, sc = 1 - 0.7 * e, al = 1 - 0.85 * e;
+  } else if (rt >= T.count && rt < T.count + 0.12) {
+    let k = (rt - T.count) / 0.12;
+    sc = 1 + 0.08 * Math.sin(k * Math.PI);
+  }
+  if (!rm && rt >= T.shake - 0.01 && rt < T.burst + 0.2 && lightBurst(ctx, CX, CY, 150 * Math.min(1, (rt - T.shake + 0.05) / 0.3), tRes * 2, { alpha: 0.7, rays: 12 }), !rm && rt >= T.burst && rt < T.burst + 0.35 && MO.sfx < 1 && (MO.sfx = 1, sfx("upgrade")), rm && rt >= 0.2 && MO.sfx < 1 && (MO.sfx = 1, sfx("win")), !rm && rt >= T.burst && rt < T.count) {
+    let n = Math.floor((rt - T.burst) / 0.15);
+    n > MO.sfx - 1 && n < 7 && (MO.sfx = n + 2, sfx("pop"));
+  }
+  ctx.save(), ctx.globalAlpha = Math.max(0, al), ctx.translate(x, y), ctx.rotate(rot), ctx.scale(sc, sc), drawBeveledTile(ctx, -76, -49, 152, 98, "#ffe58a", { lip: 5, r: 18, lw: 3, hi: 0.8 }), rr(ctx, -72, -45, 144, 90, 15), ctx.lineWidth = 3, ctx.strokeStyle = "#f2a81d", ctx.stroke();
+  for (let i = 0; i < 3; i++) candyStar(ctx, -26 + i * 26, i === 1 ? -33 : -29, i === 1 ? 11 : 9, "#ffd23f", 1.8);
+  if (coinIcon(ctx, -42, 4, 1.5), drawChunkyText(ctx, `+${amount}`, 10, 4, 38, { mode: "title" }), drawChunkyText(ctx, "3-STAR REWARD", 0, 35, 14, { mode: "btn" }), ctx.restore(), !rm && rt >= T.burst && rt < T.burst + 0.5) {
+    let k = (rt - T.burst) / 0.5;
+    for (let i = 0; i < 12; i++) {
+      let a = i * Math.PI / 6 + 0.3, d = 40 + 70 * k * (0.7 + i % 3 * 0.15);
+      sparkle(ctx, CX + Math.cos(a) * d, CY + Math.sin(a) * d * 0.8, 5 * (1 - k * 0.6), i % 2 ? "#fff7a8" : "#ffe27a", a);
+    }
+  }
+}
 function renderResult(dt) {
   let R = S.result, out = R.out;
   if (R.hold > 0) {
@@ -7173,12 +7537,15 @@ function renderResult(dt) {
     });
     return;
   }
-  R.t += dt, ctx.fillStyle = "rgba(60,40,55,0.5)", ctx.fillRect(-2e3, -2e3, W + 4e3, H + 4e3), button("resultBlock", -2e3, -2e3, W + 4e3, H + 4e3, () => {
-  });
+  R.t += dt;
+  let MO = R.moment || null, rtM = MO ? R.skipped ? 99 : R.t - MO.t0 : 99, momentBusy = !!MO && !R.skipped && rtM < MO.dur;
+  ctx.fillStyle = "rgba(38,28,16,0.72)", ctx.fillRect(-2e3, -2e3, W + 4e3, H + 4e3), button("resultBlock", -2e3, -2e3, W + 4e3, H + 4e3, () => {
+    momentBusy && (R.skipped = !0);
+  }), R.win && !reducedMotion() && lightBurst(ctx, RESULT_TREAT.x, RESULT_TREAT.y, 230, R.t, { alpha: 0.5 });
   let celebrating = R.perfect && R.t < UI.perfectAnimTime, pop = Math.min(1, R.t * 4);
-  ctx.save(), ctx.translate(200, 360), ctx.scale(0.7 + pop * 0.3, 0.7 + pop * 0.3), ctx.translate(-200, -360), panel(36, 120, 328, 480, "#fff6ee");
+  ctx.save(), ctx.translate(200, 360), ctx.scale(0.7 + pop * 0.3, 0.7 + pop * 0.3), ctx.translate(-200, -360), panel(36, 120, 328, 480, "#fff6ee", 18, { gold: R.win });
   let tk = treatOf(S.battle.levelIndex), TN = TREAT_NAME[tk] || "Cookie", title = R.perfect ? `Perfect ${TN}!` : R.win ? `${TN} saved!` : `${TN} eaten!`, ts = R.perfect ? 30 + Math.max(0, 0.3 - R.t) * 30 + Math.sin(R.t * 6) * 1.5 : 28;
-  if (text(ctx, title, 200, 156, ts, R.perfect ? "#ffd45e" : R.win ? "#9fe0b5" : "#ff9a9a"), R.perfect) {
+  if (R.win ? drawChunkyText(ctx, title, 200, 156, ts, { mode: "title" }) : drawChunkyText(ctx, title, 200, 156, ts, { mode: "plain", fill: "#ffb4ac" }), R.perfect) {
     ctx.save(), ctx.globalAlpha = 0.35 + Math.sin(R.t * 4) * 0.15;
     let g = ctx.createRadialGradient(200, 212, 10, 200, 212, 70);
     g.addColorStop(0, "#fff6a8"), g.addColorStop(1, "rgba(255,246,168,0)"), ctx.fillStyle = g, ctx.beginPath(), ctx.arc(200, 212, 70, 0, 7), ctx.fill(), ctx.restore();
@@ -7187,12 +7554,28 @@ function renderResult(dt) {
       starShape(ctx, 200 + Math.cos(a) * 52, 212 + Math.sin(a) * 40, 4, "#ffe36e", 1);
     }
   }
-  drawTreat(ctx, tk, 200, 212, R.win ? S.battle.foodStored / S.battle.cfg.foodHP : 0.05, S.t, R.win ? { face: "happy" } : {}), R.queenKilled && plainFit(tk === "cake" ? "Way to go, you saved the cake!" : tk === "pie" ? "Way to go, you saved the pie!" : tk === "sundae" ? "Way to go, you saved the sundae!" : "Way to go, you saved the cookies!", 200, 180, 300, 13, "#e0607e", "center", "800");
+  if (R.win) {
+    let pk = 0.9 + Math.min(0.3, (out.coins || 0) / 600);
+    drawCoinPile(ctx, RESULT_PILE.x, RESULT_PILE.y, Math.round(pk * 4) / 4), ctx.save(), ctx.translate(RESULT_TREAT.x, RESULT_TREAT.y), ctx.scale(RESULT_TREAT.k, RESULT_TREAT.k), drawTreat(ctx, tk, 0, 0, S.battle.foodStored / S.battle.cfg.foodHP, S.t, { face: "happy" }), ctx.restore();
+  } else {
+    drawTreat(ctx, tk, 200, 205, 0.05, S.t, {});
+    let hop = (k) => reducedMotion() ? 0 : Math.abs(Math.sin(S.t * 5 + k)) * 5;
+    for (let [ax, k, ty] of [[92, 0, "worker"], [308, 1.7, "small"]]) {
+      let sp = antSprite(ty, 0, !1, pxRatio * 1.25, "cheer");
+      ctx.save(), ctx.translate(ax, 240 - hop(k)), ctx.scale(1.25 * (k ? -1 : 1), 1.25), ctx.drawImage(sp.cv, -sp.ox, -sp.oy, sp.w, sp.h), ctx.restore(), contactShadow(ctx, ax, 244, 20, 5, 0.22);
+    }
+  }
+  R.queenKilled && plainFit(tk === "cake" ? "Way to go, you saved the cake!" : tk === "pie" ? "Way to go, you saved the pie!" : tk === "sundae" ? "Way to go, you saved the sundae!" : "Way to go, you saved the cookies!", 200, 180, 300, 13, "#e0607e", "center", "800");
   for (let s = 0; s < 3; s++) {
     let on = s < R.stars && R.t > 0.3 + s * 0.25, sc = on ? 1 + Math.max(0, 0.2 - (R.t - 0.3 - s * 0.25)) * 3 : 1;
     starShape(ctx, 140 + s * 60, 270, 18 * sc, on ? "#ffd45e" : "#e8dde4", 2.5);
   }
-  text(ctx, `Food left: ${fmtFood(S.battle.foodStored)}/${S.battle.cfg.foodHP}   Ants beaten: ${R.kills}`, 200, 302, 12, "#7a5a6a", "center", null);
+  if (R.chip2 && R.t > 0.55) {
+    let k = Math.min(1, (R.t - 0.55) * 5), cx2 = 322, cy2 = 270;
+    ctx.save(), ctx.translate(cx2, cy2), ctx.scale(0.6 + 0.4 * easeOutBack(k), 0.6 + 0.4 * easeOutBack(k)), drawBeveledTile(ctx, -30, -12, 60, 24, "#ffe9a8", { lip: 2, r: 12, lw: 2, hi: 0.6 }), coinIcon(ctx, -17, 0, 1), drawChunkyText(ctx, `+${R.chip2}`, 6, 0, 14, { mode: "num" }), ctx.restore();
+  }
+  let bodyA = MO && !R.skipped ? Math.max(0, Math.min(1, (rtM - MOMENT_T.hold) / 0.35)) : 1;
+  text(ctx, `Food left: ${fmtFood(S.battle.foodStored)}/${S.battle.cfg.foodHP}   Ants beaten: ${R.kills}`, 200, 302, 12, "#7a5a6a", "center", null), ctx.save(), ctx.globalAlpha = bodyA;
   let P = out.parts || {}, rows = [];
   R.win ? (rows.push(["Victory", P.base]), rows.push(["Food left", P.food]), rows.push(["Ants beaten", P.kills]), P.level && rows.push(["Level reward", P.level]), P.firstClear && rows.push(["First clear", P.firstClear]), P.stars && rows.push(["Star bonus", P.stars])) : rows.push(["Ants beaten", P.kills || 0]), rows.push([R.win ? "Time survived" : `Time survived${out.coins >= ECONOMY.lossCap ? ` (max ${ECONOMY.lossCap})` : ""}`, P.time || 0]);
   let RS = rows.length > 5 ? 14 : 16;
@@ -7214,10 +7597,10 @@ function renderResult(dt) {
     let k = Math.min(1, (R.t - UI.perfectAnimTime) * 4);
     strip(yy + 12 + (out.prize ? 34 : 0), out.bossGift, cardLabel(out.bossGift, "Boss gift"), k);
   }
-  !(out.prize && !celebrating) && !gift && R.win && !R.perfect && S.battle.stats.stolen > 0 && text(ctx, "Tip: lose no food at all for a Perfect prize", 200, yy + 10, 12, "#a08090", "center", null), ctx.restore();
+  !(out.prize && !celebrating) && !gift && R.win && !R.perfect && S.battle.stats.stolen > 0 && text(ctx, "Tip: lose no food at all for a Perfect prize", 200, yy + 10, 12, "#a08090", "center", null), ctx.restore(), ctx.restore(), MO && rtM > -0.01 && rtM < MO.dur && drawStarMoment(MO, rtM, R.t);
   for (let c of R.confetti)
-    c.vy += 420 * dt, c.x += c.vx * dt, c.y += c.vy * dt, c.r += dt * 8, c.y < 760 && (ctx.save(), ctx.translate(c.x, c.y), ctx.rotate(c.r), ctx.fillStyle = c.c, ctx.fillRect(-4, -2.5, 8, 5), ctx.restore());
-  if (celebrating) return;
+    c.vy += 420 * dt, c.x += c.vx * dt, c.y += c.vy * dt, c.r += dt * 8, c.y < 760 && candyStar(ctx, c.x, c.y, 4 + c.r * 7 % 3, c.c, 1.2, c.r);
+  if (celebrating || MO && !R.skipped && R.t < MO.t0 + MO.dur) return;
   let by = 540;
   if (out.zapperGift && zapperGiftPending(S.save)) {
     drawButton(100, by, 200, 50, "Continue", "#9fe0b5"), button("rcontinue", 100, by, 200, 50, () => {
@@ -7697,4 +8080,11 @@ function renderFireworks(dt) {
 heartbeat(!0);
 maybeShowCalendar();
 S.save.onboard && S.save.onboard.grantedOnLoad && (queueReveal("zapper", 1, !0, S.t + 0.4), S.save.onboard.grantedOnLoad = !1, persist());
+try {
+  document.fonts && document.fonts.load && document.fonts.load("22px 'Lilita One'").then(() => {
+    setFontReady(!0), S.bdCache = null;
+  }, () => {
+  });
+} catch {
+}
 requestAnimationFrame(frame);
