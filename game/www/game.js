@@ -2523,7 +2523,7 @@ var tuning_default = {
       name: "Picnic Blanket",
       map: "w6_picnic_blanket",
       waveCount: 7,
-      hpMul: 4.16,
+      hpMul: 4.05,
       interval: 1,
       waves: [
         [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
@@ -2639,7 +2639,6 @@ var tuning_default = {
     },
     fork: {
       name: "Sugar Bowl Split",
-      art: { chev: 0 },
       theme: 3,
       grid: [
         "....N.....",
@@ -3456,7 +3455,7 @@ var tuning_default = {
     },
     w6_waffle_iron: {
       name: "Waffle Iron",
-      art: { plate: { dy: -21.5, scale: 0.92 } },
+      art: { plate: { hide: !0 } },
       theme: 9,
       grid: [
         "N........S",
@@ -3825,7 +3824,7 @@ var AIR_COUNTERS = ["laser", "zapper"], TARGET_MODE_TEXT = {
   lizard: { carrier: "Targets ants carrying food first, then fewest HP left; chews after kills.", healer: "Targets healer ants first, then fewest HP left; chews after kills.", strong: "Targets the toughest ant first; chews after kills. For queen levels." },
   laser: { carrier: "Aims at ants carrying food first, then fewest HP. Heat: +12% per hit on the same ant.", healer: "Aims at healer ants first, then fewest HP. Heat: +12% per hit on the same ant.", strong: "Aims at the toughest ant first. Heat: +12% per hit. For queen levels." },
   zapper: { carrier: "First zap: food carriers first, then fewest HP. Chains to the nearest flyers (60% each jump).", healer: "First zap: healer flyers first, then fewest HP. Chains to the nearest flyers (60% each jump).", strong: "First zap: the toughest flyer first. Chains to the nearest flyers. For queen levels." }
-}, HINT_OK = { healer: [35, 39, 49, 59], carrier: [40, 50, 59, 60], drone: [60] }, ART81 = !0, VERSION = "0.8.2", ANT_SIZES = { ...tuning_default.antSizes }, ANT_TEXT = {
+}, HINT_OK = { healer: [35, 39, 49, 59], carrier: [40, 50, 59, 60], drone: [60] }, ART81 = !0, VERSION = "0.8.3", ANT_SIZES = { ...tuning_default.antSizes }, ANT_TEXT = {
   small: { name: "Scout Ant", desc: "Tiny, fast, comes in swarms.", intro: "Tiny and fast. They come in swarms." },
   worker: { name: "Worker Ant", desc: "The regular. Hard hat included.", intro: "The regular ant. Easy to stop." },
   big: { name: "Big Ant", desc: "Slow, chunky, a bit of armor.", intro: "Slow and chunky, with a bit of armour." },
@@ -3862,7 +3861,7 @@ var AIR_COUNTERS = ["laser", "zapper"], TARGET_MODE_TEXT = {
   // v0.8.2 PP9 (shown once on the first prep screen of L52)
   queen6: "Syrup Queen \u2014 she walks, and drips a Drone every 12 seconds. Keep an air tower ready."
   // v0.8.2 PP5/PP9
-}, L42_TIP = "Glaze grows back. Focus fire.", QUEEN_TRAITS = { ...tuning_default.queenTraitMods };
+}, W6_TIPS = { 50: "Pancakes first. Syrup is next.", 51: "Drones fly. Only air towers hit them.", 52: "A long, winding picnic path.", 53: "Syrup is sticky. So are queens.", 54: "Halfway through the picnic.", 55: "Heavy hitters on this table.", 56: "Fewer ant types, bigger crowds.", 57: "The cookie waits at the end.", 58: "Drones and nurses arrive together.", 59: "The Syrup Queen drips Drones." }, L42_TIP = "Glaze grows back. Focus fire.", QUEEN_TRAITS = { ...tuning_default.queenTraitMods };
 function queenTake(traits = [], T = QUEEN_TRAITS) {
   return 50 + traits.reduce((s, t) => s + (T[t] || 0), 0);
 }
@@ -4030,17 +4029,17 @@ var BONUSES = {
 }, WORLD_START = Object.fromEntries(WORLDS.map((w) => [w.id, LEVELS.findIndex((L) => L.world === w.id)])), worldOf = (i) => LEVELS[i] ? LEVELS[i].world : 1, treatOf = (i) => TREATS[worldOf(i)] || "cookie";
 var SKINS = [
   { id: "slingshot-1", tower: "slingshot", name: "Bubblegum", tier: 1, price: 1500, pad: "#ef51ee" },
-  { id: "slingshot-2", tower: "slingshot", name: "Lime", tier: 2, price: 3e3, pad: "#42ab0f" },
-  { id: "slingshot-3", tower: "slingshot", name: "Lagoon", tier: 3, price: 6e3, pad: "#0fa7a8" },
-  { id: "laser-1", tower: "laser", name: "Periwinkle", tier: 1, price: 1500, pad: "#9087f9" },
-  { id: "laser-2", tower: "laser", name: "Leaf", tier: 2, price: 3e3, pad: "#4ca809" },
-  { id: "laser-3", tower: "laser", name: "Jade", tier: 3, price: 6e3, pad: "#09a880" },
-  { id: "zapper-1", tower: "zapper", name: "Fern", tier: 1, price: 1500, pad: "#5da807" },
-  { id: "zapper-2", tower: "zapper", name: "Flamingo", tier: 2, price: 3e3, pad: "#f959ae" },
-  { id: "zapper-3", tower: "zapper", name: "Mustard", tier: 3, price: 6e3, pad: "#b59307" },
-  { id: "sound-1", tower: "sound", name: "Mint", tier: 1, price: 1500, pad: "#27a67a" },
+  { id: "slingshot-2", tower: "slingshot", name: "Sandstone", tier: 2, price: 3e3, pad: "#a09760" },
+  { id: "slingshot-3", tower: "slingshot", name: "Meadow", tier: 3, price: 6e3, pad: "#53a764" },
+  { id: "laser-1", tower: "laser", name: "Denim", tier: 1, price: 1500, pad: "#6c9bb4" },
+  { id: "laser-2", tower: "laser", name: "Orchid", tier: 2, price: 3e3, pad: "#d86cd2" },
+  { id: "laser-3", tower: "laser", name: "Olive", tier: 3, price: 6e3, pad: "#9e9820" },
+  { id: "zapper-1", tower: "zapper", name: "Fuchsia", tier: 1, price: 1500, pad: "#ff4cc1" },
+  { id: "zapper-2", tower: "zapper", name: "Caramel", tier: 2, price: 3e3, pad: "#c58a4f" },
+  { id: "zapper-3", tower: "zapper", name: "Dusty Rose", tier: 3, price: 6e3, pad: "#d17d92" },
+  { id: "sound-1", tower: "sound", name: "Persimmon", tier: 1, price: 1500, pad: "#f06a48" },
   { id: "sound-2", tower: "sound", name: "Coral", tier: 2, price: 3e3, pad: "#db7766" },
-  { id: "sound-3", tower: "sound", name: "Moss", tier: 3, price: 6e3, pad: "#67a326" }
+  { id: "sound-3", tower: "sound", name: "Mauve", tier: 3, price: 6e3, pad: "#c979b5" }
 ], SKIN_TOWERS = ["slingshot", "laser", "zapper", "sound"];
 var DAILY_WIN = { base: 50, capMul: 2 };
 
@@ -5479,6 +5478,17 @@ function antLevels(type) {
     levelAntTypes(i).includes(type) && out.push(i + 1);
   }), out;
 }
+function airFixPlan(deck, owned, levels, max, air = AIR_COUNTERS) {
+  if (deck.some((d) => air.includes(d))) return null;
+  let add = ["laser", "zapper"].find((id) => air.includes(id) && owned.includes(id));
+  if (!add) return null;
+  if (deck.length < max) return { add, drop: null };
+  let rank = (id) => (levels[id] ? levels[id].level : 1) * 10 + rarityRank(id), drop = null, best = 1e9;
+  return deck.forEach((id) => {
+    let r = rank(id);
+    r <= best && (best = r, drop = id);
+  }), { add, drop };
+}
 
 // src/calendar.js
 var DAY = 864e5;
@@ -5925,7 +5935,7 @@ function mapNode(ctx2, x, y, i, st, t = 0) {
 function starShape(ctx2, x, y, r, fill, lw = 2) {
   candyStar(ctx2, x, y, r, fill, lw);
 }
-var ANT_COL = { small: "#f8c07e", worker: "#f0994d", big: "#d97a3f", gasmask: "#f0994d", armored: "#e48a47", flyer: "#f9b878", queen: "#f59b9b", queen2: "#c7a6f5", sprinter: "#f0994d", heavy: "#b95b34", greasy: "#ee9f45", mama: "#d9774a", queen3: "#e9b05c", nurse: "#f2b49b", queen4: "#f4b9c8", glazed: "#f1cf9a", queen5: "#f7b6c8", drone: "#e8a33d", queen6: "#c9772b" }, ALW = 2.4;
+var ANT_COL = { small: "#f8c07e", worker: "#f0994d", big: "#d97a3f", gasmask: "#f0994d", armored: "#e48a47", flyer: "#f9b878", queen: "#f59b9b", queen2: "#c7a6f5", sprinter: "#f0994d", heavy: "#b95b34", greasy: "#ee9f45", mama: "#d9774a", queen3: "#e9b05c", nurse: "#f2b49b", queen4: "#f4b9c8", glazed: "#f1cf9a", queen5: "#e8789c", drone: "#e8a33d", queen6: "#c9772b" }, ALW = 2.4;
 function softBlob(ctx2, x, y, rx, ry, col, lw = ALW, gloss = 1) {
   drawGlossyBlob(ctx2, x, y, rx, ry, col, { lw, gloss });
 }
@@ -7252,7 +7262,7 @@ function renderMapBackground(routes, theme, w, h, dpr2, props = [], art = {}) {
     for (let k = 0; k < 30; k++)
       g.fillStyle = "rgba(255,255,255,0.25)", g.fillRect(Math.floor(rnd() * 10) * 40 + 3, Math.floor(rnd() * 12) * 40 + 3, 12, 3);
   }
-  if (th.moon) {
+  if (ART81 && (g.fillStyle = "rgba(70,35,50," + (art.wash ?? 0.02) + ")", g.fillRect(0, 0, w, h)), th.moon) {
     let mg = g.createRadialGradient(w * 0.85, -20, 10, w * 0.85, -20, 300);
     mg.addColorStop(0, "rgba(255,255,230,0.45)"), mg.addColorStop(1, "rgba(255,255,230,0)"), g.fillStyle = mg, g.fillRect(0, 0, w, h);
   }
@@ -7288,8 +7298,8 @@ function renderMapBackground(routes, theme, w, h, dpr2, props = [], art = {}) {
       g.fillStyle = "#e8b878", g.beginPath(), g.ellipse(p.x + p.dy * o, p.y - p.dx * o, 2, 1.5, rnd() * 3, 0, 7), g.fill();
     }
   }
-  if (ART81 && (art.chev ?? 0.03) > 0) {
-    g.save(), g.lineCap = "round", g.lineJoin = "round", g.lineWidth = 1.8, g.strokeStyle = `rgba(82,60,75,${art.chev ?? 0.03})`;
+  if (ART81 && (art.chev ?? 0.08) > 0) {
+    g.save(), g.lineCap = "round", g.lineJoin = "round", g.lineWidth = 1.8, g.strokeStyle = `rgba(82,60,75,${art.chev ?? 0.08})`;
     for (let path of routes) for (let d = 70; d < path.length - 30; d += 120) {
       let p = path.at(d);
       g.save(), g.translate(p.x, p.y), g.rotate(Math.atan2(p.dy, p.dx)), g.beginPath(), g.moveTo(-3, -4), g.lineTo(3, 0), g.lineTo(-3, 4), g.stroke(), g.restore();
@@ -8352,11 +8362,41 @@ function flushSwat(force) {
   }
   S.swatQ = keep;
 }
+var spCueN = 0;
+function spCue(e) {
+  if (spCueN >= 6) return;
+  let alive = 0;
+  for (let i = 0; i < S.fx.length; i++) (S.fx[i].k === "spArc" || S.fx[i].k === "spCrack" || S.fx[i].k === "spGold") && alive++;
+  if (!(alive >= 12)) {
+    if (spCueN++, reducedMotion()) {
+      addFx({ k: "impact", shape: "tint", col: e.sp === "crescendo" ? "#ffd24a" : "#fff2b8", x: e.x, y: e.y, life: 0.05, max: 0.05 });
+      return;
+    }
+    switch (e.sp) {
+      case "ricochet":
+        addFx({ k: "spArc", x: e.x, y: e.y, tx: e.tx, ty: e.ty, life: 0.09, max: 0.09 });
+        break;
+      case "burnthrough":
+        addFx({ k: "spCrack", x: e.x, y: e.y, life: 0.12, max: 0.12 });
+        break;
+      case "crescendo":
+        addFx({ k: "spGold", x: e.x, y: e.y, r: 52, life: 0.4, max: 0.4 });
+        break;
+      case "pounce":
+        addFx({ k: "txt", s: "!", x: e.x, y: e.y - 6, size: 14, col: "#fff2b8", life: 0.5, max: 0.5 }), addFx({ k: "impact", shape: "spoke3", col: "#fff4c8", x: e.x, y: e.y, life: 0.2, max: 0.2 });
+        break;
+    }
+  }
+}
 function consumeEvents() {
   let b = S.battle, ev = b.events;
-  b.events = [];
+  b.events = [], spCueN = 0;
   for (let e of ev)
     switch (e.type) {
+      case "special":
+        ART81 && spCue(e);
+        break;
+      // v0.8.3 M7h: field-layer cues only (no background layer, no sim event added)
       case "kill":
         if (e.src === "swatter" && !reducedMotion() && b.swatFx > 0) {
           S.swatQ.push({ at: swatHitTime(b), kill: e, ghost: e.ref, x: e.x, y: e.y });
@@ -8495,7 +8535,7 @@ function consumeEvents() {
         break;
       case "wave": {
         let lastW = e.n >= b.totalWaves, queen = lastW && isBossLevel(b.levelIndex);
-        addFx(ART81 ? { k: "banner", pill: !0, last: lastW, s: queen ? "Queen!" : lastW ? `Final wave ${e.n}/${b.totalWaves}` : `Wave ${e.n}/${b.totalWaves}`, life: 1.08, max: 1.08 } : { k: "banner", s: `Wave ${e.n}`, life: 1.4, max: 1.4 }), sfx("wave"), lastW && ART81 && setTimeout(() => sfx("wave"), 380), ART81 && b.levelIndex === 41 && e.n === 2 && markAntSeen(S.save, "tip:glazed42") && (persist(), toast(L42_TIP, "#ffe39a"), S.toast.hint = !0), b.levelIndex === 31 && e.n === 2 && !S.nurseTip && (S.nurseTip = !0, toast("Nurse ants heal their friends. Pop them first!", "#ffe39a"), S.toast.hint = !0);
+        addFx(ART81 ? { k: "banner", pill: !0, last: lastW, s: queen ? "Queen!" : lastW ? `Final wave ${e.n}/${b.totalWaves}` : `Wave ${e.n}/${b.totalWaves}`, life: 1.08, max: 1.08 } : { k: "banner", s: `Wave ${e.n}`, life: 1.4, max: 1.4 }), sfx("wave"), lastW && ART81 && setTimeout(() => sfx("wave"), 380), ART81 && b.levelIndex >= 50 && b.levelIndex <= 59 && e.n === 2 && W6_TIPS[b.levelIndex] && markAntSeen(S.save, "tip:w6-" + (b.levelIndex + 1)) && (persist(), toast(W6_TIPS[b.levelIndex], "#ffe39a"), S.toast.hint = !0), ART81 && b.levelIndex === 41 && e.n === 2 && markAntSeen(S.save, "tip:glazed42") && (persist(), toast(L42_TIP, "#ffe39a"), S.toast.hint = !0), b.levelIndex === 31 && e.n === 2 && !S.nurseTip && (S.nurseTip = !0, toast("Nurse ants heal their friends. Pop them first!", "#ffe39a"), S.toast.hint = !0);
         break;
       }
       case "shieldBreak": {
@@ -8900,8 +8940,21 @@ function onboardSpot(R, id, onTap, msg, bub = null, dim = 0.66) {
 function nextHintWanted() {
   return ART81 && !0;
 }
+function drawWorldReveal(sc) {
+  let r = S.worldReveal;
+  if (!r || S.screen !== "map") {
+    r && S.screen !== "map" && (S.worldReveal = null);
+    return;
+  }
+  if (S.t - r.t0 > 1.2) {
+    S.worldReveal = null;
+    return;
+  }
+  let p = nodePos(r.i), k = (S.t - r.t0) / 1.2, rm = reducedMotion();
+  ctx.save(), ctx.globalAlpha = 1 - k * k, ctx.lineWidth = 4, ctx.strokeStyle = "#ffe36e", ctx.beginPath(), ctx.arc(p.x, p.y, 28 + (rm ? 4 : k * 14), 0, Math.PI * 2), ctx.stroke(), ctx.restore();
+}
 function drawNextHint(sc) {
-  if (!nextHintWanted() || S.screen !== "map") {
+  if (drawWorldReveal(sc), !nextHintWanted() || S.screen !== "map") {
     S.nextHint = null;
     return;
   }
@@ -9091,7 +9144,15 @@ function renderPrep() {
     });
   });
   let warn = null;
-  if (levelHasFlyers(i) && !S.prep.deck.some((d) => AIR_COUNTERS.includes(d)) ? warn = "Flying ants ahead! Only Laser, Bug Zapper or the Crop Duster can hit them." : ants.includes("gasmask") && S.prep.deck.includes("spray") && S.prep.deck.filter((d) => d !== "spray" && TOWERS[d].kind === "tower" && d !== "fan").length < 2 && (warn = "Gas-mask ants ignore Bug Spray - bring other damage too."), S.zeroHint && S.t < S.zeroHint.until && S.prep.bonuses.includes(S.zeroHint.bt) && !(S.save.bonusStock[S.zeroHint.bt] > 0) && (warn = `You have 0 ${BONUSES[S.zeroHint.bt].name}s. Buy one during battle for ${ECONOMY.diamonds.boosterPriceStart} diamonds, or in the Shop.`), S.layoutWarn = null, warn) {
+  levelHasFlyers(i) && !S.prep.deck.some((d) => AIR_COUNTERS.includes(d)) ? warn = ART81 ? "Flying ants ahead! Only the Laser and Bug Zapper can hit them." : "Flying ants ahead! Only Laser, Bug Zapper or the Crop Duster can hit them." : ants.includes("gasmask") && S.prep.deck.includes("spray") && S.prep.deck.filter((d) => d !== "spray" && TOWERS[d].kind === "tower" && d !== "fan").length < 2 && (warn = "Gas-mask ants ignore Bug Spray - bring other damage too."), S.zeroHint && S.t < S.zeroHint.until && S.prep.bonuses.includes(S.zeroHint.bt) && !(S.save.bonusStock[S.zeroHint.bt] > 0) && (warn = `You have 0 ${BONUSES[S.zeroHint.bt].name}s. Buy one during battle for ${ECONOMY.diamonds.boosterPriceStart} diamonds, or in the Shop.`), S.layoutWarn = null, S.layoutAirFix = null;
+  let airPlan = ART81 && warn && warn.startsWith("Flying ants ahead") ? airFixPlan(S.prep.deck, unlocked, S.save.cards, BATTLE.deckSize) : null;
+  if (airPlan) {
+    let lines = wrapLines(warn, 214, 12).slice(0, 3), hh = 54, y0 = 646 - hh - 2, nm = TOWERS[airPlan.add].short || TOWERS[airPlan.add].name;
+    panel(26, y0, 348, hh, "#ffe3a0", 12), lines.forEach((l, k) => text(ctx, l, 140, y0 + 27 - (lines.length - 1) * 7 + k * 14, 12, "#8a4a10", "center", null)), drawButton(256, y0 + 5, 112, 44, `Add ${nm}`, "#ffd27a", { size: 14 }), button("airfix", 256, y0 + 3, 112, 48, () => {
+      let d = S.prep.deck;
+      airPlan.drop ? d.splice(d.indexOf(airPlan.drop), 1, airPlan.add) : d.push(airPlan.add), sfx("tap"), toast(`${TOWERS[airPlan.add].name} added` + (airPlan.drop ? ` (replaced ${TOWERS[airPlan.drop].name})` : ""), "#ffe39a");
+    }), ctx.font = `bold 12px ${FONT}`, S.layoutWarn = { box: { x: 26, y: y0, w: 348, h: hh }, lines: lines.map((l) => ctx.measureText(l).width), maxW: 214 }, S.layoutAirFix = { add: airPlan.add, drop: airPlan.drop, x: 256, y: y0 + 3, w: 112, h: 48 };
+  } else if (warn) {
     let lines = wrapLines(warn, 324, 12).slice(0, 3), hh = 12 + lines.length * 14;
     panel(26, 646 - hh - 2, 348, hh, S.zeroHint && warn.startsWith("You have 0") ? "#fff2b8" : "#fff0c2", 12), lines.forEach((l, k) => text(ctx, l, 200, 646 - hh + 6 + k * 14 + 5, 12, "#b0602a", "center", null)), ctx.font = `bold 12px ${FONT}`, S.layoutWarn = { box: { x: 26, y: 646 - hh - 2, w: 348, h: hh }, lines: lines.map((l) => ctx.measureText(l).width), maxW: 324 };
   }
@@ -9552,7 +9613,7 @@ function drawShield(a, x, y) {
 function drawAntObj(a, ghost = !1) {
   let b = S.battle, frozen = b.time < b.freezeUntil, p = b.route(a).at(a.d);
   Math.abs(p.dx) > 0.3 && (a._face = p.dx * (a.dir || 1) >= 0 ? 1 : -1);
-  let face = a._face ?? 1, speedK2 = a.type === "small" ? 2.2 : a.type === "sprinter" ? 2.4 : a.type === "queen" ? 0.6 : a.type === "big" ? 1 : a.type === "heavy" ? 0.9 : 1.5, still = frozen || a.stunT > 0, fr = still ? 0 : Math.floor((b.time + a.id * 0.37) * speedK2 * ANT_FRAMES) % ANT_FRAMES, H2 = ANTS[a.type].heal, mood = !!H2 && (frozen || a.healCd > 0) ? "g" : a.hitFlash > 0.02 && !reducedMotion() ? "h" : a.stunT > 0 ? "d" : "", spr = antSprite(a.type, fr, a.carrying > 0, pxRatio, mood), breathe = still ? 1 + Math.sin(S.t * 5 + a.id) * 0.035 : 1, lat = (a.id * 37 % 9 - 4) * 1.2;
+  let face = a._face ?? 1, speedK2 = a.type === "small" ? 2.2 : a.type === "sprinter" ? 2.4 : a.type === "queen" ? 0.6 : a.type === "big" ? 1 : a.type === "heavy" ? 0.9 : 1.5, still = frozen || a.stunT > 0, fr = still ? 0 : Math.floor((b.time + a.id * 0.37) * speedK2 * ANT_FRAMES) % ANT_FRAMES, H2 = ANTS[a.type].heal, mood = !!H2 && (frozen || a.healCd > 0) ? "g" : a.hitFlash > 0.02 && !reducedMotion() ? "h" : a.stunT > 0 ? "d" : "", droneFx = ART81 && a.type === "drone" && !reducedMotion() && !still, spr = antSprite(a.type, droneFx ? Math.floor((b.time + a.id * 0.037) * 14) % 2 ? 3 : 9 : fr, a.carrying > 0, pxRatio, mood), breathe = still ? 1 + Math.sin(S.t * 5 + a.id) * 0.035 : 1, lat = (a.id * 37 % 9 - 4) * 1.2;
   a.state === "back" && (lat = UI.carrierLane + lat * 0.4);
   let x = a.x + p.dy * lat, y = a.y - p.dx * lat, hopY = 0, hopS = 1;
   if (a._hopT && !reducedMotion()) {
@@ -9567,7 +9628,7 @@ function drawAntObj(a, ghost = !1) {
       gsx = 1 + 0.12 * q, gsy = 1 - 0.12 * q;
     }
   }
-  if (ctx.save(), ctx.translate(x, y + 4 + hopY), ctx.scale(face / breathe * gsx, breathe * hopS * gsy), ART81) {
+  if (droneFx && (hopY += Math.sin((b.time + a.id * 0.7) * Math.PI * 2 * 1.6) * 2), ctx.save(), ctx.translate(x, y + 4 + hopY), ctx.scale(face / breathe * gsx, breathe * hopS * gsy), ART81) {
     a.hitFlash > 0.05 && !(S.t - (a._sqT ?? -9) < 0.12) && b.ants.length <= 25 && !reducedMotion() && (a._sqT = S.t);
     let sk = (S.t - (a._sqT ?? -9)) / 0.08;
     if (sk >= 0 && sk < 1) {
@@ -9578,7 +9639,11 @@ function drawAntObj(a, ghost = !1) {
     let q = Math.min(1, a.hitFlash / 0.12), sq = 0.12 * q * q;
     ctx.scale(1 + sq, 1 - sq);
   }
-  if (ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h), a.hitFlash > 0.04 && (ctx.globalCompositeOperation = "lighter", ctx.globalAlpha = 0.6, ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h)), a._healFlash > S.t && !ghost && (ctx.globalCompositeOperation = "lighter", ctx.globalAlpha = reducedMotion() ? 0.35 : 0.55 * Math.min(1, (a._healFlash - S.t) / 0.2), ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h)), ctx.restore(), a._bubbleUntil > S.t && !ghost && !reducedMotion()) {
+  if (ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h), a.hitFlash > 0.04 && (ctx.globalCompositeOperation = "lighter", ctx.globalAlpha = 0.6, ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h)), a._healFlash > S.t && !ghost && (ctx.globalCompositeOperation = "lighter", ctx.globalAlpha = reducedMotion() ? 0.35 : 0.55 * Math.min(1, (a._healFlash - S.t) / 0.2), ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h)), ctx.restore(), ART81 && a.type === "queen6" && !ghost && !frozen && a.spawnT > 0 && a.spawnT <= 0.4) {
+    let q = 1 - a.spawnT / 0.4, dx0 = x - 20 * a.size * face, dy0 = y + 10 + (reducedMotion() ? 8 : q * q * 22), rr2 = 1 + q * 0.7;
+    ctx.save(), ctx.beginPath(), ctx.ellipse(dx0, dy0, 4.2 * rr2, 5.6 * rr2, 0, 0, 7), ctx.fillStyle = "#ffe07a", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), ctx.beginPath(), ctx.arc(dx0 - 1.4 * rr2, dy0 - 1.6 * rr2, 1.3 * rr2, 0, 7), ctx.fillStyle = "#fffbe0", ctx.fill(), ctx.restore();
+  }
+  if (a._bubbleUntil > S.t && !ghost && !reducedMotion()) {
     let bx = x, by = y - 40 * a.size - Math.abs(Math.sin(S.t * 6)) * 2;
     ctx.save(), ctx.beginPath(), ctx.arc(bx, by, 7.5, 0, 7), ctx.fillStyle = "#fffdf0", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), ctx.beginPath(), ctx.moveTo(bx - 2.5, by + 6.5), ctx.lineTo(bx + 1, by + 12), ctx.lineTo(bx + 3, by + 6), ctx.fillStyle = "#fffdf0", ctx.fill(), drawChunkyText(ctx, "!", bx, by + 0.5, 12, { mode: "btn", fill: "#e0524f", outline: 2 }), ctx.restore();
   }
@@ -9687,6 +9752,27 @@ function renderFx(dt) {
         ctx.lineCap = "round", ctx.lineWidth = 5, ctx.strokeStyle = INK, ctx.beginPath(), ctx.moveTo(sx, sy), ctx.lineTo(ex, ey), ctx.stroke(), ctx.lineWidth = 3, ctx.strokeStyle = "#ff8fab", ctx.stroke(), blob(ctx, ex, ey, 4, 4, "#ff8fab", 1.5);
         break;
       }
+      case "spArc": {
+        ctx.lineCap = "round";
+        let mx = (f.x + f.tx) / 2, my = (f.y + f.ty) / 2 - 10;
+        ctx.beginPath(), ctx.moveTo(f.x, f.y), ctx.quadraticCurveTo(mx, my, f.tx, f.ty), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), ctx.beginPath(), ctx.arc(mx * 0.5 + (f.x + f.tx) * 0.25, my * 0.5 + (f.y + f.ty) * 0.25, 2.4, 0, 7), ctx.fillStyle = "#fff2b8", ctx.fill();
+        break;
+      }
+      // v0.8.3 M7h Ricochet
+      case "spCrack": {
+        ctx.globalAlpha = 1 - k, ctx.lineCap = "round", ctx.lineWidth = 2, ctx.strokeStyle = "#fff2b8", ctx.beginPath();
+        for (let i = 0; i < 3; i++) {
+          let a = -1.2 + i * 1.2 + 0.4;
+          ctx.moveTo(f.x + Math.cos(a) * 3, f.y + Math.sin(a) * 3), ctx.lineTo(f.x + Math.cos(a) * (8 + 4 * k), f.y + Math.sin(a) * (8 + 4 * k));
+        }
+        ctx.stroke();
+        break;
+      }
+      // v0.8.3 M7h Burn-through
+      case "spGold":
+        ctx.globalAlpha = (1 - k) * 0.9, ctx.beginPath(), ctx.arc(f.x, f.y - 6, f.r * (0.2 + 0.8 * k), 0, 7), ctx.lineWidth = 6.5 * (1 - k) + 1.3, ctx.strokeStyle = "#ffd24a", ctx.stroke();
+        break;
+      // v0.8.3 M7h Crescendo: 30 % thicker, gold
       case "ring":
         ctx.globalAlpha = (1 - k) * 0.8, ctx.beginPath(), ctx.arc(f.x, f.y - 6, f.r * (0.2 + 0.8 * k), 0, 7), ctx.lineWidth = 5 * (1 - k) + 1, ctx.strokeStyle = f.col, ctx.stroke(), ctx.beginPath(), ctx.arc(f.x, f.y - 6, f.r * (0.1 + 0.6 * k), 0, 7), ctx.lineWidth = 2, ctx.strokeStyle = "#fff", ctx.stroke();
         break;
@@ -10157,8 +10243,10 @@ function renderResult(dt) {
   drawButton(52, by, 92, 50, "Map", "#fff3e6"), button("rmap", 52, by - 3, 92, 56, () => {
     S.battle = null, go("map");
   }), drawButton(154, by, 92, 50, "Retry", "#ffd27a"), button("rretry", 154, by - 3, 92, 56, () => openPrep(S.levelIndex));
-  let hasNext = R.win && S.levelIndex + 1 < LEVELS.length;
-  drawButton(256, by, 92, 50, "Next", "#9fe0b5", { disabled: !hasNext }), hasNext && button("rnext", 256, by - 3, 92, 56, () => openPrep(S.levelIndex + 1));
+  let hasNext = R.win && S.levelIndex + 1 < LEVELS.length, ow6 = ART81 && hasNext && S.levelIndex === 49 && out.firstClear && worldUnlocked(S.save, 6);
+  drawButton(256, by, 92, 50, ow6 ? "Open World 6" : "Next", "#9fe0b5", ow6 ? { disabled: !hasNext, size: 13 } : { disabled: !hasNext }), hasNext && button("rnext", 256, by - 3, 92, 56, ow6 ? () => {
+    S.battle = null, go("map"), S.worldReveal = { i: 50, t0: S.t };
+  } : () => openPrep(S.levelIndex + 1));
 }
 function cardStatKeys(id) {
   return id === "ball" ? ["power", "rate", "ballRadius"] : id === "tractor" ? ["liftSize", "rate", "scoop"] : ["power", "rate", "range"];
@@ -10422,6 +10510,11 @@ function renderShop() {
     S.save.onboard.cardsHint = "cards", persist(), go("cards");
   }, "See your new cards!"), renderUiFx(1 / 60);
 }
+function antLabelLines(name, w) {
+  ctx.font = `bold 12px ${FONT}`;
+  let sp = name.indexOf(" ");
+  return ctx.measureText(name).width <= w - 8 || sp < 0 ? [name] : [name.slice(0, sp), name.slice(sp + 1)];
+}
 function renderAntBook() {
   let met = metAnts(S.save), keys = Object.keys(ANTS);
   panel(12, 12, 376, 636, "#fff6ee"), text(ctx, "Ant Book", 200, 36, 26, "#9fd08a"), drawButton(22, 16, 72, 36, "Back", "#d9cfe0", { size: 14 }), button("abBack", 22, 14, 72, 42, () => {
@@ -10431,9 +10524,11 @@ function renderAntBook() {
   if (!sel)
     plainText(`Met ${keys.filter((k) => met.has(k)).length}/${keys.length}. Tap an ant for details.`, 200, 70, 12, "#7a5a6a", "center", "700"), keys.forEach((t, k) => {
       let col = k % 4, row = Math.floor(k / 4), x = 24 + col * 88, y = 86 + row * 92, w = 80, h = 84, D = ANTS[t], m = met.has(t);
-      rr(ctx, x, y, w, h, 12), ctx.fillStyle = m ? "#fff" : "#efe3de", ctx.fill(), ctx.lineWidth = 2.2, ctx.strokeStyle = INK, ctx.stroke(), ctx.save(), rr(ctx, x + 2, y + 2, w - 4, h - 26, 10), ctx.clip(), ctx.translate(x + w / 2, y + 40);
+      rr(ctx, x, y, w, h, 12), ctx.fillStyle = m ? "#fff" : "#efe3de", ctx.fill(), ctx.lineWidth = 2.2, ctx.strokeStyle = INK, ctx.stroke();
+      let nm = m ? antLabelLines(D.name.replace(" Ant", ""), w) : null, two = !!nm && nm.length > 1;
+      ctx.save(), rr(ctx, x + 2, y + 2, w - 4, h - 26 - (two ? 12 : 0), 10), ctx.clip(), ctx.translate(x + w / 2, y + 40 - (two ? 6 : 0));
       let sz = Math.min(1, 1.3 / D.size);
-      ctx.scale(0.82 * sz, 0.82 * sz), m ? drawAnt(ctx, t, S.t * 1.3 % 1) : (ctx.globalAlpha = 0.35, drawAnt(ctx, t, 0), ctx.globalAlpha = 0.78, ctx.fillStyle = "#efe3de", ctx.fillRect(-26, -26, 52, 52)), ctx.restore(), m ? fitText(D.name.replace(" Ant", ""), x + w / 2, y + 70, w - 6, 12, "#7a4a5e") : plainText("???", x + w / 2, y + 70, 13, "#b9a6b2", "center", "800"), m && button("ab" + t, x, y, w, h, () => {
+      ctx.scale(0.82 * sz, 0.82 * sz), m ? drawAnt(ctx, t, S.t * 1.3 % 1) : (ctx.globalAlpha = 0.35, drawAnt(ctx, t, 0), ctx.globalAlpha = 0.78, ctx.fillStyle = "#efe3de", ctx.fillRect(-26, -26, 52, 52)), ctx.restore(), m ? nm.forEach((ln, i) => fitText(ln, x + w / 2, y + 70 - (two ? 12 : 0) + (two ? i * 12 : 0), w - 8, 12, "#7a4a5e")) : plainText("???", x + w / 2, y + 70, 13, "#b9a6b2", "center", "800"), m && button("ab" + t, x, y, w, h, () => {
         S.antBookSel = t, sfx("tap");
       });
     });

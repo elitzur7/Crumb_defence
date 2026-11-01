@@ -513,3 +513,14 @@ export function metAnts(save) {
   return met;
 }
 export function antLevels(type) { const out = []; C.LEVELS.forEach((_, i) => { if (levelAntTypes(i).includes(type)) out.push(i + 1); }); return out; }
+
+// v0.8.3 U12: a level with flying ants and no air tower (Laser / Bug Zapper) in the deck -> offer one tap that adds one (the Laser first, else the Zapper) in place of the weakest card.
+// deck: card ids; owned: unlocked card ids; levels: { id: { level } }; max: deck size. Returns { add, drop } (drop = null when the deck has a free slot) or null when nothing to offer.
+export function airFixPlan(deck, owned, levels, max, air = C.AIR_COUNTERS) {
+  if (deck.some((d) => air.includes(d))) return null;
+  const add = ['laser', 'zapper'].find((id) => air.includes(id) && owned.includes(id)); if (!add) return null;
+  if (deck.length < max) return { add, drop: null };
+  const rank = (id) => (levels[id] ? levels[id].level : 1) * 10 + C.rarityRank(id); // lowest card level first, then the lower rarity; the last one in the deck on a tie
+  let drop = null, best = 1e9; deck.forEach((id) => { const r = rank(id); if (r <= best) { best = r; drop = id; } });
+  return { add, drop };
+}

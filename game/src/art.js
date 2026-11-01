@@ -182,7 +182,7 @@ export function starShape(ctx, x, y, r, fill, lw = 2) { candyStar(ctx, x, y, r, 
 
 // ---------------- ANTS (chibi, side/3-4 view, facing right) ----------------
 // Warm caramel palette, big heads, glossy eyes, thick clean outlines.
-export const ANT_COL = { small: '#f8c07e', worker: '#f0994d', big: '#d97a3f', gasmask: '#f0994d', armored: '#e48a47', flyer: '#f9b878', queen: '#f59b9b', queen2: '#c7a6f5', sprinter: '#f0994d', heavy: '#b95b34', greasy: '#ee9f45', mama: '#d9774a', queen3: '#e9b05c', nurse: '#f2b49b', queen4: '#f4b9c8', glazed: '#f1cf9a', queen5: '#f7b6c8', drone: '#e8a33d', queen6: '#c9772b' }; // v0.8.2 PP2/PP4: the Drone is honey-amber, the Syrup Queen syrup-amber // v0.7.5 C18: value ladder small > worker > big > heavy; v0.7.6 V1 (A5): small #fbc98a -> #f8c07e (>= 1.447 vs the trail on all 20 maps; ladder 1.37 / 1.38 / 1.48)
+export const ANT_COL = { small: '#f8c07e', worker: '#f0994d', big: '#d97a3f', gasmask: '#f0994d', armored: '#e48a47', flyer: '#f9b878', queen: '#f59b9b', queen2: '#c7a6f5', sprinter: '#f0994d', heavy: '#b95b34', greasy: '#ee9f45', mama: '#d9774a', queen3: '#e9b05c', nurse: '#f2b49b', queen4: '#f4b9c8', glazed: '#f1cf9a', queen5: '#e8789c', drone: '#e8a33d', queen6: '#c9772b' }; // v0.8.2 PP2/PP4: the Drone is honey-amber, the Syrup Queen syrup-amber // v0.7.5 C18: value ladder small > worker > big > heavy; v0.7.6 V1 (A5): small #fbc98a -> #f8c07e (>= 1.447 vs the trail on all 20 maps; ladder 1.37 / 1.38 / 1.48)
 const ALW = 2.4; // ant outline width (v0.3: thinner = softer)
 
 function softBlob(ctx, x, y, rx, ry, col, lw = ALW, gloss = 1) { drawGlossyBlob(ctx, x, y, rx, ry, col, { lw, gloss }); }
@@ -1646,6 +1646,7 @@ export function renderMapBackground(routes, theme, w, h, dpr, props = [], art = 
     for (let r = 1; r < C.GRID_ROWS; r++) { g.beginPath(); g.moveTo(0, r * C.TILE); g.lineTo(w, r * C.TILE); g.stroke(); }
     for (let k = 0; k < 30; k++) { g.fillStyle = 'rgba(255,255,255,0.25)'; g.fillRect(Math.floor(rnd() * 10) * 40 + 3, Math.floor(rnd() * 12) * 40 + 3, 12, 3); }
   }
+  if (C.ART81) { g.fillStyle = 'rgba(70,35,50,' + (art.wash ?? 0.02) + ')'; g.fillRect(0, 0, w, h); } // v0.8.3 F6: a 2 % ground wash (the headroom bank for the A1/A2 anchor; one fillRect in the baked cache; per-map override art.wash)
   if (th.moon) { const mg = g.createRadialGradient(w * 0.85, -20, 10, w * 0.85, -20, 300); mg.addColorStop(0, 'rgba(255,255,230,0.45)'); mg.addColorStop(1, 'rgba(255,255,230,0)'); g.fillStyle = mg; g.fillRect(0, 0, w, h); }
   if (C.ART81) { const lp = g.createRadialGradient(130, 110, 20, 130, 110, 300); lp.addColorStop(0, 'rgba(255,250,228,0.02)'); lp.addColorStop(1, 'rgba(255,250,228,0)'); g.fillStyle = lp; g.fillRect(0, 0, w, h); } // v0.8.1 G1.1: light pool (upper-left)
   // little printed flowers / dots
@@ -1685,8 +1686,8 @@ export function renderMapBackground(routes, theme, w, h, dpr, props = [], art = 
       g.fillStyle = '#e8b878'; g.beginPath(); g.ellipse(p.x + p.dy * o, p.y - p.dx * o, 2, 1.5, rnd() * 3, 0, 7); g.fill();
     }
   }
-  if (C.ART81 && (art.chev ?? 0.03) > 0) { // v0.8.2 G18: faint lane-direction chevrons every 120 px (a baked layer; 6 px; alpha .03 globally per Crumbie's A1/A2 ruling, tuning.json maps[].art.chev overrides it, 0 = none)
-    g.save(); g.lineCap = 'round'; g.lineJoin = 'round'; g.lineWidth = 1.8; g.strokeStyle = `rgba(82,60,75,${art.chev ?? 0.03})`;
+  if (C.ART81 && (art.chev ?? 0.08) > 0) { // v0.8.2 G18: faint lane-direction chevrons every 120 px (a baked layer; 6 px; alpha .08 globally (v0.8.3 F7; v0.8.2 shipped .03 = invisible), tuning.json maps[].art.chev overrides it, 0 = none)
+    g.save(); g.lineCap = 'round'; g.lineJoin = 'round'; g.lineWidth = 1.8; g.strokeStyle = `rgba(82,60,75,${art.chev ?? 0.08})`;
     for (const path of routes) for (let d = 70; d < path.length - 30; d += 120) { const p = path.at(d); g.save(); g.translate(p.x, p.y); g.rotate(Math.atan2(p.dy, p.dx)); g.beginPath(); g.moveTo(-3, -4); g.lineTo(3, 0); g.lineTo(-3, 4); g.stroke(); g.restore(); }
     g.restore();
   }

@@ -2522,7 +2522,7 @@
       "name": "Picnic Blanket",
       "map": "w6_picnic_blanket",
       "waveCount": 7,
-      "hpMul": 4.16,
+      "hpMul": 4.05,
       "interval": 1,
       "waves": [
         [{"type":"worker","count":6,"interval":1,"delay":0},{"type":"small","count":8,"interval":0.45,"delay":1}],
@@ -2638,7 +2638,6 @@
     },
     "fork": {
       "name": "Sugar Bowl Split",
-      "art": { "chev": 0 },
       "theme": 3,
       "grid": [
         "....N.....",
@@ -3455,7 +3454,7 @@
     },
     "w6_waffle_iron": {
       "name": "Waffle Iron",
-      "art": { "plate": { "dy": -21.5, "scale": 0.92 } },
+      "art": { "plate": { "hide": true } },
       "theme": 9,
       "grid": [
         "N........S",

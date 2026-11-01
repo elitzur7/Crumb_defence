@@ -1,0 +1,8 @@
+// v0.8.3 art ledger: per map dA1 / dA2 / dA3 / dA3r of the rendered maps vs the v0.8.0 baseline (the 40 v0.8.0 maps), plus the worst values. W6 maps have no v0.8.0 value: absolute only.
+// usage: node ledger.mjs <contrast.json> <out.json> [floor=-0.010]; exit 1 when any map is below the floor on A1 or A2
+import fs from 'node:fs'; const [cj, out, fl] = process.argv.slice(2); const floor = fl === undefined ? -0.010 : +fl;
+const cur = JSON.parse(fs.readFileSync(cj, 'utf8')), base = JSON.parse(fs.readFileSync(new URL('../qa-v082/baseline/contrast-v080.json', import.meta.url), 'utf8'));
+const rows = base.map((b) => { const c = cur.find((x) => x.li === b.li); return { level: b.li + 1, dA1: +(c.A1 - b.A1).toFixed(4), dA2: +(c.A2 - b.A2).toFixed(4), dA3: +(c.A3 - b.A3).toFixed(4), dA3r: +(c.A3r - b.A3r).toFixed(4) }; });
+const w = (k) => Math.min(...rows.map((r) => r[k])), bad = rows.filter((r) => r.dA1 < floor || r.dA2 < floor);
+const doc = { note: 'per-map deltas vs v0.8.0 (negative = lower contrast); item column = the v0.8.3 art state at the time of writing', floor, worstDA1: w('dA1'), worstDA2: w('dA2'), maxDA3: Math.max(...rows.map((r) => r.dA3)), maxDA3r: Math.max(...rows.map((r) => r.dA3r)), maps: rows, items: [{ item: process.env.LEDGER_ITEM || 'current', worstDA1: w('dA1'), worstDA2: w('dA2') }] };
+fs.writeFileSync(out, JSON.stringify(doc, null, 1)); console.log(`ledger: ${rows.length} maps, worst dA1 ${doc.worstDA1} dA2 ${doc.worstDA2}, max dA3 ${doc.maxDA3} dA3r ${doc.maxDA3r}; floor ${floor}: ${bad.length ? 'FAIL ' + bad.map((r) => 'L' + r.level).join(' ') : 'PASS'}`); process.exit(bad.length ? 1 : 0);

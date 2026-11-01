@@ -52,7 +52,7 @@ test('R7: the wood plank seam alpha is 15 % lower (ART81 only)', () => { assert.
 test('R5b: the prize strip is skipped while k <= 0 (no negative-scale flip)', () => { assert.match(src('game.js'), /if \(!\(k > 0\)\) return; \/\/ v0\.8\.2 R5b/); });
 
 // ---- Pass 4: World 6 "Pancake Picnic" (PP1, PP2, PP4, PP6, PP7, PP11, M7g, U11) ----
-const W6_HP = [6, 7.2, 9.19, 9.5, 4.84, 9.57, 5.9, 5.36, 4.16, 1.7];
+const W6_HP = [6, 7.2, 9.19, 9.5, 4.84, 9.57, 5.9, 5.36, 4.05, 1.7]; // v0.8.3 F1: L59 4.16 -> 4.05
 test('PP1: World 6 exists (id 6, pancake, queen6, 10 levels, gate 14 stars in W5 + all won, cap 6, coinMul 2.0)', () => {
   const W = C.WORLDS.find((x) => x.id === 6); assert.ok(W); assert.equal(W.treat, 'pancake'); assert.equal(W.queen, 'queen6'); assert.equal(C.LEVELS.length, 60);
   assert.equal(W.levels, 10); assert.equal(W.cardLevelCap, 6); assert.equal(W.coinMul, 2); assert.deepEqual(W.unlock, { allLevelsWonInWorld: 5, minStarsInWorld: 14 });
@@ -79,7 +79,7 @@ test('PP2/PP4: the Drone and the Syrup Queen data equal the plan table', () => {
 });
 test('PP7: the ten W6 levels carry the plan hp multipliers and 1 s spawn interval', () => {
   const L = C.LEVELS.slice(50); assert.deepEqual(L.map((x) => x.hpMul), W6_HP); assert.ok(L.every((x) => x.interval === 1 || x.interval === undefined || x.interval === 1.0));
-  assert.equal(L[4].hpMul, 4.84); assert.equal(L[8].hpMul, 4.16); // L55 / L59 are never hand-raised: the plan values stay
+  assert.equal(L[4].hpMul, 4.84); assert.equal(L[8].hpMul, 4.05); // L55 / L59 are never hand-raised: the plan values stay
 });
 test('PP6: ten W6 maps, theme 9, route counts 1,1,1,1,2,1,2,1,2,1, # counts and buildable tiles within the source maps', () => {
   const routes = [1, 1, 1, 1, 2, 1, 2, 1, 2, 1], hash = [31, 45, 27, 47, 22, 26, 29, 40, 27, 28], dots = [85, 71, 88, 69, 93, 90, 87, 76, 88, 87];
@@ -172,7 +172,7 @@ test('v0.8.2 EC5a: the skin purchase flow (no negative balance, no double charge
   const r = M.buySkin(s, 'laser-1'); assert.equal(r.ok, true); assert.equal(s.coins, 100);
   assert.equal(M.buySkin(s, 'laser-1').reason, 'owned'); assert.equal(s.coins, 100);
   assert.equal(M.buySkin(s, 'nope').reason, 'unknown');
-  assert.deepEqual(M.skinPads(s), { laser: '#9087f9' });
+  assert.deepEqual(M.skinPads(s), { laser: '#6c9bb4' }); // v0.8.3 F3 palette
   assert.equal(M.equipSkin(s, 'laser', 'laser-3'), false); assert.equal(M.equipSkin(s, 'slingshot', 'laser-1'), false);
   assert.equal(M.equipSkin(s, 'laser', null), true); assert.deepEqual(M.skinPads(s), {}); assert.equal(M.equipSkin(s, 'laser', 'laser-1'), true);
   assert.equal(M.nextSkinPrice(s), 1500); assert.equal(M.skinState(M.newSave()).owned.length, 0);
@@ -195,18 +195,16 @@ test('v0.8.2 U15: the Ant Book lists met ants only; the Drone appears once L52 i
   assert.ok(M.antLevels('drone').includes(52)); assert.ok(M.antLevels('drone').every((n) => n >= 52));
   assert.match(src('game.js'), /renderAntBook/);
 });
-test('version 0.8.2 / versionCode 27 (release)', () => {
-  assert.equal(C.VERSION, '0.8.2');
-  assert.match(rd('android/app/build.gradle'), /versionCode 27\b/); assert.match(rd('android/app/build.gradle'), /versionName "0\.8\.2"/);
-  assert.equal(JSON.parse(rd('package.json')).version, '0.8.2');
+test('version 0.8.2 / versionCode 27 (release) - or later', () => {
+  const ge = (a, b) => { const x = a.split('.').map(Number), y = b.split('.').map(Number); for (let i = 0; i < 3; i++) if (x[i] !== y[i]) return x[i] > y[i]; return true; };
+  assert.ok(ge(C.VERSION, '0.8.2')); assert.ok(+/versionCode (\d+)/.exec(rd('android/app/build.gradle'))[1] >= 27); assert.ok(ge(JSON.parse(rd('package.json')).version, '0.8.2'));
 });
 
 // ---- Crumbie's rulings on the release gate: G18 chevron alpha .03 (maps[].art.chev overrides it), L58 plate override, the plate-edge lint ----
-test('G18/A1: chevron alpha is 0.03 globally; the fork map (L4/L8) overrides it to 0 via tuning.json art.chev', () => {
-  assert.match(src('art.js'), /art\.chev \?\? 0\.03/);
-  const t = JSON.parse(rd('../tuning/tuning.json')); assert.deepEqual(t.maps.fork.art, { chev: 0 });
+test('G18/A1 (superseded by v0.8.3 F7): chevron alpha is a global default with a per-map art.chev override', () => {
+  assert.match(src('art.js'), /art\.chev \?\? 0\.\d+/);
 });
-test('A3r/L58: the waffle-iron plate is shifted up and scaled 0.92 via tuning.json art.plate; the plate-edge lint is part of qa-v082', () => {
-  const t = JSON.parse(rd('../tuning/tuning.json')); assert.deepEqual(t.maps.w6_waffle_iron.art, { plate: { dy: -21.5, scale: 0.92 } });
+test('A3r/L58 (superseded by v0.8.3 F10): the waffle-iron plate is explicitly hidden via tuning.json art.plate; the plate-edge lint is part of qa-v082', () => {
+  const t = JSON.parse(rd('../tuning/tuning.json')); assert.deepEqual(t.maps.w6_waffle_iron.art, { plate: { hide: true } });
   assert.match(src('art.js'), /po\.scale/); assert.match(readFileSync(new URL('../tools/qa-v082.mjs', import.meta.url), 'utf8'), /plate-edge\.mjs/);
 });

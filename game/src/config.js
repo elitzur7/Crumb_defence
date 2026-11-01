@@ -176,9 +176,9 @@ export const TARGET_MODE_TEXT = { // v0.8.1: Front retired (M3); Healer (M1, lev
   zapper: { carrier: 'First zap: food carriers first, then fewest HP. Chains to the nearest flyers (60% each jump).', healer: 'First zap: healer flyers first, then fewest HP. Chains to the nearest flyers (60% each jump).', strong: 'First zap: the toughest flyer first. Chains to the nearest flyers. For queen levels.' },
 };
 // v0.8.2 R4: levels (1-based) where a bot sim measured a >= +5 point gain from the mode named by the hint (M12 regenerates this list). flyer = any level (rule is deck based); drone = the Syrup Queen level.
-export const HINT_OK = { healer: [35, 39, 49, 59], carrier: [40, 50, 59, 60], drone: [60] }; // M12 (qa/v0.8.2/mode-evidence.json, 28 levels x 540 battles): gain >= +5 points vs weak mode
+export const HINT_OK = { healer: [35, 39, 49, 59], carrier: [40, 50, 59, 60], drone: [60] }; // M12 (qa/v0.8.3/mode-evidence.json: v0.8.2 28 levels + L59 and drone L60 re-measured, 540 battles each): gain >= +5 points vs weak mode
 export const ART81 = !(typeof __TEST_HOOKS__ !== 'undefined' && __TEST_HOOKS__ && typeof location !== 'undefined' && /[?&]art81=0/.test(location.search)); // v0.8.1 RG1 kill-switch: every v0.8.1 art/UI/motion item is gated on it (the A13 identity batch runs with it on and off; test builds accept ?art81=0)
-export const VERSION = '0.8.2'; // v0.7: shown on the map screen (keep in step with package.json + android versionName)
+export const VERSION = '0.8.3'; // v0.7: shown on the map screen (keep in step with package.json + android versionName)
 export const ANT_SIZES = { ...TUNING.antSizes };
 const ANT_TEXT = {
   small: { name: 'Scout Ant', desc: 'Tiny, fast, comes in swarms.', intro: 'Tiny and fast. They come in swarms.' },
@@ -223,6 +223,8 @@ export const ANT_CARD = {
   drone: 'Drone Ant \u2014 flies, armor 2. Laser, Zapper and Fan can hit flyers.', // v0.8.2 PP9 (shown once on the first prep screen of L52)
   queen6: 'Syrup Queen \u2014 she walks, and drips a Drone every 12 seconds. Keep an air tower ready.', // v0.8.2 PP5/PP9
 };
+// v0.8.3 PP9: one short flavour / fact line per World 6 level (index = level index), shown once per save on wave 2. <= 8 words, no advice on how to win.
+export const W6_TIPS = { 50: 'Pancakes first. Syrup is next.', 51: 'Drones fly. Only air towers hit them.', 52: 'A long, winding picnic path.', 53: 'Syrup is sticky. So are queens.', 54: 'Halfway through the picnic.', 55: 'Heavy hitters on this table.', 56: 'Fewer ant types, bigger crowds.', 57: 'The cookie waits at the end.', 58: 'Drones and nurses arrive together.', 59: 'The Syrup Queen drips Drones.' };
 export const L42_TIP = 'Glaze grows back. Focus fire.'; // v0.8.1 W9: the one-time level-42 tip toast
 export const QUEEN_TRAITS = { ...TUNING.queenTraitMods };
 export function queenTake(traits = [], T = QUEEN_TRAITS) { return 50 + traits.reduce((s, t) => s + (T[t] || 0), 0); }
@@ -418,10 +420,10 @@ export const MAX_ANT_TYPES_PER_BATTLE = 5;
 // A skin is COLOUR ONLY (the pad accent; same luminance as the base pad so A1 contrast and the silhouette do not change). The sim never reads a skin. Lint: tests/v082.test.js.
 export const SKIN_TIERS = [1500, 3000, 6000];
 export const SKINS = [
-  { id: 'slingshot-1', tower: 'slingshot', name: 'Bubblegum', tier: 1, price: 1500, pad: '#ef51ee' }, { id: 'slingshot-2', tower: 'slingshot', name: 'Lime', tier: 2, price: 3000, pad: '#42ab0f' }, { id: 'slingshot-3', tower: 'slingshot', name: 'Lagoon', tier: 3, price: 6000, pad: '#0fa7a8' },
-  { id: 'laser-1', tower: 'laser', name: 'Periwinkle', tier: 1, price: 1500, pad: '#9087f9' }, { id: 'laser-2', tower: 'laser', name: 'Leaf', tier: 2, price: 3000, pad: '#4ca809' }, { id: 'laser-3', tower: 'laser', name: 'Jade', tier: 3, price: 6000, pad: '#09a880' },
-  { id: 'zapper-1', tower: 'zapper', name: 'Fern', tier: 1, price: 1500, pad: '#5da807' }, { id: 'zapper-2', tower: 'zapper', name: 'Flamingo', tier: 2, price: 3000, pad: '#f959ae' }, { id: 'zapper-3', tower: 'zapper', name: 'Mustard', tier: 3, price: 6000, pad: '#b59307' },
-  { id: 'sound-1', tower: 'sound', name: 'Mint', tier: 1, price: 1500, pad: '#27a67a' }, { id: 'sound-2', tower: 'sound', name: 'Coral', tier: 2, price: 3000, pad: '#db7766' }, { id: 'sound-3', tower: 'sound', name: 'Moss', tier: 3, price: 6000, pad: '#67a326' },
+  { id: 'slingshot-1', tower: 'slingshot', name: 'Bubblegum', tier: 1, price: 1500, pad: '#ef51ee' }, { id: 'slingshot-2', tower: 'slingshot', name: 'Sandstone', tier: 2, price: 3000, pad: '#a09760' }, { id: 'slingshot-3', tower: 'slingshot', name: 'Meadow', tier: 3, price: 6000, pad: '#53a764' },
+  { id: 'laser-1', tower: 'laser', name: 'Denim', tier: 1, price: 1500, pad: '#6c9bb4' }, { id: 'laser-2', tower: 'laser', name: 'Orchid', tier: 2, price: 3000, pad: '#d86cd2' }, { id: 'laser-3', tower: 'laser', name: 'Olive', tier: 3, price: 6000, pad: '#9e9820' },
+  { id: 'zapper-1', tower: 'zapper', name: 'Fuchsia', tier: 1, price: 1500, pad: '#ff4cc1' }, { id: 'zapper-2', tower: 'zapper', name: 'Caramel', tier: 2, price: 3000, pad: '#c58a4f' }, { id: 'zapper-3', tower: 'zapper', name: 'Dusty Rose', tier: 3, price: 6000, pad: '#d17d92' },
+  { id: 'sound-1', tower: 'sound', name: 'Persimmon', tier: 1, price: 1500, pad: '#f06a48' }, { id: 'sound-2', tower: 'sound', name: 'Coral', tier: 2, price: 3000, pad: '#db7766' }, { id: 'sound-3', tower: 'sound', name: 'Mauve', tier: 3, price: 6000, pad: '#c979b5' },
 ];
 export const SKIN_TOWERS = ['slingshot', 'laser', 'zapper', 'sound'];
 // v0.8.2 EC6: the calendar table for ten worlds (final coinMul; W7-W10 follow the v0.7.7 schedule and are design values until they ship)
