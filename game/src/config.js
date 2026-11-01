@@ -117,11 +117,29 @@ const TOWER_TEXT = {
   tractor: { name: 'Tractor', short: 'Tractor', kind: 'tower', place: 'side', targets: 'ground', color: '#ffcf6e', directional: true, nearTrail: true,
     powerLabel: 'Lifts', desc: 'Scoops ants off the trail. Slow.', ability: 'Lifts every liftable ant on the trail tile in front of it and throws it away.' },
 };
+// v0.8.2 M7a: per-tower SPECIALS (the power source; Crumb Design M6/D3). A special is named `special` (the text field `ability` already exists).
+// It is ACTIVE only in a battle of world >= SPECIALS_FROM_WORLD with a card at card level >= SPECIAL_CARD_LEVEL, and only while tuning.json "specials" is not false.
+// sim.js reads a special ONLY through specialActive (W1-W5 sims stay bit-identical).
+export const SPECIALS_FROM_WORLD = 6, SPECIAL_CARD_LEVEL = 5;
+const SPECIAL_DEFS = {
+  slingshot: { id: 'ricochet', name: 'Ricochet', text: 'Stones bounce to a nearby ant for half damage.', short: 'Stones bounce to a 2nd ant', params: { radius: 60, mul: 0.5 } },
+  laser: { id: 'burnthrough', name: 'Burn-through', text: 'Every fifth beam melts 1 armor off an ant. Not on queens.', short: 'Melts armor, not on queens', params: { every: 5, strip: 1, max: 4 } },
+  lizard: { id: 'pounce', name: 'Pounce', text: 'The first lick on a fresh ant hits twice as hard.', short: 'First lick hits twice as hard', params: { mul: 2.0 } },
+  sound: { id: 'crescendo', name: 'Crescendo', text: 'Every third pulse hits 30 % harder.', short: 'Every 3rd pulse hits harder', params: { every: 3, mul: 1.3 } },
+  zapper: { id: 'static', name: 'Static', text: 'Lightning jumps to one more ant.', short: 'Lightning jumps to +1 ant', params: { plus: 1 } },
+};
 export const TOWERS = {};
 for (const [id, txt] of Object.entries(TOWER_TEXT)) {
   const T = TUNING.towers[id];
   TOWERS[id] = { ...txt, stats: { power: T.power, rate: T.rate, range: T.rangeTiles == null ? null : rangePx(T.rangeTiles) },
     ...T.params, upgrades: T.battleUpgrades, cardUpgrades: T.cardUpgrades };
+}
+for (const [id, sp] of Object.entries(SPECIAL_DEFS)) TOWERS[id].special = sp;
+/** M7a: is the tower's special on in this level? tower = a tower object ({type, cardLevel}) or a type id (then pass cardLevel); level = a LEVELS entry ({world}). */
+export function specialActive(tower, level, cardLevel) {
+  const type = typeof tower === 'string' ? tower : tower && tower.type;
+  const cl = cardLevel != null ? cardLevel : (tower && tower.cardLevel) || 1;
+  return !!(TOWERS[type] && TOWERS[type].special && level && level.world >= SPECIALS_FROM_WORLD && cl >= SPECIAL_CARD_LEVEL);
 }
 // v0.6 item 6: Tractor lift sizes (size class of an ant = its tuning.json size name)
 export const LIFT_MAX = 3;
@@ -157,8 +175,10 @@ export const TARGET_MODE_TEXT = { // v0.8.1: Front retired (M3); Healer (M1, lev
   laser: { carrier: 'Aims at ants carrying food first, then fewest HP. Heat: +12% per hit on the same ant.', healer: 'Aims at healer ants first, then fewest HP. Heat: +12% per hit on the same ant.', strong: 'Aims at the toughest ant first. Heat: +12% per hit. For queen levels.' },
   zapper: { carrier: 'First zap: food carriers first, then fewest HP. Chains to the nearest flyers (60% each jump).', healer: 'First zap: healer flyers first, then fewest HP. Chains to the nearest flyers (60% each jump).', strong: 'First zap: the toughest flyer first. Chains to the nearest flyers. For queen levels.' },
 };
+// v0.8.2 R4: levels (1-based) where a bot sim measured a >= +5 point gain from the mode named by the hint (M12 regenerates this list). flyer = any level (rule is deck based); drone = the Syrup Queen level.
+export const HINT_OK = { healer: [35, 39, 49, 59], carrier: [40, 50, 59, 60], drone: [60] }; // M12 (qa/v0.8.2/mode-evidence.json, 28 levels x 540 battles): gain >= +5 points vs weak mode
 export const ART81 = !(typeof __TEST_HOOKS__ !== 'undefined' && __TEST_HOOKS__ && typeof location !== 'undefined' && /[?&]art81=0/.test(location.search)); // v0.8.1 RG1 kill-switch: every v0.8.1 art/UI/motion item is gated on it (the A13 identity batch runs with it on and off; test builds accept ?art81=0)
-export const VERSION = '0.8.1'; // v0.7: shown on the map screen (keep in step with package.json + android versionName)
+export const VERSION = '0.8.2'; // v0.7: shown on the map screen (keep in step with package.json + android versionName)
 export const ANT_SIZES = { ...TUNING.antSizes };
 const ANT_TEXT = {
   small: { name: 'Scout Ant', desc: 'Tiny, fast, comes in swarms.', intro: 'Tiny and fast. They come in swarms.' },
@@ -183,6 +203,9 @@ const ANT_TEXT = {
   nurse: { name: 'Nurse Ant', desc: 'Heals hurt friends nearby every 3 seconds. Pop her first!', intro: 'Nurse Ant: heals friends nearby every 3 s. Pop her first!' },
   glazed: { name: 'Glazed Ant', desc: 'Wears a sugar shield that soaks damage first, then grows back after a pause. Hit it hard and fast.', intro: 'Glazed Ant: a sugar shield soaks damage, then it grows back.' }, // v0.8.1 W2 / M4
   queen5: { name: 'Glaze Queen', desc: 'BOSS of world 5. Shielded, and she keeps sending Glazed Ants. Takes 50 of the donut.', intro: 'Glaze Queen: shielded, and she keeps sending Glazed Ants.' }, // v0.8.1 M5
+  // v0.8.2 world 6 (Pancake Picnic)
+  drone: { name: 'Drone Ant', desc: 'A four-winged flyer with armor 2. Laser, Zapper or Fan can hit it; Burn-through strips its armor.', intro: 'Flies, with armor 2. Laser, Zapper or Fan!' },
+  queen6: { name: 'Syrup Queen', desc: 'BOSS of world 6. Walks slowly and drips a Drone every 12 seconds. Takes 50 of the pancakes. Ignores most slowing.', intro: 'Syrup Queen: a new Drone every 12 seconds.' },
   queen4: { name: 'Sundae Queen', desc: 'BOSS of world 4. Calls a nurse every 9 seconds, and the nurses heal her. Takes 50 of the sundae.', intro: 'BOSS. Calls nurses that heal her.' },
 };
 // ---------------- Queens (v0.4 item 19) ----------------
@@ -197,6 +220,8 @@ export const ANT_CARD = {
   glazed: 'Glazed Ant \u2014 sweet armor. Its glaze soaks up damage, then grows back. Hit it hard and fast, or use Spray and Bombs.',
   queen5: 'Glaze Queen \u2014 shielded, and she keeps sending Glazed Ants. Break her glaze, then finish her.',
   nurse: 'Nurse Ant \u2014 heals friends nearby every 3 seconds. Pop her first!',
+  drone: 'Drone Ant \u2014 flies, armor 2. Laser, Zapper and Fan can hit flyers.', // v0.8.2 PP9 (shown once on the first prep screen of L52)
+  queen6: 'Syrup Queen \u2014 she walks, and drips a Drone every 12 seconds. Keep an air tower ready.', // v0.8.2 PP5/PP9
 };
 export const L42_TIP = 'Glaze grows back. Focus fire.'; // v0.8.1 W9: the one-time level-42 tip toast
 export const QUEEN_TRAITS = { ...TUNING.queenTraitMods };
@@ -388,3 +413,17 @@ export const worldOf = (i) => (LEVELS[i] ? LEVELS[i].world : 1);
 export const treatOf = (i) => TREATS[worldOf(i)] || 'cookie';
 // v0.4 item 15: hard cap on ant types per battle (the queen counts). Checked by tests and the level report.
 export const MAX_ANT_TYPES_PER_BATTLE = 5;
+
+// v0.8.2 EC5a/EC5b: the cosmetic cabinet. 12 skins = 3 per tower for the four damage towers (1,500 / 3,000 / 6,000 coins; the full cabinet is 4 x 10,500 = 42,000).
+// A skin is COLOUR ONLY (the pad accent; same luminance as the base pad so A1 contrast and the silhouette do not change). The sim never reads a skin. Lint: tests/v082.test.js.
+export const SKIN_TIERS = [1500, 3000, 6000];
+export const SKINS = [
+  { id: 'slingshot-1', tower: 'slingshot', name: 'Bubblegum', tier: 1, price: 1500, pad: '#ef51ee' }, { id: 'slingshot-2', tower: 'slingshot', name: 'Lime', tier: 2, price: 3000, pad: '#42ab0f' }, { id: 'slingshot-3', tower: 'slingshot', name: 'Lagoon', tier: 3, price: 6000, pad: '#0fa7a8' },
+  { id: 'laser-1', tower: 'laser', name: 'Periwinkle', tier: 1, price: 1500, pad: '#9087f9' }, { id: 'laser-2', tower: 'laser', name: 'Leaf', tier: 2, price: 3000, pad: '#4ca809' }, { id: 'laser-3', tower: 'laser', name: 'Jade', tier: 3, price: 6000, pad: '#09a880' },
+  { id: 'zapper-1', tower: 'zapper', name: 'Fern', tier: 1, price: 1500, pad: '#5da807' }, { id: 'zapper-2', tower: 'zapper', name: 'Flamingo', tier: 2, price: 3000, pad: '#f959ae' }, { id: 'zapper-3', tower: 'zapper', name: 'Mustard', tier: 3, price: 6000, pad: '#b59307' },
+  { id: 'sound-1', tower: 'sound', name: 'Mint', tier: 1, price: 1500, pad: '#27a67a' }, { id: 'sound-2', tower: 'sound', name: 'Coral', tier: 2, price: 3000, pad: '#db7766' }, { id: 'sound-3', tower: 'sound', name: 'Moss', tier: 3, price: 6000, pad: '#67a326' },
+];
+export const SKIN_TOWERS = ['slingshot', 'laser', 'zapper', 'sound'];
+// v0.8.2 EC6: the calendar table for ten worlds (final coinMul; W7-W10 follow the v0.7.7 schedule and are design values until they ship)
+export const COIN_MUL_SCHEDULE = [1, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3];
+export const DAILY_WIN = { base: 50, capMul: 2.0 };

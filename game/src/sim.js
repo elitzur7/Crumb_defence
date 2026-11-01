@@ -206,7 +206,7 @@ export class Path {
 export const SPLIT_BACK = 3, SPLIT_STEP = 7, MAX_SPLIT_DEPTH = 1;
 // ---------- waves ----------
 const SPACING = { small: 0.45, worker: 1, big: 1.6, gasmask: 1, armored: 1.5, flyer: 0.8, sprinter: 0.9, heavy: 1.7, queen: 1, queen2: 1,
-  small_gasmask: 0.45, small_armed: 0.6, small_fly: 0.5, greasy: 1.1, mama: 1.6, queen3: 1, nurse: 1.5, queen4: 1 }; // v0.7: small variants (Yair ANT-STATS-v0.6.3); v0.7.7: W3 ants + v0.7.9 nurse/queen4 (only used by the random-mix generator; W3/W4 levels have explicit waves)
+  small_gasmask: 0.45, small_armed: 0.6, small_fly: 0.5, greasy: 1.1, mama: 1.6, queen3: 1, nurse: 1.5, queen4: 1, drone: 0.8, queen6: 1 }; // v0.7: small variants (Yair ANT-STATS-v0.6.3); v0.7.7: W3 ants + v0.7.9 nurse/queen4 (only used by the random-mix generator; W3/W4 levels have explicit waves)
 export function generateWaves(levelIndex, levels = C.LEVELS) {
   const L = levels[levelIndex];
   if (L.waves) return L.waves.map((groups) => expandGroups(groups, L.interval || 1));
@@ -268,6 +268,7 @@ export class Battle {
     this.cfg.rescue = { ...C.BATTLE.rescue, ...((opts.battleCfg || {}).rescue || {}) }; // v0.7.4 M2 (flag: rescue.on, default off)
     this.levelIndex = opts.levelIndex;
     this.level = C.LEVELS[opts.levelIndex];
+    this.specialsOn = opts.specials !== undefined ? !!opts.specials : C.TUNING.specials !== false; // v0.8.2 M7a: tuning.json "specials" (default true); opts.specials overrides (tests, A13b)
     this.mapId = opts.mapId || this.level.map;
     this.map = C.MAPS[this.mapId];
     const parsed = parseMap(this.map, C.GRID_COLS, C.GRID_ROWS);
@@ -400,6 +401,9 @@ export class Battle {
     this.stats.spawned++;
     return ant;
   }
+
+  // v0.8.2 M7a: the ONLY way sim.js reads a tower's special: the params when it is active (world >= 6, card level >= 5, flag on), else null
+  spec(tw) { return this.specialsOn && tw && tw.stat && C.specialActive(tw, this.level) ? C.TOWERS[tw.type].special.params : null; }
 
   damage(ant, dmg, opt = {}) {
     if (ant.dead || dmg <= 0) return 0;
@@ -817,7 +821,8 @@ export class Battle {
       if (!inRange.length) continue;
       if (tw.type === 'sound') {
         const st = tw.stat('stagger');
-        for (const a of inRange) { this.damage(a, tw.stat('power'), { ignoreArmor: true, src: tw }); if (!a.dead) a.stunT = Math.max(a.stunT, st * (C.ANTS[a.type].boss ? 0.3 : 1)); }
+        const spC = this.spec(tw); let cm = 1; if (spC) { tw.pulses = (tw.pulses || 0) + 1; if (tw.pulses % spC.every === 0) { cm = spC.mul; this.emit({ type: 'special', sp: 'crescendo', x: tw.x, y: tw.y }); } }
+        for (const a of inRange) { this.damage(a, tw.stat('power') * cm, { ignoreArmor: true, src: tw }); if (!a.dead) a.stunT = Math.max(a.stunT, st * (C.ANTS[a.type].boss ? 0.3 : 1)); }
         tw.cd = 1 / tw.stat('rate'); tw.fireFx = 0.4; this.emit({ type: 'pulse', x: tw.x, y: tw.y, r: range });
         continue;
       }
@@ -845,11 +850,14 @@ export class Battle {
         if (tw.heatTarget === target.id) tw.heat++; else { tw.heatTarget = target.id; tw.heat = 0; }
         const heat = Math.min(tw.stat('heatMax'), tw.heat * T.heatPerHit);
         this.damage(target, tw.stat('power') * (1 + heat), { src: tw });
+        const spL = this.spec(tw); // v0.8.2 M7c Burn-through: every `every`-th beam hit on an ant strips `strip` armor (max `max` per ant, bosses immune); the loss is real armor, so every tower benefits
+        if (spL && !target.dead && !C.ANTS[target.type].boss) { target.burnHits = (target.burnHits || 0) + 1; if (target.burnHits % spL.every === 0 && (target.shred || 0) < spL.max) { target.shred = (target.shred || 0) + spL.strip; target.armor = Math.max(0, target.armor - spL.strip); this.emit({ type: 'special', sp: 'burnthrough', x: target.x, y: target.y, id: target.id, armor: target.armor }); } }
         this.emit({ type: 'beam', x: tw.x, y: tw.y - 10, tx: target.x, ty: target.y, heat: heat / (tw.stat('heatMax') || 1) });
       } else if (tw.type === 'zapper') {
         const hit = new Set([target.id]); let cur = target, dmg = tw.stat('power');
         this.damage(target, dmg, { src: tw }); this.emit({ type: 'zap', x: tw.x, y: tw.y - 14, tx: target.x, ty: target.y });
-        for (let k = 0; k < tw.stat('chain'); k++) {
+        const spZ = this.spec(tw);
+        for (let k = 0; k < tw.stat('chain') + (spZ ? spZ.plus : 0); k++) {
           let nx = null, nd = T.chainRange;
           for (const a of this.ants) { if (a.dead || !a.flying || hit.has(a.id)) continue; const q = Math.hypot(a.x - cur.x, a.y - cur.y); if (q <= nd) { nd = q; nx = a; } }
           if (!nx) break;
@@ -857,7 +865,7 @@ export class Battle {
           this.emit({ type: 'zap', x: cur.x, y: cur.y, tx: nx.x, ty: nx.y, chain: true });
           this.damage(nx, dmg, { src: tw }); cur = nx;
         }
-      } else if (tw.type === 'lizard') { this.damage(target, tw.stat('power'), { src: tw }); this.emit({ type: 'tongue', x: tw.x, y: tw.y, tx: target.x, ty: target.y }); tw.fireFx = 0.25; }
+      } else if (tw.type === 'lizard') { const spP = this.spec(tw), pounce = spP && target.hp >= target.maxHp - 1e-6 && !(target.shield > 0); if (pounce) this.emit({ type: 'special', sp: 'pounce', x: target.x, y: target.y }); this.damage(target, tw.stat('power') * (pounce ? spP.mul : 1), { src: tw }); this.emit({ type: 'tongue', x: tw.x, y: tw.y, tx: target.x, ty: target.y }); tw.fireFx = 0.25; }
       else if (tw.type === 'spray') {
         this.clouds.push({ x: target.x, y: target.y, r: tw.stat('cloudRadius'), dps: tw.stat('power'), left: T.cloudTime, total: T.cloudTime, src: tw });
         this.emit({ type: 'spray', x: tw.x, y: tw.y, tx: target.x, ty: target.y });
@@ -868,7 +876,7 @@ export class Battle {
       const tg = p.target;
       const dx = tg.x - p.x, dy = tg.y - p.y, dist = Math.hypot(dx, dy);
       const step = p.speed * dt;
-      if (dist <= step || tg.dead) { if (!tg.dead) this.damage(tg, p.dmg, { src: p.src }); p.done = true; this.emit({ type: 'hit', x: tg.x, y: tg.y, src: p.src && p.src.type }); } // v0.8.1 J1: src = payload only (the view picks the slingshot burst)
+      if (dist <= step || tg.dead) { if (!tg.dead) { this.damage(tg, p.dmg, { src: p.src }); const spR = p.src && p.src.type === 'slingshot' ? this.spec(p.src) : null; if (spR) { let nx = null, nd = spR.radius; for (const o of this.ants) { if (o.dead || o === tg || o.flying) continue; const q = Math.hypot(o.x - tg.x, o.y - tg.y); if (q <= nd) { nd = q; nx = o; } } if (nx) { this.damage(nx, p.dmg * spR.mul, { src: p.src }); this.emit({ type: 'special', sp: 'ricochet', x: tg.x, y: tg.y, tx: nx.x, ty: nx.y }); } } } p.done = true; this.emit({ type: 'hit', x: tg.x, y: tg.y, src: p.src && p.src.type }); } // v0.8.1 J1: src = payload only (the view picks the slingshot burst)
       else { p.x += (dx / dist) * step; p.y += (dy / dist) * step; }
     }
     this.projectiles = this.projectiles.filter((p) => !p.done);
@@ -969,7 +977,8 @@ export class Battle {
     const steal = Math.min(C.ANTS[a.type].steal, this.foodStored);
     this.foodStored -= steal;               // the cookie loses the piece immediately
     this.stats.stolen += steal;
-    if (a.flying) this.stats.flyLeak = (this.stats.flyLeak || 0) + steal; // v0.8.1 U7: visual-only counter (feeds the defeat hint; never read by the sim)
+    { const lb = this.stats.leakBy || (this.stats.leakBy = {}); lb[a.type] = (lb[a.type] || 0) + steal; } // v0.8.2 PP13: QA-only counter (leak share by ant type; never read by the sim)
+    if (a.flying) { this.stats.flyLeak = (this.stats.flyLeak || 0) + steal; if (a.type === 'drone') this.stats.droneLeak = (this.stats.droneLeak || 0) + steal; } // v0.8.1 U7: visual-only counter (feeds the defeat hint; never read by the sim)
     this.emit({ type: 'steal', x: a.x, y: a.y, n: steal, ant: a.type });
     if (this.cfg.carryBack && steal > 0) {
       a.state = 'back'; a.carrying = steal; a.d = this.route(a).length - 0.01;
@@ -990,15 +999,18 @@ function segDist(px, py, ax, ay, bx, by) {
 }
 
 // v0.8.1 U7: the one-line "why did I lose?" hint (<= 60 chars). First matching rule; reads only (no RNG, no state change). null = no hint.
+//  (v0.8.2 R4 adds the level evidence list and the 2-loss rule; order is unchanged, the Drone-queen rule sits before the generic flyer rule)
 //  1. most of the stolen food left the cookie with escaping carriers and a single-target tower is not on Carrier mode -> "Try Carrier mode on a tower"
 //  2. a healer-type ant is still alive at the end -> pop it first
 //  3. a flyer reached the cookie and the deck has no Laser / Zapper
-export const LOSS_HINTS = { carrier: 'Try Carrier mode on a tower', healer: 'Healer ants keep others alive - pop them first', flyer: 'Bring a Laser or Zapper for flyers' };
-export function lossHint(b) {
-  if (!b || b.result !== 'lose') return null;
-  const st = b.stats, stolen = st.stolen || 0;
-  if (stolen > 0 && (st.lostOnWay || 0) >= 0.5 * stolen && b.towers.some((t) => hasTargetModes(t.type) && t.mode !== 'carrier')) return LOSS_HINTS.carrier;
-  if (b.ants.some((a) => !a.dead && isHealerType(a.type))) return LOSS_HINTS.healer;
+export const LOSS_HINTS = { carrier: 'Try Carrier mode on a tower', healer: 'Switch a tower to Healer mode - the nurses keep the rest alive', flyer: 'Bring a Laser or Zapper for flyers', drone: 'Syrup Queen sends Drones. Bring a Zapper or a Laser.' };
+// v0.8.2 R4: evidence-gated. A hint shows only after the 2nd consecutive loss on the level (lossRun >= 2) AND, for the mode hints, only on levels in C.HINT_OK (bot sims measured a gain there).
+export function lossHint(b, lossRun = 0) {
+  if (!b || b.result !== 'lose' || lossRun < 2) return null;
+  const st = b.stats, stolen = st.stolen || 0, L = b.levelIndex + 1, ok = C.HINT_OK;
+  if (ok.carrier.includes(L) && stolen > 0 && (st.lostOnWay || 0) >= 0.5 * stolen && b.towers.some((t) => hasTargetModes(t.type) && t.mode !== 'carrier')) return LOSS_HINTS.carrier;
+  if (ok.healer.includes(L) && b.ants.some((a) => !a.dead && isHealerType(a.type))) return LOSS_HINTS.healer;
+  if (ok.drone.includes(L) && (st.droneLeak || 0) > 0 && b.deck.filter((id) => id === 'laser' || id === 'zapper' || id === 'fan').length < 2) return LOSS_HINTS.drone;
   if ((st.flyLeak || 0) > 0 && !b.deck.some((id) => id === 'laser' || id === 'zapper')) return LOSS_HINTS.flyer;
   return null;
 }

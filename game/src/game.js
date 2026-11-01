@@ -29,7 +29,7 @@ const S = {
   mapScroll: 0, cardView: null, reveal: [], pack: null, mode: null, fireworks: { rockets: [], parts: [], queue: [] }, shopFx: null, shopSel: null, queenDown: null,
 };
 if (S.save.settings && S.save.settings.muted) setMuted(true);
-function persist() { M.writeSave(storage, S.save); }
+function persist() { S.skinSrc = null; M.writeSave(storage, S.save); }
 // wall clock (tests may shift it through the local-only test hook)
 function now() { return Date.now() + S.clockOffset; }
 // Reward Calendar: "in the game" heartbeat (start-up, resume, every CALENDAR.heartbeatSec while visible) + popup on entering
@@ -50,7 +50,7 @@ function setPaused(v) { S.paused = v; if (S.battle) S.battle.paused = v; if (v) 
 // v0.7.2 C16: the meta screens (map, cards, card detail, shop) sit above a fixed bottom tab bar (Map / Cards / Shop). The bar is 56 dp tall plus the
 // bottom safe-area inset (env(safe-area-inset-bottom), read through a hidden probe element). Their design height is 660 instead of 720; every other
 // screen (prep, battle, results, overlays) keeps W x H = 400 x 720 over the full window.
-const META_SCREENS = ['map', 'cards', 'card', 'shop'], BAR_H = 56, META_H = 660;
+const META_SCREENS = ['map', 'cards', 'card', 'shop', 'cabinet', 'antbook'], BAR_H = 56, META_H = 660;
 let cw = 0, ch = 0, insetB = 0, insetProbe = null, insetOverride = null; // insetOverride: test hook only
 function readInset() {
   if (insetOverride != null) return insetOverride;
@@ -93,6 +93,11 @@ function drawButton(x, y, w, h, label, col = '#ffb3c1', opt = {}) {
   // v0.8.0 (spec 6.5): a glossy pill - lip + candy face + gloss strip (baked per size/colour/state), label in chunky 'btn' text. Disabled = grey candy (a different colour, not transparency).
   const press = opt.pressed ? 3 : 0;
   ctx.save();
+  if (C.ART81 && !opt.disabled && !opt.noSquash) { // v0.8.2 J18: press squash 0.96 (60 ms) / release spring 1.04 -> 1.0 (110 ms), about the button centre
+    const cx = x + w / 2, cy = y + h / 2, inB = (q) => q && q.id !== 'map' && q.w * q.h < 20000 && cx >= q.x && cx <= q.x + q.w && cy >= q.y && cy <= q.y + q.h, now = performance.now();
+    const dn = down && !down.moved && inB(down.b), rl = S.relB && inB(S.relB.b) ? now - S.relB.t : null, ps = A.pressScale(!!dn, dn ? now - down.t0 : 0, rl);
+    if (ps !== 1 && !reducedMotion()) { ctx.translate(cx, cy); ctx.scale(ps, ps); ctx.translate(-cx, -cy); }
+  }
   A.drawPillButton(ctx, x, y, w, h, opt.disabled ? 'dis' : col, { pressed: !!opt.pressed, disabled: !!opt.disabled, r: opt.r ?? Math.min(14, h / 2) });
   if (label) {
     const neutral = !opt.disabled && String(col).toLowerCase() === '#fff3e6'; // v0.8.1 F7: neutral secondary pills carry an INK label (no chunky white)
@@ -119,7 +124,7 @@ canvas.addEventListener('pointerdown', (e) => {
   if (S.result && S.result.t < 4) S.result.coinSkip = true; // v0.8.1 G4(b): a tap skips the coin fly
   const p = toLogical(e);
   const b = hit(prevButtons, p.x, p.y);
-  down = { x: p.x, y: p.y, b, moved: false };
+  down = { x: p.x, y: p.y, b, moved: false, t0: performance.now() };
   // v0.5 item 13: the level map scrolls (drag up/down) - world 2 sits above world 1
   if (S.screen === 'map' && !S.cal && !S.reveal.length && !S.pack && p.y >= MAPVIEW.top && p.y <= MAPVIEW.bottom) down.scroll0 = S.mapScroll;
   if (b && b.onDown) b.onDown(p);
@@ -138,6 +143,7 @@ canvas.addEventListener('pointerup', (e) => {
   if (down.scroll0 != null && down.moved) { down = null; return; } // a scroll drag is never a tap
   S.drag = null;
   const b = hit(prevButtons, p.x, p.y);
+  if (down.b) S.relB = { b: down.b, t: performance.now() }; // v0.8.2 J18
   if (b && down.b && b.id === down.b.id && b.onTap) { if (b.id !== 'map') haptic('light'); b.onTap(p); } // v0.8.1 J10: a light tick on buttons (not on the battle board itself)
   down = null;
 });
@@ -186,6 +192,8 @@ window.addEventListener('popstate', () => {
   const repush = () => { try { history.pushState({ inner: 1 }, ''); } catch (e) {} };
   if (S.screen === 'battle' && !S.result) { setPaused(!S.paused); repush(); return; }
   if (S.screen === 'card') { S.screen = 'cards'; repush(); return; }
+  if (S.screen === 'cabinet') { S.screen = 'shop'; repush(); return; } // v0.8.2 EC5a
+  if (S.screen === 'antbook') { if (S.antBookSel) S.antBookSel = null; else S.screen = 'cards'; repush(); return; } // v0.8.2 U15
   S.battle = null; S.screen = 'map'; S.sel = null;
 });
 function openPrep(i) {
@@ -195,7 +203,7 @@ function openPrep(i) {
   for (const id of unlocked) if (deck.length < C.BATTLE.deckSize && !deck.includes(id)) deck.push(id);
   S.prep.deck = deck.slice(0, C.BATTLE.deckSize);
   // bonuses that ran out since last time are swapped for ones that still have stock (feedback 12)
-  S.prep.bonuses = M.autoFixBonuses(S.save, (S.save.lastBonuses || C.BONUS_TYPES.slice(0, 2)).slice(0, C.BATTLE.bonusTypesToBring));
+  S.prep.bonuses = M.autoFixBonuses(S.save, (S.save.lastBonuses || C.BONUS_TYPES.slice(0, 2)).slice(0, C.BATTLE.bonusTypesToBring)).filter((b) => (S.save.bonusStock[b] || 0) > 0); S.zeroHint = null; // v0.8.2 R6: never pre-select a 0-stock booster
   S.prepAlert = null;
   go('prep');
   S.antCard = antCardWanted() ? M.nextAntCard(S.save, i) : null; // v0.8.1 U2 (after go(), which clears it)
@@ -204,7 +212,7 @@ function openPrep(i) {
 function antCardWanted() { return C.ART81 && (!__TEST_HOOKS__ || /[?&]antcard=1/.test(location.search)); }
 function antCardDone() { const t = S.antCard; if (!t) return; if (M.markAntSeen(S.save, t)) persist(); sfx('tap'); S.antCard = M.nextAntCard(S.save, S.levelIndex); }
 // v0.8.1 U1: first-battle guide. Only on a save whose onboard.firstBattle is 'pending' (a brand-new save), on level 1. Test builds skip it unless the URL has ?guide=1 (the older QA suites drive fresh saves).
-function guideWanted(levelIndex) { return levelIndex === 0 && !!(S.save.onboard && typeof S.save.onboard === 'object' && S.save.onboard.firstBattle === 'pending') && (!__TEST_HOOKS__ || /[?&]guide=1/.test(location.search)); }
+function guideWanted(levelIndex) { return levelIndex === 0 && !M.isReturningPlayer(S.save) && !!(S.save.onboard && typeof S.save.onboard === 'object' && S.save.onboard.firstBattle === 'pending') && (!__TEST_HOOKS__ || /[?&]guide=1/.test(location.search)); }
 function guideDone() { S.guide = null; if (S.save.onboard && typeof S.save.onboard === 'object' && S.save.onboard.firstBattle !== 'done') { S.save.onboard.firstBattle = 'done'; persist(); } }
 function startBattle(levelIndex = S.levelIndex, deck = S.prep.deck, bonuses = S.prep.bonuses, seed = (Date.now() & 0xffffff)) {
   S.levelIndex = levelIndex;
@@ -217,15 +225,21 @@ function startBattle(levelIndex = S.levelIndex, deck = S.prep.deck, bonuses = S.
   S.fx = []; S.swatQ = []; S.ui = []; S.result = null; setPaused(false); S.speed = startSpeed(S.speed, C.UI.speedMaxAtStart); clock.acc = 0; S.sel = null; S.info = null; S.mode = null; S.queenDown = null; S.modeHint = false; S.nurseTip = false; S.battle.rescueScale = S.speed;
   go('battle');
   S.guide = guideWanted(levelIndex) ? { step: 1 } : null; // v0.8.1 U1 (after go(), which clears it)
+  S.specialBanner = null; // v0.8.2 U11: the awakening beat - the first W6 battle with a card at CL >= 5: a 2 s banner, once per tower (save.seenSpecial[type]); never on W1-W5 (the special sleeps there)
+  if (C.ART81 && S.battle.specialsOn && !S.guide) {
+    const seen = S.save.seenSpecial || (S.save.seenSpecial = {}), fresh = deck.filter((id) => C.specialActive(id, S.battle.level, S.battle.cardLevels ? S.battle.cardLevels[id] : 1) && !seen[id]);
+    if (fresh.length) { fresh.forEach((id) => { seen[id] = true; }); persist(); S.specialBanner = { ids: fresh, t0: S.t, until: S.t + 2.4 }; }
+  }
 }
 // v0.8.0 result-screen constants: star confetti <= 36 (spec 6.8), the 3-star moment timeline (ms): 0-200 drop, 200-450 shake, 450-600 burst, 600-1500 count-up, 1500 land, 1500-1900 hold, 1900-2250 fly, 2250+ buttons
-const CONFETTI_MAX = 36, MOMENT_MS = 2250, MOMENT_T = { drop: 0.2, shake: 0.45, burst: 0.6, count: 1.5, hold: 1.9, fly: 2.25 };
+const CONFETTI_MAX = 36, MOMENT_MS = 2250, MOMENT_T = { drop: 0.2, shake: 0.45, burst: 0.6, countDone: 1.0, count: 1.5, hold: 1.9, fly: 2.25 };
 // coin-pile placement on the result screen (recorded in JOB-v0.8.0.md): 78x30 pile (scaled 0.8-1.2), bottom centre (200, 250); the hero treat sits on it at (200, 201) scaled 1.1
 const RESULT_PILE = { x: 200, y: 250 }, RESULT_TREAT = { x: 200, y: 201, k: 1.1 };
+function localDay() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; } // v0.8.2 EC6
 function finishBattle() {
   const b = S.battle; guideDone(); // v0.8.1 U1: the first finished battle always ends the guide
   // bonuses were already deducted from the save at the moment of use
-  const out = M.applyBattleResult(S.save, b.levelIndex, b.result, b.stars, { kills: b.stats.kills, foodLeft: b.foodStored, perfect: b.perfect, time: b.time });
+  const out = M.applyBattleResult(S.save, b.levelIndex, b.result, b.stars, { kills: b.stats.kills, foodLeft: b.foodStored, perfect: b.perfect, time: b.time, day: C.ART81 ? localDay() : undefined });
   { const rc = b.upgradeReach(); S.save.debug = S.save.debug || { reach: [] }; S.save.debug.reach.push({ li: b.levelIndex, res: b.result, towers: rc.towers, l1: rc.l1, l2: rc.l2, l3p: rc.l3p, placed: rc.placed, upgrades: rc.upgrades, crumbsPlace: rc.crumbsPlace, crumbsUpgrade: rc.crumbsUpgrade }); if (S.save.debug.reach.length > 20) S.save.debug.reach.shift(); } // v0.8.1 M8
   const lossRun = M.noteLossRun(S.save, b.levelIndex, b.result === 'win'); // v0.8.1 U7: consecutive losses on this level
   if (b.result === 'win' && b.levelIndex === 0 && out.firstClear && C.ART81) M.armNextHint(S.save, 'l1'); // v0.8.1 U9: after the first L1 win the map points at level 2
@@ -234,7 +248,7 @@ function finishBattle() {
   const win = b.result === 'win', fullFood = b.foodStored >= b.cfg.foodHP - 1e-6;
   const queenKilled = win && Object.keys(b.stats.byType).some((t) => C.isQueen(t)); // v0.5.1: queen celebration only when the level is won
   const hold = queenKilled ? C.UI.queenCheerHold : 0; // v0.6.2 item 14: the result panel waits for the queen celebration
-  S.result = { win, stars: b.stars, out, t: 0, hold, crumbsLeft: b.crumbs, perfect: out.perfect, kills: b.stats.kills, confetti: [], fullFood, queenKilled, hint: C.ART81 && b.result === 'lose' && lossRun >= 2 ? lossHint(b) : null };
+  S.result = { win, stars: b.stars, out, t: 0, hold, crumbsLeft: b.crumbs, perfect: out.perfect, kills: b.stats.kills, confetti: [], fullFood, queenKilled, hint: C.ART81 && b.result === 'lose' && lossRun >= 2 ? lossHint(b, lossRun) : null };
   // v0.7.10 / v0.8.0: the gold 3-star bonus card moment (first 3 stars only; amount = round(75 x coinMul / 5) x 5) - T0 = 1.00 s after the result starts (1.80 s on a Perfect); the first tap skips it
   { const sp = out.starParts || { s2: 0, s3: 0 };
     if (win && b.stars >= 3 && sp.s3 > 0) S.result.moment = { amount: sp.s3, t0: out.perfect ? C.UI.perfectAnimTime : 1.0, dur: MOMENT_MS / 1000, sfx: 0 };
@@ -303,9 +317,10 @@ function mapTap(p) {
   S.info = tw ? { tower: tw, t: 0 } : null;
 }
 // v0.7.4 M1: a one-time tip (per battle, never while paused) the first time a tank (Armoured / Big / Heavy / Queen) steals food, if a tower could change its target
+const W6_STORY = 'Drones fly in. Bring a tower that hits flyers.'; // v0.8.2 PP8: the world-6 map story line (<= 60 chars)
 const W5_STORY = 'Glaze grows back: hit hard, hit fast!'; // v0.8.1 W9: the world-5 map story line (<= 60 chars)
-const TREAT_NAME = { cookie: 'Cookie', cake: 'Cake', pie: 'Pie', sundae: 'Sundae', donut: 'Donut' }; // v0.7.7; v0.8.1 W8: donut
-const HINT_ANTS = new Set(['armored', 'big', 'heavy', 'queen', 'queen2', 'greasy', 'mama', 'queen3', 'nurse', 'queen4', 'glazed', 'queen5']); // v0.8.1 W5: + glazed / queen5 (the one-time mode tip also fires on a Glazed steal); v0.7.7: + world 3's ants; v0.7.9: + world 4's
+const TREAT_NAME = { cookie: 'Cookie', cake: 'Cake', pie: 'Pie', sundae: 'Sundae', donut: 'Donut', pancake: 'Pancakes' }; // v0.7.7; v0.8.1 W8: donut
+const HINT_ANTS = new Set(['armored', 'big', 'heavy', 'queen', 'queen2', 'greasy', 'mama', 'queen3', 'nurse', 'queen4', 'glazed', 'queen5', 'drone', 'queen6']); // v0.8.2: + drone / queen6; v0.8.1 W5: + glazed / queen5 (the one-time mode tip also fires on a Glazed steal); v0.7.7: + world 3's ants; v0.7.9: + world 4's
 function maybeModeHint(b, e) {
   if (S.modeHint || S.paused || !e.ant || !HINT_ANTS.has(e.ant) || !(e.n > 0)) return;
   if (!b.towers.some((q) => hasTargetModes(q.type))) return;
@@ -389,7 +404,7 @@ function towerImpact(tp, x, y, shape, opt = {}) {
   addFx({ k: 'impact', shape, col, x, y, life: opt.life || 0.18, max: opt.life || 0.18, fast });
 }
 // v0.8.1 J2: death variety by body class (added particles <= 5 per death, <= 3 at 4x; the base death - ko + puffs - stays). Reduced motion: no extras.
-const SHARD_COL = { armored: '#b8c3d4', gasmask: '#a9c9a0', glazed: '#ffa6dc', small_gasmask: '#a9c9a0', small_armed: '#b8c3d4', sprinter: '#b8c3d4', queen5: '#ffa6dc' };
+const SHARD_COL = { armored: '#b8c3d4', gasmask: '#a9c9a0', glazed: '#ffa6dc', small_gasmask: '#a9c9a0', small_armed: '#b8c3d4', sprinter: '#b8c3d4', queen5: '#ffa6dc', drone: '#f3c98b', queen6: '#e8a33d' };
 function deathExtras(e) {
   if (!C.ART81 || reducedMotion()) return;
   const D0 = C.ANTS[e.ant];
@@ -484,6 +499,7 @@ function consumeEvents() {
         if (e.n) addFloatText(S.fx, { key: 'steal', x: e.x, y: e.y - 20, n: e.n, fmt: (n) => `-${fmtFood(n)}`, col: '#ff7a7a', life: 1 }); sfx('steal'); break;
       case 'foodReturn': addFloatText(S.fx, { key: 'food', x: e.x, y: e.y - 18, n: e.n, fmt: (n) => `+${fmtFood(n)} food back!`, col: '#8fe388', life: 1.1 }); sfx('return'); break;
       case 'place': case 'upgrade': {
+        if (C.ART81 && e.type === 'place' && !reducedMotion()) addFx({ k: 'ring', x: e.x, y: e.y + 14, r: 28, col: A.TOWER_PAD[e.card] || '#ffd45e', life: 0.3, max: 0.3 }); // v0.8.2 J13: the pad ring flashes once (4 dust + 1 ring + the existing sparkles stay under the fx cap)
         if (e.type === 'place' && !reducedMotion()) for (let i = 0; i < (S.speed >= 4 ? 2 : 4); i++) addFx({ k: 'dust', x: e.x + (Math.random() - 0.5) * 26, y: e.y + 9 + (Math.random() - 0.5) * 6, life: 0.45, max: 0.45 }); // v0.8.0: placement dust (<= 6 particles)
         // purchase feedback: the card flies from its tray slot to the tile, the price flies out of the crumb counter
         const delay = e.pick != null ? 0.28 : 0;
@@ -622,6 +638,7 @@ function drawCapsOverlay() {
 }
 
 function render(dt) {
+  const rt0 = performance.now();
   A.MOTION.reduced = reducedMotion();
   prevButtons = buttons; buttons = [];
   ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -629,6 +646,7 @@ function render(dt) {
   applyLayout();
   ctx.setTransform(dpr * scale, 0, 0, dpr * scale, offX * dpr, offY * dpr);
   // soft background pattern
+  if (S.skinSrc !== S.save.skins) { S.skinSrc = S.save.skins; A.setSkinPads(M.skinPads(S.save)); } // v0.8.2 EC5a
   drawBackdrop();
   renderTabBar(dt); // v0.7.2 C16: drawn BEFORE the screen so a modal / onboarding dim covers it and its blockers win the taps
   if (S.screen === 'map') renderMapScreen();
@@ -637,6 +655,8 @@ function render(dt) {
   else if (S.screen === 'cards') renderCards();
   else if (S.screen === 'card') renderCardView();
   else if (S.screen === 'shop') renderShop();
+  else if (S.screen === 'cabinet') renderCabinet();
+  else if (S.screen === 'antbook') renderAntBook();
   renderFireworks(dt);
   if (S.reveal.length && S.reveal[0].at <= S.t) renderReveal(dt);
   if (S.pack) renderPack(dt); // v0.7: pack reveal (free + paid packs)
@@ -657,6 +677,7 @@ function render(dt) {
     ctx.restore();
     if (S.toast.t <= 0) { S.toast = null; S.layoutToast = null; }
   }
+  { const rc = performance.now() - rt0; S.renderMs = S.renderMs ? S.renderMs * 0.9 + rc * 0.1 : rc; } // v0.8.2 G19: the measured render cost (ms, smoothed)
   drawCapsOverlay();
 }
 // ---------------- v0.7.2 C16: bottom tab bar (Map / Cards / Shop) ----------------
@@ -664,14 +685,14 @@ function render(dt) {
 // (>= 48 dp at every width >= 144). Shown on the meta screens; slides out for modals; never on prep / battle / results / pack reveal.
 let barK = 0;
 const TAB_COL = ['#d9cfe0', '#b5d8ff', '#ffd27a'], TAB_NAME = ['Map', 'Cards', 'Shop'], TAB_MUTED = '#7a5a6a', BAR_BG = '#fff6ee';
-function activeTab() { return S.screen === 'map' ? 0 : S.screen === 'shop' ? 2 : 1; }
+function activeTab() { return S.screen === 'map' ? 0 : (S.screen === 'shop' || S.screen === 'cabinet') ? 2 : 1; } // (the Ant Book belongs to Cards)
 function barWanted() { return isMeta() && !S.antCard && !S.starCard && !S.cal && !S.settings && !S.pack && !S.mergeAnim && !(S.reveal.length && S.reveal[0].at <= S.t) && !S.dialog; }
 function tabRect(i) { // logical-coordinate rectangle of tab i (for the onboarding spot and the button hit areas)
   const tw = cw / 3, top = ch - BAR_H - insetB;
   return { x: (i * tw + 6 - offX) / scale, y: (top + 6 - offY) / scale, w: (tw - 12) / scale, h: 44 / scale, r: 14 / scale };
 }
 function tabTap(i) {
-  if (i === activeTab()) { if (S.screen === 'map') S.mapScroll = autoMapScroll(); else if (S.screen === 'card') { S.screen = 'cards'; S.mergeAnim = null; } return; } // active tab: silent
+  if (i === activeTab()) { if (S.screen === 'map') S.mapScroll = autoMapScroll(); else if (S.screen === 'card') { S.screen = 'cards'; S.mergeAnim = null; } else if (S.screen === 'cabinet') S.screen = 'shop'; else if (S.screen === 'antbook') { S.screen = 'cards'; S.antBookSel = null; } return; } // active tab: silent
   go(['map', 'cards', 'shop'][i]);
 }
 function drawTabIcon(kind, x, y, active) {
@@ -778,11 +799,36 @@ function bakeBackdrop() {
   g.fillStyle = vg; g.fillRect(x0 - 4, y0 - 4, x1 - x0 + 8, y1 - y0 + 8);
   return cv;
 }
+// v0.8.2 G9: the battle table - theme ground + oversize props in the margins outside the logical canvas, baked per layout + map (the lip layer is blitted after the board)
+function battleTable() {
+  const b = S.battle; if (!b) return null;
+  const key = `${canvas.width}x${canvas.height}|${scale.toFixed(4)}|${offX.toFixed(2)}|${offY.toFixed(2)}|${b.mapId}`;
+  if (!S.tbCache) S.tbCache = {};
+  let e = S.tbCache[key];
+  if (!e) {
+    if (Object.keys(S.tbCache).length >= 2) S.tbCache = {};
+    const t0 = (typeof performance !== 'undefined' ? performance.now() : 0), sc = Math.min(dpr, 2);
+    const lx0 = offX, lx1 = offX + W * scale, ly0 = offY, ly1 = offY + H * scale;
+    const margins = [{ side: 'L', x: 0, y: offY + MAP_Y * scale, w: lx0, h: MAP_H * scale }, { side: 'R', x: lx1, y: offY + MAP_Y * scale, w: cw - lx1, h: MAP_H * scale }, { side: 'T', x: 0, y: 0, w: cw, h: ly0 }, { side: 'B', x: 0, y: ly1, w: cw, h: ch - ly1 - insetB }];
+    const board = { x: offX, y: offY + MAP_Y * scale, w: MAP_W * scale, h: MAP_H * scale };
+    const lv = b.level || {}, r = A.renderTable(b.map.theme || 0, lv.world || 1, String(b.mapId), cw, ch, sc, margins, board);
+    e = S.tbCache[key] = { bd: r.bd, lip: r.lip, sc, props: r.props, ms: (typeof performance !== 'undefined' ? performance.now() : 0) - t0 };
+    S.lastTableBake = e.ms;
+  }
+  return e;
+}
+function drawTableLip() { // after the board: 4 px of each side prop over the rim
+  if (!C.ART81 || offX < 24) return; const e = battleTable(); if (!e) return;
+  const by = offY + MAP_Y * scale, bh = MAP_H * scale; ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0);
+  for (const x of [offX, offX + W * scale - 4]) ctx.drawImage(e.lip, x * e.sc, by * e.sc, 4 * e.sc, bh * e.sc, x * dpr, by * dpr, 4 * dpr, bh * dpr);
+  ctx.restore();
+}
 function drawBackdrop() {
   const key = `${canvas.width}x${canvas.height}|${dpr}|${scale.toFixed(4)}|${offX.toFixed(2)}|${offY.toFixed(2)}`;
   if (!S.bdCache) S.bdCache = {};
   let bd = S.bdCache[key];
-  if (!bd) { if (Object.keys(S.bdCache).length >= 3) S.bdCache = {}; bd = S.bdCache[key] = bakeBackdrop(); }
+  if (C.ART81 && S.screen === 'battle' && S.battle) { const e = battleTable(); if (e) bd = e.bd; }
+  else if (!bd) { if (Object.keys(S.bdCache).length >= 3) S.bdCache = {}; bd = S.bdCache[key] = bakeBackdrop(); }
   ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0);
   if (S.screen === 'battle') { // perf (v0.8.0): the opaque board covers the middle of the screen, so only the strips around it are blitted (saves ~20% of the frame's blit area)
     const m = dpr * scale, ix = 2, tx0 = Math.max(0, Math.ceil(offX * dpr + ix)), tx1 = Math.min(canvas.width, Math.floor((offX + MAP_W * scale) * dpr - ix)), ty0 = Math.max(0, Math.ceil((offY + MAP_Y * scale) * dpr + ix)), ty1 = Math.min(canvas.height, Math.floor((offY + (MAP_Y + MAP_H) * scale) * dpr - ix));
@@ -865,9 +911,9 @@ function drawWorldGate(w) {
   const prev = W2.unlock ? (W2.unlock.allLevelsWonInWorld ?? w - 1) : w - 1;
   panel(40, y - 30, 320, 60, open ? '#fff1f6' : '#efe7ec', 18);
   ctx.save(); ctx.translate(76, y + 2); ctx.scale(0.62, 0.62); A.drawTreat(ctx, W2.treat, 0, 0, 1, S.t, { face: open ? 'happy' : 'content' }); ctx.restore();
-  if (w === 5 && C.ART81) A.drawChunkyText(ctx, `${W2.name}`, 214, y - 12, 20, open ? { mode: 'title' } : { mode: 'plain', fill: '#b9a6b2' }); // v0.8.1 W8: the W5 banner in the chunky 'title' style (World 5 = the donut on the left)
+  if ((w === 5 || w === 6) && C.ART81) A.drawChunkyText(ctx, `${W2.name}`, 214, y - 12, 20, open ? { mode: 'title' } : { mode: 'plain', fill: '#b9a6b2' }); // v0.8.1 W8: the W5 banner in the chunky 'title' style (World 5 = the donut on the left)
   else A.text(ctx, `World ${w}: ${W2.name}`, 214, y - 12, 17, open ? '#ff8fab' : '#b9a6b2');
-  if (open) plainFit(w === 5 ? W5_STORY : 'Open! Beat the queen at the top.', 214, y + 12, 262, 12, '#6b5562', 'center', '600'); // v0.8.1 W9: the W5 story line (<= 60 chars)
+  if (open) plainFit(w === 6 ? W6_STORY : w === 5 ? W5_STORY : 'Open! Beat the queen at the top.', 214, y + 12, 262, 12, '#6b5562', 'center', '600'); // v0.8.1 W9: the W5 story line (<= 60 chars)
   else {
     const won = C.LEVELS.filter((L, i) => L.world === prev && S.save.levels[i].cleared).length, total = C.LEVELS.filter((L) => L.world === prev).length;
     plainFit(`Win all ${total} levels (${won}/${total}) + ${W2.unlock.minStarsInWorld} stars (${M.worldStars(S.save, prev)}/${total * 3})`, 214, y + 12, 262, 12, '#a0607e', 'center', '700');
@@ -1132,8 +1178,12 @@ function drawCard(x, y, w, h, type, opt = {}) {
     A.text(ctx, opt.lockText || 'Locked', x + w / 2, y + h - 14, 12, '#7a6a76', 'center', null);
     ctx.restore(); return;
   }
+  if (C.ART81 && opt.cost != null) { // v0.8.2 G16: a 2 px top highlight (lost when the card is unaffordable) and a 3 px bottom shade
+    ctx.save(); ctx.lineCap = 'round'; if (opt.afford) { ctx.beginPath(); ctx.moveTo(x + 13, y + 3.2); ctx.lineTo(x + w - 13, y + 3.2); ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.stroke(); }
+    ctx.beginPath(); ctx.moveTo(x + 13, y + h - 2.6); ctx.lineTo(x + w - 13, y + h - 2.6); ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(70,35,50,0.28)'; ctx.stroke(); ctx.restore();
+  }
   ctx.save(); ctx.beginPath(); A.rr(ctx, x + 4, y + 4, w - 8, h - 8, 11); ctx.clip();
-  const nameY = y + h - (opt.cost != null ? 31 : 13);
+  const nameY = y + h - (opt.cost != null ? (C.ART81 ? 35 : 31) : 13);
   const iconY = y + (nameY - y) * 0.62 + 4;
   ctx.beginPath(); ctx.arc(x + w / 2, iconY - 8, w * 0.32, 0, 7); ctx.fillStyle = 'rgba(255,255,255,0.45)'; ctx.fill();
   const iconS = Math.min(w / 58, (nameY - y) / 58);
@@ -1143,7 +1193,12 @@ function drawCard(x, y, w, h, type, opt = {}) {
   if (tag && h > 70 && !opt.badge) A.text(ctx, tag, x + w - 7, y + 11, 12, '#fff', 'right');
   fitText(T.short || T.name, x + w / 2, nameY, w - 10, w < 85 ? 13 : 14, '#fff');
   if (opt.level) { A.blob(ctx, x + 12, y + 12, 12, 11, '#ffe36e', 2); A.text(ctx, 'L' + opt.level, x + 12, y + 12.5, 12, '#7a4a2a', 'center', null); }
-  if (opt.cost != null) {
+  if (opt.cost != null && C.ART81) { // v0.8.2 G16: a chunky price - 16 px Lilita, 2 px INK stroke, on a dark pill (fill vs pill >= 4.5:1)
+    const px = x + 8, pw = w - 16, py = y + h - 25, ph = 21;
+    A.rr(ctx, px, py, pw, ph, 10); ctx.fillStyle = opt.afford ? '#6a4660' : '#664250'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = A.INK; ctx.stroke();
+    A.crumbIcon(ctx, x + w / 2 - (opt.cost === 0 ? 24 : 16), py + ph / 2 + 0.5, 0.8);
+    A.drawChunkyText(ctx, opt.cost === 0 ? 'FREE' : String(opt.cost), x + w / 2 + (opt.cost === 0 ? 8 : 7), py + ph / 2 + 0.5, 16, { fill: opt.afford ? '#fff6c8' : '#ffc9c0', outline: 2 });
+  } else if (opt.cost != null) {
     A.rr(ctx, x + 10, y + h - 21, w - 20, 17, 8); ctx.fillStyle = opt.afford ? '#fff8ec' : '#ffd6d6'; ctx.fill(); ctx.lineWidth = 1.8; ctx.strokeStyle = A.INK; ctx.stroke();
     A.crumbIcon(ctx, x + w / 2 - (opt.cost === 0 ? 22 : 14), y + h - 12.5, 0.75);
     A.text(ctx, opt.cost === 0 ? 'FREE' : String(opt.cost), x + w / 2 + 6, y + h - 12, 12, opt.afford ? '#7a4a2a' : '#c0392b', 'center', null);
@@ -1192,19 +1247,34 @@ function renderPrep() {
   // v0.7 D-P4 / v0.7.6 E4: a card above the world's cap acts as the cap in this world - a pill on the card and one line under the grid
   const capW = worldCardLevelCap(i); const overCap = (id) => !!capW && unlocked.includes(id) && S.save.cards[id].level > capW;
   if (capW && unlocked.some(overCap)) plainText(`A card above L${capW} acts as L${capW} in this world`, 200, 488, 12, '#b0506a', 'center', '800'); // v0.7.7: the badge shows the capped level (pink + a marker); the pill is gone
-  C.ALL_CARDS.forEach((id, k) => { // v0.6: 13 cards -> 5 columns x 3 rows
+  const ownedIds = C.ALL_CARDS.filter((id) => unlocked.includes(id)), lockedIds = C.ALL_CARDS.filter((id) => !unlocked.includes(id)); // v0.8.2 R12: owned cards first (5 columns), the locked ones last as small tiles under a thin divider
+  ownedIds.forEach((id, k) => { // v0.6: 13 cards -> 5 columns x 3 rows
     const col = k % 5, row = Math.floor(k / 5);
     const x = 22 + col * 72, y = 196 + row * 98, w = 66, h = 90;
-    const isU = unlocked.includes(id);
+    const isU = true;
     const di = S.prep.deck.indexOf(id);
-    drawCardPic(x, y, w, h, id, { locked: !isU, lockText: 'Shop or prize', selected: di >= 0, selCol: '#111111', badge: di >= 0 ? String(di + 1) : null, tag: true, level: isU ? S.save.cards[id].level : 0, cap: capW || 0, dim: isU && di < 0 && S.prep.deck.length >= C.BATTLE.deckSize }); // v0.6.1: card picture
+    drawCardPic(x, y, w, h, id, { locked: !isU, lockText: 'Shop or prize', selected: di >= 0, selCol: '#111111', badge: di >= 0 ? String(di + 1) : null, tag: true, level: isU ? S.save.cards[id].level : 0, cap: capW || 0, spStar: !!(C.ART81 && specialState(id, L, Math.min(S.save.cards[id].level, capW || 99)) === 'active'), dim: isU && di < 0 && S.prep.deck.length >= C.BATTLE.deckSize }); // v0.6.1: card picture
     if (isU) button('deck' + id, x, y, w, h, () => {
       const d = S.prep.deck; const j = d.indexOf(id);
       if (j >= 0) d.splice(j, 1); else if (d.length < C.BATTLE.deckSize) d.push(id); else toast(`Deck is full (${C.BATTLE.deckSize}). Tap a card to remove it.`);
+      if (C.ART81 && C.TOWERS[id].special) S.prepTip = { tower: id, until: S.t + 3.4 }; // v0.8.2 M7g: the Special row (3 states) of the tapped card
       sfx('tap');
     });
   });
-  if (S.prepTip && S.t < S.prepTip.until) { // v0.7.8 P2-2: rarity legend tooltip (2 lines, drawn below the ant names, over the deck title; tap it to close)
+  if (lockedIds.length) { // v0.8.2 R12
+    const ly = 196 + Math.ceil(ownedIds.length / 5) * 98 - 2;
+    ctx.fillStyle = 'rgba(122,90,106,0.35)'; ctx.fillRect(22, ly + 9, 356, 1.5); A.rr(ctx, 130, ly, 140, 19, 9); ctx.fillStyle = '#f7ecef'; ctx.fill(); plainText('Not yet unlocked', 200, ly + 10, 12, '#7a5a6a', 'center', '700');
+    lockedIds.forEach((id, k) => { const x = 24 + (k % 8) * 44, y = ly + 24 + Math.floor(k / 8) * 40, w = 40, h = 36; A.rr(ctx, x, y, w, h, 8); ctx.fillStyle = '#e4dbe1'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(82,60,75,0.55)'; ctx.stroke(); A.text(ctx, '?', x + w / 2, y + h / 2, 16, '#fff'); });
+  }
+  if (S.prepTip && S.prepTip.tower && S.t < S.prepTip.until) { // v0.8.2 M7g: tower tooltip = the card's Special row (state by this level and the card level it fights at)
+    const id = S.prepTip.tower, T = C.TOWERS[id], cl = S.save.cards[id] ? Math.min(S.save.cards[id].level, capW || 99) : 1, st = specialState(id, C.LEVELS[i], cl);
+    panel(20, 179, 360, 40, '#5a4058', 14);
+    plainFit(`${T.name} \u00b7 card L${cl}`, 200, 190, 336, 12, '#ffe39a', 'center', '800');
+    if (st === 'active') { const full = `${T.special.name}: ${T.special.text}`; ctx.font = `600 12px ${A.FONT}`; plainFit(ctx.measureText(full).width <= 336 ? full : `${T.special.name}: ${T.special.short}`, 200, 207, 336, 12, '#ffffff', 'center', '600'); }
+    else if (st === 'asleep') plainFit(`${T.special.name}: awakens in World ${C.SPECIALS_FROM_WORLD}`, 200, 207, 336, 12, '#e4d6b8', 'center', '600');
+    else plainFit(`Special unlocks at card level ${C.SPECIAL_CARD_LEVEL}`, 200, 207, 336, 12, '#d8cdd3', 'center', '600');
+    button('antTip', 20, 175, 360, 48, () => { S.prepTip = null; });
+  } else if (S.prepTip && S.prepTip.type && S.t < S.prepTip.until) { // v0.7.8 P2-2: rarity legend tooltip (2 lines, drawn below the ant names, over the deck title; tap it to close)
     const tp = S.prepTip.type, rk = C.rarityRank(tp) + 1, tier = C.rarityOf(tp), nm = C.ANTS[tp].name;
     panel(20, 179, 360, 40, '#5a4058', 14);
     plainFit(rk <= 4 ? `${nm}: ${tier} (${rk} dot${rk > 1 ? 's' : ''})` : `${nm}: ${tier} (no dots)`, 200, 192, 336, 12, '#ffe39a', 'center', '800');
@@ -1227,7 +1297,7 @@ function renderPrep() {
     A.text(ctx, 'x' + stock, x + w - 12, y + 12, 12, stock ? '#fff' : '#ff9a9a');
     button('bon' + bt, x, y, w, h, () => {
       const b = S.prep.bonuses; const j = b.indexOf(bt);
-      if (j >= 0) b.splice(j, 1); else { b.push(bt); if (b.length > C.BATTLE.bonusTypesToBring) b.shift(); if (stock <= 0) zeroBonusAlert(bt); }
+      if (j >= 0) b.splice(j, 1); else { b.push(bt); if (b.length > C.BATTLE.bonusTypesToBring) b.shift(); if (stock <= 0) { zeroBonusAlert(bt); S.zeroHint = { bt, until: S.t + 8 }; } }
       sfx('tap');
     });
   });
@@ -1235,14 +1305,14 @@ function renderPrep() {
   let warn = null;
   if (levelHasFlyers(i) && !S.prep.deck.some((d) => C.AIR_COUNTERS.includes(d))) warn = 'Flying ants ahead! Only Laser, Bug Zapper or the Crop Duster can hit them.';
   else if (ants.includes('gasmask') && S.prep.deck.includes('spray') && S.prep.deck.filter((d) => d !== 'spray' && C.TOWERS[d].kind === 'tower' && d !== 'fan').length < 2) warn = 'Gas-mask ants ignore Bug Spray - bring other damage too.';
-  const issues = M.prepIssues(S.save, S.prep.bonuses);
-  if (issues.length) warn = `You have 0 ${C.BONUSES[issues[0].bonus].name}s. Buy one during battle for ${C.ECONOMY.diamonds.boosterPriceStart} diamonds, or in the Shop.`;
+  // v0.8.2 R6: a 0-stock booster is never pre-selected and the 'buy one' text is a neutral hint shown only after the player taps the 0-stock booster (S.zeroHint)
+  if (S.zeroHint && S.t < S.zeroHint.until && S.prep.bonuses.includes(S.zeroHint.bt) && !(S.save.bonusStock[S.zeroHint.bt] > 0)) warn = `You have 0 ${C.BONUSES[S.zeroHint.bt].name}s. Buy one during battle for ${C.ECONOMY.diamonds.boosterPriceStart} diamonds, or in the Shop.`;
   // warnings are word-wrapped inside an auto-height box (no overflow on narrow phones)
   S.layoutWarn = null;
   if (warn) {
     const lines = wrapLines(warn, 324, 12).slice(0, 3); const hh = 12 + lines.length * 14;
-    panel(26, 646 - hh - 2, 348, hh, issues.length ? '#ffd9d0' : '#fff0c2', 12);
-    lines.forEach((l, k) => A.text(ctx, l, 200, 646 - hh + 6 + k * 14 + 5, 12, issues.length ? '#c0392b' : '#b0602a', 'center', null));
+    panel(26, 646 - hh - 2, 348, hh, S.zeroHint && warn.startsWith('You have 0') ? '#fff2b8' : '#fff0c2', 12);
+    lines.forEach((l, k) => A.text(ctx, l, 200, 646 - hh + 6 + k * 14 + 5, 12, '#b0602a', 'center', null));
     ctx.font = `bold 12px ${A.FONT}`;
     S.layoutWarn = { box: { x: 26, y: 646 - hh - 2, w: 348, h: hh }, lines: lines.map((l) => ctx.measureText(l).width), maxW: 324 };
   }
@@ -1304,7 +1374,7 @@ function wrapLines(str, maxW, size) {
 // ---------------- BATTLE ----------------
 function mapBg(b) {
   const key = b.mapId + pxRatio;
-  if (!S.bgCache[key]) S.bgCache[key] = A.renderMapBackground(b.routes, b.map.theme, MAP_W, MAP_H, pxRatio, b.props);
+  if (!S.bgCache[key]) S.bgCache[key] = A.renderMapBackground(b.routes, b.map.theme, MAP_W, MAP_H, pxRatio, b.props, b.map.art);
   return S.bgCache[key];
 }
 // v0.8.1 U1: step 1 = the first tray card ('Drag a card to a blue spot'), step 2 = the wave button ('Start the wave!'), step 3 = the existing crumb toast. A 44 px Skip pill stays on top.
@@ -1321,6 +1391,14 @@ function renderGuide(b) {
   }
   drawButton(12, MAP_Y + 8, 80, 44, 'Skip', '#fff3e6', { size: 16, r: 18 }); button('guideSkip', 8, MAP_Y + 6, 88, 48, () => { guideDone(); sfx('tap'); });
 }
+// v0.8.2 G19: ambient motes (12 slow drifting specks per world: crumbs, flour, leaf bits, steam, dust, sugar); only while the measured render cost is under 10 ms, none in reduced motion
+const MOTE_COL = ['#c9a074', '#ffffff', '#b9d99a', '#ffffff', '#eef7f7', '#fff4e0'], MOTE_N = 12;
+function drawMotes(b, t) {
+  if (reducedMotion() || (S.renderMs || 0) >= 10 || S.speed >= 4) return;
+  const w = Math.min(5, C.worldOf(b.levelIndex) - 1), up = w === 3 ? -1 : 1; ctx.save(); ctx.fillStyle = MOTE_COL[w]; ctx.globalAlpha = 0.3;
+  for (let i = 0; i < MOTE_N; i++) { const sp = 3 + (i % 4) * 1.5, x = (((i * 83.7 + t * (2 + (i % 3))) % MAP_W) + MAP_W) % MAP_W + Math.sin(t * 0.5 + i) * 6, y = MAP_Y + ((((i * 131.3 + t * sp * up) % MAP_H) + MAP_H) % MAP_H); ctx.beginPath(); ctx.arc(x, y, 1.3 + (i % 3) * 0.5, 0, 7); ctx.fill(); }
+  ctx.restore();
+}
 function renderBattle(dt) {
   const b = S.battle; const t = S.t;
   // v0.8.1 J9: boss intro - when the queen first appears: a visual-only camera zoom 1.00 -> 1.04 -> 1.00 over 0.8 s (never dt / game speed), her name pill, a low tone
@@ -1333,6 +1411,8 @@ function renderBattle(dt) {
   // map frame
   ctx.save(); A.rr(ctx, -4, MAP_Y - 4, MAP_W + 8, MAP_H + 8, 10); ctx.fillStyle = A.INK; ctx.fill(); ctx.restore();
   ctx.drawImage(mapBg(b), 0, MAP_Y, MAP_W, MAP_H);
+  drawTableLip();
+  if (C.ART81) drawMotes(b, t); // v0.8.2 G19
   ctx.save(); ctx.beginPath(); ctx.rect(0, MAP_Y, MAP_W, MAP_H); ctx.clip();
   ctx.translate(0, MAP_Y);
   // nest + cookie
@@ -1348,6 +1428,7 @@ function renderBattle(dt) {
       if (!chk.ok) continue;
       if (chk.upgrade) { ctx.beginPath(); ctx.arc((c + 0.5) * C.TILE, (r + 0.5) * C.TILE, 19 + Math.sin(t * 6) * 2, 0, 7); ctx.lineWidth = 3; ctx.strokeStyle = '#ffd45e'; ctx.stroke(); }
       else { A.rr(ctx, c * C.TILE + 4, r * C.TILE + 4, C.TILE - 8, C.TILE - 8, 8); ctx.fillStyle = C.TOWERS[card].place === 'path' ? 'rgba(255,200,90,0.28)' : 'rgba(120,220,150,0.25)'; ctx.fill(); }
+      if (C.ART81 && !chk.upgrade) { const pa = reducedMotion() ? 0.38 : 0.25 + 0.25 * (0.5 + 0.5 * Math.sin(t * Math.PI * 2)); A.rr(ctx, c * C.TILE + 4, r * C.TILE + 4, C.TILE - 8, C.TILE - 8, 8); ctx.lineWidth = 2; ctx.strokeStyle = `rgba(255,255,255,${pa})`; ctx.stroke(); } // v0.8.2 J15: placeable pads pulse (ring alpha .25 <-> .5, 1 Hz) only while a card is selected
     }
   }
   // v0.5 items 11/12: Move = every free cell this tower may stand on; Swap = every tower it can trade places with
@@ -1436,6 +1517,21 @@ function renderBattle(dt) {
   renderHud(b);
   renderTray(b);
   if (S.guide && !S.paused && !S.result) renderGuide(b);
+  if (S.specialBanner) { // v0.8.2 U11: the awakening banner (2.4 s with the fade, tap anywhere closes it via the normal flow - it never blocks input)
+    const sb = S.specialBanner, k = S.t - sb.t0;
+    if (S.t >= sb.until) S.specialBanner = null;
+    else {
+      const a = Math.min(1, k / 0.25, (sb.until - S.t) / 0.3); ctx.save(); ctx.globalAlpha = Math.max(0, a); const by = 112 + (1 - Math.min(1, k / 0.25)) * -14;
+      panel(30, by, 340, 58, '#5a4058', 16);
+      const pulse = reducedMotion() ? 0.8 : 0.65 + 0.25 * Math.sin(k * 8);
+      ctx.beginPath(); ctx.arc(64, by + 29, 22, 0, 7); ctx.fillStyle = `rgba(255,210,74,${pulse})`; ctx.fill();
+      ctx.save(); ctx.translate(64, by + 33); ctx.scale(0.5, 0.5); A.drawTower(ctx, sb.ids[0], S.t, null); ctx.restore();
+      const T0 = C.TOWERS[sb.ids[0]];
+      plainText('Picnic power!', 96, by + 19, 14, '#ffe39a', 'left', '800');
+      plainFit(sb.ids.length === 1 ? `Your ${T0.name} learned ${T0.special.name}` : `${sb.ids.length} of your towers learned specials`, 96, by + 40, 266, 12, '#ffffff', 'left', '600');
+      ctx.restore();
+    }
+  }
   renderUiFx(dt);
   if (S.paused && !S.result) renderPause();
   if (S.result) renderResult(dt);
@@ -1645,7 +1741,7 @@ function renderTowerInfo(b, info) {
 // v0.5 item 16: the queen is beaten -> fireworks + the cheer
 function drawQueenCheer(age, world) {
   const k = Math.min(1, age / 0.35), fade = age > 3.8 ? Math.max(0, 1 - (age - 3.8) / 0.7) : 1;
-  const msg = world === 5 ? ['Way to go,', 'you saved the donut!'] : world === 4 ? ['Way to go,', 'you saved the sundae!'] : world === 3 ? ['Way to go,', 'you saved the pie!'] : world === 2 ? ['Way to go,', 'you saved the cake!'] : ['Way to go,', 'you saved the cookies!'];
+  const msg = world === 6 ? ['Way to go,', 'you saved the pancakes!'] : world === 5 ? ['Way to go,', 'you saved the donut!'] : world === 4 ? ['Way to go,', 'you saved the sundae!'] : world === 3 ? ['Way to go,', 'you saved the pie!'] : world === 2 ? ['Way to go,', 'you saved the cake!'] : ['Way to go,', 'you saved the cookies!'];
   ctx.save(); ctx.globalAlpha = fade; ctx.translate(200, MAP_Y + 210); const sc = 0.6 + 0.4 * k + Math.sin(age * 5) * 0.03; ctx.scale(sc, sc);
   A.rr(ctx, -170, -48, 340, 96, 24); ctx.fillStyle = 'rgba(90,64,88,0.82)'; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = '#ffd45e'; ctx.stroke();
   A.text(ctx, msg[0], 0, -18, 26, '#ffe36e'); A.text(ctx, msg[1], 0, 16, 24, '#ffffff');
@@ -1673,13 +1769,18 @@ function wrapText(s, x, y, maxW, size, col) {
 function drawTowerObj(tw) {
   ctx.save(); ctx.translate(tw.x, tw.y);
   const age = S.battle.time - (tw.born ?? (tw.born = S.battle.time));
-  if (reducedMotion()) { /* no pop in reduced motion */ }
+  if (C.ART81) { // v0.8.2 J13: scale 0.6 -> 1.12 -> 1.0 in 180 ms (reduced motion: the scale-in only)
+    if (age < 0.18) { const k = age / 0.18, sc = k < 0.6 ? 0.6 + 0.52 * (k / 0.6) : 1.12 - 0.12 * ((k - 0.6) / 0.4); ctx.scale(sc, sc); }
+  } else if (reducedMotion()) { /* no pop in reduced motion */ }
   else if (age < 0.26) { // v0.8.0 (spec s12): placed = squash (1.22, 0.78) -> (0.95, 1.06) -> 1 over 260 ms (v0.7.5 was 1.15/0.85 over 220 ms)
     const k = age / 0.26, a = k < 0.4 ? k / 0.4 : (k - 0.4) / 0.6, sx = k < 0.4 ? 1.22 + (0.95 - 1.22) * a : 0.95 + 0.05 * a, sy = k < 0.4 ? 0.78 + (1.06 - 0.78) * a : 1.06 - 0.06 * a;
     ctx.scale(sx, sy);
   }
   if (C.TOWERS[tw.type].place === 'path') ctx.translate(tw.px - tw.x, tw.py - tw.y);
   const uk = tw._upAt !== undefined ? (S.t - tw._upAt) / 0.22 : 2; A.MOTION.hop = uk >= 0 && uk < 1 ? 6 * Math.sin(uk * Math.PI) : 0; // v0.8.1 J6: upgrade hop (body only)
+  if (C.ART81 && S.battle && S.battle.specialsOn && C.specialActive(tw, S.battle.level)) { // v0.8.2 M7g: a gold ring under the base marks an active special (never on W1-W5)
+    const pa = reducedMotion() ? 0.8 : 0.75 + 0.15 * Math.sin(S.t * Math.PI * 2); ctx.save(); ctx.beginPath(); ctx.ellipse(0, 11, 21, 8.5, 0, 0, 7); ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(82,60,75,' + pa + ')'; ctx.stroke(); ctx.lineWidth = 2; ctx.strokeStyle = `rgba(255,210,74,${pa})`; ctx.stroke(); ctx.restore();
+  }
   A.MOTION.bobTowers = true; A.drawTower(ctx, tw.type, S.t + tw.id, tw); A.MOTION.bobTowers = false; A.MOTION.hop = 0; // v0.8.1 G6: only placed towers bob (the ghost / icons call drawTower directly)
   // level pips
   if (tw.mode && tw.mode !== 'weak') { // v0.7.4 M1: a 10 px badge on the tower's base shows a non-default target mode (crumb = Carrier, arrow = Front)
@@ -1741,7 +1842,7 @@ function drawShield(a, x, y) {
     ctx.restore();
   }
   if (a.shield < a.shieldMax) { // the bar only while it is hurt or regrowing (a full dome alone is the 'armoured' read)
-    const w = a.type === 'queen5' ? 60 : 22, hy = y - (a.flying ? 44 : 33) * sz - 4;
+    const w = a.type === 'queen5' || a.type === 'queen6' ? 60 : 22, hy = y - (a.flying ? 44 : 33) * sz - 4;
     A.rr(ctx, x - w / 2 - 1, hy - 1, w + 2, 4, 2); ctx.fillStyle = A.INK; ctx.fill();
     if (f > 0) { A.rr(ctx, x - w / 2, hy, Math.max(2, w * f), 2, 1); ctx.fillStyle = pulse > 0.5 ? '#ffffff' : '#a8e4ff'; ctx.fill(); }
   }
@@ -1767,7 +1868,10 @@ function drawAntObj(a, ghost = false) {
   let hopY = 0, hopS = 1; if (a._hopT && !reducedMotion()) { const hk = (S.t - a._hopT) / 0.24; if (hk >= 0 && hk < 1) { hopY = -Math.sin(hk * Math.PI) * 4; hopS = 1 + 0.1 * Math.sin(hk * Math.PI * 2) * (1 - hk); } } // v0.7.10 cookie-pause hop
   let gsx = 1, gsy = 1; if (a._grabT && !reducedMotion()) { const gk = (S.t - a._grabT) / 0.08; if (gk >= 0 && gk < 1) { const q = Math.sin(gk * Math.PI); gsx = 1 + 0.12 * q; gsy = 1 - 0.12 * q; } } // v0.8.1 J3: grab squash 1.12 / .88 over 80 ms
   ctx.save(); ctx.translate(x, y + 4 + hopY); ctx.scale(face / breathe * gsx, breathe * hopS * gsy);
-  if (a.hitFlash > 0 && !reducedMotion()) { const q = Math.min(1, a.hitFlash / 0.12), sq = 0.12 * q * q; ctx.scale(1 + sq, 1 - sq); } // v0.7.5 juice: hit squash (1.12, 0.88) easing out over 120 ms (easeOutQuad)
+  if (C.ART81) { // v0.8.2 G13: 80 ms hit squash (scaleX 1.08 / scaleY 0.88); a 2nd-Nth hit within 120 ms does not restart it; none with more than 25 ants on screen or under reduced motion
+    if (a.hitFlash > 0.05 && !(S.t - (a._sqT ?? -9) < 0.12) && b.ants.length <= 25 && !reducedMotion()) a._sqT = S.t;
+    const sk = (S.t - (a._sqT ?? -9)) / 0.08; if (sk >= 0 && sk < 1) { const q = (1 - sk) * (1 - sk); ctx.scale(1 + 0.08 * q, 1 - 0.12 * q); }
+  } else if (a.hitFlash > 0 && !reducedMotion()) { const q = Math.min(1, a.hitFlash / 0.12), sq = 0.12 * q * q; ctx.scale(1 + sq, 1 - sq); } // v0.7.5 juice: hit squash (1.12, 0.88) easing out over 120 ms (easeOutQuad)
   ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h);
   if (a.hitFlash > 0.04) { ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = 0.6; ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h); } // hit flash: white-add 0.6 for the first 80 ms
   if (a._healFlash > S.t && !ghost) { ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = reducedMotion() ? 0.35 : 0.55 * Math.min(1, (a._healFlash - S.t) / 0.2); ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h); } // v0.7.9: white flash on a healed ant
@@ -1780,7 +1884,7 @@ function drawAntObj(a, ghost = false) {
   if (a.charmT > 0) A.heart(ctx, x + Math.sin(S.t * 4 + a.id) * 4, y - 32 * a.size - Math.abs(Math.sin(S.t * 3)) * 4, 3, '#ff8fbf');
   if (a.shieldMax > 0 && !ghost) drawShield(a, x, y);
   if (a.hp < a.maxHp && !ghost) {
-    const w = a.type === 'queen' || a.type === 'queen3' || a.type === 'queen4' || a.type === 'queen5' ? 60 : 22, hy = y - (a.flying ? 44 : 33) * a.size;
+    const w = a.type === 'queen' || a.type === 'queen3' || a.type === 'queen4' || a.type === 'queen5' || a.type === 'queen6' ? 60 : 22, hy = y - (a.flying ? 44 : 33) * a.size;
     A.rr(ctx, x - w / 2 - 1, hy - 1, w + 2, 6, 3); ctx.fillStyle = A.INK; ctx.fill();
     const f = Math.max(0, a.hp / a.maxHp);
     A.rr(ctx, x - w / 2, hy, w * f, 4, 2); ctx.fillStyle = f > 0.5 ? '#8fe388' : f > 0.25 ? '#ffd45e' : '#ff7a7a'; ctx.fill();
@@ -1873,6 +1977,11 @@ function renderFx(dt) {
       }
       case 'dust': ctx.globalAlpha = 0.5 * (1 - k); ctx.beginPath(); ctx.arc(f.x, f.y + k * 10, 6 + k * 10, 0, 7); ctx.fillStyle = '#e6f7c8'; ctx.fill(); break;
       case 'flash': ctx.globalAlpha = 1 - k; ctx.fillStyle = f.col; ctx.fillRect(0, 0, MAP_W, MAP_H); break;
+      case 'wchip': { // v0.8.2 J16 / J19: a small chip slides in (180 ms), holds, fades; 600 ms in all
+        const t = k * f.max, inn = Math.min(1, t / 0.18), ease = 1 - (1 - inn) * (1 - inn), fade = t > 0.45 ? Math.max(0, 1 - (t - 0.45) / 0.15) : 1, rm = reducedMotion();
+        ctx.globalAlpha = Math.min(1, inn * 1.5) * fade; ctx.translate(rm ? 0 : -60 * (1 - ease), 0); const w = 132, h = 26, x0 = 200 - w / 2, y0 = 40;
+        A.rr(ctx, x0, y0, w, h, 13); ctx.fillStyle = f.col || '#fff2b8'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = A.INK; ctx.stroke(); A.text(ctx, f.s, 200, y0 + h / 2 + 0.5, 13, A.INK, 'center', null); break;
+      }
       case 'banner': if (f.pill) { // v0.8.1 J4
         const t = k * f.max, rm = reducedMotion(), inn = Math.min(1, t / 0.18), ease = 1 - (1 - inn) * (1 - inn), fade = t > 0.88 ? Math.max(0, 1 - (t - 0.88) / 0.2) : 1;
         const w = f.last ? 190 : 150, h = 36; ctx.globalAlpha = rm ? Math.min(fade, k < 0.15 ? k / 0.15 : 1) : Math.min(1, inn * 1.5) * fade;
@@ -1933,6 +2042,20 @@ function renderUiFx(dt) {
 // v0.4 item 18 / v0.5 item 13: each world has its treat (world 1 cookie, world 2 cake); all treats share the faces/reactions
 function treatKind(b) { return C.treatOf(b ? b.levelIndex : 0); }
 let foodBarSt = { b: null, prev: 1, flash: 0, drain: null };
+// v0.8.2 J16 / J19: 'Wave n cleared' (once per wave, never on the final wave) and 'Food low!' (once per battle, below 25 %) chips; the food tube's rim pulses #ff8a8a at 1.2 Hz (static under reduced motion)
+let chipSt = { b: null, waves: {}, food: false };
+function battleChips(b, f) {
+  if (chipSt.b !== b) chipSt = { b, waves: {}, food: false };
+  if (b.result == null && b.nextWave >= 1 && b.nextWave < b.totalWaves && b.ants.length === 0 && b.pending.length === 0 && !chipSt.waves[b.nextWave]) {
+    chipSt.waves[b.nextWave] = true; addFx({ k: 'wchip', s: `Wave ${b.nextWave} cleared`, life: 0.6, max: 0.6 });
+    if (!reducedMotion()) for (let i = 0; i < 6; i++) addFx({ k: 'star', ci: i, x: 200 + (i - 2.5) * 22, y: MAP_Y + 20, vx: (i - 2.5) * 10, vy: -90, life: 0.5, max: 0.5 });
+  }
+  if (f > 0 && f < 0.25) {
+    const pa = reducedMotion() ? 0.9 : 0.45 + 0.45 * (0.5 + 0.5 * Math.sin(S.t * Math.PI * 2 * 1.2));
+    ctx.save(); A.rr(ctx, 60, 22, 84, 20, 10); ctx.lineWidth = 3; ctx.strokeStyle = `rgba(255,138,138,${pa})`; ctx.stroke(); ctx.restore();
+    if (!chipSt.food) { chipSt.food = true; addFx({ k: 'wchip', s: 'Food low!', col: '#ffd0d0', life: 0.6, max: 0.6 }); }
+  }
+}
 function renderHud(b) {
   panel(6, 6, 388, 54, '#fff6ee', 16);
   // food
@@ -1949,6 +2072,7 @@ function renderHud(b) {
   if (f > 0) { A.rr(ctx, 62, 24, 80 * f, 16, 8); ctx.fillStyle = f >= 0.9 ? '#8fe388' : f >= 0.5 ? '#ffd45e' : '#ff8a8a'; ctx.fill(); }
   A.text(ctx, `${Math.floor(b.foodStored + 1e-6)}`, 102, 33, 13, '#fff');
   }
+  if (C.ART81) battleChips(b, f);
   const carried = b.ants.reduce((s, a) => s + (a.trips === 0 ? a.carrying : 0), 0); // v0.7.2 C14: 'carried off!' only for ants on their FIRST trip (every ant keeps shuttling, so it would never go away)
   if (carried) A.text(ctx, `${fmtFood(carried)} carried off!`, 102, 51, 12, '#c0392b', 'center', null);
   // wave
@@ -2016,7 +2140,8 @@ const TRAY = { cardY: 6, cardH: 94, waveY: 6, waveH: 48, rerollY: 58, rerollH: 3
 function renderTray(b) {
   const y0 = TRAY_Y, L = TRAY;
   // v0.8.0 (spec 10): the tray is a beveled gingham tile (#ffe3d2 / #ffd5bf), baked once per scale
-  A.bakedBox(ctx, 'tray', 4, y0, 392, H - y0 - 8, 4, (g, w, h) => {
+  A.bakedBox(ctx, 'tray', 4, y0, 392, H - y0 - 8, 12, (g, w, h) => {
+    if (C.ART81) for (const [dy, al] of [[7, 0.07], [5, 0.09], [3, 0.09]]) { A.rrPath(g, 0, dy, w, h, 18); g.fillStyle = `rgba(70,35,50,${al})`; g.fill(); } // v0.8.2 G16: a baked 6 px drop shadow under the whole tray (alpha .25 stacked)
     A.drawBeveledTile(g, 0, 0, w, h, '#ffe3d2', { lip: 4, r: 18, lw: 3, hi: 0.6 });
     g.save(); A.rrPath(g, 3, 3, w - 6, h - 6, 15); g.clip(); g.fillStyle = 'rgba(255,213,191,0.55)';
     for (let x = 0; x < w; x += 24) g.fillRect(x + 6, 0, 12, h);
@@ -2031,7 +2156,7 @@ function renderTray(b) {
     S.slotFlip[i] = Math.max(0, (S.slotFlip[i] || 0) - 1 / 60);
     const shake = !afford && S.crumbShake > 0 ? Math.sin(S.t * 60) * 3 : 0;
     ctx.save(); ctx.translate(x + w / 2 + shake, y + h / 2); ctx.scale(Math.max(0.05, S.slotFlip[i] > 0 ? 1 - Math.sin(S.slotFlip[i] / 0.3 * Math.PI) : 1), 1); ctx.translate(-(x + w / 2), -(y + h / 2));
-    drawCard(x, y, w, h, b.picks[i], { cost, afford, selected, lift: selected ? 4 : 0, level: Math.min(S.save.cards[b.picks[i]].level, b.cardLevelCap || Infinity) }); // v0.7.7 P1-2: the badge = the level the card fights at
+    drawCard(x, y, w, h, b.picks[i], { cost, afford, selected, lift: selected ? 4 : (C.ART81 && afford ? 2 : 0), level: Math.min(S.save.cards[b.picks[i]].level, b.cardLevelCap || Infinity) }); // v0.7.7 P1-2: the badge = the level the card fights at
     ctx.restore();
     button('pick' + i, x - 3, y0 + 2, w + 6, L.cardH + 8, () => {
       if (S.sel && S.sel.kind === 'card' && S.sel.i === i) S.sel = null; else { S.sel = { kind: 'card', i }; S.info = null; if (!afford) needCrumbs(cost); }
@@ -2101,7 +2226,7 @@ function renderPause() {
 // v0.8.0 (v0.7.10 plan 1.3 / spec 11.2): the gold 3-star bonus card. rt = seconds since T0. Reduced motion: a 200 ms fade-in, a 300 ms count, a single 'win' (no shake / burst / fly / particles).
 function drawStarMoment(MO, rt, tRes) {
   const rm = reducedMotion(), CX = 200, CY = 345, T = MOMENT_T;
-  const amount = rm ? Math.round(MO.amount * Math.min(1, Math.max(0, (rt - 0.2) / 0.3))) : Math.round(MO.amount * (1 - Math.pow(1 - Math.min(1, Math.max(0, (rt - T.burst) / (T.count - T.burst))), 3)));
+  const amount = rm ? Math.round(MO.amount * Math.min(1, Math.max(0, (rt - 0.2) / 0.3))) : Math.round(MO.amount * (1 - Math.pow(1 - Math.min(1, Math.max(0, (rt - T.burst) / (T.countDone - T.burst))), 3))); // v0.8.2 R5: the number holds its final value from t = 1.0 s
   let x = CX, y = CY, sc = 1, rot = 0, al = 1;
   if (rm) { al = rt < 0.2 ? rt / 0.2 : rt > 0.85 ? Math.max(0, 1 - (rt - 0.85) / 0.25) : 1; }
   else if (rt < T.drop) { const k = rt / T.drop; y = 150 + (CY - 150) * A.easeOutBack(k); sc = 0.6 + 0.4 * k; al = Math.min(1, k * 3); }
@@ -2111,7 +2236,7 @@ function drawStarMoment(MO, rt, tRes) {
   if (!rm && rt >= T.shake - 0.01 && rt < T.burst + 0.2) { A.lightBurst(ctx, CX, CY, 150 * Math.min(1, (rt - T.shake + 0.05) / 0.3), tRes * 2, { alpha: 0.7, rays: 12 }); }
   if (!rm && rt >= T.burst && rt < T.burst + 0.35 && MO.sfx < 1) { MO.sfx = 1; sfx('upgrade'); }
   if (rm && rt >= 0.2 && MO.sfx < 1) { MO.sfx = 1; sfx('win'); }
-  if (!rm && rt >= T.burst && rt < T.count) { const n = Math.floor((rt - T.burst) / 0.15); if (n > MO.sfx - 1 && n < 7) { MO.sfx = n + 2; sfx('pop'); } } // a rate-limited tick (<= 6) while the number counts
+  if (!rm && rt >= T.burst && rt < T.countDone) { const n = Math.floor((rt - T.burst) / 0.15); if (n > MO.sfx - 1 && n < 7) { MO.sfx = n + 2; sfx('pop'); } } // a rate-limited tick (<= 6) while the number counts
   ctx.save(); ctx.globalAlpha = Math.max(0, al); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(sc, sc);
   A.drawBeveledTile(ctx, -76, -49, 152, 98, '#ffe58a', { lip: 5, r: 18, lw: 3, hi: 0.8 });
   A.rr(ctx, -72, -45, 144, 90, 15); ctx.lineWidth = 3; ctx.strokeStyle = '#f2a81d'; ctx.stroke();
@@ -2157,7 +2282,7 @@ function renderResult(dt) {
     const hop = (k) => reducedMotion() ? 0 : Math.abs(Math.sin(S.t * 5 + k)) * 5;
     for (const [ax, k, ty] of [[92, 0, 'worker'], [308, 1.7, 'small']]) { const sp = A.antSprite(ty, 0, false, pxRatio * 1.25, 'cheer'); ctx.save(); ctx.translate(ax, 240 - hop(k)); ctx.scale(1.25 * (k ? -1 : 1), 1.25); ctx.drawImage(sp.cv, -sp.ox, -sp.oy, sp.w, sp.h); ctx.restore(); A.contactShadow(ctx, ax, 244, 20, 5, 0.22); }
   }
-  if (R.queenKilled) plainFit(tk === 'donut' ? 'Way to go, you saved the donut!' : tk === 'cake' ? 'Way to go, you saved the cake!' : tk === 'pie' ? 'Way to go, you saved the pie!' : tk === 'sundae' ? 'Way to go, you saved the sundae!' : 'Way to go, you saved the cookies!', 200, 180, 300, 13, '#e0607e', 'center', '800'); // v0.5 item 16
+  if (R.queenKilled) plainFit(tk === 'pancake' ? 'Way to go, you saved the pancakes!' : tk === 'donut' ? 'Way to go, you saved the donut!' : tk === 'cake' ? 'Way to go, you saved the cake!' : tk === 'pie' ? 'Way to go, you saved the pie!' : tk === 'sundae' ? 'Way to go, you saved the sundae!' : 'Way to go, you saved the cookies!', 200, 180, 300, 13, '#e0607e', 'center', '800'); // v0.5 item 16
   for (let s = 0; s < 3; s++) { const on = s < R.stars && R.t > 0.3 + s * 0.25; const sc = on ? 1 + Math.max(0, 0.2 - (R.t - 0.3 - s * 0.25)) * 3 : 1; A.starShape(ctx, 140 + s * 60, 270, 18 * sc, on ? '#ffd45e' : '#e8dde4', 2.5); }
   if (R.chip2 && R.t > 0.55) { // the 2-star chip: a small coin pill beside the stars, pops when the second star lands
     const k = Math.min(1, (R.t - 0.55) * 5), cx2 = 322, cy2 = 270; ctx.save(); ctx.translate(cx2, cy2); ctx.scale(0.6 + 0.4 * A.easeOutBack(k), 0.6 + 0.4 * A.easeOutBack(k)); A.drawBeveledTile(ctx, -32, -14, 64, 28, '#ffe9a8', { lip: 2, r: 14, lw: 2, hi: 0.6 }); A.coinIcon(ctx, -19, 0, 1.1); A.drawChunkyText(ctx, `+${R.chip2}`, 9, 0, 16, { mode: 'num' }); // v0.8.1 F4: 64x28 pill, 16 px number ctx.restore();
@@ -2168,7 +2293,7 @@ function renderResult(dt) {
   // coin breakdown: win = food + kills (+ level, first clear) + time; loss = kills + time (capped together)
   // v0.6 item 1: "Time survived" = floor(battle seconds / 3) - its own line, on a win and on a loss
   const P = out.parts || {}; const rows = [];
-  if (R.win) { rows.push(['Victory', P.base]); rows.push(['Food left', P.food]); rows.push(['Ants beaten', P.kills]); if (P.level) rows.push(['Level reward', P.level]); if (P.firstClear) rows.push(['First clear', P.firstClear]); if (P.stars) rows.push(['Star bonus', P.stars]); } // v0.7.6 E1: first-time 2 / 3 star coins
+  if (R.win) { rows.push(['Victory', P.base]); rows.push(['Food left', P.food]); rows.push(['Ants beaten', P.kills]); if (P.level) rows.push(['Level reward', P.level]); if (P.firstClear) rows.push(['First clear', P.firstClear]); if (P.stars) rows.push(['Star bonus', P.stars]); if (P.daily) rows.push(['Daily first win', P.daily]); } // v0.7.6 E1: first-time 2 / 3 star coins
   else rows.push(['Ants beaten', P.kills || 0]);
   rows.push([R.win ? 'Time survived' : `Time survived${out.coins >= C.ECONOMY.lossCap ? ` (max ${C.ECONOMY.lossCap})` : ''}`, P.time || 0]);
   const RS = rows.length > 5 ? 14 : 16;
@@ -2190,7 +2315,12 @@ function renderResult(dt) {
   const gift = out.bossGift && !celebrating, twin = gift && out.prize; // v0.7.7 S1: a boss gift strip; with a Perfect prize too, the 'unspent crumbs' line gives its row to the second strip
   yy += 20; if (!twin) { A.text(ctx, `(${R.crumbsLeft} unspent crumbs vanish)`, 200, yy, 12, '#a08090', 'center', null); yy += 20; }
   if (!R.win) A.text(ctx, 'Win to earn cards and prizes!', 200, yy, 12, '#a08090', 'center', null);
-  if (!R.win && R.hint) { A.rr(ctx, 50, yy + 14, 300, 26, 13); ctx.fillStyle = '#fff2b8'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = '#e0a830'; ctx.stroke(); plainFit(R.hint, 200, yy + 27, 280, 13, '#a8661a', 'center', '800'); } // v0.8.1 U7: one hint line (<= 60 chars) after the 2nd consecutive loss
+  if (!R.win && R.hint) { // v0.8.1 U7 / v0.8.2 R4: one hint, wrapped to two lines (>= 12 px text) when it is longer than 38 chars
+    const h = R.hint, mid = h.length > 38 ? (h.lastIndexOf(' - ', 40) > 10 ? h.lastIndexOf(' - ', 40) + 2 : h.lastIndexOf('. ', 40) > 10 ? h.lastIndexOf('. ', 40) + 1 : h.lastIndexOf(' ', Math.ceil(h.length / 2) + 4)) : -1;
+    const lines = mid > 0 ? [h.slice(0, mid).trim(), h.slice(mid).replace(/^[- ]+/, '').trim()] : [h], ph = lines.length > 1 ? 40 : 26;
+    A.rr(ctx, 50, yy + 14, 300, ph, 13); ctx.fillStyle = '#fff2b8'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = '#e0a830'; ctx.stroke();
+    lines.forEach((ln, i) => plainFit(ln, 200, yy + 27 + i * 15, 280, 13, '#a8661a', 'center', '800'));
+  }
   if (out.booster) { // v0.3 item 14: first clear of level 1 -> ONE Bomb
     A.rr(ctx, 70, yy - 12, 260, 26, 12); ctx.fillStyle = '#ffe9f0'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = '#ff9ab0'; ctx.stroke();
     ctx.save(); ctx.translate(92, yy + 1); ctx.scale(0.62, 0.62); A.drawBonusIcon(ctx, out.booster.id, S.t); ctx.restore();
@@ -2198,6 +2328,7 @@ function renderResult(dt) {
   }
   // v0.7.7 P2: every strip is 30 px tall and the last one ends >= 8 px above the buttons (they start at y 540; was 532 with the strip ending about 3 px above them)
   const strip = (cy, pz, label, k) => {
+    if (!(k > 0)) return; // v0.8.2 R5b: before its start time k < 0 made the scale negative - the prize pill drew upside-down during the 3-star count-up
     ctx.save(); ctx.translate(200, cy); ctx.scale(0.5 + k * 0.5, 0.5 + k * 0.5);
     A.rr(ctx, -130, -15, 260, 30, 14); ctx.fillStyle = '#fff2b8'; ctx.fill(); ctx.lineWidth = 2.4; ctx.strokeStyle = '#e0a830'; ctx.stroke();
     if (pz.kind === 'bonus') { ctx.save(); ctx.translate(-108, 0); ctx.scale(0.8, 0.8); A.drawBonusIcon(ctx, pz.id, S.t); ctx.restore(); }
@@ -2223,6 +2354,7 @@ function renderResult(dt) {
   if (released) for (const c of R.confetti) { c.vy += 420 * dt; c.x += c.vx * dt; c.y += c.vy * dt; c.r += dt * 8; if (c.y < 760) A.candyStar(ctx, c.x, c.y, 4 + (c.r * 7 % 3), c.c, 1.2, c.r); } // v0.8.0: <= 36 candy stars (was 90 rects)
   if (celebrating || (MO && !R.skipped && R.t < MO.t0 + MO.dur)) return; // buttons appear after the celebration (and after the 3-star moment, 2250 ms, or its first-tap skip) (the panel title is the only Perfect Cookie title)
   const by = 540;
+  if (R.win && C.ART81) { const lvB = S.save.levels[S.levelIndex] || {}, st = lvB.stars || 0, bt = lvB.bestTime || 0; A.text(ctx, `Best: ${'\u2605'.repeat(st)}${'\u2606'.repeat(Math.max(0, 3 - st))}${bt ? ` \u00b7 ${Math.floor(bt / 60)}:${String(bt % 60).padStart(2, '0')}` : ''}`, 200, by - 22, 13, '#7a5a6a', 'center', null); } // v0.8.2 U14
   if (out.zapperGift && M.zapperGiftPending(S.save)) { // v0.6 item 5: first win of stage 2 -> straight to the map, where the gift waits
     drawButton(100, by, 200, 50, 'Continue', '#9fe0b5'); button('rcontinue', 100, by, 200, 50, () => { S.battle = null; go('map'); });
     return;
@@ -2237,8 +2369,23 @@ function renderResult(dt) {
 // v0.5 item 1b: the bottom info panel (kept, a bit larger) shows the card's real stats at its level - range in tiles, power,
 // fire rate - plus a one-line description and what the NEXT card level changes (item 5b).
 function cardStatKeys(id) { return id === 'ball' ? ['power', 'rate', 'ballRadius'] : id === 'tractor' ? ['liftSize', 'rate', 'scoop'] : ['power', 'rate', 'range']; }
+// v0.8.2 M7g: the Special row. state: 'locked' (card level < 5) | 'asleep' (CL >= 5, world < 6) | 'active'. level = a LEVELS entry (prep / battle) or null (Cards / Shop: the highest unlocked world).
+function specialState(id, level, cl) {
+  const T = C.TOWERS[id]; if (!T || !T.special) return null;
+  if (!(cl >= C.SPECIAL_CARD_LEVEL)) return 'locked';
+  const w = level ? level.world : M.highestWorld(S.save);
+  return w >= C.SPECIALS_FROM_WORLD && C.TUNING.specials !== false ? 'active' : 'asleep';
+}
+function specialRow(id, st, x, cy, w) {
+  const T = C.TOWERS[id], sp = T.special; ctx.save(); A.starShape ? A.starShape(ctx, x + 6, cy, 5.5, st === 'active' ? '#ffd24a' : '#d4cac2') : (ctx.beginPath(), ctx.arc(x + 6, cy, 4.5, 0, 7), ctx.fillStyle = st === 'active' ? '#ffd24a' : '#d4cac2', ctx.fill()); ctx.restore();
+  const tx = x + 18, tw = w - 18;
+  if (st === 'locked') plainFit(`Special unlocks at card level ${C.SPECIAL_CARD_LEVEL}`, tx, cy, tw, 12, '#8a7f86', 'left', '600');
+  else if (st === 'asleep') { ctx.font = `800 12px ${A.FONT}`; const nw = ctx.measureText(sp.name).width; plainText(sp.name, tx, cy, 12, '#9a8f7a', 'left', '800'); plainFit(`Awakens in World ${C.SPECIALS_FROM_WORLD}`, tx + nw + 6, cy, tw - nw - 6, 12, '#9a8f7a', 'left', '600'); }
+  else { ctx.font = `800 12px ${A.FONT}`; const nw = ctx.measureText(sp.name).width; plainText(sp.name, tx, cy, 12, A.shade(T.color, -0.4), 'left', '800'); plainFit(sp.short, tx + nw + 6, cy, tw - nw - 6, 12, INFO_INK, 'left', '600'); }
+}
 function cardInfoPanel(id, x, y, w, h, opt = {}) {
-  panel(x, y, w, h, '#ffffff', 14);
+  const hasSp = !!(id && C.ART81 && C.TOWERS[id] && C.TOWERS[id].special && opt.special !== false);
+  panel(x, y, w, h + (hasSp ? 14 : 0), '#ffffff', 14);
   S.layoutCardPanel = { x, y, w, h };
   if (!id) { plainText(opt.hint || 'Tap a card to see its stats.', x + w / 2, y + h / 2, 12.5, '#a08090', 'center', '600'); return; }
   const T = C.TOWERS[id], c = S.save.cards[id], own = c.unlocked, L = Math.max(1, c.level), capCard = highestWorldCap();
@@ -2258,6 +2405,7 @@ function cardInfoPanel(id, x, y, w, h, opt = {}) {
   });
   const line = atCap ? `At the world cap (L${capCard}): higher cards add nothing yet` : next.length ? `Next card level L${L + 1}: ` + next.map((d) => diffText(id, d)).join(' + ') : 'Top card level (L10)!';
   plainFit(line, x + w / 2, y + (cmp ? h - 9 : 102), w - 20, 12, next.length ? '#2f8a36' : '#c9962a', 'center', '700');
+  if (hasSp) { const capC = highestWorldCap(), Lc = capC ? Math.min(L, capC) : L; specialRow(id, specialState(id, null, own ? Lc : 0), x + 12, y + h + 7, w - 24); }
   if (h > 118 && !opt.noFoot) plainFit(opt.foot || (own ? 'Merge cards on its own screen to reach the next level.' : `Get it in the Shop (${M.unlockPrice(id)}c) or as a prize.`), x + w / 2, y + h - 13, w - 20, 12, '#a08090', 'center', '600');
 }
 // ---------------- v0.6 item 7: real card pictures (art window + name banner + level badge) ----------------
@@ -2318,6 +2466,7 @@ function drawCardPic(x, y, w, h, type, opt = {}) {
     A.rr(ctx, x + w - cw - 2, y + 3, cw, 18, 9); ctx.fillStyle = opt.count ? '#ffffff' : '#efe6ea'; ctx.fill(); ctx.lineWidth = 1.8; ctx.strokeStyle = A.INK; ctx.stroke();
     A.text(ctx, str, x + w - cw / 2 - 2, y + 12.5, 12, opt.count ? '#ff6f91' : '#b9a6b2'); }
   if (opt.mergeReady) { const p = 1 + Math.sin(S.t * 6) * 0.08; ctx.save(); ctx.translate(x + w - 10, y + 10); ctx.scale(p, p); A.blob(ctx, 0, 0, 11, 11, '#ff6f91', 2); A.text(ctx, '!', 0, 0.5, 14, '#fff'); ctx.restore(); }
+  if (opt.spStar) { ctx.beginPath(); ctx.arc(x + 11, y + 32, 8.5, 0, 7); ctx.fillStyle = '#5a4058'; ctx.fill(); A.starShape(ctx, x + 11, y + 32, 5.8, '#ffd24a', 1.2); } // v0.8.2 M7g: a tiny star badge = this card's special is active (prep: in this world; Cards: in the highest unlocked world)
   if (opt.fresh) { A.rr(ctx, x + w / 2 - 19, y - 9, 38, 17, 8); ctx.fillStyle = '#ffd45e'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = A.INK; ctx.stroke(); A.text(ctx, 'NEW', x + w / 2, y - 0.5, 12, '#fff'); }
   ctx.restore();
 }
@@ -2333,6 +2482,7 @@ function doMergeAll() {
 function renderCards() {
   panel(12, 12, 376, 636, '#fff6ee');
   A.text(ctx, 'Cards', 200, 36, 26, '#b5d8ff');
+  if (C.ART81) { drawButton(274, 16, 106, 36, 'Ant Book', '#d6f0c8', { size: 13 }); button('antbook', 274, 8, 106, 52, () => { sfx('tap'); S.screen = 'antbook'; S.antBookSel = null; }); } // v0.8.2 U15
   A.coinIcon(ctx, 304, 60, 1); A.text(ctx, String(S.save.coins), 336, 61, 15, '#ffd45e');
   plainText('Tap a card: stats.  Tap again: open.', 28, 60, 12, '#7a5a6a', 'left', '600');
   S.layoutMerge = [];
@@ -2340,7 +2490,7 @@ function renderCards() {
     const col = k % 4, row = Math.floor(k / 4);
     const x = 30 + col * 88, y = 80 + row * 104, w = 76, h = 96;
     const c = S.save.cards[id]; const ready = c.unlocked && M.mergeReady(S.save, id);
-    drawCardPic(x, y, w, h, id, { locked: !c.unlocked, lockText: 'Shop or prize', level: c.level, selected: S.cardsSel === id, mergeReady: ready, fresh: c.fresh });
+    drawCardPic(x, y, w, h, id, { locked: !c.unlocked, lockText: 'Shop or prize', level: c.level, selected: S.cardsSel === id, mergeReady: ready, fresh: c.fresh, spStar: !!(C.ART81 && c.unlocked && specialState(id, null, Math.min(c.level, highestWorldCap() || 99)) === 'active') });
     button('card' + id, x, y, w, h, () => { if (S.cardsSel === id && c.unlocked) openCardView(id); else S.cardsSel = id; sfx('tap'); });
     if (ready) S.layoutMerge.push(id);
   });
@@ -2399,7 +2549,7 @@ function renderCardView() {
   });
   cardInfoPanel(id, 24, 497, 352, 97, {});
   const ready = M.mergeReady(S.save, id);
-  drawButton(24, 604, 352, 34, 'Merge all', ready ? '#9fe0b5' : '#e6dce2', { size: 15, r: 12, disabled: !M.anyMergeReady(S.save) }); button('cvMergeAll', 24, 591, 352, 57, doMergeAll);
+  drawButton(24, 604, 352, 34, 'Merge all', ready ? '#9fe0b5' : '#e6dce2', { size: 15, r: 12, disabled: !M.anyMergeReady(S.save) }); button('cvMergeAll', 24, 604, 352, 44, doMergeAll);
   if (S.mergeAnim) renderMergeAnim();
 }
 // Merge animation: the 3 merged cards fly into one, flash, it grows and the level badge flips to the new level.
@@ -2457,6 +2607,7 @@ function renderShop() {
   const E = C.ECONOMY.shop;
   panel(12, 12, 376, 636, '#fff6ee');
   A.text(ctx, 'Shop', 200, 36, 28, '#ffd27a');
+  if (C.ART81) drawButton(274, 16, 106, 36, `Cabinet ${M.skinState(S.save).owned.length}/${C.SKINS.length}`, '#ffd0e6', { size: 13 }), button('cabinet', 274, 8, 106, 52, () => { sfx('tap'); S.screen = 'cabinet'; }); // v0.8.2 EC5a
   panel(62, 56, 132, 32, '#e6f5ff', 16); A.diamondIcon(ctx, 84, 72, 1); A.text(ctx, String(S.save.diamonds || 0), 140, 73, 17, '#7fd3ff');
   panel(206, 56, 132, 32, '#fff1d6', 16); A.coinIcon(ctx, 228, 72, 1.1); A.text(ctx, String(S.save.coins), 284, 73, 17, '#ffd45e');
   plainText('No real money, ever. Diamonds come from Daily Rewards.', 200, 101, 12, '#a08090', 'center', '600');
@@ -2517,6 +2668,66 @@ function renderShop() {
   else if (!S.pack && !S.reveal.length && S.save.onboard && S.save.onboard.cardsHint === 'shop') // v0.7: after the free pack, Cards > Zapper once
     onboardSpot(tabRect(1), 'tocards', () => { S.save.onboard.cardsHint = 'cards'; persist(); go('cards'); }, 'See your new cards!');
   renderUiFx(1 / 60);
+}
+// ---------------- v0.8.2 U15: the Ant Book ----------------
+function renderAntBook() {
+  const met = M.metAnts(S.save), keys = Object.keys(C.ANTS);
+  panel(12, 12, 376, 636, '#fff6ee');
+  A.text(ctx, 'Ant Book', 200, 36, 26, '#9fd08a');
+  drawButton(22, 16, 72, 36, 'Back', '#d9cfe0', { size: 14 }); button('abBack', 22, 14, 72, 42, () => { sfx('tap'); if (S.antBookSel) S.antBookSel = null; else S.screen = 'cards'; });
+  const sel = S.antBookSel && met.has(S.antBookSel) ? S.antBookSel : null;
+  if (!sel) {
+    plainText(`Met ${keys.filter((k) => met.has(k)).length}/${keys.length}. Tap an ant for details.`, 200, 70, 12, '#7a5a6a', 'center', '700');
+    keys.forEach((t, k) => {
+      const col = k % 4, row = Math.floor(k / 4), x = 24 + col * 88, y = 86 + row * 92, w = 80, h = 84, D = C.ANTS[t], m = met.has(t);
+      A.rr(ctx, x, y, w, h, 12); ctx.fillStyle = m ? '#fff' : '#efe3de'; ctx.fill(); ctx.lineWidth = 2.2; ctx.strokeStyle = A.INK; ctx.stroke();
+      ctx.save(); A.rr(ctx, x + 2, y + 2, w - 4, h - 26, 10); ctx.clip(); ctx.translate(x + w / 2, y + 40); const sz = Math.min(1, 1.3 / D.size); ctx.scale(0.82 * sz, 0.82 * sz); if (m) A.drawAnt(ctx, t, (S.t * 1.3) % 1); else { ctx.globalAlpha = 0.35; A.drawAnt(ctx, t, 0); ctx.globalAlpha = 0.78; ctx.fillStyle = '#efe3de'; ctx.fillRect(-26, -26, 52, 52); } ctx.restore();
+      if (m) fitText(D.name.replace(' Ant', ''), x + w / 2, y + 70, w - 6, 12, '#7a4a5e'); else plainText('???', x + w / 2, y + 70, 13, '#b9a6b2', 'center', '800');
+      if (m) button('ab' + t, x, y, w, h, () => { S.antBookSel = t; sfx('tap'); });
+    });
+  } else {
+    const D = C.ANTS[sel], lv = M.antLevels(sel);
+    ctx.save(); ctx.translate(200, 168); const sz = Math.min(1, 1.3 / D.size); ctx.scale(1.9 * sz, 1.9 * sz); if (!D.flying) A.contactShadow(ctx, 0, 16, 22, 5, 0.22); A.drawAnt(ctx, sel, (S.t * 1.3) % 1); ctx.restore();
+    A.text(ctx, D.name, 200, 226, 22, '#7a4a5e');
+    const mx = { hp: Math.max(...Object.values(C.ANTS).map((a) => a.hp)), speed: Math.max(...Object.values(C.ANTS).map((a) => a.speed)) };
+    [['HP', Math.log(1 + D.hp) / Math.log(1 + mx.hp), `${D.hp}`, '#ff8aa0'], ['Armor', Math.min(1, (D.armor || 0) / 6), `${D.armor || 0}`, '#8fb8f0'], ['Speed', D.speed / mx.speed, `${D.speed}`, '#9fe0b5']].forEach(([l, f, v, c], i) => {
+      const y = 258 + i * 28; A.text(ctx, l, 46, y + 8, 13, '#7a5a6a', 'left', null); A.rr(ctx, 110, y, 200, 16, 8); ctx.fillStyle = '#f0e0d8'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = A.INK; ctx.stroke();
+      if (f > 0.03) { A.rr(ctx, 112, y + 2, 196 * Math.min(1, f), 12, 6); ctx.fillStyle = c; ctx.fill(); } A.text(ctx, v, 350, y + 8, 13, '#7a5a6a', 'right', null); });
+    if (D.flying) A.text(ctx, 'Flies: only air-capable towers hit it', 200, 348, 12, '#4a90e2', 'center', null);
+    const lines = wrapLines(C.ANT_CARD[sel] || D.intro || D.desc || '', 320, 14); lines.forEach((l, k) => A.text(ctx, l, 200, 376 + k * 19, 14, '#5a4652', 'center', null));
+    const shown = lv.slice(0, 12).map((n) => `L${n}`).join(' '), ly = 376 + lines.length * 19 + 16;
+    A.text(ctx, 'Seen on', 200, ly, 13, '#7a5a6a', 'center', null); wrapLines(shown + (lv.length > 12 ? ' ...' : ''), 320, 13).forEach((l, k) => A.text(ctx, l, 200, ly + 20 + k * 16, 13, '#a08090', 'center', null));
+  }
+}
+// ---------------- v0.8.2 EC5a: the cosmetic cabinet (coins; colour only) ----------------
+function renderCabinet() {
+  const st = M.skinState(S.save);
+  panel(12, 12, 376, 636, '#fff6ee');
+  A.text(ctx, 'Cabinet', 200, 36, 28, '#ffd27a');
+  drawButton(22, 16, 72, 36, 'Back', '#d9cfe0', { size: 14 }); button('cabBack', 22, 14, 72, 42, () => { sfx('tap'); S.screen = 'shop'; });
+  panel(206, 56, 132, 32, '#fff1d6', 16); A.coinIcon(ctx, 228, 72, 1.1); A.text(ctx, String(S.save.coins), 284, 73, 17, '#ffd45e');
+  plainText('Skins change a pad colour only - never stats.', 200, 108, 12, '#7a5a6a', 'center', '700');
+  C.SKIN_TOWERS.forEach((tw, i) => {
+    const y0 = 124 + i * 114;
+    plainText(C.TOWERS[tw].name, 30, y0 + 8, 14, '#7a4a5a', 'left', '800');
+    const chips = [{ id: null, name: 'Classic', pad: A.TOWER_PAD[tw] }].concat(C.SKINS.filter((x) => x.tower === tw));
+    chips.forEach((ch, k) => {
+      const x = 26 + k * 88, y = y0 + 18, w = 80, h = 86, own = ch.id == null || st.owned.includes(ch.id), on = (st.equipped[tw] || null) === ch.id;
+      A.rr(ctx, x, y, w, h, 14); ctx.fillStyle = own ? '#fff' : '#f3e6e0'; ctx.fill(); ctx.lineWidth = on ? 4 : 2.5; ctx.strokeStyle = on ? '#52b955' : A.INK; ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(x + w / 2, y + 28, 22, 12, 0, 0, 7); ctx.fillStyle = ch.pad; ctx.fill(); ctx.lineWidth = 2.2; ctx.strokeStyle = A.INK; ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(x + w / 2, y + 25, 16, 6, 0, Math.PI * 1.05, Math.PI * 1.95); ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(255,255,255,0.45)'; ctx.stroke();
+      fitText(ch.name, x + w / 2, y + 54, w - 8, 12, '#7a5a6a');
+      const lab = on ? 'On' : own ? 'Owned' : `${ch.price}c`, col = on ? '#3a9a45' : own ? '#7a5a6a' : (S.save.coins >= ch.price ? '#c9962a' : '#e0607e');
+      plainText(lab, x + w / 2, y + 73, 13, col, 'center', '800');
+      button('skin' + (ch.id || tw), x, y, w, h, () => {
+        if (own) { M.equipSkin(S.save, tw, ch.id); persist(); sfx('tap'); return; }
+        const r = M.buySkin(S.save, ch.id);
+        if (r.ok) { persist(); sfx('upgrade'); toast(`${ch.name} unlocked!`); } else toast(r.reason === 'coins' ? `Need ${ch.price} coins` : 'Not available');
+      });
+    });
+  });
+  const nx = M.nextSkinPrice(S.save);
+  plainText(`Owned ${st.owned.length}/${C.SKINS.length}${nx ? ` - next skin ${nx}c` : ' - all collected!'}`, 200, 612, 13, '#7a5a6a', 'center', '700');
 }
 function claimGift() {
   const res = M.claimZapperGift(S.save); if (!res) return;
@@ -2776,7 +2987,7 @@ if (__TEST_HOOKS__) window.__game = {
   lastBubble: () => lastBubble, ownBack, ownBackState: () => ({ pending: ownBackPending, ms: OWN_BACK_MS }), clock, battleFrame, stripLast: () => stripLast, mapTap, setMode, hudPreviewLast: () => hudPreviewLast, backdropKeys: () => Object.keys(S.bdCache || {}),
   setInset(px) { insetOverride = px; resize(); }, setInsetQuiet(px) { insetOverride = px; }, flushSwat, // v0.7.3: setInsetQuiet changes the probe value WITHOUT a resize (tests that the frame loop re-reads it)
   layout: () => ({ cw, ch, insetB, scale, offX, offY, barK, barH: BAR_H, metaH: META_H, dpr }), tabRect, BAR_H,
-  mapPreview(id) { const b = new Battle({ levelIndex: 0, mapId: id, deck: [], bonusTypes: [], seed: 1 }); const src = A.renderMapBackground(b.routes, b.map.theme || 0, MAP_W, MAP_H, 2, b.props); const cv = document.createElement('canvas'); cv.width = src.width; cv.height = src.height; cv.getContext('2d').drawImage(src, 0, 0); return cv.toDataURL('image/png'); },
+  mapPreview(id) { const b = new Battle({ levelIndex: 0, mapId: id, deck: [], bonusTypes: [], seed: 1 }); const src = A.renderMapBackground(b.routes, b.map.theme || 0, MAP_W, MAP_H, 2, b.props, b.map.art); const cv = document.createElement('canvas'); cv.width = src.width; cv.height = src.height; cv.getContext('2d').drawImage(src, 0, 0); return cv.toDataURL('image/png'); },
 };
 heartbeat(true); maybeShowCalendar();
 // v0.6 item 5: an existing player past stage 2 without a Bug Zapper got one on load - show it with the NEW CARD popup

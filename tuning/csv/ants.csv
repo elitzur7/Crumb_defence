@@ -19,3 +19,5 @@ nurse,60,32,0,1.2,0.6,regular,3,rare,,,,,,,,,"{""radius"":1.5,""pct"":0.2,""ever
 queen4,2600,16,6,,0,queen,180,boss,,,,0.6,true,"{""type"":""nurse"",""every"":9,""count"":1}","[""slow""]",,,,50
 glazed,24,38,0,1,0.8,regular,3,uncommon,,,,,,,,,,"{""pts"":30,""regenDelay"":2.5,""regenRate"":0.3,""when"":""always""}",
 queen5,2400,15,6,,0,queen,200,boss,,,,0.6,true,"{""type"":""glazed"",""every"":10,""count"":1}","[""slow""]",,,"{""pts"":600,""regenDelay"":4,""regenRate"":0.25,""when"":""always""}",50
+drone,30,54,2,1.1,1,regular,4,rare,,true,,,,,,,,,
+queen6,3000,15,6,,0,queen,220,boss,,,,0.6,true,"{""type"":""drone"",""every"":12,""count"":1}","[""slow""]",,,,50

@@ -83,7 +83,7 @@ test('3-star bonus: 75 x coinMul rounded to 5 (W1 75, W2 75, W3 95, W4 115); 2-s
   assert.equal(win(M.newSave(), 0, 3).starCoins, 90); // jump 1 -> 3 in W1
 });
 
-test('prep header dedupe: when the map name equals the level name it is shown once (all 50 levels, never "X - X")', () => {
+test('prep header dedupe: when the map name equals the level name it is shown once (all 60 levels, never "X - X")', () => {
   assert.equal(levelHeaderLine({ name: 'Sunny Table' }, [{ name: 'Sunny Table' }].reduce((m, x) => ({ ...m, a: x }), {})), 'Sunny Table');
   let same = 0, diff = 0;
   for (const L of C.LEVELS) {
@@ -93,7 +93,7 @@ test('prep header dedupe: when the map name equals the level name it is shown on
     else { same++; assert.equal(line, L.name); }
     const parts = line.split('  -  '); assert.ok(parts.length === 1 || parts[0] !== parts[1], line);
   }
-  assert.equal(same + diff, 50);
+  assert.equal(same + diff, 60);
 });
 
 test('font: Lilita One is bundled locally with its OFL license; the app never loads it from the net', () => {

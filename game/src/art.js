@@ -123,6 +123,7 @@ export function monthBox(ctx, x, y, s, tier, t = 0, reached = false) {
 // cleared stages get a gold rim, a perfect (3-star) stage a little crown; the last (boss) stage is a crown-shaped badge.
 const NODE_COLS = ['#ffc38a', '#ffb3c1', '#b9e89a', '#9fd6ff', '#c9b6f2', '#ffd27a', '#ff9e9e', '#a8e6e0', '#f7b6e8', '#d7b8ff'];
 const W5_NODE_COLS = ['#a9d8de', '#8fcbd5', '#b9e2e6', '#9ecfd6', '#c4e8ec']; // v0.8.1 W8: world 5 map nodes - the teal-diner family (#a9d8de) with pink icing accents (ring, sprinkles, donut ornament)
+const W6_NODE_COLS = ['#f0c078', '#e8a33d', '#f6d49a', '#eab25a', '#f9dfae']; // v0.8.2 PP8: world 6 map nodes - the maple/honey family with a syrup-amber ring and a pancake ornament
 const NODE_ORN = ['leaf', 'crumb', 'bubble', 'wing', 'shield', 'cloud', 'cone', 'mask', 'dots', 'crown'];
 function miniCrown(ctx, x, y, s, fill = '#ffe36e') {
   ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
@@ -144,12 +145,13 @@ function nodeOrnament(ctx, kind, x, y, t) {
     case 'mask': blob(ctx, 0, 0, 6, 4, '#a7afbb', 1.6); for (const sx of [-2.5, 2.5]) { ctx.beginPath(); ctx.arc(sx, -0.5, 1.6, 0, 7); ctx.fillStyle = '#d9f3ff'; ctx.fill(); ctx.stroke(); } break;
     case 'dots': for (let k = 0; k < 5; k++) { const a = k * 1.256 + t; blob(ctx, Math.cos(a) * 4.5, Math.sin(a) * 2.6, 1.6, 1.6, '#f2a65f', 1.1); } break;
     case 'crown': miniCrown(ctx, 0, 0, 1.05); break;
+    case 'pancake': for (const [py, c] of [[2.6, '#e8a33d'], [0, '#f3c98b'], [-2.6, '#f3c98b']]) { ctx.beginPath(); ctx.ellipse(0, py, 5.6, 2.6, 0, 0, 7); ctx.fillStyle = c; ctx.fill(); ctx.stroke(); } rr(ctx, -1.8, -4.4, 3.6, 2.4, 0.8); ctx.fillStyle = '#fff2b8'; ctx.fill(); break; // v0.8.2 PP8
     case 'donut': ctx.beginPath(); ctx.arc(0, 0, 5.4, 0, 7); ctx.fillStyle = '#f7b6c8'; ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.arc(0, 0, 1.7, 0, 7); ctx.fillStyle = '#8a5a3a'; ctx.fill(); for (const [dx, dy, c] of [[-3, -2.4, '#ffe27a'], [3, -2, '#8fd0f7'], [0, 3.6, '#ffffff']]) { ctx.fillStyle = c; ctx.fillRect(dx - 1.1, dy - 0.5, 2.2, 1); } break; // v0.8.1 W8
   }
   ctx.restore();
 }
 export function mapNode(ctx, x, y, i, st, t = 0) {
-  const w5 = C.ART81 && C.worldOf(i) === 5, base = !st.open ? '#cfc6cf' : w5 ? W5_NODE_COLS[i % W5_NODE_COLS.length] : NODE_COLS[i % NODE_COLS.length];
+  const w5 = C.ART81 && C.worldOf(i) === 5, w6 = C.ART81 && C.worldOf(i) === 6, base = !st.open ? '#cfc6cf' : w6 ? W6_NODE_COLS[i % W6_NODE_COLS.length] : w5 ? W5_NODE_COLS[i % W5_NODE_COLS.length] : NODE_COLS[i % NODE_COLS.length];
   const R = st.boss ? 29 : 27, depth = 7;
   ctx.save();
   shadow(ctx, x, y + 26, 30, 7, 0.28);
@@ -165,11 +167,11 @@ export function mapNode(ctx, x, y, i, st, t = 0) {
   ctx.fillStyle = g; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = st.cleared ? '#e0a830' : INK; ctx.stroke();
   if (st.cleared) { ctx.beginPath(); ctx.ellipse(x, y, R - 2.5, R * 0.9 - 2.5, 0, 0, 7); ctx.lineWidth = 2; ctx.strokeStyle = '#ffe9a0'; ctx.stroke(); }
   // inner ring + gloss
-  ctx.beginPath(); ctx.ellipse(x, y + 1, R * 0.66, R * 0.6, 0, 0, 7); ctx.lineWidth = 2; ctx.strokeStyle = w5 && st.open ? 'rgba(247,182,200,0.95)' : `rgba(255,255,255,${st.open ? 0.55 : 0.3})`; ctx.stroke();
+  ctx.beginPath(); ctx.ellipse(x, y + 1, R * 0.66, R * 0.6, 0, 0, 7); ctx.lineWidth = 2; ctx.strokeStyle = w6 && st.open ? 'rgba(201,119,43,0.95)' : w5 && st.open ? 'rgba(247,182,200,0.95)' : `rgba(255,255,255,${st.open ? 0.55 : 0.3})`; ctx.stroke();
   ctx.beginPath(); ctx.ellipse(x - R * 0.38, y - R * 0.5, R * 0.36, R * 0.16, -0.4, 0, 7); ctx.fillStyle = 'rgba(255,255,255,0.6)'; ctx.fill();
   if (st.open) {
     R8.drawChunkyText(ctx, String(i + 1), x, y + 1, 25, { mode: 'num' });
-    nodeOrnament(ctx, w5 ? (st.boss ? 'crown' : 'donut') : NODE_ORN[i % NODE_ORN.length], x + R * 0.72, y - R * 0.72, t);
+    nodeOrnament(ctx, w6 ? (st.boss ? 'crown' : 'pancake') : w5 ? (st.boss ? 'crown' : 'donut') : NODE_ORN[i % NODE_ORN.length], x + R * 0.72, y - R * 0.72, t);
     if (st.stars >= 3 && !st.boss) miniCrown(ctx, x, y - R - 3, 1.1);
   } else {
     rr(ctx, x - 8, y - 3, 16, 13, 3); ctx.fillStyle = '#8c8090'; ctx.fill(); ctx.beginPath(); ctx.arc(x, y - 4, 5.5, Math.PI, 0); ctx.lineWidth = 3; ctx.strokeStyle = '#8c8090'; ctx.stroke();
@@ -180,7 +182,7 @@ export function starShape(ctx, x, y, r, fill, lw = 2) { candyStar(ctx, x, y, r, 
 
 // ---------------- ANTS (chibi, side/3-4 view, facing right) ----------------
 // Warm caramel palette, big heads, glossy eyes, thick clean outlines.
-export const ANT_COL = { small: '#f8c07e', worker: '#f0994d', big: '#d97a3f', gasmask: '#f0994d', armored: '#e48a47', flyer: '#f9b878', queen: '#f59b9b', queen2: '#c7a6f5', sprinter: '#f0994d', heavy: '#b95b34', greasy: '#ee9f45', mama: '#d9774a', queen3: '#e9b05c', nurse: '#f2b49b', queen4: '#f4b9c8', glazed: '#f1cf9a', queen5: '#f7b6c8' }; // v0.7.5 C18: value ladder small > worker > big > heavy; v0.7.6 V1 (A5): small #fbc98a -> #f8c07e (>= 1.447 vs the trail on all 20 maps; ladder 1.37 / 1.38 / 1.48)
+export const ANT_COL = { small: '#f8c07e', worker: '#f0994d', big: '#d97a3f', gasmask: '#f0994d', armored: '#e48a47', flyer: '#f9b878', queen: '#f59b9b', queen2: '#c7a6f5', sprinter: '#f0994d', heavy: '#b95b34', greasy: '#ee9f45', mama: '#d9774a', queen3: '#e9b05c', nurse: '#f2b49b', queen4: '#f4b9c8', glazed: '#f1cf9a', queen5: '#f7b6c8', drone: '#e8a33d', queen6: '#c9772b' }; // v0.8.2 PP2/PP4: the Drone is honey-amber, the Syrup Queen syrup-amber // v0.7.5 C18: value ladder small > worker > big > heavy; v0.7.6 V1 (A5): small #fbc98a -> #f8c07e (>= 1.447 vs the trail on all 20 maps; ladder 1.37 / 1.38 / 1.48)
 const ALW = 2.4; // ant outline width (v0.3: thinner = softer)
 
 function softBlob(ctx, x, y, rx, ry, col, lw = ALW, gloss = 1) { drawGlossyBlob(ctx, x, y, rx, ry, col, { lw, gloss }); }
@@ -231,7 +233,8 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
   const P = phase * Math.PI * 2;
   const step = Math.sin(P);
   const hop = Math.abs(Math.sin(P));
-  const flying = type === 'flyer', queen = type === 'queen' || type === 'queen2' || type === 'queen3' || type === 'queen4' || type === 'queen5', swiftQueen = type === 'queen2';
+  const drone = type === 'drone', syrupQueen = type === 'queen6'; // v0.8.2 world 6 (PP2 / PP4)
+  const flying = type === 'flyer' || drone, queen = type === 'queen' || type === 'queen2' || type === 'queen3' || type === 'queen4' || type === 'queen5' || syrupQueen, swiftQueen = type === 'queen2';
   const mama = type === 'mama', greasy = type === 'greasy', pieQueen = type === 'queen3'; // v0.7.7 world 3
   const nurse = type === 'nurse', sundaeQueen = type === 'queen4'; // v0.7.9 world 4
   const glazed = type === 'glazed', glazeQueen = type === 'queen5'; // v0.8.1 world 5 (W2 / M5)
@@ -241,7 +244,9 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
   const cheer = opt.pose === 'cheer'; // v0.8.0 hero pose (defeat screen + queen taunt only): both arms up, closed happy eyes, open mouth
   ctx.save();
   ctx.scale(S, S); ctx.lineJoin = 'round'; ctx.lineCap = 'round';
-  if (!flying) shadow(ctx, 0, 10.5, 15 - hop * 2, 4, 0.2); else shadow(ctx, 0, 21, 10, 3, 0.13);
+  if (drone) ctx.scale(1.15, 1.15); // v0.8.2 PP2: 1.15x the flyer's body scale
+  if (C.ART81) { if (!flying) shadow(ctx, 0, 10.5, 15 - hop * 2, 4, 0.22); else shadow(ctx, 0, 24, 11 * (1 - 0.1 * hop), 3.3 * (1 - 0.1 * hop), 0.15); } // v0.8.2 G13: ground alpha .22; flyers a larger offset (+80 %), alpha .15, 10 % smaller at the top of the hover bob
+  else if (!flying) shadow(ctx, 0, 10.5, 15 - hop * 2, 4, 0.2); else shadow(ctx, 0, 21, 10, 3, 0.13);
   // large ants: lower, heavier steps with a side-to-side waddle and a stomp puff (v0.4 item 14a: nicer large-ant animation)
   const lift = flying ? 9 + Math.sin(P * 2) * 2 : big ? hop * 1.8 : hop * 3.2;
   if (big && !flying) {
@@ -254,6 +259,10 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
   ctx.translate(0, -lift);
   if (!flying) { const sq = 1 + (0.5 - hop) * 0.09; ctx.translate(0, 10); ctx.scale(1 / sq, sq); ctx.translate(0, -10); }
 
+  if (glazed && C.ART81) { // v0.8.2 R9: a flat shield-coloured halo ring behind the Glazed Ant (INK outline + one pastel ring 2 px outside the body) - the silhouette cue vs the nurse
+    ctx.beginPath(); ctx.ellipse(1, -1, 20.5, 19, 0, 0, 7); ctx.lineWidth = 5; ctx.strokeStyle = INK; ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(1, -1, 20.5, 19, 0, 0, 7); ctx.lineWidth = 2.4; ctx.strokeStyle = '#9fe7ff'; ctx.stroke();
+  }
   // ---- behind the body: wings, cape, far legs
   if (flying) {
     const flap = Math.sin(P * 8);
@@ -265,11 +274,18 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
       ctx.beginPath(); ctx.ellipse(13, -1.5, 5, 1.6, 0, 0, 7); ctx.fillStyle = 'rgba(255,255,255,0.8)'; ctx.fill();
       ctx.restore();
     }
+    if (drone) for (const k of [1, 0]) { // v0.8.2 PP2: the second (lower, shorter) wing pair - four wings in all (the flyer has one pair)
+      ctx.save(); ctx.translate(-5, -1); ctx.rotate(-0.55 + flap * 0.4 - k * 0.55);
+      ctx.beginPath(); ctx.ellipse(8.5, 0, 9.5, 4.8, 0, 0, 7);
+      ctx.fillStyle = k ? 'rgba(255,238,200,0.78)' : 'rgba(255,246,222,0.92)'; ctx.fill();
+      ctx.lineWidth = 2; ctx.strokeStyle = '#b07a3a'; ctx.stroke();
+      ctx.restore();
+    }
   }
   if (queen) {
     const sw = Math.sin(P) * 1.5;
     ctx.beginPath(); ctx.moveTo(3, -8); ctx.quadraticCurveTo(-14, -12 + sw, -24, 7); ctx.quadraticCurveTo(-11, 11, 2, 5); ctx.closePath();
-    const g = ctx.createLinearGradient(0, -10, 0, 10); g.addColorStop(0, glazeQueen ? '#9fe3e6' : sundaeQueen ? '#8fe0c8' : pieQueen ? '#7f9be6' : '#b597f0'); g.addColorStop(1, glazeQueen ? '#4fb3bd' : sundaeQueen ? '#3fa88f' : pieQueen ? '#4f69b8' : '#8a68d8'); // v0.7.9: the Sundae Queen's cape is mint // v0.7.7: the Pie Queen's cape is blueberry
+    const g = ctx.createLinearGradient(0, -10, 0, 10); g.addColorStop(0, syrupQueen ? '#f3b868' : glazeQueen ? '#9fe3e6' : sundaeQueen ? '#8fe0c8' : pieQueen ? '#7f9be6' : '#b597f0'); g.addColorStop(1, syrupQueen ? '#a85f1c' : glazeQueen ? '#4fb3bd' : sundaeQueen ? '#3fa88f' : pieQueen ? '#4f69b8' : '#8a68d8'); // v0.7.9: the Sundae Queen's cape is mint // v0.7.7: the Pie Queen's cape is blueberry
     ctx.fillStyle = g; ctx.fill(); ctx.lineWidth = LW; ctx.strokeStyle = INK; ctx.stroke();
     ctx.beginPath(); ctx.moveTo(-22, 6.5); ctx.quadraticCurveTo(-10, 10, 1.5, 4.5); ctx.lineWidth = 3.4; ctx.strokeStyle = '#ffffff'; ctx.stroke();
     ctx.fillStyle = INK; for (const [a, b] of [[-17, 6.8], [-10, 8], [-4, 6.6]]) { ctx.beginPath(); ctx.arc(a, b, 0.9, 0, 7); ctx.fill(); }
@@ -281,8 +297,9 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
   const abRx = queen ? 13 : big ? 12 : 11, abRy = queen ? 11 : big ? 10 : 9.5; // v0.8.0 chibi: one plump abdomen
   softBlob(ctx, -10, 0.5, abRx, abRy, col, LW, 0.85);
   ctx.save(); ctx.beginPath(); ctx.ellipse(-10, 0.5, abRx - 1, abRy - 1, 0, 0, 7); ctx.clip();
-  ctx.strokeStyle = shade(col, -0.14); ctx.lineWidth = 2;
+  ctx.strokeStyle = drone ? INK : shade(col, -0.14); ctx.lineWidth = drone ? 3.6 : 2; // v0.8.2 PP2: two INK stripes on the Drone's abdomen
   for (const sx of [-15, -10.5]) { ctx.beginPath(); ctx.ellipse(sx - (big ? 1.5 : 0), 0.5, 2, abRy + 2, 0, -1.3, 1.3); ctx.stroke(); }
+  if (syrupQueen) { ctx.beginPath(); ctx.moveTo(-20.5, -5.2); ctx.quadraticCurveTo(-11, -9.6, -1.5, -6.4); ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(255,248,224,0.72)'; ctx.stroke(); } // v0.8.2 PP4: the glossy syrup stripe
   ctx.restore();
   if (mama) { // v0.7.7 Brood Ant: three little eggs on her back = the three babies she drops
     for (const [ex, ey, er] of [[-16.5, -2.2, 2.9], [-10.5, -4.6, 3.1], [-5.2, -1.4, 2.7]]) { ctx.beginPath(); ctx.ellipse(ex, ey, er, er * 1.2, 0.2, 0, 7); ctx.fillStyle = '#fffaf0'; ctx.fill(); ctx.lineWidth = 1.7; ctx.strokeStyle = INK; ctx.stroke(); ctx.beginPath(); ctx.arc(ex - 0.7, ey - 0.8, 0.8, 0, 7); ctx.fillStyle = '#f2a0b0'; ctx.fill(); }
@@ -430,6 +447,9 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
     ctx.quadraticCurveTo(hx - 3.5, top - 3, hx - 2, top - 1.5);
     ctx.fillStyle = heavy ? '#b48cf0' : '#ff7b7b'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = INK; ctx.stroke();
     ctx.beginPath(); ctx.ellipse(hx - 4, top + 2, 2.6, 1.2, -0.4, 0, 7); ctx.fillStyle = 'rgba(255,255,255,0.8)'; ctx.fill();
+  } else if (drone) { // v0.8.2 PP2: no aviator cap - two long antennae with pale pollen tips and a small honey-comb brow, so the silhouette (4 wings + antennae) and the amber/striped body differ from the Flying Ant
+    for (const sx of [-1, 1]) { ctx.beginPath(); ctx.moveTo(hx + sx * 3, top + 1); ctx.quadraticCurveTo(hx + sx * 7, top - 8, hx + sx * 10 + 1, top - 12 + step); ctx.lineWidth = 2.4; ctx.strokeStyle = INK; ctx.stroke(); blob(ctx, hx + sx * 10 + 1, top - 12 + step, 2.6, 2.6, '#fff2b8', 1.5); }
+    ctx.beginPath(); ctx.ellipse(hx - 4.6, top + 3.6, 2.2, 1, -0.5, 0, 7); ctx.fillStyle = 'rgba(255,255,255,0.8)'; ctx.fill();
   } else if (flying) { // leather aviator cap + goggles on the forehead + scarf
     ctx.beginPath(); ctx.ellipse(hx, hy - 3, hr * 0.97, hr * 0.8, 0, Math.PI * 0.98, Math.PI * 2.02); ctx.closePath();
     ctx.fillStyle = '#b9805a'; ctx.fill(); ctx.lineWidth = 2.4; ctx.strokeStyle = INK; ctx.stroke();
@@ -458,6 +478,18 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
     if (glazeQueen) { // v0.8.1 M5 Glaze Queen: an iced donut worn as a crown (pink icing ring, hole, sprinkles)
       blob(ctx, hx, cy - 6, 10.5, 6.6, '#f1cf9a', 2.4); blob(ctx, hx, cy - 7.4, 9, 5, '#ff9ec0', 2); blob(ctx, hx, cy - 7.4, 3.2, 1.9, '#f1cf9a', 1.6); blob(ctx, hx - 3, cy - 10, 2.6, 1.2, '#ffd9e6', 0.1);
       for (const [dx, dy, c2, rot] of [[-6, -6.6, '#6fd0e8', 0.4], [5.5, -7.6, '#fff3a8', -0.5], [-1, -11.2, '#8de0a8', 1], [7, -5, '#ffffff', 0.9]]) { ctx.save(); ctx.translate(hx + dx, cy + dy); ctx.rotate(rot); rr(ctx, -1.6, -0.6, 3.2, 1.2, 0.6); ctx.fillStyle = c2; ctx.fill(); ctx.restore(); }
+      if (C.ART81) for (const [dx, dy, c2] of [[-6.6, -14, '#6fd0e8'], [0, -18, '#fff3a8'], [6.6, -14, '#8de0a8']]) { ctx.beginPath(); ctx.arc(hx + dx, cy + dy, 3.1, 0, 7); ctx.fillStyle = c2; ctx.fill(); ctx.lineWidth = 1.4; ctx.strokeStyle = INK; ctx.stroke(); } // v0.8.2 R9: three coloured dots above the donut crown
+      ctx.restore(); return;
+    }
+    if (syrupQueen) { // v0.8.2 PP4 Syrup Queen: an amber syrup crown band with THREE drips hanging down the brow (distinct from the donut crown and the cone)
+      blob(ctx, hx, cy - 6.5, 10.5, 4.4, '#e8a33d', 2.3);
+      for (const [dx, len] of [[-6.4, 5.2], [0, 7.4], [6.4, 5.2]]) {
+        ctx.beginPath(); ctx.moveTo(hx + dx - 2.6, cy - 6); ctx.lineTo(hx + dx - 2.2, cy - 6 + len - 2); ctx.arc(hx + dx, cy - 6 + len - 2, 2.2, Math.PI, 0, true); ctx.lineTo(hx + dx + 2.6, cy - 6); ctx.closePath();
+        ctx.fillStyle = '#c9772b'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = INK; ctx.stroke();
+        ctx.beginPath(); ctx.arc(hx + dx - 0.9, cy - 6 + len - 3, 0.8, 0, 7); ctx.fillStyle = 'rgba(255,255,255,0.8)'; ctx.fill();
+      }
+      blob(ctx, hx - 3.2, cy - 8, 2.8, 1.2, '#fff2b8', 0.1);
+      for (const dx of [-7, 0, 7]) { ctx.beginPath(); ctx.arc(hx + dx, cy - 11.6 - (dx ? 0 : 3), 3, 0, 7); ctx.fillStyle = '#fff2b8'; ctx.fill(); ctx.lineWidth = 1.5; ctx.strokeStyle = INK; ctx.stroke(); }
       ctx.restore(); return;
     }
     if (sundaeQueen) { // v0.7.9 Sundae Queen: a waffle cone worn point-down as a crown, with a pink scoop and a cherry on top
@@ -526,8 +558,10 @@ const BAKE_BOX = C.ART81 ? [-48, -76, 48, 36] : [-44, -60, 44, 36]; // v0.8.1 G2
 export const TOWER_K = 1.18; // v0.8.1 G2: body scale about the pad top (fallback 1.12 if the overlap check fails)
 let BODYK = 1; // >1 while a body is being drawn: baked strokes are compensated so outlines stay ~2.4 px on screen
 // v0.8.1 G2: the saturated pad / base colours (ratio vs the lightest ground >= 1.60); C.TOWERS[...].color (the card tint) is unchanged
-export const TOWER_PAD = { slingshot: '#e78015', spray: '#49af29', sound: '#a687e9', ball: '#30a2f1', laser: '#ff6673', zapper: '#319fff', fan: '#28aa9d', pheromone: '#f06da6', lizard: '#76a927', tractor: '#cf8a00', glue: '#d9a900', gate: '#d99a00', lava: '#ff6a00' };
-const tpad = (type, old) => (C.ART81 ? TOWER_PAD[type] : old);
+export const TOWER_PAD = { slingshot: '#e07c14', spray: '#47aa28', sound: '#a183e2', ball: '#2f9dea', laser: '#f76370', zapper: '#309af7', // v0.8.2 A10b: the six side-tower pads x0.97 (W6 ground is the lightest: pad vs ground 1.543 -> 1.636; every other theme rises too)
+   fan: '#28aa9d', pheromone: '#f06da6', lizard: '#76a927', tractor: '#cf8a00', glue: '#d9a900', gate: '#d99a00', lava: '#ff6a00' };
+export let SKIN_PAD = {}; export function setSkinPads(m) { SKIN_PAD = m || {}; } // v0.8.2 EC5a: an equipped skin replaces the pad accent (colour only)
+const tpad = (type, old) => (C.ART81 ? (SKIN_PAD[type] || TOWER_PAD[type]) : old);
 export const MOTION = { reduced: false, bobTowers: false, hop: 0 }; // v0.8.1: set by game.js every frame (reducedMotion() / 'drawing a placed tower')
 let BOBV = null; // sin(phase) while a placed tower is idle, else null (G6)
 function bodyScale(ctx) { if (!C.ART81) return; if (MOTION.hop) ctx.translate(0, -MOTION.hop); if (BOBV !== null) { ctx.translate(0, 8); ctx.translate(0, -1.2 * (0.5 + 0.5 * BOBV)); ctx.scale(1, 1 + 0.012 * BOBV); ctx.translate(0, -8); } ctx.translate(0, 8); ctx.scale(TOWER_K, TOWER_K); ctx.translate(0, -8); BODYK = TOWER_K; }
@@ -578,6 +612,10 @@ function padPaths(ctx, color) {
   const g = ctx.createRadialGradient(-4, 3, 1, 0, 5, 12); g.addColorStop(0, shade(color, 0.6)); g.addColorStop(1, shade(color, 0.2));
   ctx.beginPath(); ctx.ellipse(0, 4.5, 11, 5, 0, 0, 7); ctx.fillStyle = g; ctx.fill();
   rim(ctx, 0, 5.5, 15.5, 8, 0.75);
+  if (C.ART81) { // v0.8.2 G10: a 2 px top highlight (white .35) and a 3 px bottom edge (pad colour -18 %) on the pad slab
+    ctx.save(); ctx.lineCap = 'round'; ctx.beginPath(); ctx.ellipse(0, 5.5, 14, 6.6, 0, Math.PI * 1.08, Math.PI * 1.92); ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(255,255,255,0.35)'; ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(0, 5.5, 13.6, 6.3, 0, Math.PI * 0.12, Math.PI * 0.88); ctx.lineWidth = 3; ctx.strokeStyle = shade(color, -0.18); ctx.stroke(); ctx.restore();
+  }
   // tiny rivets
   for (const a of [0.35, 1.2, 1.95, 2.8]) { const rx = Math.cos(a) * 13.2, ry = 6.5 + Math.sin(a) * 6.3; ctx.beginPath(); ctx.arc(rx, ry, 1.35, 0, 7); ctx.fillStyle = shade(color, -0.38); ctx.fill(); ctx.beginPath(); ctx.arc(rx - 0.4, ry - 0.45, 0.45, 0, 7); ctx.fillStyle = 'rgba(255,255,255,0.8)'; ctx.fill(); } // v0.8.0: glossy rivet dots (r 1.35 + spec dot)
 }
@@ -1240,7 +1278,34 @@ function donutBody(ctx, r, pct) {
   for (let k = 0; k < bites; k++) { const [bx, by] = bAt(k); ctx.beginPath(); ctx.arc(bx, by, 9, 0, 7); ctx.lineWidth = 3; ctx.strokeStyle = INK; ctx.stroke(); }
   ctx.restore();
 }
-export const TREAT_BODIES = { cookie: cookieBody, cake: cakeBody, pie: pieBody, sundae: sundaeBody, donut: donutBody };
+// v0.8.2 PP8 world 6: the Pancake stack (seen from above: a browned rim, three layer lines, a buttery top with a syrup pool + three drips over the rim, a butter pat). Same bite scheme as the cookie; baked per bite count.
+function pancakeBody(ctx, r, pct) {
+  const bites = Math.round((1 - pct) * 9), bAt = (k) => { const a = -0.6 + k * 0.72; return [Math.cos(a) * r * 0.98, Math.sin(a) * r * 0.98]; };
+  ctx.save();
+  ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2);
+  for (let k = 0; k < bites; k++) { const [bx, by] = bAt(k); ctx.moveTo(bx + 9, by); ctx.arc(bx, by, 9, 0, Math.PI * 2, true); }
+  ctx.clip('evenodd');
+  const g = ctx.createRadialGradient(-8, -10, 4, 0, 0, r * 1.1); g.addColorStop(0, '#f9dcae'); g.addColorStop(0.7, '#f3c98b'); g.addColorStop(1, '#e8a33d');
+  ctx.beginPath(); ctx.arc(0, 0, r, 0, 7); ctx.fillStyle = g; ctx.fill();
+  ctx.beginPath(); ctx.arc(0, 0, r - 1, 0, 7); ctx.lineWidth = 5; ctx.strokeStyle = '#e8a33d'; ctx.stroke(); // browned rim
+  ctx.lineCap = 'round'; ctx.lineWidth = 1.5; ctx.strokeStyle = 'rgba(138,84,32,0.55)'; // the stack: two layer lines low on the rim
+  for (const [rr, a0, a1] of [[r - 3, 0.35, 2.8], [r - 7, 0.6, 2.55]]) { ctx.beginPath(); ctx.arc(0, 0, rr, a0, a1); ctx.stroke(); }
+  ctx.beginPath(); ctx.moveTo(-r * 0.15, r * 0.52); for (let k = 0; k <= 36; k++) { const a = 0.15 + k / 36 * 2.9, rr = r * 0.74 + Math.sin(a * 5) * 2.2; ctx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr + 3); } ctx.closePath(); // syrup pool along the lower half
+  ctx.fillStyle = 'rgba(214,134,40,0.88)'; ctx.fill(); ctx.lineWidth = 1.4; ctx.strokeStyle = 'rgba(138,84,32,0.7)'; ctx.stroke();
+  ctx.lineCap = 'round'; ctx.lineWidth = 5.2; ctx.strokeStyle = '#d98a28'; for (const [dx, dy] of [[-r * 0.55, r * 0.62], [r * 0.12, r * 0.92], [r * 0.7, r * 0.5]]) { ctx.beginPath(); ctx.moveTo(dx, dy - 5); ctx.lineTo(dx, dy + 3); ctx.stroke(); } // three drips over the rim
+  rr(ctx, -r * 0.62, -r * 0.7, 11, 8, 2.4); ctx.fillStyle = '#fff2b8'; ctx.fill(); ctx.lineWidth = 1.6; ctx.strokeStyle = INK; ctx.stroke(); // the butter pat (upper left; the faces sit lower)
+  ctx.beginPath(); ctx.moveTo(-r * 0.62 + 2.4, -r * 0.7 + 2.4); ctx.lineTo(-r * 0.62 + 6, -r * 0.7 + 2.4); ctx.lineWidth = 1.2; ctx.strokeStyle = 'rgba(255,255,255,0.9)'; ctx.stroke();
+  ctx.restore();
+  ctx.save();
+  ctx.beginPath(); ctx.rect(-r - 12, -r - 12, r * 2 + 24, r * 2 + 24);
+  for (let k = 0; k < bites; k++) { const [bx, by] = bAt(k); ctx.moveTo(bx + 9, by); ctx.arc(bx, by, 9, 0, Math.PI * 2, true); }
+  ctx.clip('evenodd');
+  ctx.beginPath(); ctx.arc(0, 0, r, 0, 7); ctx.lineWidth = 3; ctx.strokeStyle = INK; ctx.stroke(); ctx.restore();
+  ctx.save(); ctx.beginPath(); ctx.arc(0, 0, r + 1, 0, 7); ctx.clip();
+  for (let k = 0; k < bites; k++) { const [bx, by] = bAt(k); ctx.beginPath(); ctx.arc(bx, by, 9, 0, 7); ctx.lineWidth = 3; ctx.strokeStyle = INK; ctx.stroke(); }
+  ctx.restore();
+}
+export const TREAT_BODIES = { cookie: cookieBody, cake: cakeBody, pie: pieBody, sundae: sundaeBody, donut: donutBody, pancake: pancakeBody };
 // The body moves with the reaction: a jump (surprised), a fast shiver (oy oy oy), sinking (sad), sobbing bounces (crying).
 function reactMotion(react, t) {
   if (!react) return { dx: 0, dy: 0, sx: 1, sy: 1 };
@@ -1513,14 +1578,16 @@ function crownSprite(ctx, pal) {
 // k = seconds since the panel appeared (99 = final state); still = reduced motion (150 ms fade, no drop / pop / sparkles)
 export function drawRewardHeader(ctx, pal, k, still, stars3) {
   const rp = pal.ribbon, cr = pal.crown;
+  // v0.8.2 R5: the sparkle layer is drawn BEFORE the ribbon and crown, and never inside the 10 px margin round the ribbon text box (x 50..350, y 140..172) or the crown jewel (x 176..224, y 117..165)
+  if (stars3 && !still) {
+    const tw = 0.6 + 0.4 * Math.sin(k * 6); if (k > 0.3) for (const x of [40, 360]) R8.sparkle(ctx, x, 163, 3.4 * tw, '#fff7a8', k);
+    if (k > 0.4 && k < 1.0) for (const x of [164, 236]) R8.sparkle(ctx, x, 104, 5 * (1 - (k - 0.4) / 0.6) + 1, '#fff7a8', k * 2);
+  }
   ctx.save(); let dy = 0, alpha = 1, cs = 1;
   if (still) alpha = Math.min(1, k / 0.15); else { dy = -36 * (1 - R8.easeOutBack(k / 0.24)); alpha = Math.min(1, k / 0.1); cs = k < 0.15 ? 0 : 0.4 + 0.6 * R8.easeOutBack((k - 0.15) / 0.25); }
   ctx.globalAlpha = alpha; ctx.translate(0, dy); ribbonSprite(ctx, rp);
   if (cr && cs > 0.01) { ctx.save(); if (!still && k >= 0.15 && k < 0.4) R8.squashAt(ctx, 200, 141, (k - 0.15) / 0.25, 0.1); ctx.translate(200, 141); ctx.scale(cs, cs); ctx.translate(-200, -141); crownSprite(ctx, cr); ctx.restore(); }
   ctx.restore();
-  if (stars3 && !still) { // two tiny sparkles at the ribbon tail ends, two at the crown tips for 0.6 s from t = 0.4
-    const tw = 0.6 + 0.4 * Math.sin(k * 6); if (k > 0.3) for (const x of [52, 348]) R8.sparkle(ctx, x, 163, 3.4 * tw, '#fff7a8', k);
-    if (k > 0.4 && k < 1.0) for (const x of [164, 236]) R8.sparkle(ctx, x, 104, 5 * (1 - (k - 0.4) / 0.6) + 1, '#fff7a8', k * 2); }
 }
 
 // v0.8.1 G6: hero ants (prep icons, U2 card, result cheer, card view, pack): y +-1.5 px, sy 1 +- .02, period 1.9 s, phase i * 0.6
@@ -1549,15 +1616,19 @@ export const THEMES = [
   { name: 'W4 mint', a: '#b6e4d6', b: '#abdccd', check: 'rgba(60,170,150,0.14)', grout: 'rgba(70,150,130,0.22)', trail: '#fffdf5', edge: '#80c3b0', dot: '#98d3c2' },
   // v0.8.1 world 5 (plan W4, Crumb Design palettes-W3-W10.json): teal diner, with a pink icing accent for the flowers/dots. A1/A2/A3/A5 measured on the G1 renderer over all ten W5 maps (qa/v0.8.1/contrast-w5.json).
   { name: 'W5 teal-diner', a: '#a9d8de', b: '#9ecfd6', check: 'rgba(60,150,170,0.13)', grout: 'rgba(60,130,150,0.22)', trail: '#fffdf5', edge: '#7fbcc6', dot: '#f7b6c8' },
+  // v0.8.2 world 6 (Crumb Design palettes-W3-W10.json 'W6 maple'): warm maple planks. If the rendered A10b is < 1.6 on any W6 map, darken the pad by steps (see qa/v0.8.2 contrast-w6).
+  { name: 'W6 maple', a: '#e6b98a', b: '#e1b27f', grain: 'rgba(120,70,20,0.15)', grout: 'rgba(130,80,30,0.28)', trail: '#fffaf0', edge: '#b98550', dot: '#c99660' },
 ];
-export function renderMapBackground(routes, theme, w, h, dpr, props = []) {
+export function renderMapBackground(routes, theme, w, h, dpr, props = [], art = {}) { // art = the map's tuning.json "art" overrides: { chev: chevron alpha, plate: { dy, scale } } (v0.8.2, Crumbie's A1/A3r rulings)
   if (!Array.isArray(routes)) routes = [routes];
   const cv = makeCanvas(Math.ceil(w * dpr), Math.ceil(h * dpr));
   const g = cv.getContext('2d'); g.scale(dpr, dpr);
   const th = THEMES[theme % THEMES.length];
   let seed = 7 + theme * 13; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
   // base surface
-  for (let c = 0; c < C.GRID_COLS; c++) for (let r = 0; r < C.GRID_ROWS; r++) { g.fillStyle = (c + r) % 2 ? th.a : th.b; g.fillRect(c * C.TILE, r * C.TILE, C.TILE, C.TILE); }
+  // v0.8.2 R7: the grain themes' checker step is 30 % softer, taken from the lighter tile only (it moves 30 % of the way to the darker one), so the mean ground never gets lighter than v0.8.0 (A1) (the render only; THEMES stays the palette of record)
+  const soft = C.ART81 && th.grain, ta = soft ? mixHex(th.a, th.b, 0.3) : th.a, tb = th.b;
+  for (let c = 0; c < C.GRID_COLS; c++) for (let r = 0; r < C.GRID_ROWS; r++) { g.fillStyle = (c + r) % 2 ? ta : tb; g.fillRect(c * C.TILE, r * C.TILE, C.TILE, C.TILE); }
   if (th.check) {
     // woven tablecloth: translucent stripes both ways
     g.fillStyle = th.check;
@@ -1565,7 +1636,7 @@ export function renderMapBackground(routes, theme, w, h, dpr, props = []) {
     for (let y = 0; y < h; y += 40) g.fillRect(0, y + 10, w, 20);
   } else if (th.grain) {
     // wooden planks with grain and knots
-    for (let x = 0; x < w; x += 80) { g.fillStyle = (x / 80) % 2 ? 'rgba(255,255,255,0.08)' : 'rgba(120,80,40,0.05)'; g.fillRect(x, 0, 80, h); g.fillStyle = 'rgba(110,70,40,0.35)'; g.fillRect(x, 0, 1.5, h); }
+    for (let x = 0; x < w; x += 80) { g.fillStyle = (x / 80) % 2 ? `rgba(255,255,255,${C.ART81 ? 0.065 : 0.08})` : `rgba(120,80,40,${C.ART81 ? 0.04 : 0.05})`; g.fillRect(x, 0, 80, h); g.fillStyle = `rgba(110,70,40,${C.ART81 ? 0.2975 : 0.35})`; g.fillRect(x, 0, 1.5, h); } // v0.8.2 R7: plank seam alpha -15 %, plank tint -20 %
     g.strokeStyle = th.grain; g.lineWidth = 1.2;
     for (let k = 0; k < 40; k++) { const x = rnd() * w; g.beginPath(); g.moveTo(x, 0); for (let y = 0; y <= h; y += 20) g.lineTo(x + Math.sin(y * 0.02 + k) * 4, y); g.stroke(); }
     for (let k = 0; k < 5; k++) { const x = rnd() * w, y = rnd() * h; g.beginPath(); g.ellipse(x, y, 5, 3, 0, 0, 7); g.lineWidth = 1.5; g.stroke(); }
@@ -1597,7 +1668,9 @@ export function renderMapBackground(routes, theme, w, h, dpr, props = []) {
   if (C.ART81) { g.save(); g.translate(2, 3); strokeAll(42, 'rgba(70,35,50,0.07)'); g.restore(); g.save(); g.translate(-1.5, -1.5); strokeAll(39, 'rgba(255,248,232,0.22)'); g.restore(); } // v0.8.1 G1.2: raised lane bank (shaded lower-right, lit upper-left)
   strokeAll(36, INK);
   g.save(); g.translate(0, 1.5); strokeAll(32, shade(th.edge, -0.28)); g.restore();
-  strokeAll(30, th.edge); strokeAll(25, th.trail);
+  strokeAll(30, th.edge);
+  if (C.ART81) { strokeAll(25, 'rgba(70,35,50,0.20)'); g.save(); g.translate(0, 1); strokeAll(25, th.trail); g.restore(); } // v0.8.2 G10: the lane is a groove - a 1 px inner shadow along its top edge (alpha .20)
+  else strokeAll(25, th.trail);
   // v0.8.0 (spec 9.3): the trail is a soft raised path - a lit upper band and a shaded lower band inside the edge
   g.save(); g.globalAlpha = 0.34; g.translate(-2, -2); strokeAll(15, mixHex(th.trail, '#ffffff', 0.5)); g.restore();
   g.save(); g.globalAlpha = 0.16; g.translate(6.5, 6.5); strokeAll(5, shade(th.trail, -0.4)); g.restore();
@@ -1612,12 +1685,17 @@ export function renderMapBackground(routes, theme, w, h, dpr, props = []) {
       g.fillStyle = '#e8b878'; g.beginPath(); g.ellipse(p.x + p.dy * o, p.y - p.dx * o, 2, 1.5, rnd() * 3, 0, 7); g.fill();
     }
   }
+  if (C.ART81 && (art.chev ?? 0.03) > 0) { // v0.8.2 G18: faint lane-direction chevrons every 120 px (a baked layer; 6 px; alpha .03 globally per Crumbie's A1/A2 ruling, tuning.json maps[].art.chev overrides it, 0 = none)
+    g.save(); g.lineCap = 'round'; g.lineJoin = 'round'; g.lineWidth = 1.8; g.strokeStyle = `rgba(82,60,75,${art.chev ?? 0.03})`;
+    for (const path of routes) for (let d = 70; d < path.length - 30; d += 120) { const p = path.at(d); g.save(); g.translate(p.x, p.y); g.rotate(Math.atan2(p.dy, p.dx)); g.beginPath(); g.moveTo(-3, -4); g.lineTo(3, 0); g.lineTo(-3, 4); g.stroke(); g.restore(); }
+    g.restore();
+  }
   // grass tufts around the nest openings
   for (const path of routes) {
     const p = path.pts[0]; const nx = Math.max(30, Math.min(w - 30, p.x)), ny = Math.max(26, p.y + 6);
     for (let k = 0; k < 6; k++) { const a = Math.PI * (0.1 + k * 0.16); tuft(g, nx + Math.cos(a) * 36 * (k % 2 ? 1 : -1), ny + 10 + Math.sin(a) * 6, 0.8 + rnd() * 0.4); }
   }
-  if (C.ART81) plates(g, routes); // v0.8.1 G1.4: a plate under the treat at the end of each route
+  if (C.ART81 && !(art.plate && art.plate.hide)) plates(g, routes, art.plate); // (plate.hide: QA only, renders the map without plates) // v0.8.1 G1.4: a plate under the treat at the end of each route
   for (const pr of props) drawProp(g, pr.k, (pr.c + 0.5) * C.TILE, (pr.r + 0.5) * C.TILE);
   // soft vignette
   const vg = g.createRadialGradient(w / 2, h / 2, Math.min(w, h) * 0.45, w / 2, h / 2, Math.max(w, h) * 0.75);
@@ -1639,10 +1717,10 @@ export function renderMapBackground(routes, theme, w, h, dpr, props = []) {
   return cv;
 }
 // v0.8.1 G1.4: treat plate (rx 30, ry 11, 4 px below the treat's base), one per distinct route end
-function plates(g, routes) {
+function plates(g, routes, po = {}) { // po = { dy, scale }: a per-map override (v0.8.2: L58 only, so the plate and its shadow stay clear of the next tile row)
   const ends = []; for (const rt of routes) { const p = rt.pts[rt.pts.length - 1]; if (!ends.some((q) => Math.hypot(q.x - p.x, q.y - p.y) < 5)) ends.push(p); }
   for (const p of ends) {
-    const cy = p.y + 19.5 + 4; g.save(); g.translate(p.x, cy);
+    const cy = p.y + 19.5 + 4 + (po.dy || 0); g.save(); g.translate(p.x, cy); if (po.scale) g.scale(po.scale, po.scale);
     g.beginPath(); g.ellipse(0, 10, 32, 7, 0, 0, 7); g.fillStyle = 'rgba(70,35,50,0.22)'; g.fill();
     g.beginPath(); g.ellipse(0, 0, 30, 11, 0, 0, 7); const pg = g.createLinearGradient(0, -11, 0, 11); pg.addColorStop(0, '#fff6e4'); pg.addColorStop(1, '#f1dcc0'); g.fillStyle = pg; g.fill(); g.lineWidth = 2.4; g.strokeStyle = INK; g.stroke();
     g.beginPath(); g.ellipse(0, 0, 26, 8, 0, Math.PI * 0.9, Math.PI * 1.45); g.lineWidth = 1.4; g.strokeStyle = 'rgba(255,255,255,0.85)'; g.stroke();
@@ -1727,4 +1805,59 @@ export function drawSwatter(ctx, x, y, ang = 0, sc = 1, flash = 0) {
   ctx.fillStyle = 'rgba(255,111,145,0.45)'; ctx.beginPath(); ctx.ellipse(-8.6, hy + 25, 2.6, 1.7, 0, 0, 7); ctx.ellipse(8.6, hy + 25, 2.6, 1.7, 0, 0, 7); ctx.fill();
   if (flash > 0) { rr(ctx, hx, hy, hw, hh, 12); ctx.globalAlpha = flash * 0.7; ctx.fillStyle = '#fff'; ctx.fill(); }
   ctx.restore();
+}
+
+// ---------------- v0.8.2 G9: the table around the board (oversize props; baked, nothing animated) ----------------
+export const TABLE_SETS = { 1: ['leaf', 'twig', 'leaf', 'pebble'], 2: ['pebble', 'pebble', 'twig', 'leaf'], 3: ['cup', 'cup', 'plate'], 4: ['plate', 'cutlery', 'plate', 'cup'], 5: ['donutbox', 'napkin', 'ring', 'donutbox'], 6: ['syrup', 'butter', 'berry', 'berry'] };
+export function drawTableProp(g, kind, x, y, r, rot = 0, shadow = true) {
+  g.save(); g.translate(x, y);
+  if (shadow) { g.beginPath(); g.ellipse(r * 0.18, r * 0.62, r * 0.95, r * 0.32, 0, 0, 7); g.fillStyle = 'rgba(70,35,50,0.18)'; g.fill(); } // contact shadow (alpha .18)
+  g.rotate(rot); g.lineWidth = 2; g.strokeStyle = INK; g.lineJoin = 'round'; g.lineCap = 'round';
+  const fs = (col) => { g.fillStyle = col; g.fill(); g.stroke(); };
+  switch (kind) {
+    case 'leaf': g.beginPath(); g.moveTo(-r, 0); g.quadraticCurveTo(0, -r * 0.9, r, 0); g.quadraticCurveTo(0, r * 0.9, -r, 0); g.closePath(); fs('#8fcf6a'); g.beginPath(); g.moveTo(-r * 0.8, 0); g.lineTo(r * 0.7, 0); g.strokeStyle = '#4f9a3c'; g.stroke(); break;
+    case 'twig': g.beginPath(); g.moveTo(-r, r * 0.1); g.lineTo(r, -r * 0.1); g.lineWidth = 7; g.strokeStyle = INK; g.stroke(); g.lineWidth = 3.4; g.strokeStyle = '#b98355'; g.stroke(); g.beginPath(); g.moveTo(-r * 0.1, 0); g.lineTo(r * 0.3, -r * 0.5); g.lineWidth = 5; g.strokeStyle = INK; g.stroke(); g.lineWidth = 2; g.strokeStyle = '#b98355'; g.stroke(); break;
+    case 'pebble': g.beginPath(); g.ellipse(0, 0, r, r * 0.72, 0, 0, 7); fs('#cdc3c0'); g.beginPath(); g.ellipse(-r * 0.3, -r * 0.25, r * 0.28, r * 0.14, -0.4, 0, 7); g.fillStyle = 'rgba(255,255,255,0.55)'; g.fill(); break;
+    case 'cup': g.beginPath(); g.arc(r * 0.95, 0, r * 0.38, -1.2, 1.2); g.lineWidth = 5; g.stroke(); g.lineWidth = 2; g.beginPath(); g.arc(0, 0, r * 0.82, 0, 7); fs('#fff1e0'); g.beginPath(); g.arc(0, 0, r * 0.58, 0, 7); fs('#a7794f'); g.beginPath(); g.ellipse(-r * 0.2, -r * 0.2, r * 0.18, r * 0.08, -0.6, 0, 7); g.fillStyle = 'rgba(255,255,255,0.35)'; g.fill(); break;
+    case 'plate': g.beginPath(); g.arc(0, 0, r, 0, 7); fs('#fff6ea'); g.beginPath(); g.arc(0, 0, r * 0.66, 0, 7); g.lineWidth = 1.4; g.strokeStyle = 'rgba(82,60,75,0.45)'; g.stroke(); break;
+    case 'cutlery': g.beginPath(); g.rect(-r, -r * 0.1, r * 1.1, r * 0.2); fs('#d9dde3'); g.beginPath(); g.ellipse(r * 0.25, 0, r * 0.2, r * 0.3, 0, 0, 7); fs('#d9dde3'); for (const o of [-0.22, 0, 0.22]) { g.beginPath(); g.rect(r * 0.25, (o - 0.04) * r, r * 0.7, r * 0.08); fs('#d9dde3'); } break;
+    case 'donutbox': g.beginPath(); g.rect(-r * 0.9, -r * 0.7, r * 1.8, r * 1.4); fs('#f6a8c6'); g.beginPath(); g.rect(-r * 0.9, -r * 0.7, r * 1.8, r * 0.3); fs('#fff1f6'); g.beginPath(); g.arc(0, r * 0.12, r * 0.3, 0, 7); g.fillStyle = '#ffd89a'; g.fill(); g.stroke(); break;
+    case 'napkin': g.beginPath(); g.rect(-r * 0.8, -r * 0.8, r * 1.6, r * 1.6); fs('#fff5f0'); g.beginPath(); g.moveTo(-r * 0.8, -r * 0.1); g.lineTo(r * 0.8, -r * 0.1); g.lineWidth = 1.4; g.strokeStyle = 'rgba(240,120,150,0.7)'; g.stroke(); break;
+    case 'ring': g.beginPath(); g.arc(0, 0, r * 0.8, 0, 7); g.lineWidth = 6; g.strokeStyle = 'rgba(120,70,40,0.5)'; g.stroke(); g.lineWidth = 2; g.beginPath(); g.arc(0, 0, r * 0.8, 0.3, 5.9); g.strokeStyle = 'rgba(80,45,30,0.5)'; g.stroke(); break;
+    case 'syrup': g.beginPath(); A_rrp(g, -r * 0.5, -r * 0.6, r, r * 1.3, r * 0.3); fs('#c9742a'); g.beginPath(); A_rrp(g, -r * 0.28, -r * 0.95, r * 0.56, r * 0.4, 3); fs('#ffe0a0'); g.beginPath(); g.rect(-r * 0.4, -r * 0.1, r * 0.8, r * 0.45); g.fillStyle = '#fff3d6'; g.fill(); break;
+    case 'butter': g.beginPath(); A_rrp(g, -r * 0.9, -r * 0.5, r * 1.8, r, 4); fs('#ffe27a'); g.beginPath(); g.moveTo(-r * 0.7, -r * 0.3); g.lineTo(r * 0.4, -r * 0.3); g.lineWidth = 2; g.strokeStyle = 'rgba(255,255,255,0.7)'; g.stroke(); break;
+    case 'berry': g.beginPath(); g.arc(0, 0, r * 0.7, 0, 7); fs('#b8456f'); g.beginPath(); g.arc(-r * 0.22, -r * 0.2, r * 0.16, 0, 7); g.fillStyle = 'rgba(255,255,255,0.5)'; g.fill(); g.beginPath(); g.ellipse(0, -r * 0.7, r * 0.3, r * 0.14, 0.2, 0, 7); fs('#5fb24a'); break;
+  }
+  g.restore();
+}
+function A_rrp(g, x, y, w, h, r) { g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
+// Bakes the whole-screen table (CSS px space, scaled by sc) and a transparent "lip" layer; margins = [{x,y,w,h,side}] outside the logical canvas; board = the board rect in CSS px.
+export function renderTable(theme, world, seedStr, cw, ch, sc, margins, board) {
+  const th = THEMES[theme % THEMES.length];
+  const mk = () => { const c = makeCanvas(Math.max(1, Math.round(cw * sc)), Math.max(1, Math.round(ch * sc))); const g = c.getContext('2d'); g.scale(sc, sc); return [c, g]; };
+  const [bd, g] = mk(), [lip, lg] = mk();
+  let sd = 17; for (let i = 0; i < seedStr.length; i++) sd = (sd * 31 + seedStr.charCodeAt(i)) % 2147483647; const rnd = () => ((sd = (sd * 16807) % 2147483647) / 2147483647);
+  g.fillStyle = shade(th.a, -0.12); g.fillRect(0, 0, cw, ch); // theme ground, 12 % darker
+  const nN = Math.min(2600, Math.round(cw * ch / 40)); for (let i = 0; i < nN; i++) { g.fillStyle = i % 2 ? 'rgba(255,255,255,0.05)' : 'rgba(60,30,40,0.05)'; g.fillRect(rnd() * cw, rnd() * ch, 1.5, 1.5); } // ~2 % noise
+  const fr = (inf, a) => { A_rrp(g, board.x - inf, board.y - inf + 2, board.w + inf * 2, board.h + inf * 2, 10 + inf); g.fillStyle = `rgba(70,35,50,${a})`; g.fill(); };
+  g.beginPath(); fr(10, 0.06); g.beginPath(); fr(8, 0.07); g.beginPath(); fr(6, 0.08); g.beginPath(); fr(4, 0.1); // a 6 px baked drop shadow around the frame (HUD side too)
+  const kinds = TABLE_SETS[world] || TABLE_SETS[1];
+  let n = 0;
+  for (const m of margins) {
+    if (m.side === 'L' || m.side === 'R') {
+      if (m.w < 24) continue;
+      const r = Math.max(12, Math.min(42, m.w * 0.6)), cnt = Math.max(1, Math.min(4, Math.floor(m.h / (r * 3.2))));
+      for (let i = 0; i < cnt; i++) {
+        const cy = m.y + (i + 0.5 + (rnd() - 0.5) * 0.4) * m.h / cnt, kind = kinds[n++ % kinds.length], rot = (rnd() - 0.5) * 1.4;
+        const inward = i % 2 === 0, cx = m.side === 'L' ? (inward ? m.w + 4 - r * 0.9 : m.w * 0.4) : (inward ? m.x - 4 + r * 0.9 : m.x + m.w * 0.6);
+        drawTableProp(g, kind, cx, cy, r, rot, true);
+        if (inward) { lg.save(); lg.beginPath(); if (m.side === 'L') lg.rect(m.w, cy - r * 1.4, 4, r * 2.8); else lg.rect(m.x - 4, cy - r * 1.4, 4, r * 2.8); lg.clip(); drawTableProp(lg, kind, cx, cy, r, rot, false); lg.restore(); } // a lip 4 px over the board's rim (the rim is 5 px wide: never a path tile or a pad)
+      }
+    } else {
+      if (m.h < 24) continue;
+      const r = Math.max(9, Math.min(34, (m.h - 6) * 0.45)), cnt = Math.max(1, Math.floor(m.w / (r * 4)));
+      for (let i = 0; i < cnt; i++) { const cx = m.x + (i + 0.5 + (rnd() - 0.5) * 0.4) * m.w / cnt, cy = m.side === 'T' ? m.y + m.h - 6 - r - rnd() * Math.max(0, m.h - 12 - 2 * r) : m.y + 6 + r + rnd() * Math.max(0, m.h - 12 - 2 * r); drawTableProp(g, kinds[n++ % kinds.length], cx, cy, r, (rnd() - 0.5) * 1.4, true); }
+    }
+  }
+  return { bd, lip, props: n };
 }

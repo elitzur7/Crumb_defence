@@ -1,0 +1,15 @@
+// QA2 W5 addition: glazed vs worker (and queen5 vs queen4) at 24 px height, real greyscale, x4 nearest zoom + numbers. usage: node qa2-w5.mjs <out.png> <out.json>
+import { launch, sleep } from './harness.mjs'; import fs from 'node:fs';
+const h = await launch({ viewport: { width: 900, height: 300, deviceScaleFactor: 1 } });
+const res = await h.ev(async () => { const A = window.__game.A; document.body.innerHTML = ''; const cv = document.createElement('canvas'); cv.width = 900; cv.height = 300; document.body.appendChild(cv); const g = cv.getContext('2d'); g.fillStyle = '#e8d2bd'; g.fillRect(0, 0, 760, 300);
+  const ids = ['drone', 'flyer', 'small_fly', 'queen4', 'queen5', 'queen6']; const lum = {}; const out = {};
+  ids.forEach((id, i) => { const t = document.createElement('canvas'); t.width = 140; t.height = 110; const c2 = t.getContext('2d'); c2.translate(70, 70); const sk = /queen/.test(id) ? 1 : 2; c2.scale(sk, sk); A.drawAnt(c2, id, 0.2, {});
+    const d = document.createElement('canvas'); d.width = 40; d.height = 36; const dc = d.getContext('2d'); dc.imageSmoothingQuality = 'high'; dc.drawImage(t, 0, 0, 140, 110, 0, 0, 40, 36);
+    const im = dc.getImageData(0, 0, 40, 36), px = im.data; const L = new Float32Array(40 * 36); let n = 0, s = 0, x0 = 99, x1 = -1, y0 = 99, y1 = -1;
+    for (let k = 0; k < px.length; k += 4) { const l = 0.2126 * px[k] + 0.7152 * px[k + 1] + 0.0722 * px[k + 2]; L[k / 4] = px[k + 3] > 40 ? l : -1; if (px[k + 3] > 40) { n++; s += l; const p = k / 4, x = p % 40, y = (p / 40) | 0; x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); } px[k] = px[k + 1] = px[k + 2] = l; }
+    dc.putImageData(im, 0, 0); lum[id] = L; out[id] = { area: n, meanLuma: +(s / n).toFixed(1), bbox: [x1 - x0 + 1, y1 - y0 + 1] };
+    g.fillStyle = '#e8d2bd'; g.fillRect(10 + i * 145, 10, 140, 144); g.save(); g.beginPath(); g.rect(10 + i * 145, 10, 140, 126); g.clip(); g.imageSmoothingEnabled = false; g.drawImage(d, 0, 0, 40, 36, 10 + i * 145, 10, 140, 126); g.imageSmoothingEnabled = true; g.restore();
+    g.drawImage(t, 0, 0, 140, 110, 10 + i * 145 + 50, 150, 40, 36); g.fillStyle = '#523c4b'; g.font = 'bold 13px sans-serif'; g.textAlign = 'center'; g.fillText(id, 80 + i * 145, 205); });
+  const diff = (a, b) => { let n = 0, s = 0; for (let k = 0; k < a.length; k++) { if (a[k] < 0 && b[k] < 0) continue; n++; s += Math.abs((a[k] < 0 ? 232 : a[k]) - (b[k] < 0 ? 232 : b[k])); } return +(s / n).toFixed(1); };
+  const pc = (a, b) => +(diff(lum[a], lum[b]) / 255 * 100).toFixed(1); out.pairsPct = { 'drone-flyer': pc('drone', 'flyer'), 'drone-small_fly': pc('drone', 'small_fly'), 'queen4-queen5': pc('queen4', 'queen5'), 'queen5-queen6': pc('queen5', 'queen6'), 'queen4-queen6': pc('queen4', 'queen6') }; return out; });
+console.log(JSON.stringify(res)); await h.page.screenshot({ path: process.argv[2], clip: { x: 0, y: 0, width: 900, height: 230 } }); fs.writeFileSync(process.argv[3], JSON.stringify(res, null, 1)); await h.close();

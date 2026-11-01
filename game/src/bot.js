@@ -118,10 +118,10 @@ function maybeBonus(b) {
 }
 
 // Plays a full level. bot: 'smart' | 'random' | 'idle'
-export function playLevel(levelIndex, { bot = 'smart', unlocked, cardLevel = 1, seed = 1, useBonuses = false, battleCfg, dt = 1 / 30, maxTime = 3600, prefer } = {}) {
+export function playLevel(levelIndex, { bot = 'smart', unlocked, cardLevel = 1, seed = 1, useBonuses = false, battleCfg, dt = 1 / 30, maxTime = 3600, prefer, specials } = {}) {
   const deck = chooseDeck(unlocked, levelIndex, { prefer });
   const cardLevels = {}; for (const id of C.ALL_CARDS) cardLevels[id] = cardLevel;
-  const b = new Battle({ levelIndex, deck, seed, cardLevels, bonusTypes: ['bomb', 'plane'], bonusStock: { bomb: 9, plane: 9, freeze: 9, decoy: 9 }, battleCfg });
+  const b = new Battle({ levelIndex, deck, seed, cardLevels, bonusTypes: ['bomb', 'plane'], bonusStock: { bomb: 9, plane: 9, freeze: 9, decoy: 9 }, battleCfg, ...(specials !== undefined ? { specials } : {}) });
   let rng = (() => { let s = seed * 9301 + 49297; return () => ((s = (s * 9301 + 49297) % 233280) / 233280); })();
   let think = 0;
   while (!b.result && b.time < maxTime) {

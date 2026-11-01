@@ -183,7 +183,7 @@ test('G-art: ART81 is on in production and the flag has an escape hatch only in 
 });
 test('G2: towers x1.18 about the pad top, BAKE_BOX grows, saturated pad bases, card tint colours untouched', () => {
   const a = src('art.js'); assert.match(a, /TOWER_K = 1\.18/); assert.match(a, /\[-48, -76, 48, 36\]/);
-  for (const hex of ['#e78015', '#49af29', '#a687e9', '#30a2f1', '#ff6673', '#319fff', '#28aa9d', '#f06da6', '#76a927', '#cf8a00', '#d9a900', '#d99a00']) assert.ok(a.includes(`'${hex}'`), 'pad base ' + hex);
+  for (const hex of ['#e07c14', '#47aa28', '#a183e2', '#2f9dea', '#f76370', '#309af7', '#28aa9d', '#f06da6', '#76a927', '#cf8a00', '#d9a900', '#d99a00']) assert.ok(a.includes(`'${hex}'`), 'pad base (v0.8.2 A10b x0.97 on the first six) ' + hex);
   assert.match(a, /function bodyScale\(ctx\) \{ if \(!C\.ART81\) return; if \(MOTION\.hop\)[^\n]*ctx\.translate\(0, 8\); ctx\.scale\(TOWER_K, TOWER_K\); ctx\.translate\(0, -8\)/); // v0.8.1 G6/J6: the idle bob and the upgrade hop are applied just before the x1.18 scale
   assert.match(a, /function bodyScale\(ctx\) \{ if \(!C\.ART81\) return; if \(MOTION\.hop\)/);
   assert.match(a, /const f = 1\.2 \/ BODYK/, 'outlines compensated to 2.4 px on screen');
@@ -234,13 +234,13 @@ test('J12: motion state is reset per frame and every new art path is behind ART8
 
 // ---------- Pass 5: World 5 "Donut Diner" (W1-W9, U2, U6, EC1, EC3, EC4) ----------
 import { generateWaves, levelAntTypes } from '../src/sim.js'; import * as A from '../src/art.js';
-test('W1: world 5 Donut Diner - 50 levels, 5 worlds, 42 maps, treat donut, queen5, cap 6, coinMul 1.75, gate 14 stars of W4', () => {
-  assert.equal(C.LEVELS.length, 50); assert.equal(C.WORLDS.length, 5); assert.equal(Object.keys(C.MAPS).length, 42);
+test('W1: world 5 Donut Diner - W5 data inside 60 levels, 6 worlds, 52 maps, treat donut, queen5, cap 6, coinMul 1.75, gate 14 stars of W4', () => {
+  assert.equal(C.LEVELS.length, 60); assert.equal(C.WORLDS.length, 6); assert.equal(Object.keys(C.MAPS).length, 52);
   const w = C.WORLDS[4]; assert.equal(w.id, 5); assert.equal(w.name, 'Donut Diner'); assert.equal(w.treat, 'donut'); assert.equal(w.queen, 'queen5'); assert.equal(w.levels, 10);
   assert.equal(w.cardLevelCap, 6); assert.equal(w.coinMul, 1.75); assert.deepEqual(w.unlock, { allLevelsWonInWorld: 4, minStarsInWorld: 14 });
-  assert.equal(C.WORLD_START[5], 40); assert.ok(C.isBossLevel(49)); assert.ok(!C.isBossLevel(48)); assert.ok(C.LEVELS.slice(40).every((L) => L.world === 5));
-  assert.equal(C.LEVELS.slice(40).map((l) => l.map).length, 10); assert.equal(new Set(C.LEVELS.slice(40).map((l) => l.map)).size, 10);
-  assert.ok(C.LEVELS.slice(40).every((l) => C.MAPS[l.map] && C.MAPS[l.map].theme === 8), 'W5 maps use theme 8');
+  assert.equal(C.WORLD_START[5], 40); assert.ok(C.isBossLevel(49)); assert.ok(!C.isBossLevel(48)); assert.ok(C.LEVELS.slice(40, 50).every((L) => L.world === 5));
+  assert.equal(C.LEVELS.slice(40, 50).map((l) => l.map).length, 10); assert.equal(new Set(C.LEVELS.slice(40, 50).map((l) => l.map)).size, 10);
+  assert.ok(C.LEVELS.slice(40, 50).every((l) => C.MAPS[l.map] && C.MAPS[l.map].theme === 8), 'W5 maps use theme 8');
   assert.equal(typeof A.TREAT_BODIES.donut, 'function'); assert.equal(A.THEMES[8].name, 'W5 teal-diner'); assert.equal(C.TREATS[5], 'donut');
 });
 test('W2: Glazed first appears on L42 (wave 2), never on L41; at most 3 per wave on L45; <= 5 ant types per battle; the queen is last on L50', () => {
@@ -250,11 +250,11 @@ test('W2: Glazed first appears on L42 (wave 2), never on L41; at most 3 per wave
   const w50 = generateWaves(49); assert.equal(w50[w50.length - 1].filter((e) => e.type === 'queen5').length, 1);
 });
 test('W3: hpMul table for L41-L50 is the final tuning (move hpMul, never waves); rarity checker R1-R4 reports 0 violations on the W5 levels', async () => {
-  assert.deepEqual(C.LEVELS.slice(40).map((l) => l.hpMul), [4.2, 4.5, 9.3, 8.35, 5.4, 8.8, 6.25, 6.75, 5.45, 0.87]);
+  assert.deepEqual(C.LEVELS.slice(40, 50).map((l) => l.hpMul), [4.2, 4.5, 9.3, 8.35, 5.4, 8.8, 6.25, 6.75, 5.45, 0.87]);
   const { checkLevel } = await import('../tools/check-rarity.mjs'); for (let i = 40; i < 50; i++) assert.deepEqual(checkLevel(i).msgs, [], `L${i + 1}`);
 });
 test('U2: ant intro cards - glazed / queen5 / nurse only, once per save, never on a cleared level; an old save pre-marks the ants it has already met', () => {
-  assert.deepEqual(Object.keys(C.ANT_CARD).sort(), ['glazed', 'nurse', 'queen5']);
+  assert.deepEqual(Object.keys(C.ANT_CARD).sort(), ['drone', 'glazed', 'nurse', 'queen5', 'queen6']); // v0.8.2: + drone / queen6 (PP9)
   assert.match(C.ANT_CARD.glazed, /\u2014/); assert.ok(C.ANT_CARD.glazed.length > 20);
   const s = M.newSave(); assert.equal(M.nextAntCard(s, 0), null, 'L1: no card'); assert.equal(M.nextAntCard(s, 40), null, 'L41 has no glazed');
   assert.equal(M.nextAntCard(s, 41), 'glazed'); assert.equal(M.markAntSeen(s, 'glazed'), true); assert.equal(M.markAntSeen(s, 'glazed'), false); assert.equal(M.nextAntCard(s, 41), null);
@@ -285,27 +285,31 @@ test('W9: the L42 tip toast text exists, fires once on wave 2 of L42 via save.se
 
 // ---------------- Pass 6: U7 / U8 / U9 ----------------
 import { lossHint, LOSS_HINTS } from '../src/sim.js';
-test('U7: hints are <= 60 chars; lossHint follows the rule order and is read-only', () => {
-  for (const h of Object.values(LOSS_HINTS)) assert.ok(h.length <= 60, h);
+test('U7/R4: hints are <= 60 chars; lossHint follows the rule order, the evidence list and the 2-loss rule; it is read-only', () => {
+  for (const h of Object.values(LOSS_HINTS)) assert.ok(h.length <= 66, h); // R4: the plan's healer text is 66 chars; the pill fits it by shrinking the text (checked in the R4 shot)
   assert.equal(LOSS_HINTS.carrier, 'Try Carrier mode on a tower');
-  const b = mk81(0); assert.equal(lossHint(b), null, 'no hint before a defeat');
+  assert.equal(LOSS_HINTS.healer, 'Switch a tower to Healer mode - the nurses keep the rest alive');
+  const b = mk81(39); assert.equal(lossHint(b, 2), null, 'no hint before a defeat');
   b.result = 'lose'; b.addTower('slingshot', 3, 3);
-  // rule 1: most stolen food left with carriers, a single-target tower not on Carrier mode
-  b.stats.stolen = 10; b.stats.lostOnWay = 8; assert.equal(lossHint(b), LOSS_HINTS.carrier);
-  const tw = b.towers[0]; tw.mode = 'carrier'; assert.equal(lossHint(b), null, 'already on Carrier mode and nothing else matches');
-  // rule 2: a healer alive at the end
-  const n = b.spawn('nurse', 5); assert.equal(lossHint(b), LOSS_HINTS.healer); n.dead = true;
-  // rule 3: flyer leak and no Laser / Zapper
-  b.stats.flyLeak = 3; b.deck = ['slingshot', 'spray', 'glue', 'fan', 'ball']; assert.equal(lossHint(b), LOSS_HINTS.flyer);
-  b.deck = ['slingshot', 'zapper']; assert.equal(lossHint(b), null);
-  const snap = JSON.stringify(b.stats); lossHint(b); assert.equal(JSON.stringify(b.stats), snap);
+  // rule 1 (L40 is in the evidence list): most stolen food left with carriers, a single-target tower not on Carrier mode
+  b.stats.stolen = 10; b.stats.lostOnWay = 8; assert.equal(lossHint(b, 2), LOSS_HINTS.carrier); assert.equal(lossHint(b, 1), null, 'first loss: no hint'); assert.equal(lossHint(b), null);
+  const tw = b.towers[0]; tw.mode = 'carrier'; assert.equal(lossHint(b, 2), null, 'already on Carrier mode and nothing else matches');
+  // the same stolen-food pattern on L38 (not in the list) gives no carrier hint
+  { const c = mk81(37); c.result = 'lose'; c.addTower('slingshot', 3, 3); c.stats.stolen = 10; c.stats.lostOnWay = 8; assert.equal(lossHint(c, 2), null, 'L38 carrier: no evidence'); }
+  // rule 2: a healer alive at the end - L38 none, L39 only after two losses
+  { const c = mk81(37); c.result = 'lose'; c.spawn('nurse', 5); assert.equal(lossHint(c, 2), null, 'L38 healer: Healer-first is a loss there'); assert.equal(lossHint(c, 3), null); }
+  { const c = mk81(38); c.result = 'lose'; c.spawn('nurse', 5); assert.equal(lossHint(c, 1), null, 'first loss on L39: none'); assert.equal(lossHint(c, 2), LOSS_HINTS.healer); }
+  // rule 3: flyer leak and no Laser / Zapper (any level)
+  b.stats.flyLeak = 3; b.deck = ['slingshot', 'spray', 'glue', 'fan', 'ball']; assert.equal(lossHint(b, 2), LOSS_HINTS.flyer);
+  b.deck = ['slingshot', 'zapper']; assert.equal(lossHint(b, 2), null);
+  const snap = JSON.stringify(b.stats); lossHint(b, 2); assert.equal(JSON.stringify(b.stats), snap);
 });
 test('U7: the flyer-leak counter is visual-only and the loss run counts consecutive losses on one level', () => {
   const s = M.newSave();
   assert.equal(M.noteLossRun(s, 4, false), 1); assert.equal(M.noteLossRun(s, 4, false), 2); assert.equal(M.noteLossRun(s, 5, false), 1, 'another level restarts');
   assert.equal(M.noteLossRun(s, 5, false), 2); assert.equal(M.noteLossRun(s, 5, true), 0); assert.equal(s.lossRun, null);
-  const sim = src('sim.js'); assert.match(sim, /if \(a\.flying\) this\.stats\.flyLeak =/);
-  const g = src('game.js'); assert.match(g, /hint: C\.ART81 && b\.result === 'lose' && lossRun >= 2 \? lossHint\(b\) : null/); assert.match(g, /R\.hint/);
+  const sim = src('sim.js'); assert.match(sim, /if \(a\.flying\) \{ this\.stats\.flyLeak =/);
+  const g = src('game.js'); assert.match(g, /hint: C\.ART81 && b\.result === 'lose' && lossRun >= 2 \? lossHint\(b, lossRun\) : null/); assert.match(g, /R\.hint/);
 });
 test('U8: no hard-coded deck size strings; the deck size comes from C.BATTLE.deckSize', () => {
   const g = src('game.js'); assert.ok(!/Deck is full \(5\)/.test(g)); assert.ok(!/Pick 5 cards/.test(g));
@@ -322,8 +326,8 @@ test('U9: nudge armed once per kind, at most twice per save, points at the first
   assert.match(g, /const modal = S\.cal \|\| S\.settings/);
 });
 
-test('version 0.8.1 / versionCode 26 (release)', () => {
-  assert.equal(C.VERSION, '0.8.1');
-  assert.match(rd('android/app/build.gradle'), /versionCode 26\b/); assert.match(rd('android/app/build.gradle'), /versionName "0\.8\.1"/);
-  assert.equal(JSON.parse(rd('package.json')).version, '0.8.1');
+test('version 0.8.1 or later (versionCode >= 26)', () => {
+  const ge = (v, min) => v.split('.').map(Number).reduce((r, n, i) => r !== 0 ? r : n - min[i], 0) >= 0;
+  assert.ok(ge(C.VERSION, [0, 8, 1])); assert.equal(JSON.parse(rd('package.json')).version, C.VERSION);
+  assert.ok(+rd('android/app/build.gradle').match(/versionCode (\d+)/)[1] >= 26); assert.ok(rd('android/app/build.gradle').includes(`versionName "${C.VERSION}"`));
 });

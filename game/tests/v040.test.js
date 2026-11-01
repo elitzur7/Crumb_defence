@@ -34,7 +34,7 @@ const GOLDEN_ANTS = [53, 58, 100, 105, 102, 161, 151, 209, 290, 244, 126, 105, 1
   85, 111, 138, 123, 125, 103, 146, 149, 173, 191, // v0.7.7: world 3 (L21-L30)
   89, 121, 128, 112, 110, 106, 155, 132, 192, 172]; // v0.7.9: world 4 (L31-L40)
 test('item 12 (golden table, v0.7.4 P2): the number of ants in each of the 40 levels is exactly the golden table', () => {
-  assert.equal(C.LEVELS.length, 50); // v0.8.1: + World 5 (its ant counts are not in the v0.7.4 golden table)
+  assert.equal(C.LEVELS.length, 60); // v0.8.2: + World 6; v0.8.1: + World 5 (its ant counts are not in the v0.7.4 golden table)
   C.LEVELS.slice(0, 40).forEach((L, i) => {
     const n = generateWaves(i).flat().length;
     assert.equal(n, GOLDEN_ANTS[i], `level ${i + 1}: ${n} ants, golden ${GOLDEN_ANTS[i]}${i < 10 ? ` (${(n / V03_ANTS[i]).toFixed(2)} of v0.3's ${V03_ANTS[i]})` : ''}`);
@@ -198,7 +198,7 @@ test('item 18: treat reactions - first bite surprised, fast bites "oy oy oy", bi
 test('item 18: one face scheme for every treat (cookie now, cake later)', () => {
   const a = src('art.js');
   for (const f of Treat.TREAT_REACTIONS) assert.ok(a.includes(`case '${f}'`), f);
-  assert.ok(a.includes('export const TREAT_BODIES = { cookie: cookieBody, cake: cakeBody, pie: pieBody, sundae: sundaeBody, donut: donutBody }')); // v0.8.1: world 5's donut; v0.7.7: world 3's pie; v0.7.9: world 4's sundae
+  assert.ok(a.includes('export const TREAT_BODIES = { cookie: cookieBody, cake: cakeBody, pie: pieBody, sundae: sundaeBody, donut: donutBody, pancake: pancakeBody }')); // v0.8.2: world 6's pancake; v0.8.1: world 5's donut; v0.7.7: world 3's pie; v0.7.9: world 4's sundae
   assert.equal(C.TREATS[1], 'cookie');
 });
 

@@ -162,7 +162,7 @@ for (const [w, h, dpr] of VIEWPORTS) {
   ok(await G(() => window.__game.S.toast === null), `${vp} V2 crumbs notice gone within ~1 s`);
   await G(() => window.__game.go('map'));
   // ---------- V3/W3: a 0-stock booster is only a warning now (it can be bought in battle with diamonds) ----------
-  await G(() => { const g = window.__game; g.S.save.bonusStock.bomb = 0; g.openPrep(3); g.S.prep.bonuses = ['bomb', 'plane']; }); await sleep(150);
+  await G(() => { const g = window.__game; g.S.save.bonusStock.bomb = 0; g.openPrep(3); g.S.prep.bonuses = ['bomb', 'plane']; g.S.zeroHint = { bt: 'bomb', until: g.S.t + 8 }; /* v0.8.2 R6: the warning is a neutral hint shown after the tap */ }); await sleep(150);
   { const { tx } = await texts(100); ok(tx.some((t) => /0 Bombs/.test(t)), `${vp} W3 prep warns about 0 Bombs`); }
   if (w === 393) await page.screenshot({ path: `${OUT}/v0.6.2/regress/W3-prep-zero-booster-393x852.png` });
   await tapId('start'); await sleep(120);

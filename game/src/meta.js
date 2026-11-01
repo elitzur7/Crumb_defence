@@ -367,6 +367,8 @@ export function applyBattleResult(save, levelIndex, result, stars, info = {}, rn
     out.starParts = { s2: before < 2 && stars >= 2 ? sbv(2) : 0, s3: before < 3 && stars >= 3 ? sbv(3) : 0 };
     out.starCoins = out.starParts.s2 + out.starParts.s3;
     if (out.starCoins) { out.coins += out.starCoins; out.parts.stars = out.starCoins; }
+    // v0.8.2 EC6: the first win of each local day pays dailyWinBonus (info.day = 'YYYY-MM-DD' from the game; absent in sims = never paid)
+    if (info.day && save.dailyWin !== info.day) { save.dailyWin = info.day; out.dailyBonus = dailyWinBonus((lvW && lvW.coinMul) ?? 1); out.coins += out.dailyBonus; out.parts.daily = out.dailyBonus; }
     // v0.7.6 E3: gems from play - the first clear of a world's boss level, and the first 3 stars there
     out.gems = 0;
     if (C.isBossLevel(levelIndex)) out.gems = (out.firstClear ? E.bossGems.firstClear : 0) + (before < 3 && stars >= 3 ? E.bossGems.firstThreeStars : 0);
@@ -381,6 +383,7 @@ export function applyBattleResult(save, levelIndex, result, stars, info = {}, rn
     if (out.firstClear && C.isBossLevel(levelIndex)) out.bossGift = grantBossGift(save, levelIndex); // v0.7.7 S1
     if (info.perfect) { out.perfect = true; out.prize = grantPerfectPrize(save, rng, undefined, { noBooster: !!out.booster }); }
     lv.cleared = true; lv.stars = Math.max(lv.stars, stars);
+    if (info.time > 0 && (!lv.bestTime || info.time < lv.bestTime)) lv.bestTime = Math.round(info.time); // v0.8.2 U14: the best clear time (s)
     if (info.perfect) lv.perfect = true;
     // v0.6 item 5: first win of stage 2 -> the one-time Zapper onboarding (dimmed map, finger on Shop, free 5-card gift)
     save.onboard = save.onboard || newOnboardState();
@@ -443,6 +446,7 @@ export function loadSave(storage) {
     if ((s.version || 1) < 5 && s.levels[ZAPPER_STAGE] && s.levels[ZAPPER_STAGE].cleared && s.onboard.zapperGift === 'done' && !s.onboard.legacyPack) {
       s.onboard.zapperGift = 'pending'; s.onboard.legacyPack = true; s.onboard.grantedOnLoad = false;
     }
+    if (!s.seenSpecial || typeof s.seenSpecial !== 'object' || Array.isArray(s.seenSpecial)) s.seenSpecial = {}; // v0.8.2 U11: towers whose special-awakening banner has been shown
     // v0.8.1 U2: seenAnts = ants (and tips) the player has been introduced to. A save from before it pre-marks every ant of every level already cleared, so no card ever opens on a cleared level.
     if (!Array.isArray(s.seenAnts)) { s.seenAnts = []; s.levels.forEach((lv, i) => { if (lv && lv.cleared && C.LEVELS[i]) for (const t of levelAntTypes(i)) if (!s.seenAnts.includes(t)) s.seenAnts.push(t); }); }
     if (typeof s.packsSinceNew !== 'number') s.packsSinceNew = 0;
@@ -481,3 +485,31 @@ export function noteLossRun(save, li, won) {
 export function nextHintState(save) { const o = save.onboard; if (!o || typeof o !== 'object') return { shown: 2, armed: '', done: [] }; /* no onboarding object (never in a loaded save): the nudge stays off */ if (!o.nextHint || typeof o.nextHint !== 'object') o.nextHint = { shown: 0, armed: '', done: [] }; return o.nextHint; }
 export function armNextHint(save, kind) { const h = nextHintState(save); if (h.shown >= 2 || h.armed || h.done.includes(kind)) return false; h.armed = kind; return true; }
 export function nextUnplayedLevel(save) { for (let i = 0; i < C.LEVELS.length; i++) if (!save.levels[i].cleared && levelUnlocked(save, i)) return i; return -1; }
+
+// v0.8.2 U10: a save with at least one win is a returning player (the first-battle guide is not shown again)
+export function isReturningPlayer(save) { return !!save && Array.isArray(save.levels) && save.levels.some((l) => l && l.cleared); }
+
+// ---- v0.8.2 EC6: daily first-win bonus = 50 x coinMul of the level's world, capped at the W6 value (x2.0), rounded to 5
+export function dailyWinBonus(coinMul) { return Math.round(C.DAILY_WIN.base * Math.min(coinMul, C.DAILY_WIN.capMul) / 5) * 5; }
+export function calendarTable() { return C.COIN_MUL_SCHEDULE.map((m, i) => ({ world: i + 1, coinMul: m, daily: dailyWinBonus(m), star2: Math.round(C.ECONOMY.starBonus[2] * m / 5) * 5, star3: Math.round(C.ECONOMY.starBonus[3] * m / 5) * 5 })); }
+// ---- v0.8.2 EC5a: cosmetic cabinet (coins only; a skin changes the pad colour and nothing else)
+export function skinState(save) { if (!save.skins || typeof save.skins !== 'object') save.skins = { owned: [], equipped: {} }; return save.skins; }
+export function skinOwned(save, id) { return skinState(save).owned.includes(id); }
+export function buySkin(save, id) {
+  const sk = C.SKINS.find((x) => x.id === id); if (!sk) return { ok: false, reason: 'unknown' };
+  const st = skinState(save); if (st.owned.includes(id)) return { ok: false, reason: 'owned' };
+  if ((save.coins || 0) < sk.price) return { ok: false, reason: 'coins' };
+  save.coins -= sk.price; st.owned.push(id); st.equipped[sk.tower] = id; return { ok: true, price: sk.price };
+}
+export function equipSkin(save, tower, id) { const st = skinState(save); if (id == null) { delete st.equipped[tower]; return true; } const sk = C.SKINS.find((x) => x.id === id); if (!sk || sk.tower !== tower || !st.owned.includes(id)) return false; st.equipped[tower] = id; return true; }
+export function skinPads(save) { const st = skinState(save), out = {}; for (const [t, id] of Object.entries(st.equipped)) { const sk = C.SKINS.find((x) => x.id === id); if (sk && st.owned.includes(id)) out[t] = sk.pad; } return out; }
+export function nextSkinPrice(save) { const st = skinState(save); const left = C.SKINS.filter((x) => !st.owned.includes(x.id)).map((x) => x.price); return left.length ? Math.min(...left) : null; }
+
+// ---- v0.8.2 U15: the Ant Book lists the ants of every level up to the next uncleared one (entered), plus ants shown by an intro card; unmet ants are silhouettes
+export function metAnts(save) {
+  let last = -1; (save.levels || []).forEach((l, i) => { if (l && l.cleared) last = i; });
+  const met = new Set((save.seenAnts || []).filter((t) => C.ANTS[t]));
+  for (let i = 0; i <= Math.min(C.LEVELS.length - 1, last + 1); i++) for (const t of levelAntTypes(i)) met.add(t);
+  return met;
+}
+export function antLevels(type) { const out = []; C.LEVELS.forEach((_, i) => { if (levelAntTypes(i).includes(type)) out.push(i + 1); }); return out; }

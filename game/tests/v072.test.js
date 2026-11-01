@@ -110,7 +110,7 @@ test('C13: hit sound + flash exist (sfx "swat", swat event)', () => {
 // ================= C16: bottom tab bar =================
 test('C16: three tabs Map / Cards / Shop, 56 dp bar, hidden in battle, safe-area inset read from env()', () => {
   const g = src('game.js');
-  assert.ok(/const META_SCREENS = \['map', 'cards', 'card', 'shop'\], BAR_H = 56/.test(g));
+  assert.ok(/const META_SCREENS = \['map', 'cards', 'card', 'shop'(, 'cabinet')?(, 'antbook')?\], BAR_H = 56/.test(g));
   assert.ok(/TAB_NAME = \['Map', 'Cards', 'Shop'\]/.test(g));
   assert.ok(/env\(safe-area-inset-bottom/.test(g)); assert.ok(/viewport-fit=cover/.test(readFileSync(new URL('../index.html', import.meta.url), 'utf8')));
   assert.ok(/function isMeta\(\) \{ return META_SCREENS\.includes\(S\.screen\)/.test(g));

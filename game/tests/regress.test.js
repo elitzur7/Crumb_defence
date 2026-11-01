@@ -1,7 +1,7 @@
 // Regression tests for the v0.1.1 audit findings (logic side). UI-side checks live in tools/regress-ui.mjs.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import * as C from '../src/config.js';
 import { Battle } from '../src/sim.js';
 import * as M from '../src/meta.js';
@@ -43,7 +43,7 @@ test('B2: a used bonus is deducted from the save immediately (Restart/Quit canno
 test('B2: game.js wires the deduction to the moment of use and no longer deducts at battle end', () => {
   const src = readFileSync(new URL('../src/game.js', import.meta.url), 'utf8');
   assert.match(src, /onBonusUsed: \(type\) => \{ M\.consumeBonus\(S\.save, type\); persist\(\); \}/);
-  assert.match(src, /applyBattleResult\(S\.save, b\.levelIndex, b\.result, b\.stars, \{ kills: b\.stats\.kills, foodLeft: b\.foodStored, perfect: b\.perfect, time: b\.time \}\)/);
+  assert.match(src, /applyBattleResult\(S\.save, b\.levelIndex, b\.result, b\.stars, \{ kills: b\.stats\.kills, foodLeft: b\.foodStored, perfect: b\.perfect, time: b\.time(, day: [^}]*)? \}\)/); // v0.8.2 EC6 adds an optional day
   assert.ok(!/usedBonuses|bonusStock\[b\] = Math\.max\(0/.test(readFileSync(new URL('../src/meta.js', import.meta.url), 'utf8')), 'meta no longer deducts bonuses at battle end');
 });
 
@@ -64,14 +64,15 @@ test('B5: duplicate floating texts merge instead of piling up', () => {
   assert.equal(c.length, 1); assert.equal(c[0].n, 16);
 });
 
-test('debug hook only in the test build: production bundle has no window.__game', () => {
+const NEEDS_BUNDLE = !existsSync(new URL('../www/game.js', import.meta.url)) || !existsSync(new URL('../www-test/game.js', import.meta.url)) ? 'SKIPPED (needs bundle)' : false, NEEDS_ANDROID = !existsSync(new URL('../android/app/src/main/AndroidManifest.xml', import.meta.url)) ? 'SKIPPED (needs android/)' : false; // v0.8.2 RG1(5)
+test('debug hook only in the test build: production bundle has no window.__game', { skip: NEEDS_BUNDLE }, () => {
   const prod = readFileSync(new URL('../www/game.js', import.meta.url), 'utf8');
   const testB = readFileSync(new URL('../www-test/game.js', import.meta.url), 'utf8');
   assert.ok(!prod.includes('__game'), 'www/game.js must not expose __game');
   assert.ok(testB.includes('window.__game'));
 });
 
-test('Android config.xml has no <access origin="*"> and the manifest requests no INTERNET permission', () => {
+test('Android config.xml has no <access origin="*"> and the manifest requests no INTERNET permission', { skip: NEEDS_ANDROID }, () => {
   const xml = readFileSync(new URL('../android/app/src/main/res/xml/config.xml', import.meta.url), 'utf8');
   assert.ok(!/<access\s+origin=/.test(xml));
   const man = readFileSync(new URL('../android/app/src/main/AndroidManifest.xml', import.meta.url), 'utf8');

@@ -1,6 +1,7 @@
 // ../tuning/tuning.json
 var tuning_default = {
   _about: "Crumb Defense tuning - the SOURCE OF TRUTH for the numbers below. Edit, then rebuild (see README.md in this folder). Not loaded at runtime; the build bundles it.",
+  specials: !0,
   _units: {
     rangeTiles: "radius from the tower centre in map tiles (1 tile = 40 px)",
     rate: "actions per second (null = always on)",
@@ -485,6 +486,30 @@ var tuning_default = {
       spawn: { type: "glazed", every: 10, count: 1 },
       shield: { pts: 600, regenDelay: 4, regenRate: 0.25, when: "always" },
       queenTraits: ["slow"]
+    },
+    drone: {
+      hp: 30,
+      speed: 54,
+      armor: 2,
+      steal: 1.1,
+      weight: 1,
+      size: "regular",
+      crumbs: 4,
+      rarity: "rare",
+      flying: !0
+    },
+    queen6: {
+      hp: 3e3,
+      speed: 15,
+      armor: 6,
+      weight: 0,
+      size: "queen",
+      crumbs: 220,
+      rarity: "boss",
+      slowResist: 0.6,
+      boss: !0,
+      spawn: { type: "drone", every: 12, count: 1 },
+      queenTraits: ["slow"]
     }
   },
   worlds: [
@@ -537,6 +562,16 @@ var tuning_default = {
       unlock: { allLevelsWonInWorld: 4, minStarsInWorld: 14 },
       cardLevelCap: 6,
       coinMul: 1.75
+    },
+    {
+      id: 6,
+      name: "Pancake Picnic",
+      treat: "pancake",
+      queen: "queen6",
+      levels: 10,
+      unlock: { allLevelsWonInWorld: 5, minStarsInWorld: 14 },
+      cardLevelCap: 6,
+      coinMul: 2
     }
   ],
   levels: [
@@ -2160,6 +2195,427 @@ var tuning_default = {
           { type: "queen5", count: 1, interval: 1, delay: 4 }
         ]
       ]
+    },
+    {
+      world: 6,
+      name: "Pancake Plate",
+      map: "w6_pancake_plate",
+      waveCount: 6,
+      hpMul: 6,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [{ type: "small", count: 8, interval: 0.45, delay: 0 }, { type: "worker", count: 4, interval: 1, delay: 1 }],
+        [
+          { type: "worker", count: 6, interval: 1, delay: 0 },
+          { type: "flyer", count: 3, interval: 0.8, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [{ type: "flyer", count: 4, interval: 0.8, delay: 0 }, { type: "worker", count: 6, interval: 1, delay: 0 }],
+        [
+          { type: "small", count: 10, interval: 0.45, delay: 0 },
+          { type: "worker", count: 6, interval: 1, delay: 0 },
+          { type: "flyer", count: 4, interval: 0.8, delay: 1 }
+        ],
+        [
+          { type: "worker", count: 8, interval: 0.9, delay: 0 },
+          { type: "small", count: 12, interval: 0.45, delay: 1 },
+          { type: "flyer", count: 4, interval: 0.8, delay: 1 }
+        ]
+      ]
+    },
+    {
+      world: 6,
+      name: "Syrup Pitcher",
+      map: "w6_syrup_pitcher",
+      waveCount: 6,
+      hpMul: 7.2,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [
+          { type: "worker", count: 5, interval: 1, delay: 0 },
+          { type: "drone", count: 2, interval: 1.5, delay: 2 },
+          { type: "small", count: 6, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "small", count: 10, interval: 0.45, delay: 0 },
+          { type: "drone", count: 2, interval: 1.5, delay: 1 },
+          { type: "worker", count: 5, interval: 1, delay: 1 }
+        ],
+        [
+          { type: "worker", count: 6, interval: 1, delay: 0 },
+          { type: "drone", count: 3, interval: 1.4, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "small", count: 12, interval: 0.45, delay: 0 },
+          { type: "drone", count: 3, interval: 1.4, delay: 2 },
+          { type: "worker", count: 6, interval: 1, delay: 1 }
+        ],
+        [
+          { type: "worker", count: 8, interval: 0.9, delay: 0 },
+          { type: "drone", count: 4, interval: 1.3, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ]
+      ]
+    },
+    {
+      world: 6,
+      name: "Butter Dish",
+      map: "w6_butter_dish",
+      waveCount: 7,
+      hpMul: 9.19,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [{ type: "flyer", count: 4, interval: 0.8, delay: 0 }, { type: "worker", count: 5, interval: 1, delay: 1 }],
+        [
+          { type: "small_fly", count: 8, interval: 0.5, delay: 0 },
+          { type: "drone", count: 2, interval: 1.5, delay: 1 },
+          { type: "worker", count: 6, interval: 1, delay: 1 }
+        ],
+        [
+          { type: "flyer", count: 5, interval: 0.8, delay: 0 },
+          { type: "drone", count: 3, interval: 1.4, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "small_fly", count: 10, interval: 0.5, delay: 0 },
+          { type: "flyer", count: 4, interval: 0.8, delay: 1 },
+          { type: "drone", count: 3, interval: 1.4, delay: 1 },
+          { type: "worker", count: 6, interval: 1, delay: 1 }
+        ],
+        [
+          { type: "worker", count: 8, interval: 0.9, delay: 0 },
+          { type: "flyer", count: 6, interval: 0.8, delay: 1 },
+          { type: "drone", count: 4, interval: 1.3, delay: 1 }
+        ],
+        [
+          { type: "small_fly", count: 12, interval: 0.5, delay: 0 },
+          { type: "flyer", count: 6, interval: 0.75, delay: 1 },
+          { type: "drone", count: 4, interval: 1.3, delay: 1 },
+          { type: "worker", count: 8, interval: 0.9, delay: 1 }
+        ]
+      ]
+    },
+    {
+      world: 6,
+      name: "Fork Fence",
+      map: "w6_fork_fence",
+      waveCount: 7,
+      hpMul: 9.5,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [
+          { type: "small_armed", count: 4, interval: 0.6, delay: 0 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 6, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "armored", count: 2, interval: 1.5, delay: 1 },
+          { type: "worker", count: 4, interval: 1, delay: 0 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "drone", count: 3, interval: 1.4, delay: 0 },
+          { type: "armored", count: 2, interval: 1.5, delay: 1 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "drone", count: 3, interval: 1.4, delay: 0 },
+          { type: "armored", count: 3, interval: 1.4, delay: 1 },
+          { type: "small_armed", count: 4, interval: 0.6, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "drone", count: 4, interval: 1.3, delay: 0 },
+          { type: "armored", count: 3, interval: 1.4, delay: 1 },
+          { type: "worker", count: 6, interval: 1, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "drone", count: 4, interval: 1.3, delay: 0 },
+          { type: "armored", count: 4, interval: 1.3, delay: 1 },
+          { type: "worker", count: 6, interval: 1, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ]
+      ]
+    },
+    {
+      world: 6,
+      name: "Stack Alley",
+      map: "w6_stack_alley",
+      waveCount: 7,
+      hpMul: 4.84,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [
+          { type: "drone", count: 3, interval: 1.1, delay: 0 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "glazed", count: 3, interval: 1.4, delay: 0 },
+          { type: "mama", count: 1, interval: 1.6, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "glazed", count: 3, interval: 1.3, delay: 0 },
+          { type: "mama", count: 1, interval: 1.6, delay: 1 },
+          { type: "drone", count: 3, interval: 1, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "glazed", count: 3, interval: 1.3, delay: 0 },
+          { type: "mama", count: 1, interval: 1.6, delay: 1 },
+          { type: "drone", count: 3, interval: 1, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "glazed", count: 3, interval: 1.2, delay: 0 },
+          { type: "mama", count: 2, interval: 1.5, delay: 1 },
+          { type: "drone", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "glazed", count: 3, interval: 1.2, delay: 0 },
+          { type: "mama", count: 2, interval: 1.5, delay: 1 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 12, interval: 0.45, delay: 1 }
+        ]
+      ]
+    },
+    {
+      world: 6,
+      name: "Berry Basket",
+      map: "w6_berry_basket",
+      waveCount: 6,
+      hpMul: 9.57,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [{ type: "flyer", count: 4, interval: 0.8, delay: 0 }, { type: "worker", count: 5, interval: 1, delay: 1 }],
+        [
+          { type: "small_fly", count: 8, interval: 0.5, delay: 0 },
+          { type: "drone", count: 2, interval: 1.5, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "worker", count: 6, interval: 1, delay: 0 },
+          { type: "flyer", count: 5, interval: 0.8, delay: 1 },
+          { type: "drone", count: 2, interval: 1.5, delay: 1 }
+        ],
+        [
+          { type: "small_fly", count: 10, interval: 0.5, delay: 0 },
+          { type: "drone", count: 3, interval: 1.4, delay: 1 },
+          { type: "worker", count: 6, interval: 1, delay: 1 }
+        ],
+        [
+          { type: "worker", count: 8, interval: 0.9, delay: 0 },
+          { type: "flyer", count: 6, interval: 0.8, delay: 1 },
+          { type: "drone", count: 3, interval: 1.4, delay: 1 },
+          { type: "small", count: 12, interval: 0.45, delay: 1 }
+        ]
+      ]
+    },
+    {
+      world: 6,
+      name: "Whipped Cream Hill",
+      map: "w6_whipped_cream_hill",
+      waveCount: 7,
+      hpMul: 5.9,
+      interval: 1,
+      waves: [
+        [
+          { type: "worker", count: 5, interval: 1, delay: 0 },
+          { type: "small_gasmask", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "gasmask", count: 4, interval: 1, delay: 0 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small_gasmask", count: 6, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "drone", count: 4, interval: 0.8, delay: 0 },
+          { type: "gasmask", count: 4, interval: 1, delay: 1 },
+          { type: "small_gasmask", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "gasmask", count: 5, interval: 1, delay: 0 },
+          { type: "glazed", count: 3, interval: 1.4, delay: 1 },
+          { type: "worker", count: 4, interval: 1, delay: 1 }
+        ],
+        [
+          { type: "small_gasmask", count: 12, interval: 0.45, delay: 0 },
+          { type: "glazed", count: 3, interval: 1.4, delay: 1 },
+          { type: "gasmask", count: 4, interval: 1, delay: 1 }
+        ],
+        [
+          { type: "gasmask", count: 6, interval: 0.9, delay: 0 },
+          { type: "glazed", count: 4, interval: 1.3, delay: 1 },
+          { type: "drone", count: 5, interval: 0.8, delay: 1 }
+        ],
+        [
+          { type: "small_gasmask", count: 14, interval: 0.45, delay: 0 },
+          { type: "gasmask", count: 6, interval: 0.9, delay: 1 },
+          { type: "glazed", count: 4, interval: 1.3, delay: 1 },
+          { type: "drone", count: 5, interval: 0.8, delay: 1 }
+        ]
+      ]
+    },
+    {
+      world: 6,
+      name: "Waffle Iron",
+      map: "w6_waffle_iron",
+      waveCount: 8,
+      hpMul: 5.36,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [
+          { type: "drone", count: 4, interval: 0.8, delay: 0 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "nurse", count: 3, interval: 1.4, delay: 0 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "nurse", count: 4, interval: 1.3, delay: 0 },
+          { type: "drone", count: 4, interval: 0.8, delay: 1 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "heavy", count: 1, interval: 1.7, delay: 1 },
+          { type: "nurse", count: 3, interval: 1.4, delay: 1 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "heavy", count: 1, interval: 1.7, delay: 0.5 },
+          { type: "nurse", count: 4, interval: 1.3, delay: 0 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "heavy", count: 2, interval: 1.7, delay: 0.5 },
+          { type: "nurse", count: 4, interval: 1.3, delay: 0 },
+          { type: "drone", count: 4, interval: 0.8, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "heavy", count: 3, interval: 1.6, delay: 0.5 },
+          { type: "nurse", count: 5, interval: 1.2, delay: 0 },
+          { type: "worker", count: 4, interval: 1, delay: 1 },
+          { type: "small", count: 12, interval: 0.45, delay: 1 }
+        ]
+      ]
+    },
+    {
+      world: 6,
+      name: "Picnic Blanket",
+      map: "w6_picnic_blanket",
+      waveCount: 7,
+      hpMul: 4.16,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [
+          { type: "drone", count: 4, interval: 0.9, delay: 1 },
+          { type: "worker", count: 5, interval: 1, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "glazed", count: 3, interval: 1.4, delay: 0 },
+          { type: "drone", count: 4, interval: 0.9, delay: 1 },
+          { type: "worker", count: 5, interval: 1, delay: 1 }
+        ],
+        [
+          { type: "glazed", count: 4, interval: 1.3, delay: 0 },
+          { type: "nurse", count: 1, interval: 1.5, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 },
+          { type: "drone", count: 4, interval: 0.9, delay: 1 }
+        ],
+        [
+          { type: "glazed", count: 4, interval: 1.3, delay: 0 },
+          { type: "drone", count: 6, interval: 0.9, delay: 1 },
+          { type: "nurse", count: 1, interval: 1.5, delay: 1 },
+          { type: "worker", count: 6, interval: 1, delay: 1 }
+        ],
+        [
+          { type: "glazed", count: 5, interval: 1.2, delay: 0 },
+          { type: "nurse", count: 2, interval: 1.4, delay: 1 },
+          { type: "small", count: 14, interval: 0.45, delay: 1 },
+          { type: "drone", count: 4, interval: 0.9, delay: 1 }
+        ],
+        [
+          { type: "glazed", count: 5, interval: 1.2, delay: 0 },
+          { type: "drone", count: 6, interval: 0.85, delay: 1 },
+          { type: "nurse", count: 2, interval: 1.4, delay: 1 },
+          { type: "worker", count: 8, interval: 0.9, delay: 1 }
+        ]
+      ]
+    },
+    {
+      world: 6,
+      name: "Syrup Falls",
+      map: "w6_syrup_falls",
+      waveCount: 9,
+      hpMul: 1.7,
+      interval: 1,
+      waves: [
+        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
+        [
+          { type: "drone", count: 4, interval: 0.8, delay: 0 },
+          { type: "worker", count: 5, interval: 1, delay: 1 },
+          { type: "small", count: 8, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "glazed", count: 2, interval: 1.5, delay: 2 },
+          { type: "worker", count: 6, interval: 1, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 }
+        ],
+        [
+          { type: "drone", count: 5, interval: 0.8, delay: 0 },
+          { type: "glazed", count: 2, interval: 1.5, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 0 }
+        ],
+        [
+          { type: "worker", count: 8, interval: 0.9, delay: 0 },
+          { type: "glazed", count: 3, interval: 1.4, delay: 1 },
+          { type: "drone", count: 4, interval: 0.8, delay: 1 }
+        ],
+        [
+          { type: "small", count: 14, interval: 0.45, delay: 0 },
+          { type: "drone", count: 6, interval: 0.8, delay: 1 },
+          { type: "glazed", count: 3, interval: 1.4, delay: 1 }
+        ],
+        [
+          { type: "glazed", count: 4, interval: 1.3, delay: 0 },
+          { type: "worker", count: 8, interval: 0.9, delay: 1 },
+          { type: "drone", count: 6, interval: 0.8, delay: 1 }
+        ],
+        [
+          { type: "small", count: 14, interval: 0.45, delay: 0 },
+          { type: "glazed", count: 4, interval: 1.3, delay: 1 },
+          { type: "worker", count: 8, interval: 0.9, delay: 1 },
+          { type: "drone", count: 5, interval: 0.8, delay: 1 }
+        ],
+        [
+          { type: "worker", count: 8, interval: 0.9, delay: 0 },
+          { type: "glazed", count: 3, interval: 1.4, delay: 1 },
+          { type: "drone", count: 5, interval: 0.8, delay: 1 },
+          { type: "small", count: 10, interval: 0.45, delay: 1 },
+          { type: "queen6", count: 1, interval: 1, delay: 4 }
+        ]
+      ]
     }
   ],
   maps: {
@@ -2183,6 +2639,7 @@ var tuning_default = {
     },
     fork: {
       name: "Sugar Bowl Split",
+      art: { chev: 0 },
       theme: 3,
       grid: [
         "....N.....",
@@ -2870,6 +3327,187 @@ var tuning_default = {
         ".#...M....",
         ".C.......S"
       ]
+    },
+    w6_pancake_plate: {
+      name: "Pancake Plate",
+      theme: 9,
+      grid: [
+        ".N..J.....",
+        ".#........",
+        ".########.",
+        "........#.",
+        "........#.",
+        ".########.",
+        ".#........",
+        ".#........",
+        ".#######..",
+        ".......#..",
+        ".....B.#..",
+        ".......#C."
+      ]
+    },
+    w6_syrup_pitcher: {
+      name: "Syrup Pitcher",
+      theme: 9,
+      grid: [
+        "S........N",
+        ".........#",
+        ".#########",
+        ".#........",
+        ".########.",
+        "........#.",
+        ".########.",
+        ".#..S.....",
+        ".#........",
+        ".#######..",
+        ".......#..",
+        "C#######.."
+      ]
+    },
+    w6_butter_dish: {
+      name: "Butter Dish",
+      theme: 9,
+      grid: [
+        ".......N..",
+        ".......#..",
+        ".#####.#..",
+        ".#...#.#..",
+        ".#...#.#..",
+        ".####+##..",
+        ".....#....",
+        "...M.#....",
+        ".....#...J",
+        "..####....",
+        "..#.......",
+        "..C......."
+      ]
+    },
+    w6_fork_fence: {
+      name: "Fork Fence",
+      theme: 9,
+      grid: [
+        "B........N",
+        ".........#",
+        ".#########",
+        ".#........",
+        ".########.",
+        "........#.",
+        ".########.",
+        ".#........",
+        ".########.",
+        "........#.",
+        "#########.",
+        "C...B....."
+      ]
+    },
+    w6_stack_alley: {
+      name: "Stack Alley",
+      theme: 9,
+      grid: [
+        ".N......N.",
+        ".#......#.",
+        ".#......#.",
+        ".#......#.",
+        ".#..#####.",
+        ".#..#.....",
+        ".####.....",
+        "....#.....",
+        "....#.P...",
+        "S...#.....",
+        "....#.....",
+        "....C....."
+      ]
+    },
+    w6_berry_basket: {
+      name: "Berry Basket",
+      theme: 9,
+      grid: [
+        "....J.....",
+        "..........",
+        ".########N",
+        ".#........",
+        ".#........",
+        ".########.",
+        "........#.",
+        "........#.",
+        ".....####.",
+        "J....#....",
+        ".....#....",
+        ".....C...."
+      ]
+    },
+    w6_whipped_cream_hill: {
+      name: "Whipped Cream Hill",
+      theme: 9,
+      grid: [
+        "....N.....",
+        "....#.....",
+        "....#.....",
+        ".########.",
+        ".#......#.",
+        ".#......#.",
+        ".#....M.#.",
+        ".####...#.",
+        "....#...#.",
+        "....#####.",
+        "M...#.....",
+        "....C....."
+      ]
+    },
+    w6_waffle_iron: {
+      name: "Waffle Iron",
+      art: { plate: { dy: -21.5, scale: 0.92 } },
+      theme: 9,
+      grid: [
+        "N........S",
+        "#.........",
+        "#.#######.",
+        "#.#.....#.",
+        "#.#.....#.",
+        "#.#..B..#.",
+        "#.#.....#.",
+        "#.#.....#.",
+        "#.###C..#.",
+        "#.......#.",
+        "#########.",
+        ".........."
+      ]
+    },
+    w6_picnic_blanket: {
+      name: "Picnic Blanket",
+      theme: 9,
+      grid: [
+        ".N......N.",
+        ".#...P..#.",
+        ".#......#.",
+        ".#......#.",
+        ".#.######.",
+        ".#.#......",
+        ".#######..",
+        ".......#..",
+        ".......#..",
+        "..P....##.",
+        "........#.",
+        "........C."
+      ]
+    },
+    w6_syrup_falls: {
+      name: "Syrup Falls",
+      theme: 9,
+      grid: [
+        "..N.......",
+        "..#.......",
+        "..######..",
+        "....M..#..",
+        ".......#..",
+        ".#######..",
+        ".#........",
+        ".#........",
+        ".########.",
+        "........#.",
+        "....S...#.",
+        "M.......C."
+      ]
     }
   }
 };
@@ -3144,6 +3782,12 @@ var TILE = 40, GRID_COLS = 10, GRID_ROWS = 12, BATTLE = {
     desc: "Scoops ants off the trail. Slow.",
     ability: "Lifts every liftable ant on the trail tile in front of it and throws it away."
   }
+}, SPECIALS_FROM_WORLD = 6, SPECIAL_CARD_LEVEL = 5, SPECIAL_DEFS = {
+  slingshot: { id: "ricochet", name: "Ricochet", text: "Stones bounce to a nearby ant for half damage.", short: "Stones bounce to a 2nd ant", params: { radius: 60, mul: 0.5 } },
+  laser: { id: "burnthrough", name: "Burn-through", text: "Every fifth beam melts 1 armor off an ant. Not on queens.", short: "Melts armor, not on queens", params: { every: 5, strip: 1, max: 4 } },
+  lizard: { id: "pounce", name: "Pounce", text: "The first lick on a fresh ant hits twice as hard.", short: "First lick hits twice as hard", params: { mul: 2 } },
+  sound: { id: "crescendo", name: "Crescendo", text: "Every third pulse hits 30 % harder.", short: "Every 3rd pulse hits harder", params: { every: 3, mul: 1.3 } },
+  zapper: { id: "static", name: "Static", text: "Lightning jumps to one more ant.", short: "Lightning jumps to +1 ant", params: { plus: 1 } }
 }, TOWERS = {};
 for (let [id, txt] of Object.entries(TOWER_TEXT)) {
   let T = tuning_default.towers[id];
@@ -3154,6 +3798,11 @@ for (let [id, txt] of Object.entries(TOWER_TEXT)) {
     upgrades: T.battleUpgrades,
     cardUpgrades: T.cardUpgrades
   };
+}
+for (let [id, sp] of Object.entries(SPECIAL_DEFS)) TOWERS[id].special = sp;
+function specialActive(tower, level, cardLevel) {
+  let type = typeof tower == "string" ? tower : tower && tower.type, cl = cardLevel ?? (tower && tower.cardLevel || 1);
+  return !!(TOWERS[type] && TOWERS[type].special && level && level.world >= SPECIALS_FROM_WORLD && cl >= SPECIAL_CARD_LEVEL);
 }
 var LIFT_MAX = 3, SIZE_RANK = { small: 1, regular: 2, large: 3 }, LIFT_NAMES = ["", "Small", "Small + regular", "All sizes"], STAT_LABELS = {
   power: "Power",
@@ -3176,7 +3825,7 @@ var AIR_COUNTERS = ["laser", "zapper"], TARGET_MODE_TEXT = {
   lizard: { carrier: "Targets ants carrying food first, then fewest HP left; chews after kills.", healer: "Targets healer ants first, then fewest HP left; chews after kills.", strong: "Targets the toughest ant first; chews after kills. For queen levels." },
   laser: { carrier: "Aims at ants carrying food first, then fewest HP. Heat: +12% per hit on the same ant.", healer: "Aims at healer ants first, then fewest HP. Heat: +12% per hit on the same ant.", strong: "Aims at the toughest ant first. Heat: +12% per hit. For queen levels." },
   zapper: { carrier: "First zap: food carriers first, then fewest HP. Chains to the nearest flyers (60% each jump).", healer: "First zap: healer flyers first, then fewest HP. Chains to the nearest flyers (60% each jump).", strong: "First zap: the toughest flyer first. Chains to the nearest flyers. For queen levels." }
-}, ART81 = !0, VERSION = "0.8.1", ANT_SIZES = { ...tuning_default.antSizes }, ANT_TEXT = {
+}, HINT_OK = { healer: [35, 39, 49, 59], carrier: [40, 50, 59, 60], drone: [60] }, ART81 = !0, VERSION = "0.8.2", ANT_SIZES = { ...tuning_default.antSizes }, ANT_TEXT = {
   small: { name: "Scout Ant", desc: "Tiny, fast, comes in swarms.", intro: "Tiny and fast. They come in swarms." },
   worker: { name: "Worker Ant", desc: "The regular. Hard hat included.", intro: "The regular ant. Easy to stop." },
   big: { name: "Big Ant", desc: "Slow, chunky, a bit of armor.", intro: "Slow and chunky, with a bit of armour." },
@@ -3201,11 +3850,18 @@ var AIR_COUNTERS = ["laser", "zapper"], TARGET_MODE_TEXT = {
   // v0.8.1 W2 / M4
   queen5: { name: "Glaze Queen", desc: "BOSS of world 5. Shielded, and she keeps sending Glazed Ants. Takes 50 of the donut.", intro: "Glaze Queen: shielded, and she keeps sending Glazed Ants." },
   // v0.8.1 M5
+  // v0.8.2 world 6 (Pancake Picnic)
+  drone: { name: "Drone Ant", desc: "A four-winged flyer with armor 2. Laser, Zapper or Fan can hit it; Burn-through strips its armor.", intro: "Flies, with armor 2. Laser, Zapper or Fan!" },
+  queen6: { name: "Syrup Queen", desc: "BOSS of world 6. Walks slowly and drips a Drone every 12 seconds. Takes 50 of the pancakes. Ignores most slowing.", intro: "Syrup Queen: a new Drone every 12 seconds." },
   queen4: { name: "Sundae Queen", desc: "BOSS of world 4. Calls a nurse every 9 seconds, and the nurses heal her. Takes 50 of the sundae.", intro: "BOSS. Calls nurses that heal her." }
 }, ANT_CARD = {
   glazed: "Glazed Ant \u2014 sweet armor. Its glaze soaks up damage, then grows back. Hit it hard and fast, or use Spray and Bombs.",
   queen5: "Glaze Queen \u2014 shielded, and she keeps sending Glazed Ants. Break her glaze, then finish her.",
-  nurse: "Nurse Ant \u2014 heals friends nearby every 3 seconds. Pop her first!"
+  nurse: "Nurse Ant \u2014 heals friends nearby every 3 seconds. Pop her first!",
+  drone: "Drone Ant \u2014 flies, armor 2. Laser, Zapper and Fan can hit flyers.",
+  // v0.8.2 PP9 (shown once on the first prep screen of L52)
+  queen6: "Syrup Queen \u2014 she walks, and drips a Drone every 12 seconds. Keep an air tower ready."
+  // v0.8.2 PP5/PP9
 }, L42_TIP = "Glaze grows back. Focus fire.", QUEEN_TRAITS = { ...tuning_default.queenTraitMods };
 function queenTake(traits = [], T = QUEEN_TRAITS) {
   return 50 + traits.reduce((s, t) => s + (T[t] || 0), 0);
@@ -3372,6 +4028,21 @@ var BONUSES = {
   let L = LEVELS[i], w = L && WORLDS.find((x) => x.id === L.world);
   return !!w && i === WORLD_START[w.id] + w.levels - 1;
 }, WORLD_START = Object.fromEntries(WORLDS.map((w) => [w.id, LEVELS.findIndex((L) => L.world === w.id)])), worldOf = (i) => LEVELS[i] ? LEVELS[i].world : 1, treatOf = (i) => TREATS[worldOf(i)] || "cookie";
+var SKINS = [
+  { id: "slingshot-1", tower: "slingshot", name: "Bubblegum", tier: 1, price: 1500, pad: "#ef51ee" },
+  { id: "slingshot-2", tower: "slingshot", name: "Lime", tier: 2, price: 3e3, pad: "#42ab0f" },
+  { id: "slingshot-3", tower: "slingshot", name: "Lagoon", tier: 3, price: 6e3, pad: "#0fa7a8" },
+  { id: "laser-1", tower: "laser", name: "Periwinkle", tier: 1, price: 1500, pad: "#9087f9" },
+  { id: "laser-2", tower: "laser", name: "Leaf", tier: 2, price: 3e3, pad: "#4ca809" },
+  { id: "laser-3", tower: "laser", name: "Jade", tier: 3, price: 6e3, pad: "#09a880" },
+  { id: "zapper-1", tower: "zapper", name: "Fern", tier: 1, price: 1500, pad: "#5da807" },
+  { id: "zapper-2", tower: "zapper", name: "Flamingo", tier: 2, price: 3e3, pad: "#f959ae" },
+  { id: "zapper-3", tower: "zapper", name: "Mustard", tier: 3, price: 6e3, pad: "#b59307" },
+  { id: "sound-1", tower: "sound", name: "Mint", tier: 1, price: 1500, pad: "#27a67a" },
+  { id: "sound-2", tower: "sound", name: "Coral", tier: 2, price: 3e3, pad: "#db7766" },
+  { id: "sound-3", tower: "sound", name: "Moss", tier: 3, price: 6e3, pad: "#67a326" }
+], SKIN_TOWERS = ["slingshot", "laser", "zapper", "sound"];
+var DAILY_WIN = { base: 50, capMul: 2 };
 
 // src/sim.js
 function mulberry32(seed) {
@@ -3547,7 +4218,9 @@ var Path = class {
   mama: 1.6,
   queen3: 1,
   nurse: 1.5,
-  queen4: 1
+  queen4: 1,
+  drone: 0.8,
+  queen6: 1
 };
 function generateWaves(levelIndex, levels = LEVELS) {
   let L = levels[levelIndex];
@@ -3601,7 +4274,7 @@ var NEXT_ID = 1, Battle = class {
    * opts: { levelIndex, deck: [cardIds], bonusTypes: [ids], bonusStock: {id:n}, cardLevels: {id:L}, seed, battleCfg, onBonusUsed }
    */
   constructor(opts) {
-    this.cfg = { ...BATTLE, ...opts.battleCfg || {} }, this.cfg.foodReturn = { ...BATTLE.foodReturn, ...(opts.battleCfg || {}).foodReturn || {} }, this.cfg.rescue = { ...BATTLE.rescue, ...(opts.battleCfg || {}).rescue || {} }, this.levelIndex = opts.levelIndex, this.level = LEVELS[opts.levelIndex], this.mapId = opts.mapId || this.level.map, this.map = MAPS[this.mapId];
+    this.cfg = { ...BATTLE, ...opts.battleCfg || {} }, this.cfg.foodReturn = { ...BATTLE.foodReturn, ...(opts.battleCfg || {}).foodReturn || {} }, this.cfg.rescue = { ...BATTLE.rescue, ...(opts.battleCfg || {}).rescue || {} }, this.levelIndex = opts.levelIndex, this.level = LEVELS[opts.levelIndex], this.specialsOn = opts.specials !== void 0 ? !!opts.specials : tuning_default.specials !== !1, this.mapId = opts.mapId || this.level.map, this.map = MAPS[this.mapId];
     let parsed = parseMap(this.map, GRID_COLS, GRID_ROWS);
     this.routes = parsed.routes.map((r) => new Path(r)), this.path = this.routes[0], this.props = parsed.props, this.pathTiles = /* @__PURE__ */ new Set();
     for (let rt of this.routes) for (let t of rt.tiles) this.pathTiles.add(t);
@@ -3747,6 +4420,10 @@ var NEXT_ID = 1, Battle = class {
       dir: 1
     }, p = this.routes[ri].at(d);
     return ant.x = p.x, ant.y = p.y, a.shield && a.shield.pts > 0 && (ant.shieldMax = ant.shield = Math.round(a.shield.pts * (this.level.hpMul || 1))), this.ants.push(ant), this.stats.spawned++, ant;
+  }
+  // v0.8.2 M7a: the ONLY way sim.js reads a tower's special: the params when it is active (world >= 6, card level >= 5, flag on), else null
+  spec(tw) {
+    return this.specialsOn && tw && tw.stat && specialActive(tw, this.level) ? TOWERS[tw.type].special.params : null;
   }
   damage(ant, dmg, opt = {}) {
     if (ant.dead || dmg <= 0) return 0;
@@ -4137,9 +4814,10 @@ var NEXT_ID = 1, Battle = class {
       let inRange = this.ants.filter((a) => !a.dead && canHit(T.targets, a.flying) && Math.hypot(a.x - tw.x, a.y - tw.y) <= range);
       if (!inRange.length) continue;
       if (tw.type === "sound") {
-        let st = tw.stat("stagger");
+        let st = tw.stat("stagger"), spC = this.spec(tw), cm = 1;
+        spC && (tw.pulses = (tw.pulses || 0) + 1, tw.pulses % spC.every === 0 && (cm = spC.mul, this.emit({ type: "special", sp: "crescendo", x: tw.x, y: tw.y })));
         for (let a of inRange)
-          this.damage(a, tw.stat("power"), { ignoreArmor: !0, src: tw }), a.dead || (a.stunT = Math.max(a.stunT, st * (ANTS[a.type].boss ? 0.3 : 1)));
+          this.damage(a, tw.stat("power") * cm, { ignoreArmor: !0, src: tw }), a.dead || (a.stunT = Math.max(a.stunT, st * (ANTS[a.type].boss ? 0.3 : 1)));
         tw.cd = 1 / tw.stat("rate"), tw.fireFx = 0.4, this.emit({ type: "pulse", x: tw.x, y: tw.y, r: range });
         continue;
       }
@@ -4165,11 +4843,14 @@ var NEXT_ID = 1, Battle = class {
       else if (tw.type === "laser") {
         tw.heatTarget === target.id ? tw.heat++ : (tw.heatTarget = target.id, tw.heat = 0);
         let heat = Math.min(tw.stat("heatMax"), tw.heat * T.heatPerHit);
-        this.damage(target, tw.stat("power") * (1 + heat), { src: tw }), this.emit({ type: "beam", x: tw.x, y: tw.y - 10, tx: target.x, ty: target.y, heat: heat / (tw.stat("heatMax") || 1) });
+        this.damage(target, tw.stat("power") * (1 + heat), { src: tw });
+        let spL = this.spec(tw);
+        spL && !target.dead && !ANTS[target.type].boss && (target.burnHits = (target.burnHits || 0) + 1, target.burnHits % spL.every === 0 && (target.shred || 0) < spL.max && (target.shred = (target.shred || 0) + spL.strip, target.armor = Math.max(0, target.armor - spL.strip), this.emit({ type: "special", sp: "burnthrough", x: target.x, y: target.y, id: target.id, armor: target.armor }))), this.emit({ type: "beam", x: tw.x, y: tw.y - 10, tx: target.x, ty: target.y, heat: heat / (tw.stat("heatMax") || 1) });
       } else if (tw.type === "zapper") {
         let hit2 = /* @__PURE__ */ new Set([target.id]), cur = target, dmg = tw.stat("power");
         this.damage(target, dmg, { src: tw }), this.emit({ type: "zap", x: tw.x, y: tw.y - 14, tx: target.x, ty: target.y });
-        for (let k = 0; k < tw.stat("chain"); k++) {
+        let spZ = this.spec(tw);
+        for (let k = 0; k < tw.stat("chain") + (spZ ? spZ.plus : 0); k++) {
           let nx = null, nd = T.chainRange;
           for (let a of this.ants) {
             if (a.dead || !a.flying || hit2.has(a.id)) continue;
@@ -4179,11 +4860,30 @@ var NEXT_ID = 1, Battle = class {
           if (!nx) break;
           dmg *= T.chainFalloff, hit2.add(nx.id), this.emit({ type: "zap", x: cur.x, y: cur.y, tx: nx.x, ty: nx.y, chain: !0 }), this.damage(nx, dmg, { src: tw }), cur = nx;
         }
-      } else tw.type === "lizard" ? (this.damage(target, tw.stat("power"), { src: tw }), this.emit({ type: "tongue", x: tw.x, y: tw.y, tx: target.x, ty: target.y }), tw.fireFx = 0.25) : tw.type === "spray" && (this.clouds.push({ x: target.x, y: target.y, r: tw.stat("cloudRadius"), dps: tw.stat("power"), left: T.cloudTime, total: T.cloudTime, src: tw }), this.emit({ type: "spray", x: tw.x, y: tw.y, tx: target.x, ty: target.y }));
+      } else if (tw.type === "lizard") {
+        let spP = this.spec(tw), pounce = spP && target.hp >= target.maxHp - 1e-6 && !(target.shield > 0);
+        pounce && this.emit({ type: "special", sp: "pounce", x: target.x, y: target.y }), this.damage(target, tw.stat("power") * (pounce ? spP.mul : 1), { src: tw }), this.emit({ type: "tongue", x: tw.x, y: tw.y, tx: target.x, ty: target.y }), tw.fireFx = 0.25;
+      } else tw.type === "spray" && (this.clouds.push({ x: target.x, y: target.y, r: tw.stat("cloudRadius"), dps: tw.stat("power"), left: T.cloudTime, total: T.cloudTime, src: tw }), this.emit({ type: "spray", x: tw.x, y: tw.y, tx: target.x, ty: target.y }));
     }
     for (let p of this.projectiles) {
       let tg = p.target, dx = tg.x - p.x, dy = tg.y - p.y, dist = Math.hypot(dx, dy), step = p.speed * dt;
-      dist <= step || tg.dead ? (tg.dead || this.damage(tg, p.dmg, { src: p.src }), p.done = !0, this.emit({ type: "hit", x: tg.x, y: tg.y, src: p.src && p.src.type })) : (p.x += dx / dist * step, p.y += dy / dist * step);
+      if (dist <= step || tg.dead) {
+        if (!tg.dead) {
+          this.damage(tg, p.dmg, { src: p.src });
+          let spR = p.src && p.src.type === "slingshot" ? this.spec(p.src) : null;
+          if (spR) {
+            let nx = null, nd = spR.radius;
+            for (let o of this.ants) {
+              if (o.dead || o === tg || o.flying) continue;
+              let q = Math.hypot(o.x - tg.x, o.y - tg.y);
+              q <= nd && (nd = q, nx = o);
+            }
+            nx && (this.damage(nx, p.dmg * spR.mul, { src: p.src }), this.emit({ type: "special", sp: "ricochet", x: tg.x, y: tg.y, tx: nx.x, ty: nx.y }));
+          }
+        }
+        p.done = !0, this.emit({ type: "hit", x: tg.x, y: tg.y, src: p.src && p.src.type });
+      } else
+        p.x += dx / dist * step, p.y += dy / dist * step;
     }
     this.projectiles = this.projectiles.filter((p) => !p.done);
     for (let c of this.clouds) {
@@ -4304,7 +5004,12 @@ var NEXT_ID = 1, Battle = class {
   }
   reachFood(a) {
     let steal = Math.min(ANTS[a.type].steal, this.foodStored);
-    if (this.foodStored -= steal, this.stats.stolen += steal, a.flying && (this.stats.flyLeak = (this.stats.flyLeak || 0) + steal), this.emit({ type: "steal", x: a.x, y: a.y, n: steal, ant: a.type }), this.cfg.carryBack && steal > 0) {
+    this.foodStored -= steal, this.stats.stolen += steal;
+    {
+      let lb = this.stats.leakBy || (this.stats.leakBy = {});
+      lb[a.type] = (lb[a.type] || 0) + steal;
+    }
+    if (a.flying && (this.stats.flyLeak = (this.stats.flyLeak || 0) + steal, a.type === "drone" && (this.stats.droneLeak = (this.stats.droneLeak || 0) + steal)), this.emit({ type: "steal", x: a.x, y: a.y, n: steal, ant: a.type }), this.cfg.carryBack && steal > 0) {
       a.state = "back", a.carrying = steal, a.d = this.route(a).length - 0.01;
       let F = this.cfg.forage, cp = F && F.on ? ANTS[a.type].boss && F.cookiePauseBoss != null ? F.cookiePauseBoss : F.cookiePause || 0 : 0;
       cp > 0 && (a.waitT = Math.max(a.waitT, cp), this.stats.pickups = (this.stats.pickups || 0) + 1, this.emit({ type: "pickup", x: a.x, y: a.y, n: steal, ant: a.type, t: cp }));
@@ -4319,11 +5024,11 @@ function segDist(px, py, ax, ay, bx, by) {
   let vx = bx - ax, vy = by - ay, l2 = vx * vx + vy * vy || 1, t = Math.max(0, Math.min(1, ((px - ax) * vx + (py - ay) * vy) / l2));
   return Math.hypot(px - (ax + vx * t), py - (ay + vy * t));
 }
-var LOSS_HINTS = { carrier: "Try Carrier mode on a tower", healer: "Healer ants keep others alive - pop them first", flyer: "Bring a Laser or Zapper for flyers" };
-function lossHint(b) {
-  if (!b || b.result !== "lose") return null;
-  let st = b.stats, stolen = st.stolen || 0;
-  return stolen > 0 && (st.lostOnWay || 0) >= 0.5 * stolen && b.towers.some((t) => hasTargetModes(t.type) && t.mode !== "carrier") ? LOSS_HINTS.carrier : b.ants.some((a) => !a.dead && isHealerType(a.type)) ? LOSS_HINTS.healer : (st.flyLeak || 0) > 0 && !b.deck.some((id) => id === "laser" || id === "zapper") ? LOSS_HINTS.flyer : null;
+var LOSS_HINTS = { carrier: "Try Carrier mode on a tower", healer: "Switch a tower to Healer mode - the nurses keep the rest alive", flyer: "Bring a Laser or Zapper for flyers", drone: "Syrup Queen sends Drones. Bring a Zapper or a Laser." };
+function lossHint(b, lossRun = 0) {
+  if (!b || b.result !== "lose" || lossRun < 2) return null;
+  let st = b.stats, stolen = st.stolen || 0, L = b.levelIndex + 1, ok = HINT_OK;
+  return ok.carrier.includes(L) && stolen > 0 && (st.lostOnWay || 0) >= 0.5 * stolen && b.towers.some((t) => hasTargetModes(t.type) && t.mode !== "carrier") ? LOSS_HINTS.carrier : ok.healer.includes(L) && b.ants.some((a) => !a.dead && isHealerType(a.type)) ? LOSS_HINTS.healer : ok.drone.includes(L) && (st.droneLeak || 0) > 0 && b.deck.filter((id) => id === "laser" || id === "zapper" || id === "fan").length < 2 ? LOSS_HINTS.drone : (st.flyLeak || 0) > 0 && !b.deck.some((id) => id === "laser" || id === "zapper") ? LOSS_HINTS.flyer : null;
 }
 
 // src/meta.js
@@ -4656,22 +5361,19 @@ function applyBattleResult(save, levelIndex, result, stars, info = {}, rng = Mat
     let lvW = WORLDS.find((x) => x.id === worldOf(levelIndex)), c = battleCoins("win", { kills: info.kills || 0, foodLeft: info.foodLeft ?? BATTLE.foodHP, levelIndex, firstClear: out.firstClear, time: info.time || 0, coinMul: (lvW && lvW.coinMul) ?? 1 });
     out.coins = c.total, out.parts = c.parts;
     let before = lv.stars || 0, SB = E.starBonus, sm = E.starBonusScale === "coinMul" ? (lvW && lvW.coinMul) ?? 1 : 1, sbv = (k) => Math.round(SB[k] * sm / 5) * 5;
-    if (out.starParts = { s2: before < 2 && stars >= 2 ? sbv(2) : 0, s3: before < 3 && stars >= 3 ? sbv(3) : 0 }, out.starCoins = out.starParts.s2 + out.starParts.s3, out.starCoins && (out.coins += out.starCoins, out.parts.stars = out.starCoins), out.gems = 0, isBossLevel(levelIndex) && (out.gems = (out.firstClear ? E.bossGems.firstClear : 0) + (before < 3 && stars >= 3 ? E.bossGems.firstThreeStars : 0)), out.gems && (save.diamonds = (save.diamonds || 0) + out.gems), out.firstClear) {
+    if (out.starParts = { s2: before < 2 && stars >= 2 ? sbv(2) : 0, s3: before < 3 && stars >= 3 ? sbv(3) : 0 }, out.starCoins = out.starParts.s2 + out.starParts.s3, out.starCoins && (out.coins += out.starCoins, out.parts.stars = out.starCoins), info.day && save.dailyWin !== info.day && (save.dailyWin = info.day, out.dailyBonus = dailyWinBonus((lvW && lvW.coinMul) ?? 1), out.coins += out.dailyBonus, out.parts.daily = out.dailyBonus), out.gems = 0, isBossLevel(levelIndex) && (out.gems = (out.firstClear ? E.bossGems.firstClear : 0) + (before < 3 && stars >= 3 ? E.bossGems.firstThreeStars : 0)), out.gems && (save.diamonds = (save.diamonds || 0) + out.gems), out.firstClear) {
       let fb = (E.firstClearBoosters || {})[levelIndex];
       if (fb && (out.booster = grantBooster(save, fb, 1)), E.bonusRewardOnFirstClear && !out.booster) {
         let b = BONUS_TYPES[Math.floor(rng() * BONUS_TYPES.length)];
         out.booster = grantBooster(save, b, 1), out.bonusReward = b;
       }
     }
-    out.firstClear && isBossLevel(levelIndex) && (out.bossGift = grantBossGift(save, levelIndex)), info.perfect && (out.perfect = !0, out.prize = grantPerfectPrize(save, rng, void 0, { noBooster: !!out.booster })), lv.cleared = !0, lv.stars = Math.max(lv.stars, stars), info.perfect && (lv.perfect = !0), save.onboard = save.onboard || newOnboardState(), levelIndex === ZAPPER_STAGE && out.firstClear && save.onboard.zapperGift === "none" && (save.onboard.zapperGift = "pending", out.zapperGift = !0);
+    out.firstClear && isBossLevel(levelIndex) && (out.bossGift = grantBossGift(save, levelIndex)), info.perfect && (out.perfect = !0, out.prize = grantPerfectPrize(save, rng, void 0, { noBooster: !!out.booster })), lv.cleared = !0, lv.stars = Math.max(lv.stars, stars), info.time > 0 && (!lv.bestTime || info.time < lv.bestTime) && (lv.bestTime = Math.round(info.time)), info.perfect && (lv.perfect = !0), save.onboard = save.onboard || newOnboardState(), levelIndex === ZAPPER_STAGE && out.firstClear && save.onboard.zapperGift === "none" && (save.onboard.zapperGift = "pending", out.zapperGift = !0);
   } else {
     let c = battleCoins("lose", { kills: info.kills || 0, time: info.time || 0 });
     out.coins = c.total, out.parts = c.parts;
   }
   return save.coins += out.coins, out;
-}
-function prepIssues(save, bonuses) {
-  return bonuses.filter((b) => (save.bonusStock[b] || 0) <= 0).map((b) => ({ kind: "zeroBonus", bonus: b, blocking: !1 }));
 }
 function autoFixBonuses(save, bonuses, n = BATTLE.bonusTypesToBring) {
   let keep = bonuses.filter((b) => (save.bonusStock[b] || 0) > 0);
@@ -4696,7 +5398,7 @@ function loadSave(storage2) {
       }
       typeof c.copies == "number" && c.copies > 0 && (c.inv[1] = (c.inv[1] || 0) + c.copies, c.seen.includes(1) || (c.seen.push(1), c.seen.sort((a, b) => a - b), c.fresh = !0)), delete c.copies, syncCard(c);
     }
-    (!s.onboard || typeof s.onboard != "object") && (s.onboard = newOnboardState(), s.levels[ZAPPER_STAGE] && s.levels[ZAPPER_STAGE].cleared && (s.onboard.zapperGift = "done")), s.onboard.firstBattle !== "pending" && s.onboard.firstBattle !== "done" && (s.onboard.firstBattle = "done"), (s.version || 1) < 5 && s.levels[ZAPPER_STAGE] && s.levels[ZAPPER_STAGE].cleared && s.onboard.zapperGift === "done" && !s.onboard.legacyPack && (s.onboard.zapperGift = "pending", s.onboard.legacyPack = !0, s.onboard.grantedOnLoad = !1), Array.isArray(s.seenAnts) || (s.seenAnts = [], s.levels.forEach((lv, i) => {
+    (!s.onboard || typeof s.onboard != "object") && (s.onboard = newOnboardState(), s.levels[ZAPPER_STAGE] && s.levels[ZAPPER_STAGE].cleared && (s.onboard.zapperGift = "done")), s.onboard.firstBattle !== "pending" && s.onboard.firstBattle !== "done" && (s.onboard.firstBattle = "done"), (s.version || 1) < 5 && s.levels[ZAPPER_STAGE] && s.levels[ZAPPER_STAGE].cleared && s.onboard.zapperGift === "done" && !s.onboard.legacyPack && (s.onboard.zapperGift = "pending", s.onboard.legacyPack = !0, s.onboard.grantedOnLoad = !1), (!s.seenSpecial || typeof s.seenSpecial != "object" || Array.isArray(s.seenSpecial)) && (s.seenSpecial = {}), Array.isArray(s.seenAnts) || (s.seenAnts = [], s.levels.forEach((lv, i) => {
       if (lv && lv.cleared && LEVELS[i]) for (let t of levelAntTypes(i)) s.seenAnts.includes(t) || s.seenAnts.push(t);
     })), typeof s.packsSinceNew != "number" && (s.packsSinceNew = 0);
     for (let b of BONUS_TYPES) s.bonusStock[b] == null && (s.bonusStock[b] = 0);
@@ -4727,6 +5429,55 @@ function armNextHint(save, kind) {
 function nextUnplayedLevel(save) {
   for (let i = 0; i < LEVELS.length; i++) if (!save.levels[i].cleared && levelUnlocked(save, i)) return i;
   return -1;
+}
+function isReturningPlayer(save) {
+  return !!save && Array.isArray(save.levels) && save.levels.some((l) => l && l.cleared);
+}
+function dailyWinBonus(coinMul) {
+  return Math.round(DAILY_WIN.base * Math.min(coinMul, DAILY_WIN.capMul) / 5) * 5;
+}
+function skinState(save) {
+  return (!save.skins || typeof save.skins != "object") && (save.skins = { owned: [], equipped: {} }), save.skins;
+}
+function buySkin(save, id) {
+  let sk = SKINS.find((x) => x.id === id);
+  if (!sk) return { ok: !1, reason: "unknown" };
+  let st = skinState(save);
+  return st.owned.includes(id) ? { ok: !1, reason: "owned" } : (save.coins || 0) < sk.price ? { ok: !1, reason: "coins" } : (save.coins -= sk.price, st.owned.push(id), st.equipped[sk.tower] = id, { ok: !0, price: sk.price });
+}
+function equipSkin(save, tower, id) {
+  let st = skinState(save);
+  if (id == null)
+    return delete st.equipped[tower], !0;
+  let sk = SKINS.find((x) => x.id === id);
+  return !sk || sk.tower !== tower || !st.owned.includes(id) ? !1 : (st.equipped[tower] = id, !0);
+}
+function skinPads(save) {
+  let st = skinState(save), out = {};
+  for (let [t, id] of Object.entries(st.equipped)) {
+    let sk = SKINS.find((x) => x.id === id);
+    sk && st.owned.includes(id) && (out[t] = sk.pad);
+  }
+  return out;
+}
+function nextSkinPrice(save) {
+  let st = skinState(save), left = SKINS.filter((x) => !st.owned.includes(x.id)).map((x) => x.price);
+  return left.length ? Math.min(...left) : null;
+}
+function metAnts(save) {
+  let last2 = -1;
+  (save.levels || []).forEach((l, i) => {
+    l && l.cleared && (last2 = i);
+  });
+  let met = new Set((save.seenAnts || []).filter((t) => ANTS[t]));
+  for (let i = 0; i <= Math.min(LEVELS.length - 1, last2 + 1); i++) for (let t of levelAntTypes(i)) met.add(t);
+  return met;
+}
+function antLevels(type) {
+  let out = [];
+  return LEVELS.forEach((_, i) => {
+    levelAntTypes(i).includes(type) && out.push(i + 1);
+  }), out;
 }
 
 // src/calendar.js
@@ -4993,6 +5744,14 @@ function drawCoinPile(ctx2, x, y, k = 1) {
     g.restore();
   });
 }
+function pressScale(pressed, heldMs, sinceRelMs) {
+  if (pressed) return 1 - 0.04 * Math.min(1, Math.max(0, heldMs) / 60);
+  if (sinceRelMs != null && sinceRelMs >= 0 && sinceRelMs < 110) {
+    let q = 1 - sinceRelMs / 110;
+    return 1 + 0.04 * q * q;
+  }
+  return 1;
+}
 
 // src/art.js
 var CRUMB_OUTLINE = "#2e1a12", FONT = FONT_BODY;
@@ -5092,7 +5851,7 @@ function monthBox(ctx2, x, y, s, tier, t = 0, reached = !1) {
     starShape(ctx2, x + Math.cos(a) * 20 * s, y + bob + Math.sin(a) * 13 * s, (tier === 3 ? 3.4 : 2.4) * (0.75 + 0.25 * Math.sin(t * 5 + k)), "#fff7a8", 1);
   }
 }
-var NODE_COLS = ["#ffc38a", "#ffb3c1", "#b9e89a", "#9fd6ff", "#c9b6f2", "#ffd27a", "#ff9e9e", "#a8e6e0", "#f7b6e8", "#d7b8ff"], W5_NODE_COLS = ["#a9d8de", "#8fcbd5", "#b9e2e6", "#9ecfd6", "#c4e8ec"], NODE_ORN = ["leaf", "crumb", "bubble", "wing", "shield", "cloud", "cone", "mask", "dots", "crown"];
+var NODE_COLS = ["#ffc38a", "#ffb3c1", "#b9e89a", "#9fd6ff", "#c9b6f2", "#ffd27a", "#ff9e9e", "#a8e6e0", "#f7b6e8", "#d7b8ff"], W5_NODE_COLS = ["#a9d8de", "#8fcbd5", "#b9e2e6", "#9ecfd6", "#c4e8ec"], W6_NODE_COLS = ["#f0c078", "#e8a33d", "#f6d49a", "#eab25a", "#f9dfae"], NODE_ORN = ["leaf", "crumb", "bubble", "wing", "shield", "cloud", "cone", "mask", "dots", "crown"];
 function miniCrown(ctx2, x, y, s, fill = "#ffe36e") {
   ctx2.save(), ctx2.translate(x, y), ctx2.scale(s, s), ctx2.beginPath(), ctx2.moveTo(-7, 3), ctx2.lineTo(-8, -5), ctx2.lineTo(-3.5, -1), ctx2.lineTo(0, -7), ctx2.lineTo(3.5, -1), ctx2.lineTo(8, -5), ctx2.lineTo(7, 3), ctx2.closePath(), ctx2.fillStyle = fill, ctx2.fill(), ctx2.lineWidth = 1.8, ctx2.strokeStyle = INK, ctx2.lineJoin = "round", ctx2.stroke(), ctx2.beginPath(), ctx2.arc(0, -0.5, 1.4, 0, 7), ctx2.fillStyle = "#ff6f91", ctx2.fill(), ctx2.restore();
 }
@@ -5137,6 +5896,12 @@ function nodeOrnament(ctx2, kind, x, y, t) {
     case "crown":
       miniCrown(ctx2, 0, 0, 1.05);
       break;
+    case "pancake":
+      for (let [py, c] of [[2.6, "#e8a33d"], [0, "#f3c98b"], [-2.6, "#f3c98b"]])
+        ctx2.beginPath(), ctx2.ellipse(0, py, 5.6, 2.6, 0, 0, 7), ctx2.fillStyle = c, ctx2.fill(), ctx2.stroke();
+      rr(ctx2, -1.8, -4.4, 3.6, 2.4, 0.8), ctx2.fillStyle = "#fff2b8", ctx2.fill();
+      break;
+    // v0.8.2 PP8
     case "donut":
       ctx2.beginPath(), ctx2.arc(0, 0, 5.4, 0, 7), ctx2.fillStyle = "#f7b6c8", ctx2.fill(), ctx2.stroke(), ctx2.beginPath(), ctx2.arc(0, 0, 1.7, 0, 7), ctx2.fillStyle = "#8a5a3a", ctx2.fill();
       for (let [dx, dy, c] of [[-3, -2.4, "#ffe27a"], [3, -2, "#8fd0f7"], [0, 3.6, "#ffffff"]])
@@ -5146,7 +5911,7 @@ function nodeOrnament(ctx2, kind, x, y, t) {
   ctx2.restore();
 }
 function mapNode(ctx2, x, y, i, st, t = 0) {
-  let w5 = ART81 && worldOf(i) === 5, base = st.open ? w5 ? W5_NODE_COLS[i % W5_NODE_COLS.length] : NODE_COLS[i % NODE_COLS.length] : "#cfc6cf", R = st.boss ? 29 : 27, depth = 7;
+  let w5 = ART81 && worldOf(i) === 5, w6 = ART81 && worldOf(i) === 6, base = st.open ? w6 ? W6_NODE_COLS[i % W6_NODE_COLS.length] : w5 ? W5_NODE_COLS[i % W5_NODE_COLS.length] : NODE_COLS[i % NODE_COLS.length] : "#cfc6cf", R = st.boss ? 29 : 27, depth = 7;
   if (ctx2.save(), shadow(ctx2, x, y + 26, 30, 7, 0.28), st.next && (ctx2.beginPath(), ctx2.ellipse(x, y + 3, R + 7 + Math.sin(t * 4) * 2, R * 0.92 + 6, 0, 0, 7), ctx2.fillStyle = "rgba(255,212,94,0.35)", ctx2.fill()), ctx2.beginPath(), ctx2.ellipse(x, y + depth, R, R * 0.9, 0, 0, Math.PI), ctx2.lineTo(x - R, y), ctx2.ellipse(x, y, R, R * 0.9, 0, Math.PI, 0, !0), ctx2.closePath(), ctx2.fillStyle = shade(base, -0.3), ctx2.fill(), ctx2.lineWidth = 3, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), st.boss) {
     for (let k = 0; k <= 10; k++) {
       let a = Math.PI + k / 10 * Math.PI, rr2 = k % 2 ? R * 0.82 : R;
@@ -5155,12 +5920,12 @@ function mapNode(ctx2, x, y, i, st, t = 0) {
     ctx2.ellipse(x, y, R, R * 0.9, 0, 0, Math.PI);
   } else ctx2.ellipse(x, y, R, R * 0.9, 0, 0, 7);
   let g = ctx2.createRadialGradient(x - R * 0.35, y - R * 0.4, 2, x, y, R * 1.1);
-  g.addColorStop(0, shade(base, 0.55)), g.addColorStop(0.6, base), g.addColorStop(1, shade(base, -0.12)), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = 3, ctx2.strokeStyle = st.cleared ? "#e0a830" : INK, ctx2.stroke(), st.cleared && (ctx2.beginPath(), ctx2.ellipse(x, y, R - 2.5, R * 0.9 - 2.5, 0, 0, 7), ctx2.lineWidth = 2, ctx2.strokeStyle = "#ffe9a0", ctx2.stroke()), ctx2.beginPath(), ctx2.ellipse(x, y + 1, R * 0.66, R * 0.6, 0, 0, 7), ctx2.lineWidth = 2, ctx2.strokeStyle = w5 && st.open ? "rgba(247,182,200,0.95)" : `rgba(255,255,255,${st.open ? 0.55 : 0.3})`, ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(x - R * 0.38, y - R * 0.5, R * 0.36, R * 0.16, -0.4, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.6)", ctx2.fill(), st.open ? (drawChunkyText(ctx2, String(i + 1), x, y + 1, 25, { mode: "num" }), nodeOrnament(ctx2, w5 ? st.boss ? "crown" : "donut" : NODE_ORN[i % NODE_ORN.length], x + R * 0.72, y - R * 0.72, t), st.stars >= 3 && !st.boss && miniCrown(ctx2, x, y - R - 3, 1.1)) : (rr(ctx2, x - 8, y - 3, 16, 13, 3), ctx2.fillStyle = "#8c8090", ctx2.fill(), ctx2.beginPath(), ctx2.arc(x, y - 4, 5.5, Math.PI, 0), ctx2.lineWidth = 3, ctx2.strokeStyle = "#8c8090", ctx2.stroke()), ctx2.restore();
+  g.addColorStop(0, shade(base, 0.55)), g.addColorStop(0.6, base), g.addColorStop(1, shade(base, -0.12)), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = 3, ctx2.strokeStyle = st.cleared ? "#e0a830" : INK, ctx2.stroke(), st.cleared && (ctx2.beginPath(), ctx2.ellipse(x, y, R - 2.5, R * 0.9 - 2.5, 0, 0, 7), ctx2.lineWidth = 2, ctx2.strokeStyle = "#ffe9a0", ctx2.stroke()), ctx2.beginPath(), ctx2.ellipse(x, y + 1, R * 0.66, R * 0.6, 0, 0, 7), ctx2.lineWidth = 2, ctx2.strokeStyle = w6 && st.open ? "rgba(201,119,43,0.95)" : w5 && st.open ? "rgba(247,182,200,0.95)" : `rgba(255,255,255,${st.open ? 0.55 : 0.3})`, ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(x - R * 0.38, y - R * 0.5, R * 0.36, R * 0.16, -0.4, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.6)", ctx2.fill(), st.open ? (drawChunkyText(ctx2, String(i + 1), x, y + 1, 25, { mode: "num" }), nodeOrnament(ctx2, w6 ? st.boss ? "crown" : "pancake" : w5 ? st.boss ? "crown" : "donut" : NODE_ORN[i % NODE_ORN.length], x + R * 0.72, y - R * 0.72, t), st.stars >= 3 && !st.boss && miniCrown(ctx2, x, y - R - 3, 1.1)) : (rr(ctx2, x - 8, y - 3, 16, 13, 3), ctx2.fillStyle = "#8c8090", ctx2.fill(), ctx2.beginPath(), ctx2.arc(x, y - 4, 5.5, Math.PI, 0), ctx2.lineWidth = 3, ctx2.strokeStyle = "#8c8090", ctx2.stroke()), ctx2.restore();
 }
 function starShape(ctx2, x, y, r, fill, lw = 2) {
   candyStar(ctx2, x, y, r, fill, lw);
 }
-var ANT_COL = { small: "#f8c07e", worker: "#f0994d", big: "#d97a3f", gasmask: "#f0994d", armored: "#e48a47", flyer: "#f9b878", queen: "#f59b9b", queen2: "#c7a6f5", sprinter: "#f0994d", heavy: "#b95b34", greasy: "#ee9f45", mama: "#d9774a", queen3: "#e9b05c", nurse: "#f2b49b", queen4: "#f4b9c8", glazed: "#f1cf9a", queen5: "#f7b6c8" }, ALW = 2.4;
+var ANT_COL = { small: "#f8c07e", worker: "#f0994d", big: "#d97a3f", gasmask: "#f0994d", armored: "#e48a47", flyer: "#f9b878", queen: "#f59b9b", queen2: "#c7a6f5", sprinter: "#f0994d", heavy: "#b95b34", greasy: "#ee9f45", mama: "#d9774a", queen3: "#e9b05c", nurse: "#f2b49b", queen4: "#f4b9c8", glazed: "#f1cf9a", queen5: "#f7b6c8", drone: "#e8a33d", queen6: "#c9772b" }, ALW = 2.4;
 function softBlob(ctx2, x, y, rx, ry, col, lw = ALW, gloss = 1) {
   drawGlossyBlob(ctx2, x, y, rx, ry, col, { lw, gloss });
 }
@@ -5207,8 +5972,8 @@ function plusShape(ctx2, x, y, s, fill, lw = 1.5) {
 function drawAnt(ctx2, type, phase = 0, opt = {}) {
   let S2 = ANTS[type].size, LW = Math.min(3, Math.max(1.8, 2.2 * S2)) / S2;
   type = ANT_LOOK[type] || type;
-  let col = ANT_COL[type], legCol = shade(col, -0.18), farCol = shade(col, -0.32), P = phase * Math.PI * 2, step = Math.sin(P), hop = Math.abs(Math.sin(P)), flying = type === "flyer", queen = type === "queen" || type === "queen2" || type === "queen3" || type === "queen4" || type === "queen5", swiftQueen = type === "queen2", mama = type === "mama", greasy = type === "greasy", pieQueen = type === "queen3", nurse = type === "nurse", sundaeQueen = type === "queen4", glazed = type === "glazed", glazeQueen = type === "queen5", big = type === "big" || type === "heavy" || mama, shell = type === "armored" || type === "heavy" || type === "sprinter", sprinter = type === "sprinter", heavy = type === "heavy", cheer = opt.pose === "cheer";
-  ctx2.save(), ctx2.scale(S2, S2), ctx2.lineJoin = "round", ctx2.lineCap = "round", flying ? shadow(ctx2, 0, 21, 10, 3, 0.13) : shadow(ctx2, 0, 10.5, 15 - hop * 2, 4, 0.2);
+  let col = ANT_COL[type], legCol = shade(col, -0.18), farCol = shade(col, -0.32), P = phase * Math.PI * 2, step = Math.sin(P), hop = Math.abs(Math.sin(P)), drone = type === "drone", syrupQueen = type === "queen6", flying = type === "flyer" || drone, queen = type === "queen" || type === "queen2" || type === "queen3" || type === "queen4" || type === "queen5" || syrupQueen, swiftQueen = type === "queen2", mama = type === "mama", greasy = type === "greasy", pieQueen = type === "queen3", nurse = type === "nurse", sundaeQueen = type === "queen4", glazed = type === "glazed", glazeQueen = type === "queen5", big = type === "big" || type === "heavy" || mama, shell = type === "armored" || type === "heavy" || type === "sprinter", sprinter = type === "sprinter", heavy = type === "heavy", cheer = opt.pose === "cheer";
+  ctx2.save(), ctx2.scale(S2, S2), ctx2.lineJoin = "round", ctx2.lineCap = "round", drone && ctx2.scale(1.15, 1.15), ART81 ? flying ? shadow(ctx2, 0, 24, 11 * (1 - 0.1 * hop), 3.3 * (1 - 0.1 * hop), 0.15) : shadow(ctx2, 0, 10.5, 15 - hop * 2, 4, 0.22) : flying ? shadow(ctx2, 0, 21, 10, 3, 0.13) : shadow(ctx2, 0, 10.5, 15 - hop * 2, 4, 0.2);
   let lift = flying ? 9 + Math.sin(P * 2) * 2 : big ? hop * 1.8 : hop * 3.2;
   if (big && !flying && (ctx2.translate(0, 10), ctx2.rotate(Math.sin(P) * 0.06), ctx2.translate(0, -10), hop < 0.18)) {
     ctx2.save(), ctx2.globalAlpha = (0.18 - hop) * 3;
@@ -5228,16 +5993,18 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
     let sq = 1 + (0.5 - hop) * 0.09;
     ctx2.translate(0, 10), ctx2.scale(1 / sq, sq), ctx2.translate(0, -10);
   }
-  if (flying) {
+  if (glazed && ART81 && (ctx2.beginPath(), ctx2.ellipse(1, -1, 20.5, 19, 0, 0, 7), ctx2.lineWidth = 5, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(1, -1, 20.5, 19, 0, 0, 7), ctx2.lineWidth = 2.4, ctx2.strokeStyle = "#9fe7ff", ctx2.stroke()), flying) {
     let flap = Math.sin(P * 8);
     for (let k of [1, 0])
       ctx2.save(), ctx2.translate(-2, -4), ctx2.rotate(-2 - flap * 0.45 - k * 0.5), ctx2.beginPath(), ctx2.ellipse(11, 0, 12.5, 6.5, 0, 0, 7), ctx2.fillStyle = k ? "rgba(205,236,255,0.8)" : "rgba(232,247,255,0.92)", ctx2.fill(), ctx2.lineWidth = 2, ctx2.strokeStyle = "#6f9cc2", ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(13, -1.5, 5, 1.6, 0, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.8)", ctx2.fill(), ctx2.restore();
+    if (drone) for (let k of [1, 0])
+      ctx2.save(), ctx2.translate(-5, -1), ctx2.rotate(-0.55 + flap * 0.4 - k * 0.55), ctx2.beginPath(), ctx2.ellipse(8.5, 0, 9.5, 4.8, 0, 0, 7), ctx2.fillStyle = k ? "rgba(255,238,200,0.78)" : "rgba(255,246,222,0.92)", ctx2.fill(), ctx2.lineWidth = 2, ctx2.strokeStyle = "#b07a3a", ctx2.stroke(), ctx2.restore();
   }
   if (queen) {
     let sw = Math.sin(P) * 1.5;
     ctx2.beginPath(), ctx2.moveTo(3, -8), ctx2.quadraticCurveTo(-14, -12 + sw, -24, 7), ctx2.quadraticCurveTo(-11, 11, 2, 5), ctx2.closePath();
     let g = ctx2.createLinearGradient(0, -10, 0, 10);
-    g.addColorStop(0, glazeQueen ? "#9fe3e6" : sundaeQueen ? "#8fe0c8" : pieQueen ? "#7f9be6" : "#b597f0"), g.addColorStop(1, glazeQueen ? "#4fb3bd" : sundaeQueen ? "#3fa88f" : pieQueen ? "#4f69b8" : "#8a68d8"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = LW, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(-22, 6.5), ctx2.quadraticCurveTo(-10, 10, 1.5, 4.5), ctx2.lineWidth = 3.4, ctx2.strokeStyle = "#ffffff", ctx2.stroke(), ctx2.fillStyle = INK;
+    g.addColorStop(0, syrupQueen ? "#f3b868" : glazeQueen ? "#9fe3e6" : sundaeQueen ? "#8fe0c8" : pieQueen ? "#7f9be6" : "#b597f0"), g.addColorStop(1, syrupQueen ? "#a85f1c" : glazeQueen ? "#4fb3bd" : sundaeQueen ? "#3fa88f" : pieQueen ? "#4f69b8" : "#8a68d8"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = LW, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(-22, 6.5), ctx2.quadraticCurveTo(-10, 10, 1.5, 4.5), ctx2.lineWidth = 3.4, ctx2.strokeStyle = "#ffffff", ctx2.stroke(), ctx2.fillStyle = INK;
     for (let [a, b] of [[-17, 6.8], [-10, 8], [-4, 6.6]])
       ctx2.beginPath(), ctx2.arc(a, b, 0.9, 0, 7), ctx2.fill();
   }
@@ -5247,10 +6014,10 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
     leg(ctx2, -8 + i * 4.8, legY, -7 + i * 4.8 - sw, footY - 0.5, farCol), sprinter && sneaker(ctx2, -7 + i * 4.8 - sw, footY - 0.5, !0);
   }
   let abRx = queen ? 13 : big ? 12 : 11, abRy = queen ? 11 : big ? 10 : 9.5;
-  softBlob(ctx2, -10, 0.5, abRx, abRy, col, LW, 0.85), ctx2.save(), ctx2.beginPath(), ctx2.ellipse(-10, 0.5, abRx - 1, abRy - 1, 0, 0, 7), ctx2.clip(), ctx2.strokeStyle = shade(col, -0.14), ctx2.lineWidth = 2;
+  softBlob(ctx2, -10, 0.5, abRx, abRy, col, LW, 0.85), ctx2.save(), ctx2.beginPath(), ctx2.ellipse(-10, 0.5, abRx - 1, abRy - 1, 0, 0, 7), ctx2.clip(), ctx2.strokeStyle = drone ? INK : shade(col, -0.14), ctx2.lineWidth = drone ? 3.6 : 2;
   for (let sx of [-15, -10.5])
     ctx2.beginPath(), ctx2.ellipse(sx - (big ? 1.5 : 0), 0.5, 2, abRy + 2, 0, -1.3, 1.3), ctx2.stroke();
-  if (ctx2.restore(), mama)
+  if (syrupQueen && (ctx2.beginPath(), ctx2.moveTo(-20.5, -5.2), ctx2.quadraticCurveTo(-11, -9.6, -1.5, -6.4), ctx2.lineWidth = 3, ctx2.strokeStyle = "rgba(255,248,224,0.72)", ctx2.stroke()), ctx2.restore(), mama)
     for (let [ex, ey2, er] of [[-16.5, -2.2, 2.9], [-10.5, -4.6, 3.1], [-5.2, -1.4, 2.7]])
       ctx2.beginPath(), ctx2.ellipse(ex, ey2, er, er * 1.2, 0.2, 0, 7), ctx2.fillStyle = "#fffaf0", ctx2.fill(), ctx2.lineWidth = 1.7, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.arc(ex - 0.7, ey2 - 0.8, 0.8, 0, 7), ctx2.fillStyle = "#f2a0b0", ctx2.fill();
   if (shell) {
@@ -5346,6 +6113,10 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
     for (let dx of [-6, 0, 6])
       ctx2.beginPath(), ctx2.arc(hx2 + dx, hy - 4.8, 0.9, 0, 7), ctx2.fill();
     ctx2.beginPath(), ctx2.moveTo(hx2 - 2, top - 1.5), ctx2.quadraticCurveTo(hx2 - 5, top - 11, hx2 - 13, top - 8 + step), ctx2.quadraticCurveTo(hx2 - 8, top - 5, hx2 - 6, top), ctx2.quadraticCurveTo(hx2 - 3.5, top - 3, hx2 - 2, top - 1.5), ctx2.fillStyle = heavy ? "#b48cf0" : "#ff7b7b", ctx2.fill(), ctx2.lineWidth = 2, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(hx2 - 4, top + 2, 2.6, 1.2, -0.4, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.8)", ctx2.fill();
+  } else if (drone) {
+    for (let sx of [-1, 1])
+      ctx2.beginPath(), ctx2.moveTo(hx2 + sx * 3, top + 1), ctx2.quadraticCurveTo(hx2 + sx * 7, top - 8, hx2 + sx * 10 + 1, top - 12 + step), ctx2.lineWidth = 2.4, ctx2.strokeStyle = INK, ctx2.stroke(), blob(ctx2, hx2 + sx * 10 + 1, top - 12 + step, 2.6, 2.6, "#fff2b8", 1.5);
+    ctx2.beginPath(), ctx2.ellipse(hx2 - 4.6, top + 3.6, 2.2, 1, -0.5, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.8)", ctx2.fill();
   } else if (flying) {
     ctx2.beginPath(), ctx2.ellipse(hx2, hy - 3, hr * 0.97, hr * 0.8, 0, Math.PI * 0.98, Math.PI * 2.02), ctx2.closePath(), ctx2.fillStyle = "#b9805a", ctx2.fill(), ctx2.lineWidth = 2.4, ctx2.strokeStyle = INK, ctx2.stroke();
     for (let [gx, r] of [[hx2 - 1, 3.3], [hx2 + 6, 3]])
@@ -5372,6 +6143,18 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
       blob(ctx2, hx2, cy - 6, 10.5, 6.6, "#f1cf9a", 2.4), blob(ctx2, hx2, cy - 7.4, 9, 5, "#ff9ec0", 2), blob(ctx2, hx2, cy - 7.4, 3.2, 1.9, "#f1cf9a", 1.6), blob(ctx2, hx2 - 3, cy - 10, 2.6, 1.2, "#ffd9e6", 0.1);
       for (let [dx, dy, c2, rot] of [[-6, -6.6, "#6fd0e8", 0.4], [5.5, -7.6, "#fff3a8", -0.5], [-1, -11.2, "#8de0a8", 1], [7, -5, "#ffffff", 0.9]])
         ctx2.save(), ctx2.translate(hx2 + dx, cy + dy), ctx2.rotate(rot), rr(ctx2, -1.6, -0.6, 3.2, 1.2, 0.6), ctx2.fillStyle = c2, ctx2.fill(), ctx2.restore();
+      if (ART81) for (let [dx, dy, c2] of [[-6.6, -14, "#6fd0e8"], [0, -18, "#fff3a8"], [6.6, -14, "#8de0a8"]])
+        ctx2.beginPath(), ctx2.arc(hx2 + dx, cy + dy, 3.1, 0, 7), ctx2.fillStyle = c2, ctx2.fill(), ctx2.lineWidth = 1.4, ctx2.strokeStyle = INK, ctx2.stroke();
+      ctx2.restore();
+      return;
+    }
+    if (syrupQueen) {
+      blob(ctx2, hx2, cy - 6.5, 10.5, 4.4, "#e8a33d", 2.3);
+      for (let [dx, len] of [[-6.4, 5.2], [0, 7.4], [6.4, 5.2]])
+        ctx2.beginPath(), ctx2.moveTo(hx2 + dx - 2.6, cy - 6), ctx2.lineTo(hx2 + dx - 2.2, cy - 6 + len - 2), ctx2.arc(hx2 + dx, cy - 6 + len - 2, 2.2, Math.PI, 0, !0), ctx2.lineTo(hx2 + dx + 2.6, cy - 6), ctx2.closePath(), ctx2.fillStyle = "#c9772b", ctx2.fill(), ctx2.lineWidth = 2, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.arc(hx2 + dx - 0.9, cy - 6 + len - 3, 0.8, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.8)", ctx2.fill();
+      blob(ctx2, hx2 - 3.2, cy - 8, 2.8, 1.2, "#fff2b8", 0.1);
+      for (let dx of [-7, 0, 7])
+        ctx2.beginPath(), ctx2.arc(hx2 + dx, cy - 11.6 - (dx ? 0 : 3), 3, 0, 7), ctx2.fillStyle = "#fff2b8", ctx2.fill(), ctx2.lineWidth = 1.5, ctx2.strokeStyle = INK, ctx2.stroke();
       ctx2.restore();
       return;
     }
@@ -5410,7 +6193,26 @@ function heroGloss(ctx2, type, lvl) {
   let h = HERO_GLOSS[type];
   h && (ctx2.save(), ctx2.beginPath(), ctx2.ellipse(h[0], h[1], h[2], h[3], -0.2, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.62)", ctx2.fill(), ctx2.beginPath(), ctx2.arc(h[0] + h[2] * 0.4, h[1] + h[3] + 2.4, 1.1, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.8)", ctx2.fill(), ctx2.restore());
 }
-var partCache = /* @__PURE__ */ new Map(), partHits = 0, partMisses = 0, partBytes = 0, partClipped = 0, BAKE_BOX = ART81 ? [-48, -76, 48, 36] : [-44, -60, 44, 36], TOWER_K = 1.18, BODYK = 1, TOWER_PAD = { slingshot: "#e78015", spray: "#49af29", sound: "#a687e9", ball: "#30a2f1", laser: "#ff6673", zapper: "#319fff", fan: "#28aa9d", pheromone: "#f06da6", lizard: "#76a927", tractor: "#cf8a00", glue: "#d9a900", gate: "#d99a00", lava: "#ff6a00" }, tpad = (type, old) => ART81 ? TOWER_PAD[type] : old, MOTION = { reduced: !1, bobTowers: !1, hop: 0 }, BOBV = null;
+var partCache = /* @__PURE__ */ new Map(), partHits = 0, partMisses = 0, partBytes = 0, partClipped = 0, BAKE_BOX = ART81 ? [-48, -76, 48, 36] : [-44, -60, 44, 36], TOWER_K = 1.18, BODYK = 1, TOWER_PAD = {
+  slingshot: "#e07c14",
+  spray: "#47aa28",
+  sound: "#a183e2",
+  ball: "#2f9dea",
+  laser: "#f76370",
+  zapper: "#309af7",
+  // v0.8.2 A10b: the six side-tower pads x0.97 (W6 ground is the lightest: pad vs ground 1.543 -> 1.636; every other theme rises too)
+  fan: "#28aa9d",
+  pheromone: "#f06da6",
+  lizard: "#76a927",
+  tractor: "#cf8a00",
+  glue: "#d9a900",
+  gate: "#d99a00",
+  lava: "#ff6a00"
+}, SKIN_PAD = {};
+function setSkinPads(m) {
+  SKIN_PAD = m || {};
+}
+var tpad = (type, old) => ART81 ? SKIN_PAD[type] || TOWER_PAD[type] : old, MOTION = { reduced: !1, bobTowers: !1, hop: 0 }, BOBV = null;
 function bodyScale(ctx2) {
   ART81 && (MOTION.hop && ctx2.translate(0, -MOTION.hop), BOBV !== null && (ctx2.translate(0, 8), ctx2.translate(0, -1.2 * (0.5 + 0.5 * BOBV)), ctx2.scale(1, 1 + 0.012 * BOBV), ctx2.translate(0, -8)), ctx2.translate(0, 8), ctx2.scale(TOWER_K, TOWER_K), ctx2.translate(0, -8), BODYK = TOWER_K);
 }
@@ -5469,7 +6271,7 @@ function pad(ctx2, color) {
 function padPaths(ctx2, color) {
   shadow(ctx2, 0, 11, 18, 6.5, 0.24), ctx2.beginPath(), ctx2.ellipse(0, 9.6, 16.4, 8.6, 0, 0, 7), ctx2.fillStyle = shade(color, -0.3), ctx2.fill(), ctx2.lineWidth = 3, ctx2.strokeStyle = INK, ctx2.stroke(), blob(ctx2, 0, 5.5, 15.5, 8, shade(color, -0.02), 3, 0, { gloss: 0.55 });
   let g = ctx2.createRadialGradient(-4, 3, 1, 0, 5, 12);
-  g.addColorStop(0, shade(color, 0.6)), g.addColorStop(1, shade(color, 0.2)), ctx2.beginPath(), ctx2.ellipse(0, 4.5, 11, 5, 0, 0, 7), ctx2.fillStyle = g, ctx2.fill(), rim(ctx2, 0, 5.5, 15.5, 8, 0.75);
+  g.addColorStop(0, shade(color, 0.6)), g.addColorStop(1, shade(color, 0.2)), ctx2.beginPath(), ctx2.ellipse(0, 4.5, 11, 5, 0, 0, 7), ctx2.fillStyle = g, ctx2.fill(), rim(ctx2, 0, 5.5, 15.5, 8, 0.75), ART81 && (ctx2.save(), ctx2.lineCap = "round", ctx2.beginPath(), ctx2.ellipse(0, 5.5, 14, 6.6, 0, Math.PI * 1.08, Math.PI * 1.92), ctx2.lineWidth = 2, ctx2.strokeStyle = "rgba(255,255,255,0.35)", ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(0, 5.5, 13.6, 6.3, 0, Math.PI * 0.12, Math.PI * 0.88), ctx2.lineWidth = 3, ctx2.strokeStyle = shade(color, -0.18), ctx2.stroke(), ctx2.restore());
   for (let a of [0.35, 1.2, 1.95, 2.8]) {
     let rx = Math.cos(a) * 13.2, ry = 6.5 + Math.sin(a) * 6.3;
     ctx2.beginPath(), ctx2.arc(rx, ry, 1.35, 0, 7), ctx2.fillStyle = shade(color, -0.38), ctx2.fill(), ctx2.beginPath(), ctx2.arc(rx - 0.4, ry - 0.45, 0.45, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.8)", ctx2.fill();
@@ -6064,7 +6866,42 @@ function donutBody(ctx2, r, pct) {
   }
   ctx2.restore();
 }
-var TREAT_BODIES = { cookie: cookieBody, cake: cakeBody, pie: pieBody, sundae: sundaeBody, donut: donutBody };
+function pancakeBody(ctx2, r, pct) {
+  let bites = Math.round((1 - pct) * 9), bAt = (k) => {
+    let a = -0.6 + k * 0.72;
+    return [Math.cos(a) * r * 0.98, Math.sin(a) * r * 0.98];
+  };
+  ctx2.save(), ctx2.beginPath(), ctx2.arc(0, 0, r, 0, Math.PI * 2);
+  for (let k = 0; k < bites; k++) {
+    let [bx, by] = bAt(k);
+    ctx2.moveTo(bx + 9, by), ctx2.arc(bx, by, 9, 0, Math.PI * 2, !0);
+  }
+  ctx2.clip("evenodd");
+  let g = ctx2.createRadialGradient(-8, -10, 4, 0, 0, r * 1.1);
+  g.addColorStop(0, "#f9dcae"), g.addColorStop(0.7, "#f3c98b"), g.addColorStop(1, "#e8a33d"), ctx2.beginPath(), ctx2.arc(0, 0, r, 0, 7), ctx2.fillStyle = g, ctx2.fill(), ctx2.beginPath(), ctx2.arc(0, 0, r - 1, 0, 7), ctx2.lineWidth = 5, ctx2.strokeStyle = "#e8a33d", ctx2.stroke(), ctx2.lineCap = "round", ctx2.lineWidth = 1.5, ctx2.strokeStyle = "rgba(138,84,32,0.55)";
+  for (let [rr2, a0, a1] of [[r - 3, 0.35, 2.8], [r - 7, 0.6, 2.55]])
+    ctx2.beginPath(), ctx2.arc(0, 0, rr2, a0, a1), ctx2.stroke();
+  ctx2.beginPath(), ctx2.moveTo(-r * 0.15, r * 0.52);
+  for (let k = 0; k <= 36; k++) {
+    let a = 0.15 + k / 36 * 2.9, rr2 = r * 0.74 + Math.sin(a * 5) * 2.2;
+    ctx2.lineTo(Math.cos(a) * rr2, Math.sin(a) * rr2 + 3);
+  }
+  ctx2.closePath(), ctx2.fillStyle = "rgba(214,134,40,0.88)", ctx2.fill(), ctx2.lineWidth = 1.4, ctx2.strokeStyle = "rgba(138,84,32,0.7)", ctx2.stroke(), ctx2.lineCap = "round", ctx2.lineWidth = 5.2, ctx2.strokeStyle = "#d98a28";
+  for (let [dx, dy] of [[-r * 0.55, r * 0.62], [r * 0.12, r * 0.92], [r * 0.7, r * 0.5]])
+    ctx2.beginPath(), ctx2.moveTo(dx, dy - 5), ctx2.lineTo(dx, dy + 3), ctx2.stroke();
+  rr(ctx2, -r * 0.62, -r * 0.7, 11, 8, 2.4), ctx2.fillStyle = "#fff2b8", ctx2.fill(), ctx2.lineWidth = 1.6, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(-r * 0.62 + 2.4, -r * 0.7 + 2.4), ctx2.lineTo(-r * 0.62 + 6, -r * 0.7 + 2.4), ctx2.lineWidth = 1.2, ctx2.strokeStyle = "rgba(255,255,255,0.9)", ctx2.stroke(), ctx2.restore(), ctx2.save(), ctx2.beginPath(), ctx2.rect(-r - 12, -r - 12, r * 2 + 24, r * 2 + 24);
+  for (let k = 0; k < bites; k++) {
+    let [bx, by] = bAt(k);
+    ctx2.moveTo(bx + 9, by), ctx2.arc(bx, by, 9, 0, Math.PI * 2, !0);
+  }
+  ctx2.clip("evenodd"), ctx2.beginPath(), ctx2.arc(0, 0, r, 0, 7), ctx2.lineWidth = 3, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.restore(), ctx2.save(), ctx2.beginPath(), ctx2.arc(0, 0, r + 1, 0, 7), ctx2.clip();
+  for (let k = 0; k < bites; k++) {
+    let [bx, by] = bAt(k);
+    ctx2.beginPath(), ctx2.arc(bx, by, 9, 0, 7), ctx2.lineWidth = 3, ctx2.strokeStyle = INK, ctx2.stroke();
+  }
+  ctx2.restore();
+}
+var TREAT_BODIES = { cookie: cookieBody, cake: cakeBody, pie: pieBody, sundae: sundaeBody, donut: donutBody, pancake: pancakeBody };
 function reactMotion(react, t) {
   if (!react) return { dx: 0, dy: 0, sx: 1, sy: 1 };
   let a = react.age, e = Math.max(0, 1 - a / 1.6);
@@ -6344,13 +7181,14 @@ function crownSprite(ctx2, pal) {
 }
 function drawRewardHeader(ctx2, pal, k, still, stars3) {
   let rp = pal.ribbon, cr = pal.crown;
-  ctx2.save();
-  let dy = 0, alpha = 1, cs = 1;
-  if (still ? alpha = Math.min(1, k / 0.15) : (dy = -36 * (1 - easeOutBack(k / 0.24)), alpha = Math.min(1, k / 0.1), cs = k < 0.15 ? 0 : 0.4 + 0.6 * easeOutBack((k - 0.15) / 0.25)), ctx2.globalAlpha = alpha, ctx2.translate(0, dy), ribbonSprite(ctx2, rp), cr && cs > 0.01 && (ctx2.save(), !still && k >= 0.15 && k < 0.4 && squashAt(ctx2, 200, 141, (k - 0.15) / 0.25, 0.1), ctx2.translate(200, 141), ctx2.scale(cs, cs), ctx2.translate(-200, -141), crownSprite(ctx2, cr), ctx2.restore()), ctx2.restore(), stars3 && !still) {
+  if (stars3 && !still) {
     let tw = 0.6 + 0.4 * Math.sin(k * 6);
-    if (k > 0.3) for (let x of [52, 348]) sparkle(ctx2, x, 163, 3.4 * tw, "#fff7a8", k);
+    if (k > 0.3) for (let x of [40, 360]) sparkle(ctx2, x, 163, 3.4 * tw, "#fff7a8", k);
     if (k > 0.4 && k < 1) for (let x of [164, 236]) sparkle(ctx2, x, 104, 5 * (1 - (k - 0.4) / 0.6) + 1, "#fff7a8", k * 2);
   }
+  ctx2.save();
+  let dy = 0, alpha = 1, cs = 1;
+  still ? alpha = Math.min(1, k / 0.15) : (dy = -36 * (1 - easeOutBack(k / 0.24)), alpha = Math.min(1, k / 0.1), cs = k < 0.15 ? 0 : 0.4 + 0.6 * easeOutBack((k - 0.15) / 0.25)), ctx2.globalAlpha = alpha, ctx2.translate(0, dy), ribbonSprite(ctx2, rp), cr && cs > 0.01 && (ctx2.save(), !still && k >= 0.15 && k < 0.4 && squashAt(ctx2, 200, 141, (k - 0.15) / 0.25, 0.1), ctx2.translate(200, 141), ctx2.scale(cs, cs), ctx2.translate(-200, -141), crownSprite(ctx2, cr), ctx2.restore()), ctx2.restore();
 }
 function heroBob(ctx2, t, i = 0) {
   if (!ART81 || MOTION.reduced) return;
@@ -6376,22 +7214,24 @@ var THEMES = [
   // v0.7.9 world 4 (Crumb Design w4-paste.json artThemes_add index 7): mint. Contrast A1/A2/A3 on all ten W4 maps in qa/v0.7.9/contrast.
   { name: "W4 mint", a: "#b6e4d6", b: "#abdccd", check: "rgba(60,170,150,0.14)", grout: "rgba(70,150,130,0.22)", trail: "#fffdf5", edge: "#80c3b0", dot: "#98d3c2" },
   // v0.8.1 world 5 (plan W4, Crumb Design palettes-W3-W10.json): teal diner, with a pink icing accent for the flowers/dots. A1/A2/A3/A5 measured on the G1 renderer over all ten W5 maps (qa/v0.8.1/contrast-w5.json).
-  { name: "W5 teal-diner", a: "#a9d8de", b: "#9ecfd6", check: "rgba(60,150,170,0.13)", grout: "rgba(60,130,150,0.22)", trail: "#fffdf5", edge: "#7fbcc6", dot: "#f7b6c8" }
+  { name: "W5 teal-diner", a: "#a9d8de", b: "#9ecfd6", check: "rgba(60,150,170,0.13)", grout: "rgba(60,130,150,0.22)", trail: "#fffdf5", edge: "#7fbcc6", dot: "#f7b6c8" },
+  // v0.8.2 world 6 (Crumb Design palettes-W3-W10.json 'W6 maple'): warm maple planks. If the rendered A10b is < 1.6 on any W6 map, darken the pad by steps (see qa/v0.8.2 contrast-w6).
+  { name: "W6 maple", a: "#e6b98a", b: "#e1b27f", grain: "rgba(120,70,20,0.15)", grout: "rgba(130,80,30,0.28)", trail: "#fffaf0", edge: "#b98550", dot: "#c99660" }
 ];
-function renderMapBackground(routes, theme, w, h, dpr2, props = []) {
+function renderMapBackground(routes, theme, w, h, dpr2, props = [], art = {}) {
   Array.isArray(routes) || (routes = [routes]);
   let cv = makeCanvas(Math.ceil(w * dpr2), Math.ceil(h * dpr2)), g = cv.getContext("2d");
   g.scale(dpr2, dpr2);
-  let th = THEMES[theme % THEMES.length], seed = 7 + theme * 13, rnd = () => (seed = seed * 16807 % 2147483647) / 2147483647;
+  let th = THEMES[theme % THEMES.length], seed = 7 + theme * 13, rnd = () => (seed = seed * 16807 % 2147483647) / 2147483647, soft = ART81 && th.grain, ta = soft ? mixHex(th.a, th.b, 0.3) : th.a, tb = th.b;
   for (let c = 0; c < GRID_COLS; c++) for (let r = 0; r < GRID_ROWS; r++)
-    g.fillStyle = (c + r) % 2 ? th.a : th.b, g.fillRect(c * TILE, r * TILE, TILE, TILE);
+    g.fillStyle = (c + r) % 2 ? ta : tb, g.fillRect(c * TILE, r * TILE, TILE, TILE);
   if (th.check) {
     g.fillStyle = th.check;
     for (let x = 0; x < w; x += 40) g.fillRect(x + 10, 0, 20, h);
     for (let y = 0; y < h; y += 40) g.fillRect(0, y + 10, w, 20);
   } else if (th.grain) {
     for (let x = 0; x < w; x += 80)
-      g.fillStyle = x / 80 % 2 ? "rgba(255,255,255,0.08)" : "rgba(120,80,40,0.05)", g.fillRect(x, 0, 80, h), g.fillStyle = "rgba(110,70,40,0.35)", g.fillRect(x, 0, 1.5, h);
+      g.fillStyle = x / 80 % 2 ? `rgba(255,255,255,${ART81 ? 0.065 : 0.08})` : `rgba(120,80,40,${ART81 ? 0.04 : 0.05})`, g.fillRect(x, 0, 80, h), g.fillStyle = `rgba(110,70,40,${ART81 ? 0.2975 : 0.35})`, g.fillRect(x, 0, 1.5, h);
     g.strokeStyle = th.grain, g.lineWidth = 1.2;
     for (let k = 0; k < 40; k++) {
       let x = rnd() * w;
@@ -6437,7 +7277,7 @@ function renderMapBackground(routes, theme, w, h, dpr2, props = []) {
       g.lineWidth = lw, g.strokeStyle = col, g.lineJoin = "round", g.lineCap = "round", g.setLineDash(dash || []), g.stroke(), g.setLineDash([]);
     }
   };
-  g.save(), g.translate(0, 5), strokeAll(40, "rgba(70,35,50,0.26)"), g.restore(), ART81 && (g.save(), g.translate(2, 3), strokeAll(42, "rgba(70,35,50,0.07)"), g.restore(), g.save(), g.translate(-1.5, -1.5), strokeAll(39, "rgba(255,248,232,0.22)"), g.restore()), strokeAll(36, INK), g.save(), g.translate(0, 1.5), strokeAll(32, shade(th.edge, -0.28)), g.restore(), strokeAll(30, th.edge), strokeAll(25, th.trail), g.save(), g.globalAlpha = 0.34, g.translate(-2, -2), strokeAll(15, mixHex(th.trail, "#ffffff", 0.5)), g.restore(), g.save(), g.globalAlpha = 0.16, g.translate(6.5, 6.5), strokeAll(5, shade(th.trail, -0.4)), g.restore();
+  g.save(), g.translate(0, 5), strokeAll(40, "rgba(70,35,50,0.26)"), g.restore(), ART81 && (g.save(), g.translate(2, 3), strokeAll(42, "rgba(70,35,50,0.07)"), g.restore(), g.save(), g.translate(-1.5, -1.5), strokeAll(39, "rgba(255,248,232,0.22)"), g.restore()), strokeAll(36, INK), g.save(), g.translate(0, 1.5), strokeAll(32, shade(th.edge, -0.28)), g.restore(), strokeAll(30, th.edge), ART81 ? (strokeAll(25, "rgba(70,35,50,0.20)"), g.save(), g.translate(0, 1), strokeAll(25, th.trail), g.restore()) : strokeAll(25, th.trail), g.save(), g.globalAlpha = 0.34, g.translate(-2, -2), strokeAll(15, mixHex(th.trail, "#ffffff", 0.5)), g.restore(), g.save(), g.globalAlpha = 0.16, g.translate(6.5, 6.5), strokeAll(5, shade(th.trail, -0.4)), g.restore();
   for (let path of routes) {
     for (let d = 14; d < path.length; d += 15) {
       let p = path.at(d), side = (Math.floor(d / 15) % 2 ? 1 : -1) * 4;
@@ -6448,6 +7288,14 @@ function renderMapBackground(routes, theme, w, h, dpr2, props = []) {
       g.fillStyle = "#e8b878", g.beginPath(), g.ellipse(p.x + p.dy * o, p.y - p.dx * o, 2, 1.5, rnd() * 3, 0, 7), g.fill();
     }
   }
+  if (ART81 && (art.chev ?? 0.03) > 0) {
+    g.save(), g.lineCap = "round", g.lineJoin = "round", g.lineWidth = 1.8, g.strokeStyle = `rgba(82,60,75,${art.chev ?? 0.03})`;
+    for (let path of routes) for (let d = 70; d < path.length - 30; d += 120) {
+      let p = path.at(d);
+      g.save(), g.translate(p.x, p.y), g.rotate(Math.atan2(p.dy, p.dx)), g.beginPath(), g.moveTo(-3, -4), g.lineTo(3, 0), g.lineTo(-3, 4), g.stroke(), g.restore();
+    }
+    g.restore();
+  }
   for (let path of routes) {
     let p = path.pts[0], nx = Math.max(30, Math.min(w - 30, p.x)), ny = Math.max(26, p.y + 6);
     for (let k = 0; k < 6; k++) {
@@ -6455,7 +7303,7 @@ function renderMapBackground(routes, theme, w, h, dpr2, props = []) {
       tuft(g, nx + Math.cos(a) * 36 * (k % 2 ? 1 : -1), ny + 10 + Math.sin(a) * 6, 0.8 + rnd() * 0.4);
     }
   }
-  ART81 && plates(g, routes);
+  ART81 && !(art.plate && art.plate.hide) && plates(g, routes, art.plate);
   for (let pr of props) drawProp(g, pr.k, (pr.c + 0.5) * TILE, (pr.r + 0.5) * TILE);
   let vg = g.createRadialGradient(w / 2, h / 2, Math.min(w, h) * 0.45, w / 2, h / 2, Math.max(w, h) * 0.75);
   if (vg.addColorStop(0, "rgba(80,40,50,0)"), vg.addColorStop(1, ART81 ? "rgba(80,40,50,0.12)" : "rgba(80,40,50,0.18)"), g.fillStyle = vg, g.fillRect(0, 0, w, h), ART81) {
@@ -6475,15 +7323,15 @@ function renderMapBackground(routes, theme, w, h, dpr2, props = []) {
   }
   return cv;
 }
-function plates(g, routes) {
+function plates(g, routes, po = {}) {
   let ends = [];
   for (let rt of routes) {
     let p = rt.pts[rt.pts.length - 1];
     ends.some((q) => Math.hypot(q.x - p.x, q.y - p.y) < 5) || ends.push(p);
   }
   for (let p of ends) {
-    let cy = p.y + 19.5 + 4;
-    g.save(), g.translate(p.x, cy), g.beginPath(), g.ellipse(0, 10, 32, 7, 0, 0, 7), g.fillStyle = "rgba(70,35,50,0.22)", g.fill(), g.beginPath(), g.ellipse(0, 0, 30, 11, 0, 0, 7);
+    let cy = p.y + 19.5 + 4 + (po.dy || 0);
+    g.save(), g.translate(p.x, cy), po.scale && g.scale(po.scale, po.scale), g.beginPath(), g.ellipse(0, 10, 32, 7, 0, 0, 7), g.fillStyle = "rgba(70,35,50,0.22)", g.fill(), g.beginPath(), g.ellipse(0, 0, 30, 11, 0, 0, 7);
     let pg = g.createLinearGradient(0, -11, 0, 11);
     pg.addColorStop(0, "#fff6e4"), pg.addColorStop(1, "#f1dcc0"), g.fillStyle = pg, g.fill(), g.lineWidth = 2.4, g.strokeStyle = INK, g.stroke(), g.beginPath(), g.ellipse(0, 0, 26, 8, 0, Math.PI * 0.9, Math.PI * 1.45), g.lineWidth = 1.4, g.strokeStyle = "rgba(255,255,255,0.85)", g.stroke(), g.restore();
   }
@@ -6535,6 +7383,91 @@ function drawSwatter(ctx2, x, y, ang = 0, sc = 1, flash = 0) {
   for (let k = 1; k < 6; k++)
     ctx2.beginPath(), ctx2.moveTo(hx2 + 4, hy + 4 + k * 6), ctx2.lineTo(hx2 + hw - 4, hy + 4 + k * 6), ctx2.stroke();
   ctx2.restore(), ctx2.fillStyle = INK, ctx2.beginPath(), ctx2.arc(-4.6, hy + 20, 2.3, 0, 7), ctx2.arc(4.6, hy + 20, 2.3, 0, 7), ctx2.fill(), ctx2.fillStyle = "#fff", ctx2.beginPath(), ctx2.arc(-5.3, hy + 19.2, 0.8, 0, 7), ctx2.arc(3.9, hy + 19.2, 0.8, 0, 7), ctx2.fill(), ctx2.fillStyle = "rgba(255,111,145,0.45)", ctx2.beginPath(), ctx2.ellipse(-8.6, hy + 25, 2.6, 1.7, 0, 0, 7), ctx2.ellipse(8.6, hy + 25, 2.6, 1.7, 0, 0, 7), ctx2.fill(), flash > 0 && (rr(ctx2, hx2, hy, hw, hh, 12), ctx2.globalAlpha = flash * 0.7, ctx2.fillStyle = "#fff", ctx2.fill()), ctx2.restore();
+}
+var TABLE_SETS = { 1: ["leaf", "twig", "leaf", "pebble"], 2: ["pebble", "pebble", "twig", "leaf"], 3: ["cup", "cup", "plate"], 4: ["plate", "cutlery", "plate", "cup"], 5: ["donutbox", "napkin", "ring", "donutbox"], 6: ["syrup", "butter", "berry", "berry"] };
+function drawTableProp(g, kind, x, y, r, rot = 0, shadow2 = !0) {
+  g.save(), g.translate(x, y), shadow2 && (g.beginPath(), g.ellipse(r * 0.18, r * 0.62, r * 0.95, r * 0.32, 0, 0, 7), g.fillStyle = "rgba(70,35,50,0.18)", g.fill()), g.rotate(rot), g.lineWidth = 2, g.strokeStyle = INK, g.lineJoin = "round", g.lineCap = "round";
+  let fs = (col) => {
+    g.fillStyle = col, g.fill(), g.stroke();
+  };
+  switch (kind) {
+    case "leaf":
+      g.beginPath(), g.moveTo(-r, 0), g.quadraticCurveTo(0, -r * 0.9, r, 0), g.quadraticCurveTo(0, r * 0.9, -r, 0), g.closePath(), fs("#8fcf6a"), g.beginPath(), g.moveTo(-r * 0.8, 0), g.lineTo(r * 0.7, 0), g.strokeStyle = "#4f9a3c", g.stroke();
+      break;
+    case "twig":
+      g.beginPath(), g.moveTo(-r, r * 0.1), g.lineTo(r, -r * 0.1), g.lineWidth = 7, g.strokeStyle = INK, g.stroke(), g.lineWidth = 3.4, g.strokeStyle = "#b98355", g.stroke(), g.beginPath(), g.moveTo(-r * 0.1, 0), g.lineTo(r * 0.3, -r * 0.5), g.lineWidth = 5, g.strokeStyle = INK, g.stroke(), g.lineWidth = 2, g.strokeStyle = "#b98355", g.stroke();
+      break;
+    case "pebble":
+      g.beginPath(), g.ellipse(0, 0, r, r * 0.72, 0, 0, 7), fs("#cdc3c0"), g.beginPath(), g.ellipse(-r * 0.3, -r * 0.25, r * 0.28, r * 0.14, -0.4, 0, 7), g.fillStyle = "rgba(255,255,255,0.55)", g.fill();
+      break;
+    case "cup":
+      g.beginPath(), g.arc(r * 0.95, 0, r * 0.38, -1.2, 1.2), g.lineWidth = 5, g.stroke(), g.lineWidth = 2, g.beginPath(), g.arc(0, 0, r * 0.82, 0, 7), fs("#fff1e0"), g.beginPath(), g.arc(0, 0, r * 0.58, 0, 7), fs("#a7794f"), g.beginPath(), g.ellipse(-r * 0.2, -r * 0.2, r * 0.18, r * 0.08, -0.6, 0, 7), g.fillStyle = "rgba(255,255,255,0.35)", g.fill();
+      break;
+    case "plate":
+      g.beginPath(), g.arc(0, 0, r, 0, 7), fs("#fff6ea"), g.beginPath(), g.arc(0, 0, r * 0.66, 0, 7), g.lineWidth = 1.4, g.strokeStyle = "rgba(82,60,75,0.45)", g.stroke();
+      break;
+    case "cutlery":
+      g.beginPath(), g.rect(-r, -r * 0.1, r * 1.1, r * 0.2), fs("#d9dde3"), g.beginPath(), g.ellipse(r * 0.25, 0, r * 0.2, r * 0.3, 0, 0, 7), fs("#d9dde3");
+      for (let o of [-0.22, 0, 0.22])
+        g.beginPath(), g.rect(r * 0.25, (o - 0.04) * r, r * 0.7, r * 0.08), fs("#d9dde3");
+      break;
+    case "donutbox":
+      g.beginPath(), g.rect(-r * 0.9, -r * 0.7, r * 1.8, r * 1.4), fs("#f6a8c6"), g.beginPath(), g.rect(-r * 0.9, -r * 0.7, r * 1.8, r * 0.3), fs("#fff1f6"), g.beginPath(), g.arc(0, r * 0.12, r * 0.3, 0, 7), g.fillStyle = "#ffd89a", g.fill(), g.stroke();
+      break;
+    case "napkin":
+      g.beginPath(), g.rect(-r * 0.8, -r * 0.8, r * 1.6, r * 1.6), fs("#fff5f0"), g.beginPath(), g.moveTo(-r * 0.8, -r * 0.1), g.lineTo(r * 0.8, -r * 0.1), g.lineWidth = 1.4, g.strokeStyle = "rgba(240,120,150,0.7)", g.stroke();
+      break;
+    case "ring":
+      g.beginPath(), g.arc(0, 0, r * 0.8, 0, 7), g.lineWidth = 6, g.strokeStyle = "rgba(120,70,40,0.5)", g.stroke(), g.lineWidth = 2, g.beginPath(), g.arc(0, 0, r * 0.8, 0.3, 5.9), g.strokeStyle = "rgba(80,45,30,0.5)", g.stroke();
+      break;
+    case "syrup":
+      g.beginPath(), A_rrp(g, -r * 0.5, -r * 0.6, r, r * 1.3, r * 0.3), fs("#c9742a"), g.beginPath(), A_rrp(g, -r * 0.28, -r * 0.95, r * 0.56, r * 0.4, 3), fs("#ffe0a0"), g.beginPath(), g.rect(-r * 0.4, -r * 0.1, r * 0.8, r * 0.45), g.fillStyle = "#fff3d6", g.fill();
+      break;
+    case "butter":
+      g.beginPath(), A_rrp(g, -r * 0.9, -r * 0.5, r * 1.8, r, 4), fs("#ffe27a"), g.beginPath(), g.moveTo(-r * 0.7, -r * 0.3), g.lineTo(r * 0.4, -r * 0.3), g.lineWidth = 2, g.strokeStyle = "rgba(255,255,255,0.7)", g.stroke();
+      break;
+    case "berry":
+      g.beginPath(), g.arc(0, 0, r * 0.7, 0, 7), fs("#b8456f"), g.beginPath(), g.arc(-r * 0.22, -r * 0.2, r * 0.16, 0, 7), g.fillStyle = "rgba(255,255,255,0.5)", g.fill(), g.beginPath(), g.ellipse(0, -r * 0.7, r * 0.3, r * 0.14, 0.2, 0, 7), fs("#5fb24a");
+      break;
+  }
+  g.restore();
+}
+function A_rrp(g, x, y, w, h, r) {
+  g.moveTo(x + r, y), g.arcTo(x + w, y, x + w, y + h, r), g.arcTo(x + w, y + h, x, y + h, r), g.arcTo(x, y + h, x, y, r), g.arcTo(x, y, x + w, y, r), g.closePath();
+}
+function renderTable(theme, world, seedStr, cw2, ch2, sc, margins, board) {
+  let th = THEMES[theme % THEMES.length], mk = () => {
+    let c = makeCanvas(Math.max(1, Math.round(cw2 * sc)), Math.max(1, Math.round(ch2 * sc))), g2 = c.getContext("2d");
+    return g2.scale(sc, sc), [c, g2];
+  }, [bd, g] = mk(), [lip, lg] = mk(), sd = 17;
+  for (let i = 0; i < seedStr.length; i++) sd = (sd * 31 + seedStr.charCodeAt(i)) % 2147483647;
+  let rnd = () => (sd = sd * 16807 % 2147483647) / 2147483647;
+  g.fillStyle = shade(th.a, -0.12), g.fillRect(0, 0, cw2, ch2);
+  let nN = Math.min(2600, Math.round(cw2 * ch2 / 40));
+  for (let i = 0; i < nN; i++)
+    g.fillStyle = i % 2 ? "rgba(255,255,255,0.05)" : "rgba(60,30,40,0.05)", g.fillRect(rnd() * cw2, rnd() * ch2, 1.5, 1.5);
+  let fr = (inf, a) => {
+    A_rrp(g, board.x - inf, board.y - inf + 2, board.w + inf * 2, board.h + inf * 2, 10 + inf), g.fillStyle = `rgba(70,35,50,${a})`, g.fill();
+  };
+  g.beginPath(), fr(10, 0.06), g.beginPath(), fr(8, 0.07), g.beginPath(), fr(6, 0.08), g.beginPath(), fr(4, 0.1);
+  let kinds = TABLE_SETS[world] || TABLE_SETS[1], n = 0;
+  for (let m of margins)
+    if (m.side === "L" || m.side === "R") {
+      if (m.w < 24) continue;
+      let r = Math.max(12, Math.min(42, m.w * 0.6)), cnt = Math.max(1, Math.min(4, Math.floor(m.h / (r * 3.2))));
+      for (let i = 0; i < cnt; i++) {
+        let cy = m.y + (i + 0.5 + (rnd() - 0.5) * 0.4) * m.h / cnt, kind = kinds[n++ % kinds.length], rot = (rnd() - 0.5) * 1.4, inward = i % 2 === 0, cx = m.side === "L" ? inward ? m.w + 4 - r * 0.9 : m.w * 0.4 : inward ? m.x - 4 + r * 0.9 : m.x + m.w * 0.6;
+        drawTableProp(g, kind, cx, cy, r, rot, !0), inward && (lg.save(), lg.beginPath(), m.side === "L" ? lg.rect(m.w, cy - r * 1.4, 4, r * 2.8) : lg.rect(m.x - 4, cy - r * 1.4, 4, r * 2.8), lg.clip(), drawTableProp(lg, kind, cx, cy, r, rot, !1), lg.restore());
+      }
+    } else {
+      if (m.h < 24) continue;
+      let r = Math.max(9, Math.min(34, (m.h - 6) * 0.45)), cnt = Math.max(1, Math.floor(m.w / (r * 4)));
+      for (let i = 0; i < cnt; i++) {
+        let cx = m.x + (i + 0.5 + (rnd() - 0.5) * 0.4) * m.w / cnt, cy = m.side === "T" ? m.y + m.h - 6 - r - rnd() * Math.max(0, m.h - 12 - 2 * r) : m.y + 6 + r + rnd() * Math.max(0, m.h - 12 - 2 * r);
+        drawTableProp(g, kinds[n++ % kinds.length], cx, cy, r, (rnd() - 0.5) * 1.4, !0);
+      }
+    }
+  return { bd, lip, props: n };
 }
 
 // src/uitext.js
@@ -6901,7 +7834,7 @@ var W = 400, H = 720, MAP_Y = 68, MAP_W = GRID_COLS * TILE, MAP_H = GRID_ROWS * 
 };
 S.save.settings && S.save.settings.muted && setMuted(!0);
 function persist() {
-  writeSave(storage, S.save);
+  S.skinSrc = null, writeSave(storage, S.save);
 }
 function now() {
   return Date.now() + S.clockOffset;
@@ -6922,7 +7855,7 @@ function openCalendar() {
 function setPaused(v) {
   S.paused = v, S.battle && (S.battle.paused = v), v && (S.sel = null, S.drag = null, S.info = null, S.mode = null, S.toast && S.toast.hint && (S.toast = null));
 }
-var META_SCREENS = ["map", "cards", "card", "shop"], BAR_H = 56, META_H = 660, cw = 0, ch = 0, insetB = 0, insetProbe = null, insetOverride = null;
+var META_SCREENS = ["map", "cards", "card", "shop", "cabinet", "antbook"], BAR_H = 56, META_H = 660, cw = 0, ch = 0, insetB = 0, insetProbe = null, insetOverride = null;
 function readInset() {
   if (insetOverride != null) return insetOverride;
   try {
@@ -6972,7 +7905,11 @@ function hit(list, x, y) {
 }
 function drawButton(x, y, w, h, label, col = "#ffb3c1", opt = {}) {
   let press = opt.pressed ? 3 : 0;
-  if (ctx.save(), drawPillButton(ctx, x, y, w, h, opt.disabled ? "dis" : col, { pressed: !!opt.pressed, disabled: !!opt.disabled, r: opt.r ?? Math.min(14, h / 2) }), label) {
+  if (ctx.save(), ART81 && !opt.disabled && !opt.noSquash) {
+    let cx = x + w / 2, cy = y + h / 2, inB = (q) => q && q.id !== "map" && q.w * q.h < 2e4 && cx >= q.x && cx <= q.x + q.w && cy >= q.y && cy <= q.y + q.h, now2 = performance.now(), dn = down && !down.moved && inB(down.b), rl = S.relB && inB(S.relB.b) ? now2 - S.relB.t : null, ps = pressScale(!!dn, dn ? now2 - down.t0 : 0, rl);
+    ps !== 1 && !reducedMotion() && (ctx.translate(cx, cy), ctx.scale(ps, ps), ctx.translate(-cx, -cy));
+  }
+  if (drawPillButton(ctx, x, y, w, h, opt.disabled ? "dis" : col, { pressed: !!opt.pressed, disabled: !!opt.disabled, r: opt.r ?? Math.min(14, h / 2) }), label) {
     let neutral = !opt.disabled && String(col).toLowerCase() === "#fff3e6";
     opt.disabled ? (ctx.globalAlpha = 0.6, drawChunkyText(ctx, label, x + w / 2, y + h / 2 + press + 1, opt.size || 17, { mode: "btn" })) : neutral ? (ctx.font = `${opt.size || 17}px ${FONT_DISPLAY}`, ctx.textAlign = "center", ctx.textBaseline = "middle", ctx.fillStyle = INK, ctx.fillText(label, x + w / 2, y + h / 2 + press + 1)) : drawChunkyText(ctx, label, x + w / 2, y + h / 2 + press + 1, opt.size || 17, { mode: "btn" });
   }
@@ -6995,7 +7932,7 @@ function toLogical(e) {
 canvas.addEventListener("pointerdown", (e) => {
   initAudio(), e.preventDefault(), S.result && S.result.t < 4 && (S.result.coinSkip = !0);
   let p = toLogical(e), b = hit(prevButtons, p.x, p.y);
-  down = { x: p.x, y: p.y, b, moved: !1 }, S.screen === "map" && !S.cal && !S.reveal.length && !S.pack && p.y >= MAPVIEW.top && p.y <= MAPVIEW.bottom && (down.scroll0 = S.mapScroll), b && b.onDown && b.onDown(p);
+  down = { x: p.x, y: p.y, b, moved: !1, t0: performance.now() }, S.screen === "map" && !S.cal && !S.reveal.length && !S.pack && p.y >= MAPVIEW.top && p.y <= MAPVIEW.bottom && (down.scroll0 = S.mapScroll), b && b.onDown && b.onDown(p);
 });
 canvas.addEventListener("pointermove", (e) => {
   if (!down) return;
@@ -7015,7 +7952,7 @@ canvas.addEventListener("pointerup", (e) => {
   }
   S.drag = null;
   let b = hit(prevButtons, p.x, p.y);
-  b && down.b && b.id === down.b.id && b.onTap && (b.id !== "map" && haptic("light"), b.onTap(p)), down = null;
+  down.b && (S.relB = { b: down.b, t: performance.now() }), b && down.b && b.id === down.b.id && b.onTap && (b.id !== "map" && haptic("light"), b.onTap(p)), down = null;
 });
 canvas.addEventListener("pointercancel", () => {
   down = null, S.drag = null;
@@ -7090,13 +8027,21 @@ window.addEventListener("popstate", () => {
     S.screen = "cards", repush();
     return;
   }
+  if (S.screen === "cabinet") {
+    S.screen = "shop", repush();
+    return;
+  }
+  if (S.screen === "antbook") {
+    S.antBookSel ? S.antBookSel = null : S.screen = "cards", repush();
+    return;
+  }
   S.battle = null, S.screen = "map", S.sel = null;
 });
 function openPrep(i) {
   S.levelIndex = i;
   let unlocked = unlockedCards(S.save), deck = (S.save.lastDeck || []).filter((id) => unlocked.includes(id));
   for (let id of unlocked) deck.length < BATTLE.deckSize && !deck.includes(id) && deck.push(id);
-  S.prep.deck = deck.slice(0, BATTLE.deckSize), S.prep.bonuses = autoFixBonuses(S.save, (S.save.lastBonuses || BONUS_TYPES.slice(0, 2)).slice(0, BATTLE.bonusTypesToBring)), S.prepAlert = null, go("prep"), S.antCard = antCardWanted() ? nextAntCard(S.save, i) : null;
+  S.prep.deck = deck.slice(0, BATTLE.deckSize), S.prep.bonuses = autoFixBonuses(S.save, (S.save.lastBonuses || BONUS_TYPES.slice(0, 2)).slice(0, BATTLE.bonusTypesToBring)).filter((b) => (S.save.bonusStock[b] || 0) > 0), S.zeroHint = null, S.prepAlert = null, go("prep"), S.antCard = antCardWanted() ? nextAntCard(S.save, i) : null;
 }
 function antCardWanted() {
   return ART81 && !0;
@@ -7106,13 +8051,13 @@ function antCardDone() {
   t && (markAntSeen(S.save, t) && persist(), sfx("tap"), S.antCard = nextAntCard(S.save, S.levelIndex));
 }
 function guideWanted(levelIndex) {
-  return levelIndex === 0 && !!(S.save.onboard && typeof S.save.onboard == "object" && S.save.onboard.firstBattle === "pending") && !0;
+  return levelIndex === 0 && !isReturningPlayer(S.save) && !!(S.save.onboard && typeof S.save.onboard == "object" && S.save.onboard.firstBattle === "pending") && !0;
 }
 function guideDone() {
   S.guide = null, S.save.onboard && typeof S.save.onboard == "object" && S.save.onboard.firstBattle !== "done" && (S.save.onboard.firstBattle = "done", persist());
 }
 function startBattle(levelIndex = S.levelIndex, deck = S.prep.deck, bonuses = S.prep.bonuses, seed = Date.now() & 16777215) {
-  S.levelIndex = levelIndex, S.save.lastDeck = deck.slice(), S.save.lastBonuses = bonuses.slice(), persist(), S.treat = newTreatState(), S.battle = new Battle({
+  if (S.levelIndex = levelIndex, S.save.lastDeck = deck.slice(), S.save.lastBonuses = bonuses.slice(), persist(), S.treat = newTreatState(), S.battle = new Battle({
     levelIndex,
     deck,
     bonusTypes: bonuses,
@@ -7122,13 +8067,22 @@ function startBattle(levelIndex = S.levelIndex, deck = S.prep.deck, bonuses = S.
     onBonusUsed: (type) => {
       consumeBonus(S.save, type), persist();
     }
-  }), S.battleStartStock = { ...S.save.bonusStock }, capsReset(), S.queenIntro = null, S._bubbleShown = !1, S.impactT = {}, S.crumbSprites = [], S.sparkles = [], S.fx = [], S.swatQ = [], S.ui = [], S.result = null, setPaused(!1), S.speed = startSpeed(S.speed, UI.speedMaxAtStart), clock.acc = 0, S.sel = null, S.info = null, S.mode = null, S.queenDown = null, S.modeHint = !1, S.nurseTip = !1, S.battle.rescueScale = S.speed, go("battle"), S.guide = guideWanted(levelIndex) ? { step: 1 } : null;
+  }), S.battleStartStock = { ...S.save.bonusStock }, capsReset(), S.queenIntro = null, S._bubbleShown = !1, S.impactT = {}, S.crumbSprites = [], S.sparkles = [], S.fx = [], S.swatQ = [], S.ui = [], S.result = null, setPaused(!1), S.speed = startSpeed(S.speed, UI.speedMaxAtStart), clock.acc = 0, S.sel = null, S.info = null, S.mode = null, S.queenDown = null, S.modeHint = !1, S.nurseTip = !1, S.battle.rescueScale = S.speed, go("battle"), S.guide = guideWanted(levelIndex) ? { step: 1 } : null, S.specialBanner = null, ART81 && S.battle.specialsOn && !S.guide) {
+    let seen = S.save.seenSpecial || (S.save.seenSpecial = {}), fresh = deck.filter((id) => specialActive(id, S.battle.level, S.battle.cardLevels ? S.battle.cardLevels[id] : 1) && !seen[id]);
+    fresh.length && (fresh.forEach((id) => {
+      seen[id] = !0;
+    }), persist(), S.specialBanner = { ids: fresh, t0: S.t, until: S.t + 2.4 });
+  }
 }
-var CONFETTI_MAX = 36, MOMENT_MS = 2250, MOMENT_T = { drop: 0.2, shake: 0.45, burst: 0.6, count: 1.5, hold: 1.9, fly: 2.25 }, RESULT_PILE = { x: 200, y: 250 }, RESULT_TREAT = { x: 200, y: 201, k: 1.1 };
+var CONFETTI_MAX = 36, MOMENT_MS = 2250, MOMENT_T = { drop: 0.2, shake: 0.45, burst: 0.6, countDone: 1, count: 1.5, hold: 1.9, fly: 2.25 }, RESULT_PILE = { x: 200, y: 250 }, RESULT_TREAT = { x: 200, y: 201, k: 1.1 };
+function localDay() {
+  let d = /* @__PURE__ */ new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
 function finishBattle() {
   let b = S.battle;
   guideDone();
-  let out = applyBattleResult(S.save, b.levelIndex, b.result, b.stars, { kills: b.stats.kills, foodLeft: b.foodStored, perfect: b.perfect, time: b.time });
+  let out = applyBattleResult(S.save, b.levelIndex, b.result, b.stars, { kills: b.stats.kills, foodLeft: b.foodStored, perfect: b.perfect, time: b.time, day: ART81 ? localDay() : void 0 });
   {
     let rc = b.upgradeReach();
     S.save.debug = S.save.debug || { reach: [] }, S.save.debug.reach.push({ li: b.levelIndex, res: b.result, towers: rc.towers, l1: rc.l1, l2: rc.l2, l3p: rc.l3p, placed: rc.placed, upgrades: rc.upgrades, crumbsPlace: rc.crumbsPlace, crumbsUpgrade: rc.crumbsUpgrade }), S.save.debug.reach.length > 20 && S.save.debug.reach.shift();
@@ -7136,7 +8090,7 @@ function finishBattle() {
   let lossRun = noteLossRun(S.save, b.levelIndex, b.result === "win");
   b.result === "win" && b.levelIndex === 0 && out.firstClear && ART81 && armNextHint(S.save, "l1"), b.result === "lose" && noteLossForCardBlink(S.save), persist();
   let win = b.result === "win", fullFood = b.foodStored >= b.cfg.foodHP - 1e-6, queenKilled = win && Object.keys(b.stats.byType).some((t) => isQueen(t)), hold = queenKilled ? UI.queenCheerHold : 0;
-  S.result = { win, stars: b.stars, out, t: 0, hold, crumbsLeft: b.crumbs, perfect: out.perfect, kills: b.stats.kills, confetti: [], fullFood, queenKilled, hint: ART81 && b.result === "lose" && lossRun >= 2 ? lossHint(b) : null };
+  S.result = { win, stars: b.stars, out, t: 0, hold, crumbsLeft: b.crumbs, perfect: out.perfect, kills: b.stats.kills, confetti: [], fullFood, queenKilled, hint: ART81 && b.result === "lose" && lossRun >= 2 ? lossHint(b, lossRun) : null };
   {
     let sp = out.starParts || { s2: 0, s3: 0 };
     win && b.stars >= 3 && sp.s3 > 0 && (S.result.moment = { amount: sp.s3, t0: out.perfect ? UI.perfectAnimTime : 1, dur: MOMENT_MS / 1e3, sfx: 0 }), win && sp.s2 > 0 && (S.result.chip2 = sp.s2);
@@ -7200,7 +8154,7 @@ function mapTap(p) {
   }
   S.info = tw ? { tower: tw, t: 0 } : null;
 }
-var W5_STORY = "Glaze grows back: hit hard, hit fast!", TREAT_NAME = { cookie: "Cookie", cake: "Cake", pie: "Pie", sundae: "Sundae", donut: "Donut" }, HINT_ANTS = /* @__PURE__ */ new Set(["armored", "big", "heavy", "queen", "queen2", "greasy", "mama", "queen3", "nurse", "queen4", "glazed", "queen5"]);
+var W6_STORY = "Drones fly in. Bring a tower that hits flyers.", W5_STORY = "Glaze grows back: hit hard, hit fast!", TREAT_NAME = { cookie: "Cookie", cake: "Cake", pie: "Pie", sundae: "Sundae", donut: "Donut", pancake: "Pancakes" }, HINT_ANTS = /* @__PURE__ */ new Set(["armored", "big", "heavy", "queen", "queen2", "greasy", "mama", "queen3", "nurse", "queen4", "glazed", "queen5", "drone", "queen6"]);
 function maybeModeHint(b, e) {
   S.modeHint || S.paused || !e.ant || !HINT_ANTS.has(e.ant) || !(e.n > 0) || b.towers.some((q) => hasTargetModes(q.type)) && (S.modeHint = !0, toast("Tip: tap a tower, then pick who it shoots", "#ffe39a"), S.toast.hint = !0);
 }
@@ -7332,7 +8286,7 @@ function towerImpact(tp, x, y, shape, opt = {}) {
   }
   addFx({ k: "impact", shape, col, x, y, life: opt.life || 0.18, max: opt.life || 0.18, fast });
 }
-var SHARD_COL = { armored: "#b8c3d4", gasmask: "#a9c9a0", glazed: "#ffa6dc", small_gasmask: "#a9c9a0", small_armed: "#b8c3d4", sprinter: "#b8c3d4", queen5: "#ffa6dc" };
+var SHARD_COL = { armored: "#b8c3d4", gasmask: "#a9c9a0", glazed: "#ffa6dc", small_gasmask: "#a9c9a0", small_armed: "#b8c3d4", sprinter: "#b8c3d4", queen5: "#ffa6dc", drone: "#f3c98b", queen6: "#e8a33d" };
 function deathExtras(e) {
   if (!ART81 || reducedMotion()) return;
   let D0 = ANTS[e.ant];
@@ -7476,7 +8430,7 @@ function consumeEvents() {
         break;
       case "place":
       case "upgrade": {
-        if (e.type === "place" && !reducedMotion()) for (let i = 0; i < (S.speed >= 4 ? 2 : 4); i++) addFx({ k: "dust", x: e.x + (Math.random() - 0.5) * 26, y: e.y + 9 + (Math.random() - 0.5) * 6, life: 0.45, max: 0.45 });
+        if (ART81 && e.type === "place" && !reducedMotion() && addFx({ k: "ring", x: e.x, y: e.y + 14, r: 28, col: TOWER_PAD[e.card] || "#ffd45e", life: 0.3, max: 0.3 }), e.type === "place" && !reducedMotion()) for (let i = 0; i < (S.speed >= 4 ? 2 : 4); i++) addFx({ k: "dust", x: e.x + (Math.random() - 0.5) * 26, y: e.y + 9 + (Math.random() - 0.5) * 6, life: 0.45, max: 0.45 });
         let delay = e.pick != null ? 0.28 : 0;
         if (e.pick != null) {
           let sx = 12 + e.pick * 94 + 44, sy = TRAY_Y + 6 + 47;
@@ -7637,7 +8591,8 @@ function drawCapsOverlay() {
   L.forEach((s, i) => text(ctx, s, 14, 78 + i * 17, 12, "#ffe9c9", "left", null)), ctx.restore();
 }
 function render(dt) {
-  if (MOTION.reduced = reducedMotion(), prevButtons = buttons, buttons = [], ctx.setTransform(1, 0, 0, 1, 0, 0), ctx.fillStyle = BG, ctx.fillRect(0, 0, canvas.width, canvas.height), applyLayout(), ctx.setTransform(dpr * scale, 0, 0, dpr * scale, offX * dpr, offY * dpr), drawBackdrop(), renderTabBar(dt), S.screen === "map" ? renderMapScreen() : S.screen === "prep" ? renderPrep() : S.screen === "battle" ? renderBattle(dt) : S.screen === "cards" ? renderCards() : S.screen === "card" ? renderCardView() : S.screen === "shop" && renderShop(), renderFireworks(dt), S.reveal.length && S.reveal[0].at <= S.t && renderReveal(dt), S.pack && renderPack(dt), S.toast) {
+  let rt0 = performance.now();
+  if (MOTION.reduced = reducedMotion(), prevButtons = buttons, buttons = [], ctx.setTransform(1, 0, 0, 1, 0, 0), ctx.fillStyle = BG, ctx.fillRect(0, 0, canvas.width, canvas.height), applyLayout(), ctx.setTransform(dpr * scale, 0, 0, dpr * scale, offX * dpr, offY * dpr), S.skinSrc !== S.save.skins && (S.skinSrc = S.save.skins, setSkinPads(skinPads(S.save))), drawBackdrop(), renderTabBar(dt), S.screen === "map" ? renderMapScreen() : S.screen === "prep" ? renderPrep() : S.screen === "battle" ? renderBattle(dt) : S.screen === "cards" ? renderCards() : S.screen === "card" ? renderCardView() : S.screen === "shop" ? renderShop() : S.screen === "cabinet" ? renderCabinet() : S.screen === "antbook" && renderAntBook(), renderFireworks(dt), S.reveal.length && S.reveal[0].at <= S.t && renderReveal(dt), S.pack && renderPack(dt), S.toast) {
     if (S.toast.t -= dt, ctx.save(), ctx.globalAlpha = Math.min(1, S.toast.t * 5), S.toast.small) {
       ctx.font = `bold 12px ${FONT}`;
       let w = Math.min(300, ctx.measureText(S.toast.msg).width + 26), y = TRAY_Y - 30;
@@ -7649,11 +8604,15 @@ function render(dt) {
     }
     ctx.restore(), S.toast.t <= 0 && (S.toast = null, S.layoutToast = null);
   }
+  {
+    let rc = performance.now() - rt0;
+    S.renderMs = S.renderMs ? S.renderMs * 0.9 + rc * 0.1 : rc;
+  }
   drawCapsOverlay();
 }
 var barK = 0, TAB_COL = ["#d9cfe0", "#b5d8ff", "#ffd27a"], TAB_NAME = ["Map", "Cards", "Shop"], TAB_MUTED = "#7a5a6a", BAR_BG = "#fff6ee";
 function activeTab() {
-  return S.screen === "map" ? 0 : S.screen === "shop" ? 2 : 1;
+  return S.screen === "map" ? 0 : S.screen === "shop" || S.screen === "cabinet" ? 2 : 1;
 }
 function barWanted() {
   return isMeta() && !S.antCard && !S.starCard && !S.cal && !S.settings && !S.pack && !S.mergeAnim && !(S.reveal.length && S.reveal[0].at <= S.t) && !S.dialog;
@@ -7664,7 +8623,7 @@ function tabRect(i) {
 }
 function tabTap(i) {
   if (i === activeTab()) {
-    S.screen === "map" ? S.mapScroll = autoMapScroll() : S.screen === "card" && (S.screen = "cards", S.mergeAnim = null);
+    S.screen === "map" ? S.mapScroll = autoMapScroll() : S.screen === "card" ? (S.screen = "cards", S.mergeAnim = null) : S.screen === "cabinet" ? S.screen = "shop" : S.screen === "antbook" && (S.screen = "cards", S.antBookSel = null);
     return;
   }
   go(["map", "cards", "shop"][i]);
@@ -7738,11 +8697,37 @@ function bakeBackdrop() {
   let vg = g.createRadialGradient(W / 2, H * 0.48, H * 0.34, W / 2, H * 0.48, H * 0.82);
   return vg.addColorStop(0, "rgba(190,110,70,0)"), vg.addColorStop(1, "rgba(190,110,70,0.2)"), g.fillStyle = vg, g.fillRect(x0 - 4, y0 - 4, x1 - x0 + 8, y1 - y0 + 8), cv;
 }
+function battleTable() {
+  let b = S.battle;
+  if (!b) return null;
+  let key = `${canvas.width}x${canvas.height}|${scale.toFixed(4)}|${offX.toFixed(2)}|${offY.toFixed(2)}|${b.mapId}`;
+  S.tbCache || (S.tbCache = {});
+  let e = S.tbCache[key];
+  if (!e) {
+    Object.keys(S.tbCache).length >= 2 && (S.tbCache = {});
+    let t0 = typeof performance < "u" ? performance.now() : 0, sc = Math.min(dpr, 2), lx0 = offX, lx1 = offX + W * scale, ly0 = offY, ly1 = offY + H * scale, margins = [{ side: "L", x: 0, y: offY + MAP_Y * scale, w: lx0, h: MAP_H * scale }, { side: "R", x: lx1, y: offY + MAP_Y * scale, w: cw - lx1, h: MAP_H * scale }, { side: "T", x: 0, y: 0, w: cw, h: ly0 }, { side: "B", x: 0, y: ly1, w: cw, h: ch - ly1 - insetB }], board = { x: offX, y: offY + MAP_Y * scale, w: MAP_W * scale, h: MAP_H * scale }, lv = b.level || {}, r = renderTable(b.map.theme || 0, lv.world || 1, String(b.mapId), cw, ch, sc, margins, board);
+    e = S.tbCache[key] = { bd: r.bd, lip: r.lip, sc, props: r.props, ms: (typeof performance < "u" ? performance.now() : 0) - t0 }, S.lastTableBake = e.ms;
+  }
+  return e;
+}
+function drawTableLip() {
+  if (!ART81 || offX < 24) return;
+  let e = battleTable();
+  if (!e) return;
+  let by = offY + MAP_Y * scale, bh = MAP_H * scale;
+  ctx.save(), ctx.setTransform(1, 0, 0, 1, 0, 0);
+  for (let x of [offX, offX + W * scale - 4]) ctx.drawImage(e.lip, x * e.sc, by * e.sc, 4 * e.sc, bh * e.sc, x * dpr, by * dpr, 4 * dpr, bh * dpr);
+  ctx.restore();
+}
 function drawBackdrop() {
   let key = `${canvas.width}x${canvas.height}|${dpr}|${scale.toFixed(4)}|${offX.toFixed(2)}|${offY.toFixed(2)}`;
   S.bdCache || (S.bdCache = {});
   let bd = S.bdCache[key];
-  if (bd || (Object.keys(S.bdCache).length >= 3 && (S.bdCache = {}), bd = S.bdCache[key] = bakeBackdrop()), ctx.save(), ctx.setTransform(1, 0, 0, 1, 0, 0), S.screen === "battle") {
+  if (ART81 && S.screen === "battle" && S.battle) {
+    let e = battleTable();
+    e && (bd = e.bd);
+  } else bd || (Object.keys(S.bdCache).length >= 3 && (S.bdCache = {}), bd = S.bdCache[key] = bakeBackdrop());
+  if (ctx.save(), ctx.setTransform(1, 0, 0, 1, 0, 0), S.screen === "battle") {
     let m = dpr * scale, ix = 2, tx0 = Math.max(0, Math.ceil(offX * dpr + ix)), tx1 = Math.min(canvas.width, Math.floor((offX + MAP_W * scale) * dpr - ix)), ty0 = Math.max(0, Math.ceil((offY + MAP_Y * scale) * dpr + ix)), ty1 = Math.min(canvas.height, Math.floor((offY + (MAP_Y + MAP_H) * scale) * dpr - ix)), kx = bd.width / canvas.width, ky = bd.height / canvas.height, strip = (x0, y0, x1, y1) => {
       x1 > x0 && y1 > y0 && ctx.drawImage(bd, x0 * kx, y0 * ky, (x1 - x0) * kx, (y1 - y0) * ky, x0, y0, x1 - x0, y1 - y0);
     };
@@ -7829,7 +8814,7 @@ function drawMapRoad() {
 }
 function drawWorldGate(w) {
   let W2 = WORLDS.find((x) => x.id === w), y = gateY(w), open = worldUnlocked(S.save, w), prev = W2.unlock ? W2.unlock.allLevelsWonInWorld ?? w - 1 : w - 1;
-  if (panel(40, y - 30, 320, 60, open ? "#fff1f6" : "#efe7ec", 18), ctx.save(), ctx.translate(76, y + 2), ctx.scale(0.62, 0.62), drawTreat(ctx, W2.treat, 0, 0, 1, S.t, { face: open ? "happy" : "content" }), ctx.restore(), w === 5 && ART81 ? drawChunkyText(ctx, `${W2.name}`, 214, y - 12, 20, open ? { mode: "title" } : { mode: "plain", fill: "#b9a6b2" }) : text(ctx, `World ${w}: ${W2.name}`, 214, y - 12, 17, open ? "#ff8fab" : "#b9a6b2"), open) plainFit(w === 5 ? W5_STORY : "Open! Beat the queen at the top.", 214, y + 12, 262, 12, "#6b5562", "center", "600");
+  if (panel(40, y - 30, 320, 60, open ? "#fff1f6" : "#efe7ec", 18), ctx.save(), ctx.translate(76, y + 2), ctx.scale(0.62, 0.62), drawTreat(ctx, W2.treat, 0, 0, 1, S.t, { face: open ? "happy" : "content" }), ctx.restore(), (w === 5 || w === 6) && ART81 ? drawChunkyText(ctx, `${W2.name}`, 214, y - 12, 20, open ? { mode: "title" } : { mode: "plain", fill: "#b9a6b2" }) : text(ctx, `World ${w}: ${W2.name}`, 214, y - 12, 17, open ? "#ff8fab" : "#b9a6b2"), open) plainFit(w === 6 ? W6_STORY : w === 5 ? W5_STORY : "Open! Beat the queen at the top.", 214, y + 12, 262, 12, "#6b5562", "center", "600");
   else {
     let won = LEVELS.filter((L, i) => L.world === prev && S.save.levels[i].cleared).length, total = LEVELS.filter((L) => L.world === prev).length;
     if (plainFit(`Win all ${total} levels (${won}/${total}) + ${W2.unlock.minStarsInWorld} stars (${worldStars(S.save, prev)}/${total * 3})`, 214, y + 12, 262, 12, "#a0607e", "center", "700"), ART81) {
@@ -8019,13 +9004,17 @@ function drawCard(x, y, w, h, type, opt = {}) {
     text(ctx, "?", x + w / 2, y + h * 0.42, 30, "#fff"), text(ctx, opt.lockText || "Locked", x + w / 2, y + h - 14, 12, "#7a6a76", "center", null), ctx.restore();
     return;
   }
-  ctx.save(), ctx.beginPath(), rr(ctx, x + 4, y + 4, w - 8, h - 8, 11), ctx.clip();
-  let nameY = y + h - (opt.cost != null ? 31 : 13), iconY = y + (nameY - y) * 0.62 + 4;
+  ART81 && opt.cost != null && (ctx.save(), ctx.lineCap = "round", opt.afford && (ctx.beginPath(), ctx.moveTo(x + 13, y + 3.2), ctx.lineTo(x + w - 13, y + 3.2), ctx.lineWidth = 2, ctx.strokeStyle = "rgba(255,255,255,0.6)", ctx.stroke()), ctx.beginPath(), ctx.moveTo(x + 13, y + h - 2.6), ctx.lineTo(x + w - 13, y + h - 2.6), ctx.lineWidth = 3, ctx.strokeStyle = "rgba(70,35,50,0.28)", ctx.stroke(), ctx.restore()), ctx.save(), ctx.beginPath(), rr(ctx, x + 4, y + 4, w - 8, h - 8, 11), ctx.clip();
+  let nameY = y + h - (opt.cost != null ? ART81 ? 35 : 31 : 13), iconY = y + (nameY - y) * 0.62 + 4;
   ctx.beginPath(), ctx.arc(x + w / 2, iconY - 8, w * 0.32, 0, 7), ctx.fillStyle = "rgba(255,255,255,0.45)", ctx.fill();
   let iconS = Math.min(w / 58, (nameY - y) / 58);
   ctx.translate(x + w / 2, iconY), ctx.scale(iconS, iconS), drawTower(ctx, type, S.t, null), ctx.restore();
   let tag = T.place === "path" ? "on trail" : T.targets === "air" ? "air only" : type === "laser" ? "gnd+air" : "";
-  if (tag && h > 70 && !opt.badge && text(ctx, tag, x + w - 7, y + 11, 12, "#fff", "right"), fitText(T.short || T.name, x + w / 2, nameY, w - 10, w < 85 ? 13 : 14, "#fff"), opt.level && (blob(ctx, x + 12, y + 12, 12, 11, "#ffe36e", 2), text(ctx, "L" + opt.level, x + 12, y + 12.5, 12, "#7a4a2a", "center", null)), opt.cost != null && (rr(ctx, x + 10, y + h - 21, w - 20, 17, 8), ctx.fillStyle = opt.afford ? "#fff8ec" : "#ffd6d6", ctx.fill(), ctx.lineWidth = 1.8, ctx.strokeStyle = INK, ctx.stroke(), crumbIcon(ctx, x + w / 2 - (opt.cost === 0 ? 22 : 14), y + h - 12.5, 0.75), text(ctx, opt.cost === 0 ? "FREE" : String(opt.cost), x + w / 2 + 6, y + h - 12, 12, opt.afford ? "#7a4a2a" : "#c0392b", "center", null)), opt.badge && (blob(ctx, x + w - 11, y + 11, 11, 11, "#ff8fab", 2), text(ctx, opt.badge, x + w - 11, y + 11.5, 12, "#fff")), opt.mergeReady) {
+  if (tag && h > 70 && !opt.badge && text(ctx, tag, x + w - 7, y + 11, 12, "#fff", "right"), fitText(T.short || T.name, x + w / 2, nameY, w - 10, w < 85 ? 13 : 14, "#fff"), opt.level && (blob(ctx, x + 12, y + 12, 12, 11, "#ffe36e", 2), text(ctx, "L" + opt.level, x + 12, y + 12.5, 12, "#7a4a2a", "center", null)), opt.cost != null && ART81) {
+    let px = x + 8, pw = w - 16, py = y + h - 25, ph = 21;
+    rr(ctx, px, py, pw, ph, 10), ctx.fillStyle = opt.afford ? "#6a4660" : "#664250", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), crumbIcon(ctx, x + w / 2 - (opt.cost === 0 ? 24 : 16), py + ph / 2 + 0.5, 0.8), drawChunkyText(ctx, opt.cost === 0 ? "FREE" : String(opt.cost), x + w / 2 + (opt.cost === 0 ? 8 : 7), py + ph / 2 + 0.5, 16, { fill: opt.afford ? "#fff6c8" : "#ffc9c0", outline: 2 });
+  } else opt.cost != null && (rr(ctx, x + 10, y + h - 21, w - 20, 17, 8), ctx.fillStyle = opt.afford ? "#fff8ec" : "#ffd6d6", ctx.fill(), ctx.lineWidth = 1.8, ctx.strokeStyle = INK, ctx.stroke(), crumbIcon(ctx, x + w / 2 - (opt.cost === 0 ? 22 : 14), y + h - 12.5, 0.75), text(ctx, opt.cost === 0 ? "FREE" : String(opt.cost), x + w / 2 + 6, y + h - 12, 12, opt.afford ? "#7a4a2a" : "#c0392b", "center", null));
+  if (opt.badge && (blob(ctx, x + w - 11, y + 11, 11, 11, "#ff8fab", 2), text(ctx, opt.badge, x + w - 11, y + 11.5, 12, "#fff")), opt.mergeReady) {
     let p = 1 + Math.sin(S.t * 6) * 0.08;
     ctx.save(), ctx.translate(x + w - 10, y + 10), ctx.scale(p, p), blob(ctx, 0, 0, 11, 11, "#ff6f91", 2), text(ctx, "!", 0, 0.5, 14, "#fff"), ctx.restore();
   }
@@ -8063,13 +9052,31 @@ function renderPrep() {
   let unlocked = unlockedCards(S.save);
   text(ctx, `Your deck (${S.prep.deck.length}/${BATTLE.deckSize}) - tap to pick`, 30, 182, 14, "#7a5a6a", "left", null);
   let capW = worldCardLevelCap(i), overCap = (id) => !!capW && unlocked.includes(id) && S.save.cards[id].level > capW;
-  if (capW && unlocked.some(overCap) && plainText(`A card above L${capW} acts as L${capW} in this world`, 200, 488, 12, "#b0506a", "center", "800"), ALL_CARDS.forEach((id, k) => {
-    let col = k % 5, row = Math.floor(k / 5), x = 22 + col * 72, y = 196 + row * 98, w = 66, h = 90, isU = unlocked.includes(id), di = S.prep.deck.indexOf(id);
-    drawCardPic(x, y, w, h, id, { locked: !isU, lockText: "Shop or prize", selected: di >= 0, selCol: "#111111", badge: di >= 0 ? String(di + 1) : null, tag: !0, level: isU ? S.save.cards[id].level : 0, cap: capW || 0, dim: isU && di < 0 && S.prep.deck.length >= BATTLE.deckSize }), isU && button("deck" + id, x, y, w, h, () => {
+  capW && unlocked.some(overCap) && plainText(`A card above L${capW} acts as L${capW} in this world`, 200, 488, 12, "#b0506a", "center", "800");
+  let ownedIds = ALL_CARDS.filter((id) => unlocked.includes(id)), lockedIds = ALL_CARDS.filter((id) => !unlocked.includes(id));
+  if (ownedIds.forEach((id, k) => {
+    let col = k % 5, row = Math.floor(k / 5), x = 22 + col * 72, y = 196 + row * 98, w = 66, h = 90, isU = !0, di = S.prep.deck.indexOf(id);
+    drawCardPic(x, y, w, h, id, { locked: !isU, lockText: "Shop or prize", selected: di >= 0, selCol: "#111111", badge: di >= 0 ? String(di + 1) : null, tag: !0, level: isU ? S.save.cards[id].level : 0, cap: capW || 0, spStar: !!(ART81 && specialState(id, L, Math.min(S.save.cards[id].level, capW || 99)) === "active"), dim: isU && di < 0 && S.prep.deck.length >= BATTLE.deckSize }), isU && button("deck" + id, x, y, w, h, () => {
       let d = S.prep.deck, j = d.indexOf(id);
-      j >= 0 ? d.splice(j, 1) : d.length < BATTLE.deckSize ? d.push(id) : toast(`Deck is full (${BATTLE.deckSize}). Tap a card to remove it.`), sfx("tap");
+      j >= 0 ? d.splice(j, 1) : d.length < BATTLE.deckSize ? d.push(id) : toast(`Deck is full (${BATTLE.deckSize}). Tap a card to remove it.`), ART81 && TOWERS[id].special && (S.prepTip = { tower: id, until: S.t + 3.4 }), sfx("tap");
     });
-  }), S.prepTip && S.t < S.prepTip.until) {
+  }), lockedIds.length) {
+    let ly = 196 + Math.ceil(ownedIds.length / 5) * 98 - 2;
+    ctx.fillStyle = "rgba(122,90,106,0.35)", ctx.fillRect(22, ly + 9, 356, 1.5), rr(ctx, 130, ly, 140, 19, 9), ctx.fillStyle = "#f7ecef", ctx.fill(), plainText("Not yet unlocked", 200, ly + 10, 12, "#7a5a6a", "center", "700"), lockedIds.forEach((id, k) => {
+      let x = 24 + k % 8 * 44, y = ly + 24 + Math.floor(k / 8) * 40, w = 40, h = 36;
+      rr(ctx, x, y, w, h, 8), ctx.fillStyle = "#e4dbe1", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = "rgba(82,60,75,0.55)", ctx.stroke(), text(ctx, "?", x + w / 2, y + h / 2, 16, "#fff");
+    });
+  }
+  if (S.prepTip && S.prepTip.tower && S.t < S.prepTip.until) {
+    let id = S.prepTip.tower, T = TOWERS[id], cl = S.save.cards[id] ? Math.min(S.save.cards[id].level, capW || 99) : 1, st = specialState(id, LEVELS[i], cl);
+    if (panel(20, 179, 360, 40, "#5a4058", 14), plainFit(`${T.name} \xB7 card L${cl}`, 200, 190, 336, 12, "#ffe39a", "center", "800"), st === "active") {
+      let full = `${T.special.name}: ${T.special.text}`;
+      ctx.font = `600 12px ${FONT}`, plainFit(ctx.measureText(full).width <= 336 ? full : `${T.special.name}: ${T.special.short}`, 200, 207, 336, 12, "#ffffff", "center", "600");
+    } else st === "asleep" ? plainFit(`${T.special.name}: awakens in World ${SPECIALS_FROM_WORLD}`, 200, 207, 336, 12, "#e4d6b8", "center", "600") : plainFit(`Special unlocks at card level ${SPECIAL_CARD_LEVEL}`, 200, 207, 336, 12, "#d8cdd3", "center", "600");
+    button("antTip", 20, 175, 360, 48, () => {
+      S.prepTip = null;
+    });
+  } else if (S.prepTip && S.prepTip.type && S.t < S.prepTip.until) {
     let tp = S.prepTip.type, rk = rarityRank(tp) + 1, tier = rarityOf(tp), nm = ANTS[tp].name;
     panel(20, 179, 360, 40, "#5a4058", 14), plainFit(rk <= 4 ? `${nm}: ${tier} (${rk} dot${rk > 1 ? "s" : ""})` : `${nm}: ${tier} (no dots)`, 200, 192, 336, 12, "#ffe39a", "center", "800"), plainFit(ANTS[tp].intro || "Dots: 1 common, 2 uncommon, 3 rare, 4 elite", 200, 208, 336, 12, "#ffffff", "center", "600"), button("antTip", 20, 175, 360, 48, () => {
       S.prepTip = null;
@@ -8080,15 +9087,13 @@ function renderPrep() {
     let x = 26 + k * 88, y = by + 14, w = 80, h = 64, sel = S.prep.bonuses.includes(bt), stock = S.save.bonusStock[bt] || 0;
     rr(ctx, x, y, w, h, 14), ctx.fillStyle = sel ? shade(BONUSES[bt].color, 0.2) : "#f3ebee", ctx.fill(), sel && stock <= 0 ? lavaBorder(ctx, x, y, w, h, 14, S.t) : (ctx.lineWidth = sel ? 4.5 : 2.5, ctx.strokeStyle = sel ? "#111111" : INK, ctx.stroke()), ctx.save(), ctx.translate(x + w / 2, y + 25), ctx.scale(1.3, 1.3), drawBonusIcon(ctx, bt, S.t), ctx.restore(), text(ctx, BONUSES[bt].name, x + w / 2, y + 51, 12, "#fff"), text(ctx, "x" + stock, x + w - 12, y + 12, 12, stock ? "#fff" : "#ff9a9a"), button("bon" + bt, x, y, w, h, () => {
       let b = S.prep.bonuses, j = b.indexOf(bt);
-      j >= 0 ? b.splice(j, 1) : (b.push(bt), b.length > BATTLE.bonusTypesToBring && b.shift(), stock <= 0 && zeroBonusAlert(bt)), sfx("tap");
+      j >= 0 ? b.splice(j, 1) : (b.push(bt), b.length > BATTLE.bonusTypesToBring && b.shift(), stock <= 0 && (zeroBonusAlert(bt), S.zeroHint = { bt, until: S.t + 8 })), sfx("tap");
     });
   });
   let warn = null;
-  levelHasFlyers(i) && !S.prep.deck.some((d) => AIR_COUNTERS.includes(d)) ? warn = "Flying ants ahead! Only Laser, Bug Zapper or the Crop Duster can hit them." : ants.includes("gasmask") && S.prep.deck.includes("spray") && S.prep.deck.filter((d) => d !== "spray" && TOWERS[d].kind === "tower" && d !== "fan").length < 2 && (warn = "Gas-mask ants ignore Bug Spray - bring other damage too.");
-  let issues = prepIssues(S.save, S.prep.bonuses);
-  if (issues.length && (warn = `You have 0 ${BONUSES[issues[0].bonus].name}s. Buy one during battle for ${ECONOMY.diamonds.boosterPriceStart} diamonds, or in the Shop.`), S.layoutWarn = null, warn) {
+  if (levelHasFlyers(i) && !S.prep.deck.some((d) => AIR_COUNTERS.includes(d)) ? warn = "Flying ants ahead! Only Laser, Bug Zapper or the Crop Duster can hit them." : ants.includes("gasmask") && S.prep.deck.includes("spray") && S.prep.deck.filter((d) => d !== "spray" && TOWERS[d].kind === "tower" && d !== "fan").length < 2 && (warn = "Gas-mask ants ignore Bug Spray - bring other damage too."), S.zeroHint && S.t < S.zeroHint.until && S.prep.bonuses.includes(S.zeroHint.bt) && !(S.save.bonusStock[S.zeroHint.bt] > 0) && (warn = `You have 0 ${BONUSES[S.zeroHint.bt].name}s. Buy one during battle for ${ECONOMY.diamonds.boosterPriceStart} diamonds, or in the Shop.`), S.layoutWarn = null, warn) {
     let lines = wrapLines(warn, 324, 12).slice(0, 3), hh = 12 + lines.length * 14;
-    panel(26, 646 - hh - 2, 348, hh, issues.length ? "#ffd9d0" : "#fff0c2", 12), lines.forEach((l, k) => text(ctx, l, 200, 646 - hh + 6 + k * 14 + 5, 12, issues.length ? "#c0392b" : "#b0602a", "center", null)), ctx.font = `bold 12px ${FONT}`, S.layoutWarn = { box: { x: 26, y: 646 - hh - 2, w: 348, h: hh }, lines: lines.map((l) => ctx.measureText(l).width), maxW: 324 };
+    panel(26, 646 - hh - 2, 348, hh, S.zeroHint && warn.startsWith("You have 0") ? "#fff2b8" : "#fff0c2", 12), lines.forEach((l, k) => text(ctx, l, 200, 646 - hh + 6 + k * 14 + 5, 12, "#b0602a", "center", null)), ctx.font = `bold 12px ${FONT}`, S.layoutWarn = { box: { x: 26, y: 646 - hh - 2, w: 348, h: hh }, lines: lines.map((l) => ctx.measureText(l).width), maxW: 324 };
   }
   drawButton(26, 652, 110, 48, "Back", "#fff3e6"), button("back", 26, 650, 110, 54, () => go("map"));
   let ready = S.prep.deck.length === Math.min(BATTLE.deckSize, unlocked.length);
@@ -8147,7 +9152,7 @@ function wrapLines(str, maxW, size) {
 }
 function mapBg(b) {
   let key = b.mapId + pxRatio;
-  return S.bgCache[key] || (S.bgCache[key] = renderMapBackground(b.routes, b.map.theme, MAP_W, MAP_H, pxRatio, b.props)), S.bgCache[key];
+  return S.bgCache[key] || (S.bgCache[key] = renderMapBackground(b.routes, b.map.theme, MAP_W, MAP_H, pxRatio, b.props, b.map.art)), S.bgCache[key];
 }
 function renderGuide(b) {
   if (S.guide.step === 1 && b.towers.length > 0 && (S.guide.step = 2), S.guide.step === 2 && b.nextWave > 0) {
@@ -8167,6 +9172,17 @@ function renderGuide(b) {
     guideDone(), sfx("tap");
   });
 }
+var MOTE_COL = ["#c9a074", "#ffffff", "#b9d99a", "#ffffff", "#eef7f7", "#fff4e0"], MOTE_N = 12;
+function drawMotes(b, t) {
+  if (reducedMotion() || (S.renderMs || 0) >= 10 || S.speed >= 4) return;
+  let w = Math.min(5, worldOf(b.levelIndex) - 1), up = w === 3 ? -1 : 1;
+  ctx.save(), ctx.fillStyle = MOTE_COL[w], ctx.globalAlpha = 0.3;
+  for (let i = 0; i < MOTE_N; i++) {
+    let sp = 3 + i % 4 * 1.5, x = ((i * 83.7 + t * (2 + i % 3)) % MAP_W + MAP_W) % MAP_W + Math.sin(t * 0.5 + i) * 6, y = MAP_Y + ((i * 131.3 + t * sp * up) % MAP_H + MAP_H) % MAP_H;
+    ctx.beginPath(), ctx.arc(x, y, 1.3 + i % 3 * 0.5, 0, 7), ctx.fill();
+  }
+  ctx.restore();
+}
 function renderBattle(dt) {
   let b = S.battle, t = S.t;
   if (ART81 && !S.queenIntro && isBossLevel(b.levelIndex) && !b.result) {
@@ -8180,7 +9196,7 @@ function renderBattle(dt) {
       ctx.translate(200, cy), ctx.scale(z, z), ctx.translate(-200, -cy);
     }
   }
-  ctx.save(), rr(ctx, -4, MAP_Y - 4, MAP_W + 8, MAP_H + 8, 10), ctx.fillStyle = INK, ctx.fill(), ctx.restore(), ctx.drawImage(mapBg(b), 0, MAP_Y, MAP_W, MAP_H), ctx.save(), ctx.beginPath(), ctx.rect(0, MAP_Y, MAP_W, MAP_H), ctx.clip(), ctx.translate(0, MAP_Y);
+  ctx.save(), rr(ctx, -4, MAP_Y - 4, MAP_W + 8, MAP_H + 8, 10), ctx.fillStyle = INK, ctx.fill(), ctx.restore(), ctx.drawImage(mapBg(b), 0, MAP_Y, MAP_W, MAP_H), drawTableLip(), ART81 && drawMotes(b, t), ctx.save(), ctx.beginPath(), ctx.rect(0, MAP_Y, MAP_W, MAP_H), ctx.clip(), ctx.translate(0, MAP_Y);
   let p1 = b.path.pts[b.path.pts.length - 1], nests = [];
   for (let rt of b.routes) {
     let q = rt.pts[0];
@@ -8192,7 +9208,10 @@ function renderBattle(dt) {
     let card = b.picks[selCard];
     for (let c = 0; c < GRID_COLS; c++) for (let r = 0; r < GRID_ROWS; r++) {
       let chk = b.canPlay(selCard, c, r);
-      chk.ok && (chk.upgrade ? (ctx.beginPath(), ctx.arc((c + 0.5) * TILE, (r + 0.5) * TILE, 19 + Math.sin(t * 6) * 2, 0, 7), ctx.lineWidth = 3, ctx.strokeStyle = "#ffd45e", ctx.stroke()) : (rr(ctx, c * TILE + 4, r * TILE + 4, TILE - 8, TILE - 8, 8), ctx.fillStyle = TOWERS[card].place === "path" ? "rgba(255,200,90,0.28)" : "rgba(120,220,150,0.25)", ctx.fill()));
+      if (chk.ok && (chk.upgrade ? (ctx.beginPath(), ctx.arc((c + 0.5) * TILE, (r + 0.5) * TILE, 19 + Math.sin(t * 6) * 2, 0, 7), ctx.lineWidth = 3, ctx.strokeStyle = "#ffd45e", ctx.stroke()) : (rr(ctx, c * TILE + 4, r * TILE + 4, TILE - 8, TILE - 8, 8), ctx.fillStyle = TOWERS[card].place === "path" ? "rgba(255,200,90,0.28)" : "rgba(120,220,150,0.25)", ctx.fill()), ART81 && !chk.upgrade)) {
+        let pa = reducedMotion() ? 0.38 : 0.25 + 0.25 * (0.5 + 0.5 * Math.sin(t * Math.PI * 2));
+        rr(ctx, c * TILE + 4, r * TILE + 4, TILE - 8, TILE - 8, 8), ctx.lineWidth = 2, ctx.strokeStyle = `rgba(255,255,255,${pa})`, ctx.stroke();
+      }
     }
   }
   if (S.mode) {
@@ -8250,7 +9269,21 @@ function renderBattle(dt) {
       S.mode = null;
     });
   }
-  renderHud(b), renderTray(b), S.guide && !S.paused && !S.result && renderGuide(b), renderUiFx(dt), S.paused && !S.result && renderPause(), S.result && renderResult(dt), S.queenDown && S.t - S.queenDown.t < 4.5 && drawQueenCheer(S.t - S.queenDown.t, S.queenDown.world), S.dialog && !S.paused && !S.result && renderDialog();
+  if (renderHud(b), renderTray(b), S.guide && !S.paused && !S.result && renderGuide(b), S.specialBanner) {
+    let sb = S.specialBanner, k = S.t - sb.t0;
+    if (S.t >= sb.until) S.specialBanner = null;
+    else {
+      let a = Math.min(1, k / 0.25, (sb.until - S.t) / 0.3);
+      ctx.save(), ctx.globalAlpha = Math.max(0, a);
+      let by = 112 + (1 - Math.min(1, k / 0.25)) * -14;
+      panel(30, by, 340, 58, "#5a4058", 16);
+      let pulse = reducedMotion() ? 0.8 : 0.65 + 0.25 * Math.sin(k * 8);
+      ctx.beginPath(), ctx.arc(64, by + 29, 22, 0, 7), ctx.fillStyle = `rgba(255,210,74,${pulse})`, ctx.fill(), ctx.save(), ctx.translate(64, by + 33), ctx.scale(0.5, 0.5), drawTower(ctx, sb.ids[0], S.t, null), ctx.restore();
+      let T0 = TOWERS[sb.ids[0]];
+      plainText("Picnic power!", 96, by + 19, 14, "#ffe39a", "left", "800"), plainFit(sb.ids.length === 1 ? `Your ${T0.name} learned ${T0.special.name}` : `${sb.ids.length} of your towers learned specials`, 96, by + 40, 266, 12, "#ffffff", "left", "600"), ctx.restore();
+    }
+  }
+  renderUiFx(dt), S.paused && !S.result && renderPause(), S.result && renderResult(dt), S.queenDown && S.t - S.queenDown.t < 4.5 && drawQueenCheer(S.t - S.queenDown.t, S.queenDown.world), S.dialog && !S.paused && !S.result && renderDialog();
 }
 function tileArea(c, r, ok = !0) {
   ctx.save(), rr(ctx, c * TILE + 1.5, r * TILE + 1.5, TILE - 3, TILE - 3, 6), ctx.fillStyle = ok ? "rgba(255,255,255,0.25)" : "rgba(255,120,120,0.2)", ctx.fill(), ctx.lineWidth = 2.2, ctx.strokeStyle = ok ? "rgba(255,255,255,0.95)" : "rgba(255,90,90,0.8)", ctx.setLineDash([5, 4]), ctx.stroke(), ctx.restore();
@@ -8417,7 +9450,7 @@ function renderTowerInfo(b, info) {
   drawButton(256, py + 5, 62, 24, "", "#9fd8ff", { r: 10, disabled: !canMove }), text(ctx, "Move", 280, py + 17, 12), diamondIcon(ctx, 305, py + 17, 0.55), text(ctx, String(ECONOMY.diamonds.moveTower), 312, py + 17.5, 12), drawButton(322, py + 5, 58, 24, "Swap", "#fff3e6", { r: 10, size: 12, disabled: b.towers.length < 2 }), button("infoMove", 252, py - 2, 68, 44, () => startMode("move", tw)), button("infoSwap", 320, py - 2, 64, 44, () => startMode("swap", tw));
 }
 function drawQueenCheer(age, world) {
-  let k = Math.min(1, age / 0.35), fade = age > 3.8 ? Math.max(0, 1 - (age - 3.8) / 0.7) : 1, msg = world === 5 ? ["Way to go,", "you saved the donut!"] : world === 4 ? ["Way to go,", "you saved the sundae!"] : world === 3 ? ["Way to go,", "you saved the pie!"] : world === 2 ? ["Way to go,", "you saved the cake!"] : ["Way to go,", "you saved the cookies!"];
+  let k = Math.min(1, age / 0.35), fade = age > 3.8 ? Math.max(0, 1 - (age - 3.8) / 0.7) : 1, msg = world === 6 ? ["Way to go,", "you saved the pancakes!"] : world === 5 ? ["Way to go,", "you saved the donut!"] : world === 4 ? ["Way to go,", "you saved the sundae!"] : world === 3 ? ["Way to go,", "you saved the pie!"] : world === 2 ? ["Way to go,", "you saved the cake!"] : ["Way to go,", "you saved the cookies!"];
   ctx.save(), ctx.globalAlpha = fade, ctx.translate(200, MAP_Y + 210);
   let sc = 0.6 + 0.4 * k + Math.sin(age * 5) * 0.03;
   ctx.scale(sc, sc), rr(ctx, -170, -48, 340, 96, 24), ctx.fillStyle = "rgba(90,64,88,0.82)", ctx.fill(), ctx.lineWidth = 3, ctx.strokeStyle = "#ffd45e", ctx.stroke(), text(ctx, msg[0], 0, -18, 26, "#ffe36e"), text(ctx, msg[1], 0, 16, 24, "#ffffff");
@@ -8441,7 +9474,12 @@ function fitText(str, x, y, maxW, size, col) {
 function drawTowerObj(tw) {
   ctx.save(), ctx.translate(tw.x, tw.y);
   let age = S.battle.time - (tw.born ?? (tw.born = S.battle.time));
-  if (!reducedMotion()) {
+  if (ART81) {
+    if (age < 0.18) {
+      let k = age / 0.18, sc = k < 0.6 ? 0.6 + 0.52 * (k / 0.6) : 1.12 - 0.12 * ((k - 0.6) / 0.4);
+      ctx.scale(sc, sc);
+    }
+  } else if (!reducedMotion()) {
     if (age < 0.26) {
       let k = age / 0.26, a = k < 0.4 ? k / 0.4 : (k - 0.4) / 0.6, sx = k < 0.4 ? 1.22 + (0.95 - 1.22) * a : 0.95 + 0.05 * a, sy = k < 0.4 ? 0.78 + (1.06 - 0.78) * a : 1.06 - 0.06 * a;
       ctx.scale(sx, sy);
@@ -8449,7 +9487,11 @@ function drawTowerObj(tw) {
   }
   TOWERS[tw.type].place === "path" && ctx.translate(tw.px - tw.x, tw.py - tw.y);
   let uk = tw._upAt !== void 0 ? (S.t - tw._upAt) / 0.22 : 2;
-  if (MOTION.hop = uk >= 0 && uk < 1 ? 6 * Math.sin(uk * Math.PI) : 0, MOTION.bobTowers = !0, drawTower(ctx, tw.type, S.t + tw.id, tw), MOTION.bobTowers = !1, MOTION.hop = 0, tw.mode && tw.mode !== "weak") {
+  if (MOTION.hop = uk >= 0 && uk < 1 ? 6 * Math.sin(uk * Math.PI) : 0, ART81 && S.battle && S.battle.specialsOn && specialActive(tw, S.battle.level)) {
+    let pa = reducedMotion() ? 0.8 : 0.75 + 0.15 * Math.sin(S.t * Math.PI * 2);
+    ctx.save(), ctx.beginPath(), ctx.ellipse(0, 11, 21, 8.5, 0, 0, 7), ctx.lineWidth = 4, ctx.strokeStyle = "rgba(82,60,75," + pa + ")", ctx.stroke(), ctx.lineWidth = 2, ctx.strokeStyle = `rgba(255,210,74,${pa})`, ctx.stroke(), ctx.restore();
+  }
+  if (MOTION.bobTowers = !0, drawTower(ctx, tw.type, S.t + tw.id, tw), MOTION.bobTowers = !1, MOTION.hop = 0, tw.mode && tw.mode !== "weak") {
     let bage = S.t - (tw._modeAt ?? -9), bp = bage >= 0 && bage < 0.5 && !reducedMotion() ? 1 + 0.35 * Math.sin(Math.min(1, bage / 0.5) * Math.PI) : 1;
     ctx.save(), ctx.translate(14, 13), ctx.scale(bp, bp), ctx.beginPath(), ctx.arc(0, 0, 8, 0, 7), ctx.fillStyle = "#fffaf5", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), drawModeIcon(tw.mode, 0, 0, 0.55), ctx.restore();
   }
@@ -8503,7 +9545,7 @@ function drawShield(a, x, y) {
     ctx.save(), ctx.globalAlpha = 0.55 + 0.4 * f - 0.25 * pulse + 0.3 * flash, ctx.globalAlpha = Math.min(1, ctx.globalAlpha), ctx.beginPath(), ctx.ellipse(x, cy, rx, ry, 0, 0, Math.PI * 2), ctx.lineWidth = 1.5 + 0.5 * flash, ctx.strokeStyle = INK, ctx.stroke(), ctx.beginPath(), ctx.ellipse(x, cy, rx - 1.1, ry - 1.1, 0, 0, Math.PI * 2), ctx.lineWidth = 1, ctx.strokeStyle = "#ffffff", ctx.stroke(), ctx.beginPath(), ctx.ellipse(x, cy, rx - 3, ry - 3, 0, Math.PI * 1.08, Math.PI * 1.42), ctx.lineWidth = 1.6, ctx.strokeStyle = "#ffffff", ctx.stroke(), ctx.restore();
   }
   if (a.shield < a.shieldMax) {
-    let w = a.type === "queen5" ? 60 : 22, hy = y - (a.flying ? 44 : 33) * sz - 4;
+    let w = a.type === "queen5" || a.type === "queen6" ? 60 : 22, hy = y - (a.flying ? 44 : 33) * sz - 4;
     rr(ctx, x - w / 2 - 1, hy - 1, w + 2, 4, 2), ctx.fillStyle = INK, ctx.fill(), f > 0 && (rr(ctx, x - w / 2, hy, Math.max(2, w * f), 2, 1), ctx.fillStyle = pulse > 0.5 ? "#ffffff" : "#a8e4ff", ctx.fill());
   }
 }
@@ -8525,7 +9567,14 @@ function drawAntObj(a, ghost = !1) {
       gsx = 1 + 0.12 * q, gsy = 1 - 0.12 * q;
     }
   }
-  if (ctx.save(), ctx.translate(x, y + 4 + hopY), ctx.scale(face / breathe * gsx, breathe * hopS * gsy), a.hitFlash > 0 && !reducedMotion()) {
+  if (ctx.save(), ctx.translate(x, y + 4 + hopY), ctx.scale(face / breathe * gsx, breathe * hopS * gsy), ART81) {
+    a.hitFlash > 0.05 && !(S.t - (a._sqT ?? -9) < 0.12) && b.ants.length <= 25 && !reducedMotion() && (a._sqT = S.t);
+    let sk = (S.t - (a._sqT ?? -9)) / 0.08;
+    if (sk >= 0 && sk < 1) {
+      let q = (1 - sk) * (1 - sk);
+      ctx.scale(1 + 0.08 * q, 1 - 0.12 * q);
+    }
+  } else if (a.hitFlash > 0 && !reducedMotion()) {
     let q = Math.min(1, a.hitFlash / 0.12), sq = 0.12 * q * q;
     ctx.scale(1 + sq, 1 - sq);
   }
@@ -8534,7 +9583,7 @@ function drawAntObj(a, ghost = !1) {
     ctx.save(), ctx.beginPath(), ctx.arc(bx, by, 7.5, 0, 7), ctx.fillStyle = "#fffdf0", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), ctx.beginPath(), ctx.moveTo(bx - 2.5, by + 6.5), ctx.lineTo(bx + 1, by + 12), ctx.lineTo(bx + 3, by + 6), ctx.fillStyle = "#fffdf0", ctx.fill(), drawChunkyText(ctx, "!", bx, by + 0.5, 12, { mode: "btn", fill: "#e0524f", outline: 2 }), ctx.restore();
   }
   if (H2 && !ghost && drawNurseHud(a, H2, x, y, frozen), frozen && (ctx.save(), ctx.globalAlpha = 0.55, rr(ctx, x - 17 * a.size, y - 24 * a.size, 34 * a.size, 32 * a.size, 7), ctx.fillStyle = "#d6f3ff", ctx.fill(), ctx.lineWidth = 1.5, ctx.strokeStyle = "#8fd0f5", ctx.stroke(), ctx.restore()), a.slow > 0.01 && !frozen && (ctx.fillStyle = "rgba(255,240,160,0.8)", ctx.beginPath(), ctx.ellipse(x, y + 8, 9 * a.size, 2.5, 0, 0, 7), ctx.fill()), a.stunT > 0 && !frozen && stunStars(ctx, x, y - 30 * a.size, S.t + a.id, a.size), a.charmT > 0 && heart(ctx, x + Math.sin(S.t * 4 + a.id) * 4, y - 32 * a.size - Math.abs(Math.sin(S.t * 3)) * 4, 3, "#ff8fbf"), a.shieldMax > 0 && !ghost && drawShield(a, x, y), a.hp < a.maxHp && !ghost) {
-    let w = a.type === "queen" || a.type === "queen3" || a.type === "queen4" || a.type === "queen5" ? 60 : 22, hy = y - (a.flying ? 44 : 33) * a.size;
+    let w = a.type === "queen" || a.type === "queen3" || a.type === "queen4" || a.type === "queen5" || a.type === "queen6" ? 60 : 22, hy = y - (a.flying ? 44 : 33) * a.size;
     rr(ctx, x - w / 2 - 1, hy - 1, w + 2, 6, 3), ctx.fillStyle = INK, ctx.fill();
     let f = Math.max(0, a.hp / a.maxHp);
     rr(ctx, x - w / 2, hy, w * f, 4, 2), ctx.fillStyle = f > 0.5 ? "#8fe388" : f > 0.25 ? "#ffd45e" : "#ff7a7a", ctx.fill();
@@ -8757,6 +9806,13 @@ function renderFx(dt) {
       case "flash":
         ctx.globalAlpha = 1 - k, ctx.fillStyle = f.col, ctx.fillRect(0, 0, MAP_W, MAP_H);
         break;
+      case "wchip": {
+        let t = k * f.max, inn = Math.min(1, t / 0.18), ease = 1 - (1 - inn) * (1 - inn), fade = t > 0.45 ? Math.max(0, 1 - (t - 0.45) / 0.15) : 1, rm = reducedMotion();
+        ctx.globalAlpha = Math.min(1, inn * 1.5) * fade, ctx.translate(rm ? 0 : -60 * (1 - ease), 0);
+        let w = 132, h = 26, x0 = 200 - w / 2, y0 = 40;
+        rr(ctx, x0, y0, w, h, 13), ctx.fillStyle = f.col || "#fff2b8", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), text(ctx, f.s, 200, y0 + h / 2 + 0.5, 13, INK, "center", null);
+        break;
+      }
       case "banner":
         if (f.pill) {
           let t = k * f.max, rm = reducedMotion(), inn = Math.min(1, t / 0.18), ease = 1 - (1 - inn) * (1 - inn), fade = t > 0.88 ? Math.max(0, 1 - (t - 0.88) / 0.2) : 1, w = f.last ? 190 : 150, h = 36;
@@ -8812,7 +9868,15 @@ function renderUiFx(dt) {
 function treatKind(b) {
   return treatOf(b ? b.levelIndex : 0);
 }
-var foodBarSt = { b: null, prev: 1, flash: 0, drain: null };
+var foodBarSt = { b: null, prev: 1, flash: 0, drain: null }, chipSt = { b: null, waves: {}, food: !1 };
+function battleChips(b, f) {
+  if (chipSt.b !== b && (chipSt = { b, waves: {}, food: !1 }), b.result == null && b.nextWave >= 1 && b.nextWave < b.totalWaves && b.ants.length === 0 && b.pending.length === 0 && !chipSt.waves[b.nextWave] && (chipSt.waves[b.nextWave] = !0, addFx({ k: "wchip", s: `Wave ${b.nextWave} cleared`, life: 0.6, max: 0.6 }), !reducedMotion()))
+    for (let i = 0; i < 6; i++) addFx({ k: "star", ci: i, x: 200 + (i - 2.5) * 22, y: MAP_Y + 20, vx: (i - 2.5) * 10, vy: -90, life: 0.5, max: 0.5 });
+  if (f > 0 && f < 0.25) {
+    let pa = reducedMotion() ? 0.9 : 0.45 + 0.45 * (0.5 + 0.5 * Math.sin(S.t * Math.PI * 2 * 1.2));
+    ctx.save(), rr(ctx, 60, 22, 84, 20, 10), ctx.lineWidth = 3, ctx.strokeStyle = `rgba(255,138,138,${pa})`, ctx.stroke(), ctx.restore(), chipSt.food || (chipSt.food = !0, addFx({ k: "wchip", s: "Food low!", col: "#ffd0d0", life: 0.6, max: 0.6 }));
+  }
+}
 function renderHud(b) {
   panel(6, 6, 388, 54, "#fff6ee", 16), drawTreat(ctx, treatKind(b), 30, 33, b.foodStored / b.cfg.foodHP, S.t, { ouch: S.cookieOuch > S.t, react: reaction(S.treat, S.t) });
   let f = b.foodStored / b.cfg.foodHP;
@@ -8822,6 +9886,7 @@ function renderHud(b) {
     foodBarSt.t = S.t, foodBarSt.flash = Math.max(0, foodBarSt.flash - dt * (0.5 / 0.12)), foodBarSt.drain && (foodBarSt.drain.a -= dt / 0.4, foodBarSt.drain.a <= 0 && (foodBarSt.drain = null)), drawFoodBar(ctx, f, `${Math.floor(b.foodStored + 1e-6)}`, S.t, { flash: reducedMotion() ? 0 : foodBarSt.flash, drain: reducedMotion() ? null : foodBarSt.drain, still: reducedMotion() });
   } else
     rr(ctx, 60, 22, 84, 20, 10), ctx.fillStyle = "#f0e0d8", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), f > 0 && (rr(ctx, 62, 24, 80 * f, 16, 8), ctx.fillStyle = f >= 0.9 ? "#8fe388" : f >= 0.5 ? "#ffd45e" : "#ff8a8a", ctx.fill()), text(ctx, `${Math.floor(b.foodStored + 1e-6)}`, 102, 33, 13, "#fff");
+  ART81 && battleChips(b, f);
   let carried = b.ants.reduce((s, a) => s + (a.trips === 0 ? a.carrying : 0), 0);
   carried && text(ctx, `${fmtFood(carried)} carried off!`, 102, 51, 12, "#c0392b", "center", null), text(ctx, `Wave ${Math.min(b.nextWave, b.totalWaves)}/${b.totalWaves}`, 184, 26, 16, "#ffb3c1", "center", INK, "bold", !0), hudPreviewLast = null, stripNoRoom && drawHudPreview(b) || text(ctx, `Lv ${b.levelIndex + 1}`, 184, 46, 12, "#a08090", "center", null), ctx.save(), ctx.translate(252, 33), rr(ctx, -31, -14, 62, 28, 14), ctx.fillStyle = "#e9f7ff", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), diamondIcon(ctx, -15, 0, 0.95), text(ctx, String(S.save.diamonds || 0), 8, 1, 16, "#7fd3ff", "center", INK, "bold", !0), ctx.restore(), S.crumbShake = Math.max(0, S.crumbShake - 1 / 60), S.crumbPulse = Math.max(0, S.crumbPulse - 1 / 60);
   let cbump = S.crumbBump > 0 ? 0.08 * Math.sin(Math.PI * (1 - S.crumbBump / 0.12)) : 0;
@@ -8891,7 +9956,9 @@ function plainText(s, x, y, size, col, align = "left", weight = "500") {
 var TRAY = { cardY: 6, cardH: 94, waveY: 6, waveH: 48, rerollY: 58, rerollH: 36, rowY: 108, rowH: 44 };
 function renderTray(b) {
   let y0 = TRAY_Y, L = TRAY;
-  bakedBox(ctx, "tray", 4, y0, 392, H - y0 - 8, 4, (g, w, h) => {
+  bakedBox(ctx, "tray", 4, y0, 392, H - y0 - 8, 12, (g, w, h) => {
+    if (ART81) for (let [dy, al] of [[7, 0.07], [5, 0.09], [3, 0.09]])
+      rrPath(g, 0, dy, w, h, 18), g.fillStyle = `rgba(70,35,50,${al})`, g.fill();
     drawBeveledTile(g, 0, 0, w, h, "#ffe3d2", { lip: 4, r: 18, lw: 3, hi: 0.6 }), g.save(), rrPath(g, 3, 3, w - 6, h - 6, 15), g.clip(), g.fillStyle = "rgba(255,213,191,0.55)";
     for (let x = 0; x < w; x += 24) g.fillRect(x + 6, 0, 12, h);
     for (let y = 0; y < h; y += 24) g.fillRect(0, y + 6, w, 12);
@@ -8902,7 +9969,7 @@ function renderTray(b) {
     let x = 12 + i * 94, y = y0 + L.cardY, w = 88, h = L.cardH, selected = S.sel && S.sel.kind === "card" && S.sel.i === i || S.drag && S.drag.i === i;
     S.slotFlip[i] = Math.max(0, (S.slotFlip[i] || 0) - 1 / 60);
     let shake = !afford && S.crumbShake > 0 ? Math.sin(S.t * 60) * 3 : 0;
-    ctx.save(), ctx.translate(x + w / 2 + shake, y + h / 2), ctx.scale(Math.max(0.05, S.slotFlip[i] > 0 ? 1 - Math.sin(S.slotFlip[i] / 0.3 * Math.PI) : 1), 1), ctx.translate(-(x + w / 2), -(y + h / 2)), drawCard(x, y, w, h, b.picks[i], { cost, afford, selected, lift: selected ? 4 : 0, level: Math.min(S.save.cards[b.picks[i]].level, b.cardLevelCap || 1 / 0) }), ctx.restore(), button("pick" + i, x - 3, y0 + 2, w + 6, L.cardH + 8, () => {
+    ctx.save(), ctx.translate(x + w / 2 + shake, y + h / 2), ctx.scale(Math.max(0.05, S.slotFlip[i] > 0 ? 1 - Math.sin(S.slotFlip[i] / 0.3 * Math.PI) : 1), 1), ctx.translate(-(x + w / 2), -(y + h / 2)), drawCard(x, y, w, h, b.picks[i], { cost, afford, selected, lift: selected ? 4 : ART81 && afford ? 2 : 0, level: Math.min(S.save.cards[b.picks[i]].level, b.cardLevelCap || 1 / 0) }), ctx.restore(), button("pick" + i, x - 3, y0 + 2, w + 6, L.cardH + 8, () => {
       S.sel && S.sel.kind === "card" && S.sel.i === i ? S.sel = null : (S.sel = { kind: "card", i }, S.info = null, afford || needCrumbs(cost)), sfx("tap");
     }, { onDown: (p) => {
       S.drag = { i, x: p.x, y: p.y, moved: !1 };
@@ -8960,7 +10027,7 @@ function renderPause() {
   });
 }
 function drawStarMoment(MO, rt, tRes) {
-  let rm = reducedMotion(), CX = 200, CY = 345, T = MOMENT_T, amount = Math.round(rm ? MO.amount * Math.min(1, Math.max(0, (rt - 0.2) / 0.3)) : MO.amount * (1 - Math.pow(1 - Math.min(1, Math.max(0, (rt - T.burst) / (T.count - T.burst))), 3))), x = CX, y = CY, sc = 1, rot = 0, al = 1;
+  let rm = reducedMotion(), CX = 200, CY = 345, T = MOMENT_T, amount = Math.round(rm ? MO.amount * Math.min(1, Math.max(0, (rt - 0.2) / 0.3)) : MO.amount * (1 - Math.pow(1 - Math.min(1, Math.max(0, (rt - T.burst) / (T.countDone - T.burst))), 3))), x = CX, y = CY, sc = 1, rot = 0, al = 1;
   if (rm)
     al = rt < 0.2 ? rt / 0.2 : rt > 0.85 ? Math.max(0, 1 - (rt - 0.85) / 0.25) : 1;
   else if (rt < T.drop) {
@@ -8976,7 +10043,7 @@ function drawStarMoment(MO, rt, tRes) {
     let k = (rt - T.count) / 0.12;
     sc = 1 + 0.08 * Math.sin(k * Math.PI);
   }
-  if (!rm && rt >= T.shake - 0.01 && rt < T.burst + 0.2 && lightBurst(ctx, CX, CY, 150 * Math.min(1, (rt - T.shake + 0.05) / 0.3), tRes * 2, { alpha: 0.7, rays: 12 }), !rm && rt >= T.burst && rt < T.burst + 0.35 && MO.sfx < 1 && (MO.sfx = 1, sfx("upgrade")), rm && rt >= 0.2 && MO.sfx < 1 && (MO.sfx = 1, sfx("win")), !rm && rt >= T.burst && rt < T.count) {
+  if (!rm && rt >= T.shake - 0.01 && rt < T.burst + 0.2 && lightBurst(ctx, CX, CY, 150 * Math.min(1, (rt - T.shake + 0.05) / 0.3), tRes * 2, { alpha: 0.7, rays: 12 }), !rm && rt >= T.burst && rt < T.burst + 0.35 && MO.sfx < 1 && (MO.sfx = 1, sfx("upgrade")), rm && rt >= 0.2 && MO.sfx < 1 && (MO.sfx = 1, sfx("win")), !rm && rt >= T.burst && rt < T.countDone) {
     let n = Math.floor((rt - T.burst) / 0.15);
     n > MO.sfx - 1 && n < 7 && (MO.sfx = n + 2, sfx("pop"));
   }
@@ -9027,7 +10094,7 @@ function renderResult(dt) {
       ctx.save(), ctx.translate(ax, 240 - hop(k)), ctx.scale(1.25 * (k ? -1 : 1), 1.25), ctx.drawImage(sp.cv, -sp.ox, -sp.oy, sp.w, sp.h), ctx.restore(), contactShadow(ctx, ax, 244, 20, 5, 0.22);
     }
   }
-  R.queenKilled && plainFit(tk === "donut" ? "Way to go, you saved the donut!" : tk === "cake" ? "Way to go, you saved the cake!" : tk === "pie" ? "Way to go, you saved the pie!" : tk === "sundae" ? "Way to go, you saved the sundae!" : "Way to go, you saved the cookies!", 200, 180, 300, 13, "#e0607e", "center", "800");
+  R.queenKilled && plainFit(tk === "pancake" ? "Way to go, you saved the pancakes!" : tk === "donut" ? "Way to go, you saved the donut!" : tk === "cake" ? "Way to go, you saved the cake!" : tk === "pie" ? "Way to go, you saved the pie!" : tk === "sundae" ? "Way to go, you saved the sundae!" : "Way to go, you saved the cookies!", 200, 180, 300, 13, "#e0607e", "center", "800");
   for (let s = 0; s < 3; s++) {
     let on = s < R.stars && R.t > 0.3 + s * 0.25, sc = on ? 1 + Math.max(0, 0.2 - (R.t - 0.3 - s * 0.25)) * 3 : 1;
     starShape(ctx, 140 + s * 60, 270, 18 * sc, on ? "#ffd45e" : "#e8dde4", 2.5);
@@ -9039,7 +10106,7 @@ function renderResult(dt) {
   let bodyA = MO && !R.skipped ? Math.max(0, Math.min(1, (rtM - MOMENT_T.hold) / 0.35)) : 1;
   ctx.save(), ctx.globalAlpha = bodyA, text(ctx, `Food left: ${fmtFood(S.battle.foodStored)}/${S.battle.cfg.foodHP}   Ants beaten: ${R.kills}`, 200, 302, 12, "#7a5a6a", "center", null);
   let P = out.parts || {}, rows = [];
-  R.win ? (rows.push(["Victory", P.base]), rows.push(["Food left", P.food]), rows.push(["Ants beaten", P.kills]), P.level && rows.push(["Level reward", P.level]), P.firstClear && rows.push(["First clear", P.firstClear]), P.stars && rows.push(["Star bonus", P.stars])) : rows.push(["Ants beaten", P.kills || 0]), rows.push([R.win ? "Time survived" : `Time survived${out.coins >= ECONOMY.lossCap ? ` (max ${ECONOMY.lossCap})` : ""}`, P.time || 0]);
+  R.win ? (rows.push(["Victory", P.base]), rows.push(["Food left", P.food]), rows.push(["Ants beaten", P.kills]), P.level && rows.push(["Level reward", P.level]), P.firstClear && rows.push(["First clear", P.firstClear]), P.stars && rows.push(["Star bonus", P.stars]), P.daily && rows.push(["Daily first win", P.daily])) : rows.push(["Ants beaten", P.kills || 0]), rows.push([R.win ? "Time survived" : `Time survived${out.coins >= ECONOMY.lossCap ? ` (max ${ECONOMY.lossCap})` : ""}`, P.time || 0]);
   let RS = rows.length > 5 ? 14 : 16;
   rr(ctx, 70, 316, 260, 14 + rows.length * RS, 10), ctx.fillStyle = "#f6ece8", ctx.fill(), rows.forEach(([l, v], i) => {
     text(ctx, l, 84, 330 + i * RS, 12, "#7a5a6a", "left", null), text(ctx, `+${v}`, 316, 330 + i * RS, 12, "#c9962a", "right", null);
@@ -9055,9 +10122,13 @@ function renderResult(dt) {
     }
   }
   let gift = out.bossGift && !celebrating, twin = gift && out.prize;
-  yy += 20, twin || (text(ctx, `(${R.crumbsLeft} unspent crumbs vanish)`, 200, yy, 12, "#a08090", "center", null), yy += 20), R.win || text(ctx, "Win to earn cards and prizes!", 200, yy, 12, "#a08090", "center", null), !R.win && R.hint && (rr(ctx, 50, yy + 14, 300, 26, 13), ctx.fillStyle = "#fff2b8", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = "#e0a830", ctx.stroke(), plainFit(R.hint, 200, yy + 27, 280, 13, "#a8661a", "center", "800")), out.booster && (rr(ctx, 70, yy - 12, 260, 26, 12), ctx.fillStyle = "#ffe9f0", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = "#ff9ab0", ctx.stroke(), ctx.save(), ctx.translate(92, yy + 1), ctx.scale(0.62, 0.62), drawBonusIcon(ctx, out.booster.id, S.t), ctx.restore(), text(ctx, `First clear: +1 ${BONUSES[out.booster.id].name} booster`, 210, yy + 1, 12.5, "#e0607e", "center", null), yy += 30);
+  if (yy += 20, twin || (text(ctx, `(${R.crumbsLeft} unspent crumbs vanish)`, 200, yy, 12, "#a08090", "center", null), yy += 20), R.win || text(ctx, "Win to earn cards and prizes!", 200, yy, 12, "#a08090", "center", null), !R.win && R.hint) {
+    let h = R.hint, mid = h.length > 38 ? h.lastIndexOf(" - ", 40) > 10 ? h.lastIndexOf(" - ", 40) + 2 : h.lastIndexOf(". ", 40) > 10 ? h.lastIndexOf(". ", 40) + 1 : h.lastIndexOf(" ", Math.ceil(h.length / 2) + 4) : -1, lines = mid > 0 ? [h.slice(0, mid).trim(), h.slice(mid).replace(/^[- ]+/, "").trim()] : [h], ph = lines.length > 1 ? 40 : 26;
+    rr(ctx, 50, yy + 14, 300, ph, 13), ctx.fillStyle = "#fff2b8", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = "#e0a830", ctx.stroke(), lines.forEach((ln, i) => plainFit(ln, 200, yy + 27 + i * 15, 280, 13, "#a8661a", "center", "800"));
+  }
+  out.booster && (rr(ctx, 70, yy - 12, 260, 26, 12), ctx.fillStyle = "#ffe9f0", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = "#ff9ab0", ctx.stroke(), ctx.save(), ctx.translate(92, yy + 1), ctx.scale(0.62, 0.62), drawBonusIcon(ctx, out.booster.id, S.t), ctx.restore(), text(ctx, `First clear: +1 ${BONUSES[out.booster.id].name} booster`, 210, yy + 1, 12.5, "#e0607e", "center", null), yy += 30);
   let strip = (cy, pz, label, k) => {
-    ctx.save(), ctx.translate(200, cy), ctx.scale(0.5 + k * 0.5, 0.5 + k * 0.5), rr(ctx, -130, -15, 260, 30, 14), ctx.fillStyle = "#fff2b8", ctx.fill(), ctx.lineWidth = 2.4, ctx.strokeStyle = "#e0a830", ctx.stroke(), pz.kind === "bonus" ? (ctx.save(), ctx.translate(-108, 0), ctx.scale(0.8, 0.8), drawBonusIcon(ctx, pz.id, S.t), ctx.restore()) : (ctx.save(), ctx.translate(-108, 6), ctx.scale(0.42, 0.42), drawTower(ctx, pz.id, S.t, null), ctx.restore()), text(ctx, label, 10, 1, 13, "#c47a12"), ctx.restore();
+    k > 0 && (ctx.save(), ctx.translate(200, cy), ctx.scale(0.5 + k * 0.5, 0.5 + k * 0.5), rr(ctx, -130, -15, 260, 30, 14), ctx.fillStyle = "#fff2b8", ctx.fill(), ctx.lineWidth = 2.4, ctx.strokeStyle = "#e0a830", ctx.stroke(), pz.kind === "bonus" ? (ctx.save(), ctx.translate(-108, 0), ctx.scale(0.8, 0.8), drawBonusIcon(ctx, pz.id, S.t), ctx.restore()) : (ctx.save(), ctx.translate(-108, 6), ctx.scale(0.42, 0.42), drawTower(ctx, pz.id, S.t, null), ctx.restore()), text(ctx, label, 10, 1, 13, "#c47a12"), ctx.restore());
   }, cardLabel = (pz, head) => pz.newCard ? `${head}: new tower - ${TOWERS[pz.id].short}!` : `${head === "Prize" ? "You won a card" : head}: ${TOWERS[pz.id].short} L${pz.level}`;
   if (out.prize && !celebrating) {
     let k = Math.min(1, (R.t - UI.perfectAnimTime) * 4), pz = out.prize;
@@ -9073,6 +10144,10 @@ function renderResult(dt) {
     c.vy += 420 * dt, c.x += c.vx * dt, c.y += c.vy * dt, c.r += dt * 8, c.y < 760 && candyStar(ctx, c.x, c.y, 4 + c.r * 7 % 3, c.c, 1.2, c.r);
   if (celebrating || MO && !R.skipped && R.t < MO.t0 + MO.dur) return;
   let by = 540;
+  if (R.win && ART81) {
+    let lvB = S.save.levels[S.levelIndex] || {}, st = lvB.stars || 0, bt = lvB.bestTime || 0;
+    text(ctx, `Best: ${"\u2605".repeat(st)}${"\u2606".repeat(Math.max(0, 3 - st))}${bt ? ` \xB7 ${Math.floor(bt / 60)}:${String(bt % 60).padStart(2, "0")}` : ""}`, 200, by - 22, 13, "#7a5a6a", "center", null);
+  }
   if (out.zapperGift && zapperGiftPending(S.save)) {
     drawButton(100, by, 200, 50, "Continue", "#9fe0b5"), button("rcontinue", 100, by, 200, 50, () => {
       S.battle = null, go("map");
@@ -9088,8 +10163,28 @@ function renderResult(dt) {
 function cardStatKeys(id) {
   return id === "ball" ? ["power", "rate", "ballRadius"] : id === "tractor" ? ["liftSize", "rate", "scoop"] : ["power", "rate", "range"];
 }
+function specialState(id, level, cl) {
+  let T = TOWERS[id];
+  return !T || !T.special ? null : cl >= SPECIAL_CARD_LEVEL ? (level ? level.world : highestWorld(S.save)) >= SPECIALS_FROM_WORLD && tuning_default.specials !== !1 ? "active" : "asleep" : "locked";
+}
+function specialRow(id, st, x, cy, w) {
+  let T = TOWERS[id], sp = T.special;
+  ctx.save(), starShape ? starShape(ctx, x + 6, cy, 5.5, st === "active" ? "#ffd24a" : "#d4cac2") : (ctx.beginPath(), ctx.arc(x + 6, cy, 4.5, 0, 7), ctx.fillStyle = st === "active" ? "#ffd24a" : "#d4cac2", ctx.fill()), ctx.restore();
+  let tx = x + 18, tw = w - 18;
+  if (st === "locked") plainFit(`Special unlocks at card level ${SPECIAL_CARD_LEVEL}`, tx, cy, tw, 12, "#8a7f86", "left", "600");
+  else if (st === "asleep") {
+    ctx.font = `800 12px ${FONT}`;
+    let nw = ctx.measureText(sp.name).width;
+    plainText(sp.name, tx, cy, 12, "#9a8f7a", "left", "800"), plainFit(`Awakens in World ${SPECIALS_FROM_WORLD}`, tx + nw + 6, cy, tw - nw - 6, 12, "#9a8f7a", "left", "600");
+  } else {
+    ctx.font = `800 12px ${FONT}`;
+    let nw = ctx.measureText(sp.name).width;
+    plainText(sp.name, tx, cy, 12, shade(T.color, -0.4), "left", "800"), plainFit(sp.short, tx + nw + 6, cy, tw - nw - 6, 12, INFO_INK, "left", "600");
+  }
+}
 function cardInfoPanel(id, x, y, w, h, opt = {}) {
-  if (panel(x, y, w, h, "#ffffff", 14), S.layoutCardPanel = { x, y, w, h }, !id) {
+  let hasSp = !!(id && ART81 && TOWERS[id] && TOWERS[id].special && opt.special !== !1);
+  if (panel(x, y, w, h + (hasSp ? 14 : 0), "#ffffff", 14), S.layoutCardPanel = { x, y, w, h }, !id) {
     plainText(opt.hint || "Tap a card to see its stats.", x + w / 2, y + h / 2, 12.5, "#a08090", "center", "600");
     return;
   }
@@ -9103,7 +10198,11 @@ function cardInfoPanel(id, x, y, w, h, opt = {}) {
     rr(ctx, bx, by, bw, cmp ? 36 : 38, 9), ctx.fillStyle = nk.has(k) ? "#eefbe9" : "#f7efeb", ctx.fill(), ctx.lineWidth = nk.has(k) ? 2 : 1.2, ctx.strokeStyle = nk.has(k) ? "#8fd18f" : "#e0cfd4", ctx.stroke(), plainFit(k === "scoop" ? "Scoops" : statLabel(id, k), bx + 7, by + (cmp ? 9.5 : 10), bw - 12, 12, INFO_SOFT, "left", "600"), plainFit(k === "scoop" ? "1 trail tile" : formatStat(id, k, towerStat(id, k, 1, Le)), bx + bw / 2, by + (cmp ? 24.5 : 26), bw - 10, 13.5, INFO_INK, "center", "700");
   });
   let line = atCap ? `At the world cap (L${capCard}): higher cards add nothing yet` : next.length ? `Next card level L${L + 1}: ` + next.map((d) => diffText(id, d)).join(" + ") : "Top card level (L10)!";
-  plainFit(line, x + w / 2, y + (cmp ? h - 9 : 102), w - 20, 12, next.length ? "#2f8a36" : "#c9962a", "center", "700"), h > 118 && !opt.noFoot && plainFit(opt.foot || (own ? "Merge cards on its own screen to reach the next level." : `Get it in the Shop (${unlockPrice(id)}c) or as a prize.`), x + w / 2, y + h - 13, w - 20, 12, "#a08090", "center", "600");
+  if (plainFit(line, x + w / 2, y + (cmp ? h - 9 : 102), w - 20, 12, next.length ? "#2f8a36" : "#c9962a", "center", "700"), hasSp) {
+    let capC = highestWorldCap(), Lc = capC ? Math.min(L, capC) : L;
+    specialRow(id, specialState(id, null, own ? Lc : 0), x + 12, y + h + 7, w - 24);
+  }
+  h > 118 && !opt.noFoot && plainFit(opt.foot || (own ? "Merge cards on its own screen to reach the next level." : `Get it in the Shop (${unlockPrice(id)}c) or as a prize.`), x + w / 2, y + h - 13, w - 20, 12, "#a08090", "center", "600");
 }
 var CARD_BANDS = [[3, "#d9965f", "#f3c79c"], [6, "#9fb2c8", "#e1e9f2"], [9, "#e8b830", "#ffe9a0"], [10, "#ff7fb8", "#ffd6ec"]];
 function cardBand(L) {
@@ -9152,7 +10251,7 @@ function drawCardPic(x, y, w, h, type, opt = {}) {
     let p = 1 + Math.sin(S.t * 6) * 0.08;
     ctx.save(), ctx.translate(x + w - 10, y + 10), ctx.scale(p, p), blob(ctx, 0, 0, 11, 11, "#ff6f91", 2), text(ctx, "!", 0, 0.5, 14, "#fff"), ctx.restore();
   }
-  opt.fresh && (rr(ctx, x + w / 2 - 19, y - 9, 38, 17, 8), ctx.fillStyle = "#ffd45e", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), text(ctx, "NEW", x + w / 2, y - 0.5, 12, "#fff")), ctx.restore();
+  opt.spStar && (ctx.beginPath(), ctx.arc(x + 11, y + 32, 8.5, 0, 7), ctx.fillStyle = "#5a4058", ctx.fill(), starShape(ctx, x + 11, y + 32, 5.8, "#ffd24a", 1.2)), opt.fresh && (rr(ctx, x + w / 2 - 19, y - 9, 38, 17, 8), ctx.fillStyle = "#ffd45e", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), text(ctx, "NEW", x + w / 2, y - 0.5, 12, "#fff")), ctx.restore();
 }
 function doMergeAll() {
   let done = mergeAll(S.save);
@@ -9165,9 +10264,11 @@ function doMergeAll() {
   S.mergeAnim = { id: top.id, from: top.from, to: top.to, n: 3, t: 0, all: done.length };
 }
 function renderCards() {
-  panel(12, 12, 376, 636, "#fff6ee"), text(ctx, "Cards", 200, 36, 26, "#b5d8ff"), coinIcon(ctx, 304, 60, 1), text(ctx, String(S.save.coins), 336, 61, 15, "#ffd45e"), plainText("Tap a card: stats.  Tap again: open.", 28, 60, 12, "#7a5a6a", "left", "600"), S.layoutMerge = [], ALL_CARDS.forEach((id, k) => {
+  panel(12, 12, 376, 636, "#fff6ee"), text(ctx, "Cards", 200, 36, 26, "#b5d8ff"), ART81 && (drawButton(274, 16, 106, 36, "Ant Book", "#d6f0c8", { size: 13 }), button("antbook", 274, 8, 106, 52, () => {
+    sfx("tap"), S.screen = "antbook", S.antBookSel = null;
+  })), coinIcon(ctx, 304, 60, 1), text(ctx, String(S.save.coins), 336, 61, 15, "#ffd45e"), plainText("Tap a card: stats.  Tap again: open.", 28, 60, 12, "#7a5a6a", "left", "600"), S.layoutMerge = [], ALL_CARDS.forEach((id, k) => {
     let col = k % 4, row = Math.floor(k / 4), x = 30 + col * 88, y = 80 + row * 104, w = 76, h = 96, c = S.save.cards[id], ready = c.unlocked && mergeReady(S.save, id);
-    drawCardPic(x, y, w, h, id, { locked: !c.unlocked, lockText: "Shop or prize", level: c.level, selected: S.cardsSel === id, mergeReady: ready, fresh: c.fresh }), button("card" + id, x, y, w, h, () => {
+    drawCardPic(x, y, w, h, id, { locked: !c.unlocked, lockText: "Shop or prize", level: c.level, selected: S.cardsSel === id, mergeReady: ready, fresh: c.fresh, spStar: !!(ART81 && c.unlocked && specialState(id, null, Math.min(c.level, highestWorldCap() || 99)) === "active") }), button("card" + id, x, y, w, h, () => {
       S.cardsSel === id && c.unlocked ? openCardView(id) : S.cardsSel = id, sfx("tap");
     }), ready && S.layoutMerge.push(id);
   }), cardInfoPanel(S.cardsSel, 24, 490, 352, 98, { hint: "Tap a card to see its stats.", noFoot: !0 });
@@ -9230,7 +10331,7 @@ function renderCardView() {
     });
   }), cardInfoPanel(id, 24, 497, 352, 97, {});
   let ready = mergeReady(S.save, id);
-  drawButton(24, 604, 352, 34, "Merge all", ready ? "#9fe0b5" : "#e6dce2", { size: 15, r: 12, disabled: !anyMergeReady(S.save) }), button("cvMergeAll", 24, 591, 352, 57, doMergeAll), S.mergeAnim && renderMergeAnim();
+  drawButton(24, 604, 352, 34, "Merge all", ready ? "#9fe0b5" : "#e6dce2", { size: 15, r: 12, disabled: !anyMergeReady(S.save) }), button("cvMergeAll", 24, 604, 352, 44, doMergeAll), S.mergeAnim && renderMergeAnim();
 }
 function renderMergeAnim() {
   let MA = S.mergeAnim;
@@ -9280,7 +10381,9 @@ function countBadge(x, y, n, k) {
 }
 function renderShop() {
   let E = ECONOMY.shop;
-  panel(12, 12, 376, 636, "#fff6ee"), text(ctx, "Shop", 200, 36, 28, "#ffd27a"), panel(62, 56, 132, 32, "#e6f5ff", 16), diamondIcon(ctx, 84, 72, 1), text(ctx, String(S.save.diamonds || 0), 140, 73, 17, "#7fd3ff"), panel(206, 56, 132, 32, "#fff1d6", 16), coinIcon(ctx, 228, 72, 1.1), text(ctx, String(S.save.coins), 284, 73, 17, "#ffd45e"), plainText("No real money, ever. Diamonds come from Daily Rewards.", 200, 101, 12, "#a08090", "center", "600"), panel(26, 112, 348, 62, "#ffe9f0", 14);
+  panel(12, 12, 376, 636, "#fff6ee"), text(ctx, "Shop", 200, 36, 28, "#ffd27a"), ART81 && (drawButton(274, 16, 106, 36, `Cabinet ${skinState(S.save).owned.length}/${SKINS.length}`, "#ffd0e6", { size: 13 }), button("cabinet", 274, 8, 106, 52, () => {
+    sfx("tap"), S.screen = "cabinet";
+  })), panel(62, 56, 132, 32, "#e6f5ff", 16), diamondIcon(ctx, 84, 72, 1), text(ctx, String(S.save.diamonds || 0), 140, 73, 17, "#7fd3ff"), panel(206, 56, 132, 32, "#fff1d6", 16), coinIcon(ctx, 228, 72, 1.1), text(ctx, String(S.save.coins), 284, 73, 17, "#ffd45e"), plainText("No real money, ever. Diamonds come from Daily Rewards.", 200, 101, 12, "#a08090", "center", "600"), panel(26, 112, 348, 62, "#ffe9f0", 14);
   for (let k = 0; k < 3; k++)
     ctx.save(), ctx.translate(58 + k * 14, 146 - k * 3), ctx.rotate(-0.2 + k * 0.2), rr(ctx, -14, -20, 28, 38, 6), ctx.fillStyle = ["#ffb3c1", "#b5d8ff", "#ffd27a"][k], ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), text(ctx, "?", 0, 0, 16), ctx.restore();
   let gift = zapperGiftPending(S.save);
@@ -9318,6 +10421,60 @@ function renderShop() {
   }), cardInfoPanel(S.shopSel, 24, 534, 352, 108, { hint: "Tap (i) under a card to see its stats." }), gift && !S.reveal.length && !S.pack ? onboardSpot({ x: 286, y: 118, w: 82, h: 48, r: 14 }, "gift", claimGift, "Your free pack - tap it!") : !S.pack && !S.reveal.length && S.save.onboard && S.save.onboard.cardsHint === "shop" && onboardSpot(tabRect(1), "tocards", () => {
     S.save.onboard.cardsHint = "cards", persist(), go("cards");
   }, "See your new cards!"), renderUiFx(1 / 60);
+}
+function renderAntBook() {
+  let met = metAnts(S.save), keys = Object.keys(ANTS);
+  panel(12, 12, 376, 636, "#fff6ee"), text(ctx, "Ant Book", 200, 36, 26, "#9fd08a"), drawButton(22, 16, 72, 36, "Back", "#d9cfe0", { size: 14 }), button("abBack", 22, 14, 72, 42, () => {
+    sfx("tap"), S.antBookSel ? S.antBookSel = null : S.screen = "cards";
+  });
+  let sel = S.antBookSel && met.has(S.antBookSel) ? S.antBookSel : null;
+  if (!sel)
+    plainText(`Met ${keys.filter((k) => met.has(k)).length}/${keys.length}. Tap an ant for details.`, 200, 70, 12, "#7a5a6a", "center", "700"), keys.forEach((t, k) => {
+      let col = k % 4, row = Math.floor(k / 4), x = 24 + col * 88, y = 86 + row * 92, w = 80, h = 84, D = ANTS[t], m = met.has(t);
+      rr(ctx, x, y, w, h, 12), ctx.fillStyle = m ? "#fff" : "#efe3de", ctx.fill(), ctx.lineWidth = 2.2, ctx.strokeStyle = INK, ctx.stroke(), ctx.save(), rr(ctx, x + 2, y + 2, w - 4, h - 26, 10), ctx.clip(), ctx.translate(x + w / 2, y + 40);
+      let sz = Math.min(1, 1.3 / D.size);
+      ctx.scale(0.82 * sz, 0.82 * sz), m ? drawAnt(ctx, t, S.t * 1.3 % 1) : (ctx.globalAlpha = 0.35, drawAnt(ctx, t, 0), ctx.globalAlpha = 0.78, ctx.fillStyle = "#efe3de", ctx.fillRect(-26, -26, 52, 52)), ctx.restore(), m ? fitText(D.name.replace(" Ant", ""), x + w / 2, y + 70, w - 6, 12, "#7a4a5e") : plainText("???", x + w / 2, y + 70, 13, "#b9a6b2", "center", "800"), m && button("ab" + t, x, y, w, h, () => {
+        S.antBookSel = t, sfx("tap");
+      });
+    });
+  else {
+    let D = ANTS[sel], lv = antLevels(sel);
+    ctx.save(), ctx.translate(200, 168);
+    let sz = Math.min(1, 1.3 / D.size);
+    ctx.scale(1.9 * sz, 1.9 * sz), D.flying || contactShadow(ctx, 0, 16, 22, 5, 0.22), drawAnt(ctx, sel, S.t * 1.3 % 1), ctx.restore(), text(ctx, D.name, 200, 226, 22, "#7a4a5e");
+    let mx = { hp: Math.max(...Object.values(ANTS).map((a) => a.hp)), speed: Math.max(...Object.values(ANTS).map((a) => a.speed)) };
+    [["HP", Math.log(1 + D.hp) / Math.log(1 + mx.hp), `${D.hp}`, "#ff8aa0"], ["Armor", Math.min(1, (D.armor || 0) / 6), `${D.armor || 0}`, "#8fb8f0"], ["Speed", D.speed / mx.speed, `${D.speed}`, "#9fe0b5"]].forEach(([l, f, v, c], i) => {
+      let y = 258 + i * 28;
+      text(ctx, l, 46, y + 8, 13, "#7a5a6a", "left", null), rr(ctx, 110, y, 200, 16, 8), ctx.fillStyle = "#f0e0d8", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), f > 0.03 && (rr(ctx, 112, y + 2, 196 * Math.min(1, f), 12, 6), ctx.fillStyle = c, ctx.fill()), text(ctx, v, 350, y + 8, 13, "#7a5a6a", "right", null);
+    }), D.flying && text(ctx, "Flies: only air-capable towers hit it", 200, 348, 12, "#4a90e2", "center", null);
+    let lines = wrapLines(ANT_CARD[sel] || D.intro || D.desc || "", 320, 14);
+    lines.forEach((l, k) => text(ctx, l, 200, 376 + k * 19, 14, "#5a4652", "center", null));
+    let shown = lv.slice(0, 12).map((n) => `L${n}`).join(" "), ly = 376 + lines.length * 19 + 16;
+    text(ctx, "Seen on", 200, ly, 13, "#7a5a6a", "center", null), wrapLines(shown + (lv.length > 12 ? " ..." : ""), 320, 13).forEach((l, k) => text(ctx, l, 200, ly + 20 + k * 16, 13, "#a08090", "center", null));
+  }
+}
+function renderCabinet() {
+  let st = skinState(S.save);
+  panel(12, 12, 376, 636, "#fff6ee"), text(ctx, "Cabinet", 200, 36, 28, "#ffd27a"), drawButton(22, 16, 72, 36, "Back", "#d9cfe0", { size: 14 }), button("cabBack", 22, 14, 72, 42, () => {
+    sfx("tap"), S.screen = "shop";
+  }), panel(206, 56, 132, 32, "#fff1d6", 16), coinIcon(ctx, 228, 72, 1.1), text(ctx, String(S.save.coins), 284, 73, 17, "#ffd45e"), plainText("Skins change a pad colour only - never stats.", 200, 108, 12, "#7a5a6a", "center", "700"), SKIN_TOWERS.forEach((tw, i) => {
+    let y0 = 124 + i * 114;
+    plainText(TOWERS[tw].name, 30, y0 + 8, 14, "#7a4a5a", "left", "800"), [{ id: null, name: "Classic", pad: TOWER_PAD[tw] }].concat(SKINS.filter((x) => x.tower === tw)).forEach((ch2, k) => {
+      let x = 26 + k * 88, y = y0 + 18, w = 80, h = 86, own = ch2.id == null || st.owned.includes(ch2.id), on = (st.equipped[tw] || null) === ch2.id;
+      rr(ctx, x, y, w, h, 14), ctx.fillStyle = own ? "#fff" : "#f3e6e0", ctx.fill(), ctx.lineWidth = on ? 4 : 2.5, ctx.strokeStyle = on ? "#52b955" : INK, ctx.stroke(), ctx.beginPath(), ctx.ellipse(x + w / 2, y + 28, 22, 12, 0, 0, 7), ctx.fillStyle = ch2.pad, ctx.fill(), ctx.lineWidth = 2.2, ctx.strokeStyle = INK, ctx.stroke(), ctx.beginPath(), ctx.ellipse(x + w / 2, y + 25, 16, 6, 0, Math.PI * 1.05, Math.PI * 1.95), ctx.lineWidth = 2, ctx.strokeStyle = "rgba(255,255,255,0.45)", ctx.stroke(), fitText(ch2.name, x + w / 2, y + 54, w - 8, 12, "#7a5a6a");
+      let lab = on ? "On" : own ? "Owned" : `${ch2.price}c`, col = on ? "#3a9a45" : own ? "#7a5a6a" : S.save.coins >= ch2.price ? "#c9962a" : "#e0607e";
+      plainText(lab, x + w / 2, y + 73, 13, col, "center", "800"), button("skin" + (ch2.id || tw), x, y, w, h, () => {
+        if (own) {
+          equipSkin(S.save, tw, ch2.id), persist(), sfx("tap");
+          return;
+        }
+        let r = buySkin(S.save, ch2.id);
+        r.ok ? (persist(), sfx("upgrade"), toast(`${ch2.name} unlocked!`)) : toast(r.reason === "coins" ? `Need ${ch2.price} coins` : "Not available");
+      });
+    });
+  });
+  let nx = nextSkinPrice(S.save);
+  plainText(`Owned ${st.owned.length}/${SKINS.length}${nx ? ` - next skin ${nx}c` : " - all collected!"}`, 200, 612, 13, "#7a5a6a", "center", "700");
 }
 function claimGift() {
   let res = claimZapperGift(S.save);

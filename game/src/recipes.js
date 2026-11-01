@@ -207,3 +207,10 @@ export function drawCoinPile(ctx, x, y, k = 1) {
     g.restore();
   });
 }
+
+// v0.8.2 J18: a button scales to 0.96 over 60 ms while pressed and springs 1.04 -> 1.0 over 110 ms on release (transform only; no layout shift). heldMs = time since press, sinceRelMs = time since release (or null).
+export function pressScale(pressed, heldMs, sinceRelMs) {
+  if (pressed) return 1 - 0.04 * Math.min(1, Math.max(0, heldMs) / 60);
+  if (sinceRelMs != null && sinceRelMs >= 0 && sinceRelMs < 110) { const q = 1 - sinceRelMs / 110; return 1 + 0.04 * q * q; }
+  return 1;
+}

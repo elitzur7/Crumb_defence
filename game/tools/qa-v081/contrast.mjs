@@ -8,7 +8,7 @@ const FN = (li) => { const g = window.__game, A = g.A, C = g.C;
   const Lm = (r, gg, b) => 0.2126 * lin(r) + 0.7152 * lin(gg) + 0.0722 * lin(b); const ratio = (a, b) => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
   const cc = document.createElement('canvas').getContext('2d'); const hexL = (hh) => { cc.fillStyle = '#000'; cc.fillStyle = hh; const v = cc.fillStyle; const nn = parseInt(v.slice(1), 16); return Lm((nn >> 16) & 255, (nn >> 8) & 255, nn & 255); };
   const b = g.S.battle; const th = A.THEMES[b.map.theme];
-  const cv = A.renderMapBackground(b.routes, b.map.theme, 400, 480, 1, b.props); const ctx = cv.getContext('2d');
+  const cv = A.renderMapBackground(b.routes, b.map.theme, 400, 480, 1, b.props, b.map.art); const ctx = cv.getContext('2d');
   const px = (x, y) => { const d = ctx.getImageData(Math.round(x) - 1, Math.round(y) - 1, 3, 3).data; let r = 0, gg = 0, bb = 0; for (let i = 0; i < 9; i++) { r += d[i * 4]; gg += d[i * 4 + 1]; bb += d[i * 4 + 2]; } return [r / 9, gg / 9, bb / 9]; };
   const pts = []; for (const rt of b.routes) for (let d = 10; d < rt.length - 10; d += 8) pts.push(rt.at(d));
   const tr = pts.map((p) => px(p.x, p.y)); const avg = (a) => [0, 1, 2].map((k) => a.reduce((s, v) => s + v[k], 0) / a.length);

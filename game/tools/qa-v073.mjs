@@ -30,7 +30,7 @@ async function open(w = 393, h = 852, dpr = 2.75, reduced = false) {
   return { page, G, btns, btn, tap, drawn, errors };
 }
 const DECK = ['slingshot', 'spray', 'glue', 'fan', 'ball'];
-const VER = 'v0.8.1';
+const VER = 'v0.8.2';
 
 // ---------- 1. safe-area inset: frame-loop re-read, orientationchange, visualViewport ----------
 {

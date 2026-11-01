@@ -36,7 +36,7 @@ const FN = `(function(li){
   const Lm = (r, gg, b) => 0.2126 * lin(r) + 0.7152 * lin(gg) + 0.0722 * lin(b); const ratio = (a, b) => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
   const cc = document.createElement('canvas').getContext('2d'); const hexL = (h) => { cc.fillStyle = '#000'; cc.fillStyle = h; const v = cc.fillStyle; const n = parseInt(v.slice(1), 16); return Lm((n >> 16) & 255, (n >> 8) & 255, n & 255); };
   const b = g.S.battle; const th = A.THEMES[b.map.theme];
-  const cv = A.renderMapBackground(b.routes, b.map.theme, 400, 480, 1, b.props); const ctx = cv.getContext('2d');
+  const cv = A.renderMapBackground(b.routes, b.map.theme, 400, 480, 1, b.props, b.map.art); const ctx = cv.getContext('2d');
   const px = (x, y) => { const d = ctx.getImageData(Math.round(x) - 1, Math.round(y) - 1, 3, 3).data; let r = 0, gg = 0, bb = 0; for (let i = 0; i < 9; i++) { r += d[i * 4]; gg += d[i * 4 + 1]; bb += d[i * 4 + 2]; } return [r / 9, gg / 9, bb / 9]; };
   const pts = []; for (const rt of b.routes) for (let d = 10; d < rt.length - 10; d += 8) pts.push(rt.at(d));
   const tr = pts.map((p) => px(p.x, p.y)); const avg = (a) => [0, 1, 2].map((k) => a.reduce((s, v) => s + v[k], 0) / a.length);
@@ -58,7 +58,7 @@ const FN = `(function(li){
     await G((li) => { const g = window.__game; g.go('map'); g.startBattle(li, ['slingshot'], [], 1); }, li); await sleep(100);
     cont.push(await G(`${FN}(${li})`));
   }
-  ok(n === 50, `${n} maps measured (20 + the 10 W3 maps + the 10 W4 maps + the 10 W5 maps)`);
+  ok(n === 60, `${n} maps measured (20 + the 10 W3 maps + the 10 W4 maps + the 10 W5 maps + the 10 W6 maps)`);
   const mn = (k) => Math.min(...cont.map((c) => c[k])), mx = (k) => Math.max(...cont.map((c) => c[k]));
   ok(mn('trailVsGround') >= 1.40, `A1 trail vs ground mean >= 1.40 (min ${mn('trailVsGround')})`);
   ok(mn('trailVsLightest') >= 1.25, `A2 trail vs lightest ground tile >= 1.25 (min ${mn('trailVsLightest')}; v0.7.5 1.27)`);
@@ -90,7 +90,7 @@ const FN = `(function(li){
     const r = await G(() => {
       const g = window.__game, A = g.A, C = g.C, b = g.S.battle; const side = Object.keys(C.TOWERS).filter((id) => C.TOWERS[id].place === 'side'), path = Object.keys(C.TOWERS).filter((id) => C.TOWERS[id].place === 'path');
       const D = 4, cell = 60; const out = { side: side.length, path, towers: [] };
-      const bg = A.renderMapBackground(b.routes, b.map.theme, 400, 480, D, b.props);
+      const bg = A.renderMapBackground(b.routes, b.map.theme, 400, 480, D, b.props, b.map.art);
       const cv = document.createElement('canvas'); cv.width = (side.length + path.length) * cell * D; cv.height = cell * D; const c = cv.getContext('2d'); c.scale(D, D);
       c.drawImage(bg, 0, 0, cv.width, cv.height, 0, 0, cv.width, cv.height);
       const lin = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; const Lm = (r, g2, b2) => 0.2126 * lin(r) + 0.7152 * lin(g2) + 0.0722 * lin(b2); const ratio = (a, b2) => (Math.max(a, b2) + 0.05) / (Math.min(a, b2) + 0.05);
@@ -115,7 +115,7 @@ const FN = `(function(li){
   }
   const sideOnly = res.flatMap((x) => x.r.towers.filter((t) => ['slingshot', 'spray', 'sound', 'ball', 'fan', 'lizard', 'laser', 'zapper', 'tractor'].includes(t.id)).map((t) => ({ th: x.th, ...t })));
   const pathOnly = res.flatMap((x) => x.r.towers.filter((t) => !['slingshot', 'spray', 'sound', 'ball', 'fan', 'lizard', 'laser', 'zapper', 'tractor'].includes(t.id)));
-  ok(res.length === 9 && res.every((x) => x.r.side === 9) && sideOnly.length === 81, `V2 9 side towers x ${res.length} themes = ${sideOnly.length} samples`);
+  ok(res.length === 10 && res.every((x) => x.r.side === 9) && sideOnly.length === 90, `V2 9 side towers x ${res.length} themes = ${sideOnly.length} samples`);
   ok(sideOnly.every((t) => t.ring), `V2 the INK ring stroke is drawn under every side tower on every theme (${sideOnly.filter((t) => !t.ring).map((t) => t.id + '@' + t.th)} missing)`);
   ok(sideOnly.every((t) => t.lowerMinX >= -21 && t.lowerMaxX <= 21 && t.maxY <= 21.5), `V2 ring stays inside the 40px tile (lower x ${Math.min(...sideOnly.map((t) => t.lowerMinX))}..${Math.max(...sideOnly.map((t) => t.lowerMaxX))}, max y ${Math.max(...sideOnly.map((t) => t.maxY))})`);
   ok(pathOnly.every((t) => !t.ring), `V2 path items (${[...new Set(pathOnly.map((t) => t.id))]}) get no ring`);

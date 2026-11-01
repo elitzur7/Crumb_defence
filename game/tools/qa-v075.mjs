@@ -42,7 +42,7 @@ const FN = `(function(li){
   const Lm = (r, gg, b) => 0.2126 * lin(r) + 0.7152 * lin(gg) + 0.0722 * lin(b); const ratio = (a, b) => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
   const cc = document.createElement('canvas').getContext('2d'); const hexL = (h) => { cc.fillStyle = '#000'; cc.fillStyle = h; const v = cc.fillStyle; const n = parseInt(v.slice(1), 16); return Lm((n >> 16) & 255, (n >> 8) & 255, n & 255); };
   const b = g.S.battle; const th = A.THEMES[b.map.theme];
-  const cv = A.renderMapBackground(b.routes, b.map.theme, 400, 480, 1, b.props); const ctx = cv.getContext('2d');
+  const cv = A.renderMapBackground(b.routes, b.map.theme, 400, 480, 1, b.props, b.map.art); const ctx = cv.getContext('2d');
   const px = (x, y) => { const d = ctx.getImageData(Math.round(x) - 1, Math.round(y) - 1, 3, 3).data; let r = 0, gg = 0, bb = 0; for (let i = 0; i < 9; i++) { r += d[i * 4]; gg += d[i * 4 + 1]; bb += d[i * 4 + 2]; } return [r / 9, gg / 9, bb / 9]; };
   const pts = []; for (const rt of b.routes) for (let d = 10; d < rt.length - 10; d += 8) pts.push(rt.at(d));
   const tr = pts.map((p) => px(p.x, p.y)); const avg = (a) => [0, 1, 2].map((k) => a.reduce((s, v) => s + v[k], 0) / a.length);
@@ -64,7 +64,7 @@ const cont = [];
     await G((li) => { const g = window.__game; g.go('map'); g.startBattle(li, ['slingshot'], [], 1); }, li); await sleep(120);
     cont.push(await G(`${FN}(${li})`));
   }
-  ok(n === 50, `A15 ${n} maps measured`);
+  ok(n === 60, `A15 ${n} maps measured`);
   const byTheme = {};
   for (const c of cont) (byTheme[c.theme] ||= []).push(c);
   for (const [t, a] of Object.entries(byTheme)) {
@@ -138,7 +138,7 @@ const collect = (tx) => { for (const [t, s] of tx) if (s > 0 && s < 12) (SMALL[s
   // backdrop cache: bounded
   for (let i = 0; i < 40; i++) { await G((i) => window.__game.renderOnce(), i); }
   const keys = await G(() => window.__game.backdropKeys());
-  ok(keys.length >= 1 && keys.length <= 3, `backdrop is cached (${keys.length} entries)`);
+  ok(keys.length <= 3, `backdrop is cached (${keys.length} entries; v0.8.2 G9: in a battle the table comes from battleTable(), so 0 is expected)`);
   ok(errors.length === 0, `fixtures: no console errors ${errors.join('|')}`); await page.close();
 }
 // ---------- A16: reduced motion ----------
