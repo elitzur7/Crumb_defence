@@ -34,7 +34,7 @@ test('Must 4: star gates - W1->W2 18, W2->W3 18 (unchanged); the W3->W4 gate (14
   assert.deepEqual(C.WORLDS[1].unlock, { allLevelsWonInWorld: 1, minStarsInWorld: 18 });
   assert.deepEqual(C.WORLDS[2].unlock, { allLevelsWonInWorld: 2, minStarsInWorld: 18 });
   assert.deepEqual(C.WORLDS[3].unlock, { allLevelsWonInWorld: 3, minStarsInWorld: 14 });
-  assert.equal(C.WORLDS.length, 6); assert.equal(TJ.worlds.length, 6); // v0.8.1: World 5; v0.8.2: World 6
+  assert.equal(C.WORLDS.length, 7); assert.equal(TJ.worlds.length, 7); // v0.8.4: World 7
   assert.deepEqual(C.WORLDS[4].unlock, { allLevelsWonInWorld: 4, minStarsInWorld: 14 }); // W4->W5 gate: 14 stars (plan D7)
   assert.deepEqual(C.STARS, [{ stars: 3, minPct: 90 }, { stars: 2, minPct: 50 }, { stars: 1, minPct: 0.0001 }], 'star thresholds unchanged');
 });

@@ -319,8 +319,8 @@ function mapTap(p) {
 // v0.7.4 M1: a one-time tip (per battle, never while paused) the first time a tank (Armoured / Big / Heavy / Queen) steals food, if a tower could change its target
 const W6_STORY = 'Drones fly in. Bring a tower that hits flyers.'; // v0.8.2 PP8: the world-6 map story line (<= 60 chars)
 const W5_STORY = 'Glaze grows back: hit hard, hit fast!'; // v0.8.1 W9: the world-5 map story line (<= 60 chars)
-const TREAT_NAME = { cookie: 'Cookie', cake: 'Cake', pie: 'Pie', sundae: 'Sundae', donut: 'Donut', pancake: 'Pancakes' }; // v0.7.7; v0.8.1 W8: donut
-const HINT_ANTS = new Set(['armored', 'big', 'heavy', 'queen', 'queen2', 'greasy', 'mama', 'queen3', 'nurse', 'queen4', 'glazed', 'queen5', 'drone', 'queen6']); // v0.8.2: + drone / queen6; v0.8.1 W5: + glazed / queen5 (the one-time mode tip also fires on a Glazed steal); v0.7.7: + world 3's ants; v0.7.9: + world 4's
+const TREAT_NAME = { cookie: 'Cookie', cake: 'Cake', pie: 'Pie', sundae: 'Sundae', donut: 'Donut', pancake: 'Pancakes', tart: 'Tart' };
+const HINT_ANTS = new Set(['armored', 'big', 'heavy', 'queen', 'queen2', 'greasy', 'mama', 'queen3', 'nurse', 'queen4', 'glazed', 'queen5', 'drone', 'queen6', 'shieldbearer', 'queen7']);
 function maybeModeHint(b, e) {
   if (S.modeHint || S.paused || !e.ant || !HINT_ANTS.has(e.ant) || !(e.n > 0)) return;
   if (!b.towers.some((q) => hasTargetModes(q.type))) return;
@@ -458,13 +458,15 @@ function spCue(e) {
     case 'burnthrough': addFx({ k: 'spCrack', x: e.x, y: e.y, life: 0.12, max: 0.12 }); break;
     case 'crescendo': addFx({ k: 'spGold', x: e.x, y: e.y, r: 52, life: 0.4, max: 0.4 }); break;
     case 'pounce': addFx({ k: 'txt', s: '!', x: e.x, y: e.y - 6, size: 14, col: '#fff2b8', life: 0.5, max: 0.5 }); addFx({ k: 'impact', shape: 'spoke3', col: '#fff4c8', x: e.x, y: e.y, life: 0.2, max: 0.2 }); break;
+    case 'static': addFx({ k: 'spArc', x: e.x, y: e.y, tx: e.tx, ty: e.ty, life: 0.1, max: 0.1, bright: 1 }); break;
   }
 }
 function consumeEvents() {
   const b = S.battle; const ev = b.events; b.events = []; spCueN = 0;
   for (const e of ev) {
     switch (e.type) {
-      case 'special': if (C.ART81) spCue(e); break; // v0.8.3 M7h: field-layer cues only (no background layer, no sim event added)
+      case 'special': if (C.ART81) spCue(e); break;
+      case 'clang': if (C.ART81 && e.armor > 0) addFx({ k: 'spark', x: e.x, y: e.y - 6, col: '#d7e2ee', life: 0.12, max: 0.12 }); break;
       case 'kill':
         if (e.src === 'swatter' && !reducedMotion() && b.swatFx > 0) { // v0.7.3: a swatter kill shows on the slap frame (ant ghost stays until then)
           S.swatQ.push({ at: swatHitTime(b), kill: e, ghost: e.ref, x: e.x, y: e.y }); break;
@@ -555,7 +557,8 @@ function consumeEvents() {
         if (C.ART81) addFx({ k: 'banner', pill: true, last: lastW, s: queen ? 'Queen!' : lastW ? `Final wave ${e.n}/${b.totalWaves}` : `Wave ${e.n}/${b.totalWaves}`, life: 1.08, max: 1.08 });
         else addFx({ k: 'banner', s: `Wave ${e.n}`, life: 1.4, max: 1.4 });
         sfx('wave'); if (lastW && C.ART81) setTimeout(() => sfx('wave'), 380);
-        if (C.ART81 && b.levelIndex >= 50 && b.levelIndex <= 59 && e.n === 2 && C.W6_TIPS[b.levelIndex] && M.markAntSeen(S.save, 'tip:w6-' + (b.levelIndex + 1))) { persist(); toast(C.W6_TIPS[b.levelIndex], '#ffe39a'); S.toast.hint = true; } // v0.8.3 PP9: one short non-advice line per World 6 level, once per save (no hints on how to win - U16 is not built)
+        if (C.ART81 && b.levelIndex >= 50 && b.levelIndex <= 59 && e.n === 2 && C.W6_TIPS[b.levelIndex] && M.markAntSeen(S.save, 'tip:w6-' + (b.levelIndex + 1))) { persist(); toast(C.W6_TIPS[b.levelIndex], '#ffe39a'); S.toast.hint = true; }
+        if (C.ART81 && b.levelIndex >= 60 && b.levelIndex <= 69 && e.n === 2 && C.W7_TIPS[b.levelIndex] && M.markAntSeen(S.save, 'tip:w7-' + (b.levelIndex + 1))) { persist(); toast(C.W7_TIPS[b.levelIndex], '#f3d0f6'); S.toast.hint = true; }
         if (C.ART81 && b.levelIndex === 41 && e.n === 2 && M.markAntSeen(S.save, 'tip:glazed42')) { persist(); toast(C.L42_TIP, '#ffe39a'); S.toast.hint = true; } // v0.8.1 W9: the first Glazed wave of L42 - one tip, once per save (save.seenAnts)
         if (b.levelIndex === 31 && e.n === 2 && !S.nurseTip) { S.nurseTip = true; toast('Nurse ants heal their friends. Pop them first!', '#ffe39a'); S.toast.hint = true; } // v0.7.9: the first nurse arrives in wave 2 of level 32
         break;
@@ -1907,9 +1910,11 @@ function drawAntObj(a, ghost = false) {
   if (a.hitFlash > 0.04) { ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = 0.6; ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h); } // hit flash: white-add 0.6 for the first 80 ms
   if (a._healFlash > S.t && !ghost) { ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = reducedMotion() ? 0.35 : 0.55 * Math.min(1, (a._healFlash - S.t) / 0.2); ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h); } // v0.7.9: white flash on a healed ant
   ctx.restore();
-  if (C.ART81 && a.type === 'queen6' && !ghost && !frozen && a.spawnT > 0 && a.spawnT <= 0.4) { // v0.8.3 PP5: a syrup drip forms and falls in the 0.4 s before each Drone spawns (reduced motion: a still amber blot)
-    const q = 1 - a.spawnT / 0.4, dx0 = x - 20 * a.size * face, dy0 = y + 10 + (reducedMotion() ? 8 : q * q * 22), rr = 1 + q * 0.7;
-    ctx.save(); ctx.beginPath(); ctx.ellipse(dx0, dy0, 4.2 * rr, 5.6 * rr, 0, 0, 7); ctx.fillStyle = '#ffe07a'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = A.INK; ctx.stroke(); ctx.beginPath(); ctx.arc(dx0 - 1.4 * rr, dy0 - 1.6 * rr, 1.3 * rr, 0, 7); ctx.fillStyle = '#fffbe0'; ctx.fill(); ctx.restore();
+  if (C.ART81 && (a.type === 'queen6' || a.type === 'queen7') && !ghost && !frozen && a.spawnT > 0 && a.spawnT <= 0.4) {
+    const jam = a.type === 'queen7', q = 1 - a.spawnT / 0.4, q4 = reducedMotion() ? 1 : (Math.min(3, Math.floor(q * 4)) + 1) / 4;
+    const dx0 = x - 20 * a.size * face, dy0 = y + 10 + (reducedMotion() ? 6 : q4 * q4 * 26);
+    const rx = reducedMotion() ? 6 : 4.2 * (1 + q4 * 0.7) * 1.7, ry = reducedMotion() ? 6 : 5.6 * (1 + q4 * 0.7) * 1.7;
+    ctx.save(); ctx.beginPath(); ctx.ellipse(dx0, dy0, rx, ry, 0, 0, 7); ctx.fillStyle = jam ? '#c45ad0' : '#e8a33d'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = jam ? '#8a3a96' : '#b56a18'; ctx.stroke(); ctx.restore();
   }
   if (a._bubbleUntil > S.t && !ghost && !reducedMotion()) { const bx = x, by = y - 40 * a.size - Math.abs(Math.sin(S.t * 6)) * 2; ctx.save(); ctx.beginPath(); ctx.arc(bx, by, 7.5, 0, 7); ctx.fillStyle = '#fffdf0'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = A.INK; ctx.stroke(); ctx.beginPath(); ctx.moveTo(bx - 2.5, by + 6.5); ctx.lineTo(bx + 1, by + 12); ctx.lineTo(bx + 3, by + 6); ctx.fillStyle = '#fffdf0'; ctx.fill(); A.drawChunkyText(ctx, '!', bx, by + 0.5, 12, { mode: 'btn', fill: '#e0524f', outline: 2 }); ctx.restore(); } // v0.8.1 J3
   if (H && !ghost) drawNurseHud(a, H, x, y, frozen);
@@ -1969,7 +1974,7 @@ function renderFx(dt) {
       case 'dizzy': ctx.globalAlpha = 1 - k; for (let i = 0; i < 3; i++) { const a = k * 10 + i * 2.1; A.starShape(ctx, f.x + Math.cos(a) * 12, f.y - 16 + Math.sin(a) * 4, 3, '#fff27a', 1); } break;
       case 'beam': ctx.globalAlpha = 1 - k; ctx.lineCap = 'round'; ctx.lineWidth = 6 + (f.heat || 0) * 5; ctx.strokeStyle = (f.heat || 0) > 0.6 ? 'rgba(255,150,60,0.55)' : 'rgba(255,90,120,0.4)'; ctx.beginPath(); ctx.moveTo(f.x, f.y); ctx.lineTo(f.tx, f.ty - 4); ctx.stroke(); ctx.lineWidth = 2; ctx.strokeStyle = '#fff'; ctx.stroke(); break;
       case 'zap': {
-        ctx.globalAlpha = 1 - k; ctx.lineWidth = f.chain ? 2.2 : 3; ctx.strokeStyle = f.chain ? '#e4d0ff' : '#bfe0ff'; ctx.beginPath(); ctx.moveTo(f.x, f.y);
+        ctx.globalAlpha = 1 - k; ctx.lineWidth = f.static ? 3.4 : f.chain ? 2.2 : 3; ctx.strokeStyle = f.static ? '#ffffff' : f.chain ? '#e4d0ff' : '#bfe0ff'; ctx.beginPath(); ctx.moveTo(f.x, f.y);
         for (let i = 1; i < 6; i++) { const q = i / 6; ctx.lineTo(f.x + (f.tx - f.x) * q + (Math.random() - 0.5) * 10, f.y + (f.ty - f.y) * q + (Math.random() - 0.5) * 10); }
         ctx.lineTo(f.tx, f.ty); ctx.stroke(); ctx.lineWidth = 1.2; ctx.strokeStyle = '#fff'; ctx.stroke(); break;
       }
@@ -1979,7 +1984,7 @@ function renderFx(dt) {
         ctx.lineCap = 'round'; ctx.lineWidth = 5; ctx.strokeStyle = A.INK; ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(ex, ey); ctx.stroke();
         ctx.lineWidth = 3; ctx.strokeStyle = '#ff8fab'; ctx.stroke(); A.blob(ctx, ex, ey, 4, 4, '#ff8fab', 1.5); break;
       }
-      case 'spArc': { ctx.lineCap = 'round'; const mx = (f.x + f.tx) / 2, my = (f.y + f.ty) / 2 - 10; ctx.beginPath(); ctx.moveTo(f.x, f.y); ctx.quadraticCurveTo(mx, my, f.tx, f.ty); ctx.lineWidth = 2; ctx.strokeStyle = A.INK; ctx.stroke(); ctx.beginPath(); ctx.arc(mx * 0.5 + (f.x + f.tx) * 0.25, my * 0.5 + (f.y + f.ty) * 0.25, 2.4, 0, 7); ctx.fillStyle = '#fff2b8'; ctx.fill(); break; } // v0.8.3 M7h Ricochet
+      case 'spArc': { ctx.lineCap = 'round'; const mx = (f.x + f.tx) / 2, my = (f.y + f.ty) / 2 - 10; ctx.beginPath(); ctx.moveTo(f.x, f.y); ctx.quadraticCurveTo(mx, my, f.tx, f.ty); ctx.lineWidth = f.bright ? 3 : 2; ctx.strokeStyle = f.bright ? '#ffffff' : A.INK; ctx.stroke(); ctx.beginPath(); ctx.arc(mx * 0.5 + (f.x + f.tx) * 0.25, my * 0.5 + (f.y + f.ty) * 0.25, f.bright ? 3 : 2.4, 0, 7); ctx.fillStyle = f.bright ? '#ffffff' : '#fff2b8'; ctx.fill(); break; }
       case 'spCrack': { ctx.globalAlpha = 1 - k; ctx.lineCap = 'round'; ctx.lineWidth = 2; ctx.strokeStyle = '#fff2b8'; ctx.beginPath(); for (let i = 0; i < 3; i++) { const a = -1.2 + i * 1.2 + 0.4; ctx.moveTo(f.x + Math.cos(a) * 3, f.y + Math.sin(a) * 3); ctx.lineTo(f.x + Math.cos(a) * (8 + 4 * k), f.y + Math.sin(a) * (8 + 4 * k)); } ctx.stroke(); break; } // v0.8.3 M7h Burn-through
       case 'spGold': ctx.globalAlpha = (1 - k) * 0.9; ctx.beginPath(); ctx.arc(f.x, f.y - 6, f.r * (0.2 + 0.8 * k), 0, 7); ctx.lineWidth = 6.5 * (1 - k) + 1.3; ctx.strokeStyle = '#ffd24a'; ctx.stroke(); break; // v0.8.3 M7h Crescendo: 30 % thicker, gold
       case 'ring': ctx.globalAlpha = (1 - k) * 0.8; ctx.beginPath(); ctx.arc(f.x, f.y - 6, f.r * (0.2 + 0.8 * k), 0, 7); ctx.lineWidth = 5 * (1 - k) + 1; ctx.strokeStyle = f.col; ctx.stroke();
@@ -2400,9 +2405,11 @@ function renderResult(dt) {
   drawButton(52, by, 92, 50, 'Map', '#fff3e6'); button('rmap', 52, by - 3, 92, 56, () => { S.battle = null; go('map'); });
   drawButton(154, by, 92, 50, 'Retry', '#ffd27a'); button('rretry', 154, by - 3, 92, 56, () => openPrep(S.levelIndex));
   const hasNext = R.win && S.levelIndex + 1 < C.LEVELS.length;
-  const ow6 = C.ART81 && hasNext && S.levelIndex === 49 && out.firstClear && M.worldUnlocked(S.save, 6); // v0.8.3 PP10: the L50 first win that opens World 6 -> 'Open World 6', which goes to the map and shows the new node for 1.2 s
-  drawButton(256, by, 92, 50, ow6 ? 'Open World 6' : 'Next', '#9fe0b5', ow6 ? { disabled: !hasNext, size: 13 } : { disabled: !hasNext });
-  if (hasNext) button('rnext', 256, by - 3, 92, 56, ow6 ? () => { S.battle = null; go('map'); S.worldReveal = { i: 50, t0: S.t }; } : () => openPrep(S.levelIndex + 1));
+  const ow6 = C.ART81 && hasNext && S.levelIndex === 49 && out.firstClear && M.worldUnlocked(S.save, 6);
+  const ow7 = C.ART81 && hasNext && S.levelIndex === 59 && out.firstClear && M.worldUnlocked(S.save, 7);
+  const openLbl = ow7 ? 'Open World 7' : ow6 ? 'Open World 6' : 'Next';
+  drawButton(256, by, 92, 50, openLbl, '#9fe0b5', (ow6 || ow7) ? { disabled: !hasNext, size: 12 } : { disabled: !hasNext });
+  if (hasNext) button('rnext', 256, by - 3, 92, 56, ow7 ? () => { S.battle = null; go('map'); S.worldReveal = { i: 60, t0: S.t }; } : ow6 ? () => { S.battle = null; go('map'); S.worldReveal = { i: 50, t0: S.t }; } : () => openPrep(S.levelIndex + 1));
 }
 
 // ---------------- CARDS / MERGE ----------------

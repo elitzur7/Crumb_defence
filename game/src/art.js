@@ -124,6 +124,7 @@ export function monthBox(ctx, x, y, s, tier, t = 0, reached = false) {
 const NODE_COLS = ['#ffc38a', '#ffb3c1', '#b9e89a', '#9fd6ff', '#c9b6f2', '#ffd27a', '#ff9e9e', '#a8e6e0', '#f7b6e8', '#d7b8ff'];
 const W5_NODE_COLS = ['#a9d8de', '#8fcbd5', '#b9e2e6', '#9ecfd6', '#c4e8ec']; // v0.8.1 W8: world 5 map nodes - the teal-diner family (#a9d8de) with pink icing accents (ring, sprinkles, donut ornament)
 const W6_NODE_COLS = ['#f0c078', '#e8a33d', '#f6d49a', '#eab25a', '#f9dfae']; // v0.8.2 PP8: world 6 map nodes - the maple/honey family with a syrup-amber ring and a pancake ornament
+const W7_NODE_COLS = ['#d2b1e4', '#c45ad0', '#e7c6f2', '#b48cc8', '#f3c9ef'];
 const NODE_ORN = ['leaf', 'crumb', 'bubble', 'wing', 'shield', 'cloud', 'cone', 'mask', 'dots', 'crown'];
 function miniCrown(ctx, x, y, s, fill = '#ffe36e') {
   ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
@@ -146,12 +147,13 @@ function nodeOrnament(ctx, kind, x, y, t) {
     case 'dots': for (let k = 0; k < 5; k++) { const a = k * 1.256 + t; blob(ctx, Math.cos(a) * 4.5, Math.sin(a) * 2.6, 1.6, 1.6, '#f2a65f', 1.1); } break;
     case 'crown': miniCrown(ctx, 0, 0, 1.05); break;
     case 'pancake': for (const [py, c] of [[2.6, '#e8a33d'], [0, '#f3c98b'], [-2.6, '#f3c98b']]) { ctx.beginPath(); ctx.ellipse(0, py, 5.6, 2.6, 0, 0, 7); ctx.fillStyle = c; ctx.fill(); ctx.stroke(); } rr(ctx, -1.8, -4.4, 3.6, 2.4, 0.8); ctx.fillStyle = '#fff2b8'; ctx.fill(); break; // v0.8.2 PP8
+    case 'tart': ctx.beginPath(); ctx.arc(0, 0, 5.2, 0, 7); ctx.fillStyle = '#e0a15a'; ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.arc(0, 0, 3.1, 0, 7); ctx.fillStyle = '#c45ad0'; ctx.fill(); break;
     case 'donut': ctx.beginPath(); ctx.arc(0, 0, 5.4, 0, 7); ctx.fillStyle = '#f7b6c8'; ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.arc(0, 0, 1.7, 0, 7); ctx.fillStyle = '#8a5a3a'; ctx.fill(); for (const [dx, dy, c] of [[-3, -2.4, '#ffe27a'], [3, -2, '#8fd0f7'], [0, 3.6, '#ffffff']]) { ctx.fillStyle = c; ctx.fillRect(dx - 1.1, dy - 0.5, 2.2, 1); } break; // v0.8.1 W8
   }
   ctx.restore();
 }
 export function mapNode(ctx, x, y, i, st, t = 0) {
-  const w5 = C.ART81 && C.worldOf(i) === 5, w6 = C.ART81 && C.worldOf(i) === 6, base = !st.open ? '#cfc6cf' : w6 ? W6_NODE_COLS[i % W6_NODE_COLS.length] : w5 ? W5_NODE_COLS[i % W5_NODE_COLS.length] : NODE_COLS[i % NODE_COLS.length];
+  const w5 = C.ART81 && C.worldOf(i) === 5, w6 = C.ART81 && C.worldOf(i) === 6, w7 = C.ART81 && C.worldOf(i) === 7, base = !st.open ? '#cfc6cf' : w7 ? W7_NODE_COLS[i % W7_NODE_COLS.length] : w6 ? W6_NODE_COLS[i % W6_NODE_COLS.length] : w5 ? W5_NODE_COLS[i % W5_NODE_COLS.length] : NODE_COLS[i % NODE_COLS.length];
   const R = st.boss ? 29 : 27, depth = 7;
   ctx.save();
   shadow(ctx, x, y + 26, 30, 7, 0.28);
@@ -171,7 +173,7 @@ export function mapNode(ctx, x, y, i, st, t = 0) {
   ctx.beginPath(); ctx.ellipse(x - R * 0.38, y - R * 0.5, R * 0.36, R * 0.16, -0.4, 0, 7); ctx.fillStyle = 'rgba(255,255,255,0.6)'; ctx.fill();
   if (st.open) {
     R8.drawChunkyText(ctx, String(i + 1), x, y + 1, 25, { mode: 'num' });
-    nodeOrnament(ctx, w6 ? (st.boss ? 'crown' : 'pancake') : w5 ? (st.boss ? 'crown' : 'donut') : NODE_ORN[i % NODE_ORN.length], x + R * 0.72, y - R * 0.72, t);
+    nodeOrnament(ctx, w7 ? (st.boss ? 'crown' : 'tart') : w6 ? (st.boss ? 'crown' : 'pancake') : w5 ? (st.boss ? 'crown' : 'donut') : NODE_ORN[i % NODE_ORN.length], x + R * 0.72, y - R * 0.72, t);
     if (st.stars >= 3 && !st.boss) miniCrown(ctx, x, y - R - 3, 1.1);
   } else {
     rr(ctx, x - 8, y - 3, 16, 13, 3); ctx.fillStyle = '#8c8090'; ctx.fill(); ctx.beginPath(); ctx.arc(x, y - 4, 5.5, Math.PI, 0); ctx.lineWidth = 3; ctx.strokeStyle = '#8c8090'; ctx.stroke();
@@ -182,7 +184,7 @@ export function starShape(ctx, x, y, r, fill, lw = 2) { candyStar(ctx, x, y, r, 
 
 // ---------------- ANTS (chibi, side/3-4 view, facing right) ----------------
 // Warm caramel palette, big heads, glossy eyes, thick clean outlines.
-export const ANT_COL = { small: '#f8c07e', worker: '#f0994d', big: '#d97a3f', gasmask: '#f0994d', armored: '#e48a47', flyer: '#f9b878', queen: '#f59b9b', queen2: '#c7a6f5', sprinter: '#f0994d', heavy: '#b95b34', greasy: '#ee9f45', mama: '#d9774a', queen3: '#e9b05c', nurse: '#f2b49b', queen4: '#f4b9c8', glazed: '#f1cf9a', queen5: '#e8789c', drone: '#e8a33d', queen6: '#c9772b' }; // v0.8.2 PP2/PP4: the Drone is honey-amber, the Syrup Queen syrup-amber // v0.7.5 C18: value ladder small > worker > big > heavy; v0.7.6 V1 (A5): small #fbc98a -> #f8c07e (>= 1.447 vs the trail on all 20 maps; ladder 1.37 / 1.38 / 1.48)
+export const ANT_COL = { small: '#f8c07e', worker: '#f0994d', big: '#d97a3f', gasmask: '#f0994d', armored: '#e48a47', flyer: '#f9b878', queen: '#f59b9b', queen2: '#c7a6f5', sprinter: '#f0994d', heavy: '#b95b34', greasy: '#ee9f45', mama: '#d9774a', queen3: '#e9b05c', nurse: '#f2b49b', queen4: '#f4b9c8', glazed: '#f1cf9a', queen5: '#e8789c', drone: '#e8a33d', queen6: '#c9772b', shieldbearer: '#8b6ecf', queen7: '#c45ad0' }; // v0.8.2 PP2/PP4: the Drone is honey-amber, the Syrup Queen syrup-amber // v0.7.5 C18: value ladder small > worker > big > heavy; v0.7.6 V1 (A5): small #fbc98a -> #f8c07e (>= 1.447 vs the trail on all 20 maps; ladder 1.37 / 1.38 / 1.48)
 const ALW = 2.4; // ant outline width (v0.3: thinner = softer)
 export const PLAY_ANT_SCALE = 0.62; // v0.8.4 ANT1: play-field draw scale only. Book, prep and result stay full size.
 let _play = null;
@@ -252,8 +254,8 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
   const P = phase * Math.PI * 2;
   const step = Math.sin(P) * (opt.play ? 0.85 : 1);
   const hop = Math.abs(Math.sin(P)) * (opt.play ? 0.75 : 1);
-  const drone = type === 'drone', syrupQueen = type === 'queen6'; // v0.8.2 world 6 (PP2 / PP4)
-  const flying = type === 'flyer' || drone, queen = type === 'queen' || type === 'queen2' || type === 'queen3' || type === 'queen4' || type === 'queen5' || syrupQueen, swiftQueen = type === 'queen2';
+  const drone = type === 'drone', syrupQueen = type === 'queen6', jamQueen = type === 'queen7';
+  const flying = type === 'flyer' || drone, queen = type === 'queen' || type === 'queen2' || type === 'queen3' || type === 'queen4' || type === 'queen5' || syrupQueen || jamQueen, swiftQueen = type === 'queen2';
   const mama = type === 'mama', greasy = type === 'greasy', pieQueen = type === 'queen3'; // v0.7.7 world 3
   const nurse = type === 'nurse', sundaeQueen = type === 'queen4'; // v0.7.9 world 4
   const glazed = type === 'glazed', glazeQueen = type === 'queen5'; // v0.8.1 world 5 (W2 / M5)
@@ -316,7 +318,7 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
   if (queen) {
     const sw = Math.sin(P) * 1.5;
     ctx.beginPath(); ctx.moveTo(3, -8); ctx.quadraticCurveTo(-14, -12 + sw, -24, 7); ctx.quadraticCurveTo(-11, 11, 2, 5); ctx.closePath();
-    const g = ctx.createLinearGradient(0, -10, 0, 10); g.addColorStop(0, syrupQueen ? '#f3b868' : glazeQueen ? '#9fe3e6' : sundaeQueen ? '#8fe0c8' : pieQueen ? '#7f9be6' : '#b597f0'); g.addColorStop(1, syrupQueen ? '#a85f1c' : glazeQueen ? '#4fb3bd' : sundaeQueen ? '#3fa88f' : pieQueen ? '#4f69b8' : '#8a68d8'); // v0.7.9: the Sundae Queen's cape is mint // v0.7.7: the Pie Queen's cape is blueberry
+    const g = ctx.createLinearGradient(0, -10, 0, 10); g.addColorStop(0, jamQueen ? '#e7a0ea' : syrupQueen ? '#f3b868' : glazeQueen ? '#9fe3e6' : sundaeQueen ? '#8fe0c8' : pieQueen ? '#7f9be6' : '#b597f0'); g.addColorStop(1, jamQueen ? '#8a3a96' : syrupQueen ? '#a85f1c' : glazeQueen ? '#4fb3bd' : sundaeQueen ? '#3fa88f' : pieQueen ? '#4f69b8' : '#8a68d8');
     ctx.fillStyle = g; ctx.fill(); ctx.lineWidth = LW; ctx.strokeStyle = INK; ctx.stroke();
     ctx.beginPath(); ctx.moveTo(-22, 6.5); ctx.quadraticCurveTo(-10, 10, 1.5, 4.5); ctx.lineWidth = 3.4; ctx.strokeStyle = '#ffffff'; ctx.stroke();
     ctx.fillStyle = INK; for (const [a, b] of [[-17, 6.8], [-10, 8], [-4, 6.6]]) { ctx.beginPath(); ctx.arc(a, b, 0.9, 0, 7); ctx.fill(); }
@@ -332,6 +334,12 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
   for (const sx of [-15, -10.5]) { ctx.beginPath(); ctx.ellipse(sx - (big ? 1.5 : 0), 0.5, 2, abRy + 2, 0, -1.3, 1.3); ctx.stroke(); }
   if (syrupQueen) { ctx.beginPath(); ctx.moveTo(-20.5, -5.2); ctx.quadraticCurveTo(-11, -9.6, -1.5, -6.4); ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(255,248,224,0.72)'; ctx.stroke(); } // v0.8.2 PP4: the glossy syrup stripe
   ctx.restore();
+  if (type === 'shieldbearer') {
+    ctx.save(); ctx.translate(-15, -7); ctx.rotate(-0.35); ctx.scale(1.12, 1.12);
+    if (_play) playSegment(ctx, 0, 0, 7.4, 8.4, '#8b6ecf'); else softBlob(ctx, 0, 0, 7.4, 8.4, '#8b6ecf', 2);
+    ctx.beginPath(); ctx.moveTo(0, -4.2); ctx.lineTo(3.2, -1.2); ctx.lineTo(0.4, 3.4); ctx.lineTo(-2.6, -0.6); ctx.closePath(); ctx.fillStyle = 'rgba(255,255,255,0.9)'; ctx.fill();
+    ctx.restore();
+  }
   if (mama) { // v0.7.7 Brood Ant: three little eggs on her back = the three babies she drops
     for (const [ex, ey, er] of [[-16.5, -2.2, 2.9], [-10.5, -4.6, 3.1], [-5.2, -1.4, 2.7]]) { ctx.beginPath(); ctx.ellipse(ex, ey, er, er * 1.2, 0.2, 0, 7); ctx.fillStyle = '#fffaf0'; ctx.fill(); ctx.lineWidth = 1.7; ctx.strokeStyle = INK; ctx.stroke(); ctx.beginPath(); ctx.arc(ex - 0.7, ey - 0.8, 0.8, 0, 7); ctx.fillStyle = '#f2a0b0'; ctx.fill(); }
   }
@@ -344,7 +352,7 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
     ctx.restore();
   }
   softBlob(ctx, -1, 1.5, 6.5, 6, col, LW, 0);
-  if (opt.carrying) crumbIcon(ctx, -10.5, -12.5, _play ? 1.05 : 1.4, true); // ANT2: carried crumb is 0.75 of today's, still outlined
+  if (opt.carrying) { if (_play) { ctx.save(); ctx.translate(-10.5, -12.5); ctx.scale(0.75, 0.75); ctx.translate(10.5, 12.5); } crumbIcon(ctx, -10.5, -12.5, 1.4, true); if (_play) ctx.restore(); }
   // near legs (in front of the body)
   for (let i = 0; i < 3; i++) { const sw = (i % 2 ? 1 : -1) * step * 2.2; if (cheer && i === 2) continue; leg(ctx, -6 + i * 4.8, legY + 1.2, -5 + i * 4.8 + sw, footY + 0.5, legCol); if (sprinter) sneaker(ctx, -5 + i * 4.8 + sw, footY + 0.5, false); }
   if (cheer) { // two raised arms with round mitts (the front near leg is the right arm; one more comes from behind the thorax)
@@ -380,6 +388,7 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
     }
   }
   softBlob(ctx, hx, hy, hr, hr * 0.92, col, LW);
+  if (flying && C.ART81) { ctx.beginPath(); ctx.ellipse(hx - 2, hy - 2, hr * 0.72, hr * 0.5, -0.4, Math.PI * 1.05, Math.PI * 1.7); ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.stroke(); }
 
   // ---- face
   const e1x = hx + 0.2, e2x = hx + 8.6, ey = hy + 1.6;
@@ -521,6 +530,10 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
       }
       blob(ctx, hx - 3.2, cy - 8, 2.8, 1.2, '#fff2b8', 0.1);
       for (const dx of [-7, 0, 7]) { ctx.beginPath(); ctx.arc(hx + dx, cy - 11.6 - (dx ? 0 : 3), 3, 0, 7); ctx.fillStyle = '#fff2b8'; ctx.fill(); ctx.lineWidth = 1.5; ctx.strokeStyle = INK; ctx.stroke(); }
+      endAnt(); return;
+    }
+    if (jamQueen) {
+      blob(ctx, hx, cy - 6.2, 11, 6.4, '#f3c98b', 2.2); blob(ctx, hx, cy - 7.2, 8.2, 4.4, '#c45ad0', 1.8); blob(ctx, hx - 2.2, cy - 9.2, 2.4, 1.1, '#f7d0f4', 0.1);
       endAnt(); return;
     }
     if (sundaeQueen) { // v0.7.9 Sundae Queen: a waffle cone worn point-down as a crown, with a pink scoop and a cherry on top
@@ -1337,7 +1350,20 @@ function pancakeBody(ctx, r, pct) {
   for (let k = 0; k < bites; k++) { const [bx, by] = bAt(k); ctx.beginPath(); ctx.arc(bx, by, 9, 0, 7); ctx.lineWidth = 3; ctx.strokeStyle = INK; ctx.stroke(); }
   ctx.restore();
 }
-export const TREAT_BODIES = { cookie: cookieBody, cake: cakeBody, pie: pieBody, sundae: sundaeBody, donut: donutBody, pancake: pancakeBody };
+function tartBody(ctx, r, pct) {
+  const bites = Math.round((1 - pct) * 9), bAt = (k) => { const a = -0.6 + k * 0.72; return [Math.cos(a) * r * 0.98, Math.sin(a) * r * 0.98]; };
+  ctx.save(); ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2);
+  for (let k = 0; k < bites; k++) { const [bx, by] = bAt(k); ctx.moveTo(bx + 9, by); ctx.arc(bx, by, 9, 0, Math.PI * 2, true); }
+  ctx.clip('evenodd');
+  const g = ctx.createRadialGradient(-6, -8, 4, 0, 0, r); g.addColorStop(0, '#f7d7a4'); g.addColorStop(1, '#e0a15a');
+  ctx.beginPath(); ctx.arc(0, 0, r, 0, 7); ctx.fillStyle = g; ctx.fill();
+  ctx.beginPath(); ctx.arc(0, 0, r * 0.62, 0, 7); const j = ctx.createRadialGradient(-4, -6, 2, 0, 0, r * 0.7); j.addColorStop(0, '#e7a0ea'); j.addColorStop(1, '#c45ad0'); ctx.fillStyle = j; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = '#b48cc8'; ctx.stroke();
+  ctx.restore();
+  ctx.save(); ctx.beginPath(); ctx.rect(-r - 12, -r - 12, r * 2 + 24, r * 2 + 24);
+  for (let k = 0; k < bites; k++) { const [bx, by] = bAt(k); ctx.moveTo(bx + 9, by); ctx.arc(bx, by, 9, 0, Math.PI * 2, true); }
+  ctx.clip('evenodd'); ctx.beginPath(); ctx.arc(0, 0, r, 0, 7); ctx.lineWidth = 3; ctx.strokeStyle = INK; ctx.stroke(); ctx.restore();
+}
+export const TREAT_BODIES = { cookie: cookieBody, cake: cakeBody, pie: pieBody, sundae: sundaeBody, donut: donutBody, pancake: pancakeBody, tart: tartBody };
 // The body moves with the reaction: a jump (surprised), a fast shiver (oy oy oy), sinking (sad), sobbing bounces (crying).
 function reactMotion(react, t) {
   if (!react) return { dx: 0, dy: 0, sx: 1, sy: 1 };
@@ -1650,6 +1676,7 @@ export const THEMES = [
   { name: 'W5 teal-diner', a: '#a9d8de', b: '#9ecfd6', check: 'rgba(60,150,170,0.13)', grout: 'rgba(60,130,150,0.22)', trail: '#fffdf5', edge: '#7fbcc6', dot: '#f7b6c8' },
   // v0.8.2 world 6 (Crumb Design palettes-W3-W10.json 'W6 maple'): warm maple planks. If the rendered A10b is < 1.6 on any W6 map, darken the pad by steps (see qa/v0.8.2 contrast-w6).
   { name: 'W6 maple', a: '#e6b98a', b: '#e1b27f', grain: 'rgba(120,70,20,0.15)', grout: 'rgba(130,80,30,0.28)', trail: '#fffaf0', edge: '#b98550', dot: '#c99660' },
+  { name: 'W7 grape', a: '#d2b1e4', b: '#cca8e0', grout: 'rgba(120,70,150,0.22)', trail: '#fffaf5', edge: '#b48cc8', dot: '#e7c6f2' },
 ];
 export function renderMapBackground(routes, theme, w, h, dpr, props = [], art = {}) { // art = the map's tuning.json "art" overrides: { chev: chevron alpha, plate: { dy, scale } } (v0.8.2, Crumbie's A1/A3r rulings)
   if (!Array.isArray(routes)) routes = [routes];
@@ -1680,7 +1707,11 @@ export function renderMapBackground(routes, theme, w, h, dpr, props = [], art = 
   }
   if (C.ART81) { g.fillStyle = 'rgba(70,35,50,' + (art.wash ?? 0.02) + ')'; g.fillRect(0, 0, w, h); } // v0.8.3 F6: a 2 % ground wash (the headroom bank for the A1/A2 anchor; one fillRect in the baked cache; per-map override art.wash)
   if (th.moon) { const mg = g.createRadialGradient(w * 0.85, -20, 10, w * 0.85, -20, 300); mg.addColorStop(0, 'rgba(255,255,230,0.45)'); mg.addColorStop(1, 'rgba(255,255,230,0)'); g.fillStyle = mg; g.fillRect(0, 0, w, h); }
-  if (C.ART81) { const lp = g.createRadialGradient(130, 110, 20, 130, 110, 300); lp.addColorStop(0, 'rgba(255,250,228,0.02)'); lp.addColorStop(1, 'rgba(255,250,228,0)'); g.fillStyle = lp; g.fillRect(0, 0, w, h); } // v0.8.1 G1.1: light pool (upper-left)
+  if (C.ART81) {
+    const end = routes[0] && routes[0].pts && routes[0].pts[routes[0].pts.length - 1];
+    const cx = end ? end.x : 130, cy = end ? end.y : 110, rad = Math.min(w, h) * 0.22, pa = art.pool ?? 0.06;
+    const lp = g.createRadialGradient(cx, cy, 8, cx, cy, rad); lp.addColorStop(0, 'rgba(255,250,228,' + pa + ')'); lp.addColorStop(1, 'rgba(255,250,228,0)'); g.fillStyle = lp; g.fillRect(0, 0, w, h);
+  }
   // little printed flowers / dots
   for (let k = 0; k < 10; k++) {
     const x = rnd() * w, y = rnd() * h;
@@ -1841,7 +1872,7 @@ export function drawSwatter(ctx, x, y, ang = 0, sc = 1, flash = 0) {
 }
 
 // ---------------- v0.8.2 G9: the table around the board (oversize props; baked, nothing animated) ----------------
-export const TABLE_SETS = { 1: ['leaf', 'twig', 'leaf', 'pebble'], 2: ['pebble', 'pebble', 'twig', 'leaf'], 3: ['cup', 'cup', 'plate'], 4: ['plate', 'cutlery', 'plate', 'cup'], 5: ['donutbox', 'napkin', 'ring', 'donutbox'], 6: ['syrup', 'butter', 'berry', 'berry'] };
+export const TABLE_SETS = { 1: ['leaf', 'twig', 'leaf', 'pebble'], 2: ['pebble', 'pebble', 'twig', 'leaf'], 3: ['cup', 'cup', 'plate'], 4: ['plate', 'cutlery', 'plate', 'cup'], 5: ['donutbox', 'napkin', 'ring', 'donutbox'], 6: ['syrup', 'butter', 'berry', 'berry'], 7: ['berry', 'syrup', 'napkin', 'plate'] };
 export function drawTableProp(g, kind, x, y, r, rot = 0, shadow = true) {
   g.save(); g.translate(x, y);
   if (shadow) { g.beginPath(); g.ellipse(r * 0.18, r * 0.62, r * 0.95, r * 0.32, 0, 0, 7); g.fillStyle = 'rgba(70,35,50,0.18)'; g.fill(); } // contact shadow (alpha .18)
