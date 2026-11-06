@@ -93,7 +93,7 @@ test('prep header dedupe: when the map name equals the level name it is shown on
     else { same++; assert.equal(line, L.name); }
     const parts = line.split('  -  '); assert.ok(parts.length === 1 || parts[0] !== parts[1], line);
   }
-  assert.equal(same + diff, 60);
+  assert.equal(same + diff, C.LEVELS.length);
 });
 
 test('font: Lilita One is bundled locally with its OFL license; the app never loads it from the net', () => {

@@ -13,7 +13,7 @@ const rows = await page.evaluate(() => {
     let area = 0, h = 0, w = 0; const N = 4;
     for (let f = 0; f < N; f++) {
       const cv = document.createElement('canvas'); cv.width = 400; cv.height = 400; const g = cv.getContext('2d');
-      g.translate(200, 260); A.drawAnt(g, type, f / N, {});
+      g.translate(200, 260); A.drawAnt(g, type, f / N, { play: true }); // v0.8.4 ANT1: the play-field scale
       const d = g.getImageData(0, 0, 400, 400).data; let n = 0, x0 = 400, x1 = 0, y0 = 400, y1 = 0;
       for (let y = 0; y < 400; y++) for (let x = 0; x < 400; x++) if (d[(y * 400 + x) * 4 + 3] > 200) { n++; if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
       area += n / N; w += (x1 - x0) / N; h += (y1 - y0) / N;

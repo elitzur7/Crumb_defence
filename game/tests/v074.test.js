@@ -7,7 +7,7 @@ import * as C from '../src/config.js';
 import { Battle, generateWaves, TARGET_MODES, hasTargetModes, nextTargetMode, enableFrontForTests } from '../src/sim.js';
 enableFrontForTests(true); // v0.8.1 M3: Front is retired from the UI, the sim branch is kept for these tests (node --test runs each file in its own process)
 import { chooseDeck, smartBotStep, unlockedAt } from '../src/bot.js';
-import { STEP, SPEEDS, advanceFrame, newClock, nextSpeed, startSpeed } from '../src/loop.js';
+import { STEP, SPEEDS, PACE, advanceFrame, newClock, nextSpeed, startSpeed } from '../src/loop.js';
 import { throttleMs } from '../src/audio.js';
 import { waveGroups, previewModel, antsLeft, stripRect, blockedSpans, nestPoints, cookiePoints, STRIP_H } from '../src/preview.js';
 import * as A from '../src/art.js';
@@ -47,12 +47,12 @@ test('M0 #2: frames of 1/60 s and 1/30 s at speeds 1/2/4 give the same step coun
     const clk = newClock(); let steps = 0, maxDt = 0;
     const T = 10, frames = Math.round(T / dtReal);
     for (let i = 0; i < frames; i++) steps += advanceFrame(clk, dtReal, sp, (dt) => { maxDt = Math.max(maxDt, dt); return false; });
-    assert.ok(Math.abs(steps - T * 60 * sp) <= 1, `dtReal ${dtReal.toFixed(4)} speed ${sp}: ${steps} steps, want ${T * 60 * sp}`);
+    assert.ok(Math.abs(steps - T * 60 * sp * PACE) <= 1, `dtReal ${dtReal.toFixed(4)} speed ${sp}: ${steps} steps, want ${T * 60 * sp * PACE}`);
     assert.equal(maxDt, STEP, 'the step never grows');
   }
 });
 test('M0: a hitch frame counts as at most 0.1 s; a stop (battle over) ends the stepping at once', () => {
-  const clk = newClock(); assert.equal(advanceFrame(clk, 5, 1, () => false), 6);                     // 0.1 s = 6 steps
+  const clk = newClock(); assert.equal(advanceFrame(clk, 5, 1, () => false), 9);                     // 0.1 s * PACE 1.5 = 9 steps
   const c2 = newClock(); let n = 0; advanceFrame(c2, 0.1, 4, () => ++n === 3); assert.equal(n, 3); assert.equal(c2.acc, 0);
 });
 test('M0 step guard: after ~10 ms of stepping the loop stops and drops the backlog to 8 steps (fake clock)', () => {
@@ -60,7 +60,7 @@ test('M0 step guard: after ~10 ms of stepping the loop stops and drops the backl
   const n = advanceFrame(clk, 0.1, 4, () => { t += 4; return false; }, { now: () => t });       // each step "costs" 4 ms; 24 steps were wanted
   assert.ok(n <= 4 && n >= 1, `steps ${n}`); assert.ok(clk.acc <= 8 * STEP + 1e-9); assert.equal(clk.guarded, 1);
   const c2 = newClock(); let t2 = 0; const m = advanceFrame(c2, 1 / 60, 4, () => { t2 += 0.5; return false; }, { now: () => t2 });
-  assert.equal(m, 4); assert.ok(!c2.guarded, 'cheap steps are never cut');
+  assert.equal(m, 6); assert.ok(!c2.guarded, 'cheap steps are never cut'); // 4 label steps * PACE 1.5
 });
 test('M0 #3: determinism through the frame loop at 1x / 2x / 4x: identical result, food, kills and time (levels 5, 10, 17 x 3 seeds)', () => {
   const run = (lv, seed, sp) => {

@@ -9,7 +9,7 @@ import { Battle, towerStat, onTile, liftable } from '../src/sim.js';
 import * as M from '../src/meta.js';
 
 const src = (f) => readFileSync(new URL(`../src/${f}`, import.meta.url), 'utf8');
-const OLD = JSON.parse(readFileSync(new URL('../../backup-v0.6.1-vc13/tuning/tuning.json', import.meta.url), 'utf8'));
+let OLD = null; try { OLD = JSON.parse(readFileSync(new URL('../../backup-v0.6.1-vc13/tuning/tuning.json', import.meta.url), 'utf8')); } catch { OLD = null; }
 const TJ = JSON.parse(readFileSync(new URL('../../tuning/tuning.json', import.meta.url), 'utf8'));
 const DECK = ['slingshot', 'spray', 'gate', 'fan', 'tractor'];
 const mk = (o = {}) => { const b = new Battle({ levelIndex: 0, deck: DECK, seed: 1, ...o }); b.nextWaveAt = 1e9; return b; };
@@ -85,7 +85,7 @@ test('item 11: every tower has 5 in-battle upgrades; 1-2 stats per step; side to
     // every step is an improvement (multiplier > 1, except times that get shorter: chewTime)
     for (const u of T.upgrades) for (const [k, v] of Object.entries(u)) if (k !== 'liftSize') assert.ok(k === 'chewTime' ? v < 1 : v > 1, `${id} ${k}`);
   }
-  // the resequenced towers keep their v0.6.1 L6 totals for every stat they had (no rebalancing); only a range step was added
+  if (!OLD) return; // the vc13 backup is not in this checkout; the rest of the file still runs
   const prod = (ups, k) => ups.reduce((p, u) => p * (u[k] ?? 1), 1);
   for (const id of ['sound', 'laser', 'zapper', 'spray']) {
     const o = OLD.towers[id].battleUpgrades, n = TJ.towers[id].battleUpgrades;

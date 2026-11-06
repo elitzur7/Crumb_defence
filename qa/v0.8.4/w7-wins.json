@@ -1,0 +1,225 @@
+{
+  "report": [
+    {
+      "L": 61,
+      "win": 100,
+      "target": 100,
+      "tol": 5,
+      "ok": true,
+      "slope": null,
+      "slopeOk": null,
+      "n": 540
+    },
+    {
+      "L": 62,
+      "win": 100,
+      "target": 100,
+      "tol": 5,
+      "ok": true,
+      "slope": null,
+      "slopeOk": null,
+      "n": 540
+    },
+    {
+      "L": 63,
+      "win": 96.3,
+      "target": 91.5,
+      "tol": 5,
+      "ok": true,
+      "slope": null,
+      "slopeOk": null,
+      "n": 540
+    },
+    {
+      "L": 64,
+      "win": 92.2,
+      "target": 93.5,
+      "tol": 5,
+      "ok": true,
+      "slope": null,
+      "slopeOk": null,
+      "n": 540
+    },
+    {
+      "L": 65,
+      "win": 87.2,
+      "target": 87,
+      "tol": 7,
+      "ok": true,
+      "slope": 11.3,
+      "slopeOk": true,
+      "n": 540
+    },
+    {
+      "L": 66,
+      "win": 97,
+      "target": 93,
+      "tol": 5,
+      "ok": true,
+      "slope": null,
+      "slopeOk": null,
+      "n": 540
+    },
+    {
+      "L": 67,
+      "win": 87.4,
+      "target": 84,
+      "tol": 5,
+      "ok": true,
+      "slope": 22.8,
+      "slopeOk": true,
+      "n": 540,
+      "note": "hpMul retuned after the rarity-safe flyer swap"
+    },
+    {
+      "L": 68,
+      "win": 85,
+      "target": 84,
+      "tol": 5,
+      "ok": true,
+      "slope": 20,
+      "slopeOk": true,
+      "n": 540,
+      "note": "hpMul retuned after the rarity-safe flyer swap"
+    },
+    {
+      "L": 69,
+      "win": 93.7,
+      "target": 88,
+      "tol": 7,
+      "ok": true,
+      "slope": 20,
+      "slopeOk": true,
+      "n": 540
+    },
+    {
+      "L": 70,
+      "win": 58.1,
+      "target": 58.5,
+      "tol": 5,
+      "ok": true,
+      "slope": 14.6,
+      "slopeOk": true,
+      "n": 540
+    }
+  ],
+  "rows": [
+    {
+      "L": 61,
+      "n": 540,
+      "wins": 540,
+      "win": 100,
+      "hpMul": 6
+    },
+    {
+      "L": 62,
+      "n": 540,
+      "wins": 540,
+      "win": 100,
+      "hpMul": 7.4
+    },
+    {
+      "L": 65,
+      "n": 540,
+      "wins": 471,
+      "win": 87.2,
+      "hpMul": 5.42
+    },
+    {
+      "L": 63,
+      "n": 540,
+      "wins": 520,
+      "win": 96.3,
+      "hpMul": 9.6
+    },
+    {
+      "L": 66,
+      "n": 540,
+      "wins": 524,
+      "win": 97,
+      "hpMul": 9.5
+    },
+    {
+      "L": 67,
+      "n": 540,
+      "wins": 521,
+      "win": 96.5,
+      "hpMul": 4.25
+    },
+    {
+      "L": 64,
+      "n": 540,
+      "wins": 498,
+      "win": 92.2,
+      "hpMul": 12
+    },
+    {
+      "L": 68,
+      "n": 540,
+      "wins": 526,
+      "win": 97.4,
+      "hpMul": 5.51
+    },
+    {
+      "L": 70,
+      "n": 540,
+      "wins": 314,
+      "win": 58.1,
+      "hpMul": 1.64
+    },
+    {
+      "L": 69,
+      "n": 540,
+      "wins": 506,
+      "win": 93.7,
+      "hpMul": 3.99
+    },
+    {
+      "L": 65,
+      "n": 540,
+      "wins": 410,
+      "win": 75.9,
+      "hpMul": 5.8536
+    },
+    {
+      "L": 67,
+      "n": 540,
+      "wins": 482,
+      "win": 89.3,
+      "hpMul": 4.59
+    },
+    {
+      "L": 70,
+      "n": 540,
+      "wins": 235,
+      "win": 43.5,
+      "hpMul": 1.7712
+    },
+    {
+      "L": 69,
+      "n": 540,
+      "wins": 398,
+      "win": 73.7,
+      "hpMul": 4.309200000000001
+    },
+    {
+      "L": 68,
+      "n": 540,
+      "wins": 515,
+      "win": 95.4,
+      "hpMul": 5.9508
+    }
+  ],
+  "retune": {
+    "67": {
+      "win": 87.4,
+      "slope": 22.8,
+      "hp": 4.68
+    },
+    "68": {
+      "win": 85,
+      "slope": 20,
+      "hp": 7.05
+    }
+  }
+}

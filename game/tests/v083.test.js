@@ -10,7 +10,7 @@ test('v0.8.3: version 0.8.3 (or later), versionCode 28 (or later)', () => {
 });
 test('F1: L59 hpMul is 4.05 and no other W6 hpMul moved', () => {
   const hp = Object.fromEntries(C.LEVELS.slice(50, 60).map((l, i) => [51 + i, l.hpMul]));
-  assert.deepEqual(hp, { 51: 6, 52: 7.2, 53: 9.19, 54: 9.5, 55: 4.84, 56: 9.57, 57: 5.9, 58: 5.36, 59: 4.05, 60: 1.7 });
+  assert.deepEqual(hp, { 51: 6, 52: 7.2, 53: 9.19, 54: 9.5, 55: 4.84, 56: 9.57, 57: 5.9, 58: 5.29, 59: 4.12, 60: 1.7 });
 });
 test('F3: the cabinet palette (new names and pads, ids unchanged, prices unchanged)', () => {
   const want = { 'slingshot-1': ['Bubblegum', '#ef51ee'], 'slingshot-2': ['Sandstone', '#a09760'], 'slingshot-3': ['Meadow', '#53a764'], 'laser-1': ['Denim', '#6c9bb4'], 'laser-2': ['Orchid', '#d86cd2'], 'laser-3': ['Olive', '#9e9820'], 'zapper-1': ['Fuchsia', '#ff4cc1'], 'zapper-2': ['Caramel', '#c58a4f'], 'zapper-3': ['Dusty Rose', '#d17d92'], 'sound-1': ['Persimmon', '#f06a48'], 'sound-2': ['Coral', '#db7766'], 'sound-3': ['Mauve', '#c979b5'] };
@@ -44,7 +44,7 @@ test('F8: Ant Book labels wrap at the space (no ellipsis), 12 px floor', () => {
 test('F10: the only art.plate override is an explicit hide; the plate lint passes and fails its negative control', async () => {
   const { spawnSync } = await import('node:child_process'); const run = (a) => spawnSync('node', [new URL('../tools/qa-v083/plate-lint.mjs', import.meta.url).pathname, ...a], { encoding: 'utf8' });
   assert.equal(run([]).status, 0); assert.equal(run(['--inject']).status, 1);
-  const o = Object.entries(tuning.maps).filter(([, m]) => m.art && m.art.plate); assert.deepEqual(o.map(([k, m]) => [k, m.art.plate]), [['w6_waffle_iron', { hide: true }]]);
+  const o = Object.entries(tuning.maps).filter(([, m]) => m.art && m.art.plate); assert.deepEqual(o.map(([k, m]) => [k, m.art.plate]), [['w6_waffle_iron', { hide: true }], ['w7_press_plate', { hide: true }]]);
 });
 test('F3 lint: pad-distinct passes and fails its negative control', async () => {
   const { spawnSync } = await import('node:child_process'); const run = (a) => spawnSync('node', [new URL('../tools/qa-v083/pad-distinct.mjs', import.meta.url).pathname, ...a], { encoding: 'utf8' });

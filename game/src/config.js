@@ -178,7 +178,7 @@ export const TARGET_MODE_TEXT = { // v0.8.1: Front retired (M3); Healer (M1, lev
 // v0.8.2 R4: levels (1-based) where a bot sim measured a >= +5 point gain from the mode named by the hint (M12 regenerates this list). flyer = any level (rule is deck based); drone = the Syrup Queen level.
 export const HINT_OK = { healer: [35, 39, 49, 59], carrier: [40, 50, 59, 60], drone: [60] }; // M12 (qa/v0.8.3/mode-evidence.json: v0.8.2 28 levels + L59 and drone L60 re-measured, 540 battles each): gain >= +5 points vs weak mode
 export const ART81 = !(typeof __TEST_HOOKS__ !== 'undefined' && __TEST_HOOKS__ && typeof location !== 'undefined' && /[?&]art81=0/.test(location.search)); // v0.8.1 RG1 kill-switch: every v0.8.1 art/UI/motion item is gated on it (the A13 identity batch runs with it on and off; test builds accept ?art81=0)
-export const VERSION = '0.8.3'; // v0.7: shown on the map screen (keep in step with package.json + android versionName)
+export const VERSION = '0.8.4'; // keep in step with package.json and android versionName
 export const ANT_SIZES = { ...TUNING.antSizes };
 const ANT_TEXT = {
   small: { name: 'Scout Ant', desc: 'Tiny, fast, comes in swarms.', intro: 'Tiny and fast. They come in swarms.' },
@@ -206,6 +206,8 @@ const ANT_TEXT = {
   // v0.8.2 world 6 (Pancake Picnic)
   drone: { name: 'Drone Ant', desc: 'A four-winged flyer with armor 2. Laser, Zapper or Fan can hit it; Burn-through strips its armor.', intro: 'Flies, with armor 2. Laser, Zapper or Fan!' },
   queen6: { name: 'Syrup Queen', desc: 'BOSS of world 6. Walks slowly and drips a Drone every 12 seconds. Takes 50 of the pancakes. Ignores most slowing.', intro: 'Syrup Queen: a new Drone every 12 seconds.' },
+  shieldbearer: { name: 'Shield Bearer', desc: 'While alive, nearby ants gain +1 armor. Rare.', intro: 'Shield Bearer: nearby ants gain armor.' },
+  queen7: { name: 'Jam Queen', desc: 'BOSS of world 7. Walks and calls a Worker, then a Drone, every 14 seconds. Takes 50 of the tart. Ignores most slowing.', intro: 'Jam Queen: a Worker, then a Drone, every 14 seconds.' },
   queen4: { name: 'Sundae Queen', desc: 'BOSS of world 4. Calls a nurse every 9 seconds, and the nurses heal her. Takes 50 of the sundae.', intro: 'BOSS. Calls nurses that heal her.' },
 };
 // ---------------- Queens (v0.4 item 19) ----------------
@@ -222,9 +224,23 @@ export const ANT_CARD = {
   nurse: 'Nurse Ant \u2014 heals friends nearby every 3 seconds. Pop her first!',
   drone: 'Drone Ant \u2014 flies, armor 2. Laser, Zapper and Fan can hit flyers.', // v0.8.2 PP9 (shown once on the first prep screen of L52)
   queen6: 'Syrup Queen \u2014 she walks, and drips a Drone every 12 seconds. Keep an air tower ready.', // v0.8.2 PP5/PP9
+  shieldbearer: 'Shield Bearer \u2014 nearby ants gain +1 armor while it lives. Burn-through strips armor.',
+  queen7: 'Jam Queen \u2014 she walks, and calls a Worker, then a Drone, every 14 seconds.',
 };
 // v0.8.3 PP9: one short flavour / fact line per World 6 level (index = level index), shown once per save on wave 2. <= 8 words, no advice on how to win.
 export const W6_TIPS = { 50: 'Pancakes first. Syrup is next.', 51: 'Drones fly. Only air towers hit them.', 52: 'A long, winding picnic path.', 53: 'Syrup is sticky. So are queens.', 54: 'Halfway through the picnic.', 55: 'Heavy hitters on this table.', 56: 'Fewer ant types, bigger crowds.', 57: 'The cookie waits at the end.', 58: 'Drones and nurses arrive together.', 59: 'The Syrup Queen drips Drones.' };
+export const W7_TIPS = { 60: 'Jam first. The tart is next.', 61: 'A violet ant carries a shield.', 62: 'Flyers cross the violet cloth.', 63: 'Armor walks the toast rack.', 64: 'The alley fills up fast.', 65: 'A quiet basket between peaks.', 66: 'Shields glow on the hill.', 67: 'Heavy steps on the plate.', 68: 'The cloth holds a hard mix.', 69: 'The Jam Queen calls both.' };
+export const ADVICE_VERBS = /\b(should|must|try|use|bring|place|put|pick)\b/i;
+export function tipLint(text, evidence) {
+  if (!text || text.split(/\s+/).filter(Boolean).length > 8) return 'over 8 words';
+  if (ADVICE_VERBS.test(text)) {
+    if (!evidence) return 'advice without evidence';
+    const [mode, level] = String(evidence).split(':');
+    const list = HINT_OK[mode];
+    if (!list || !list.map(Number).includes(+level)) return 'evidence not in HINT_OK';
+  }
+  return '';
+}
 export const L42_TIP = 'Glaze grows back. Focus fire.'; // v0.8.1 W9: the one-time level-42 tip toast
 export const QUEEN_TRAITS = { ...TUNING.queenTraitMods };
 export function queenTake(traits = [], T = QUEEN_TRAITS) { return 50 + traits.reduce((s, t) => s + (T[t] || 0), 0); }

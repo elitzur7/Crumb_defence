@@ -235,7 +235,7 @@ test('J12: motion state is reset per frame and every new art path is behind ART8
 // ---------- Pass 5: World 5 "Donut Diner" (W1-W9, U2, U6, EC1, EC3, EC4) ----------
 import { generateWaves, levelAntTypes } from '../src/sim.js'; import * as A from '../src/art.js';
 test('W1: world 5 Donut Diner - W5 data inside 60 levels, 6 worlds, 52 maps, treat donut, queen5, cap 6, coinMul 1.75, gate 14 stars of W4', () => {
-  assert.equal(C.LEVELS.length, 60); assert.equal(C.WORLDS.length, 6); assert.equal(Object.keys(C.MAPS).length, 52);
+  assert.equal(C.LEVELS.length, 70); assert.equal(C.WORLDS.length, 7); assert.equal(Object.keys(C.MAPS).length, 62);
   const w = C.WORLDS[4]; assert.equal(w.id, 5); assert.equal(w.name, 'Donut Diner'); assert.equal(w.treat, 'donut'); assert.equal(w.queen, 'queen5'); assert.equal(w.levels, 10);
   assert.equal(w.cardLevelCap, 6); assert.equal(w.coinMul, 1.75); assert.deepEqual(w.unlock, { allLevelsWonInWorld: 4, minStarsInWorld: 14 });
   assert.equal(C.WORLD_START[5], 40); assert.ok(C.isBossLevel(49)); assert.ok(!C.isBossLevel(48)); assert.ok(C.LEVELS.slice(40, 50).every((L) => L.world === 5));
@@ -254,7 +254,7 @@ test('W3: hpMul table for L41-L50 is the final tuning (move hpMul, never waves);
   const { checkLevel } = await import('../tools/check-rarity.mjs'); for (let i = 40; i < 50; i++) assert.deepEqual(checkLevel(i).msgs, [], `L${i + 1}`);
 });
 test('U2: ant intro cards - glazed / queen5 / nurse only, once per save, never on a cleared level; an old save pre-marks the ants it has already met', () => {
-  assert.deepEqual(Object.keys(C.ANT_CARD).sort(), ['drone', 'glazed', 'nurse', 'queen5', 'queen6']); // v0.8.2: + drone / queen6 (PP9)
+  assert.deepEqual(Object.keys(C.ANT_CARD).sort(), ['drone', 'glazed', 'nurse', 'queen5', 'queen6', 'queen7', 'shieldbearer']);
   assert.match(C.ANT_CARD.glazed, /\u2014/); assert.ok(C.ANT_CARD.glazed.length > 20);
   const s = M.newSave(); assert.equal(M.nextAntCard(s, 0), null, 'L1: no card'); assert.equal(M.nextAntCard(s, 40), null, 'L41 has no glazed');
   assert.equal(M.nextAntCard(s, 41), 'glazed'); assert.equal(M.markAntSeen(s, 'glazed'), true); assert.equal(M.markAntSeen(s, 'glazed'), false); assert.equal(M.nextAntCard(s, 41), null);

@@ -48,6 +48,9 @@ export function sfx(name) {
     case 'shield': tone(1568, 0.05, 'triangle', 0.16); tone(988, 0.09, 'triangle', 0.14, 1, 0.04); tone(659, 0.12, 'sine', 0.12, 1, 0.09); break; // v0.8.1 M4: a glassy 'tink' when a glaze shield breaks
     case 'shieldUp': tone(659, 0.08, 'sine', 0.1); tone(988, 0.1, 'sine', 0.1, 1, 0.07); break; // v0.8.1 M4: soft rising pair when the shield is full again
     case 'coinTick': tone(1318 + Math.random() * 60, 0.05, 'triangle', 0.14, 1.1); break; // v0.8.1 G4/J10: a small bright tick when crumbs land on the counter
+    case 'starC': tone(523, 0.12, 'triangle', 0.28); break;
+    case 'starE': tone(659, 0.12, 'triangle', 0.28); break;
+    case 'starG': tone(784, 0.14, 'triangle', 0.3); break;
     case 'perfect': [784, 988, 1175, 1568].forEach((f, i) => tone(f, 0.16, 'triangle', 0.3, 1, i * 0.07)); tone(2093, 0.3, 'sine', 0.14, 1, 0.3); break; // v0.8.1 J10: Perfect = a quick rising arpeggio + a sparkle
     case 'boss': tone(98, 0.5, 'sawtooth', 0.14, 0.7); tone(147, 0.4, 'triangle', 0.18, 0.8, 0.12); break; // v0.8.1 J9: the Queen's low entrance tone
     case 'heal': tone(880, 0.1, 'sine', 0.18); tone(1175, 0.14, 'sine', 0.16, 1, 0.08); break; // v0.7.9: a soft two-note chime for a nurse pulse

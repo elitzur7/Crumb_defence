@@ -111,13 +111,12 @@ test('cards are obtained by buying (Shop) or as prizes - never by clearing level
   // v0.7.7 S1: only a world's queen pays one boss-gift card on its first clear (tests/v077.test.js)
   for (let i = 0; i < C.LEVELS.length; i++) if (C.isBossLevel(i)) M.applyBattleResult(s, i, 'win', 3, { kills: 1, foodLeft: 50 });
   assert.equal(M.unlockedCards(s).length, C.STARTER_CARDS.length + C.WORLDS.length, 'one boss gift per world');
-  const locked = M.lockedCards(s); assert.equal(locked.length, C.ALL_CARDS.length - C.STARTER_CARDS.length - C.WORLDS.length);
-  const id = locked[0]; const coins = s.coins;
-  assert.ok(M.buyCardUnlock(s, id)); assert.ok(s.cards[id].unlocked); assert.equal(s.coins, coins - M.unlockPrice(id)); // v0.6.2 item 12: tiered price
-  assert.equal(M.buyCardUnlock(s, id), false, 'already owned');
-  const poor = M.newSave(); assert.equal(M.buyCardUnlock(poor, M.lockedCards(poor)[0]), false, 'needs coins'); assert.equal(poor.coins, 0);
-  // prize: a card you do not own yet, at the prize level
+  const locked = M.lockedCards(s); assert.equal(locked.length, Math.max(0, C.ALL_CARDS.length - C.STARTER_CARDS.length - C.WORLDS.length));
   const p = M.grantCardPrize(s, 2, () => 0); assert.ok(p.newCard); assert.ok(s.cards[p.id].unlocked); assert.ok(s.cards[p.id].level >= 2);
+  const shop = M.newSave(); shop.coins = 100000; const id = M.lockedCards(shop)[0]; const coins = shop.coins;
+  assert.ok(M.buyCardUnlock(shop, id)); assert.ok(shop.cards[id].unlocked); assert.equal(shop.coins, coins - M.unlockPrice(id));
+  assert.equal(M.buyCardUnlock(shop, id), false, 'already owned');
+  const poor = M.newSave(); assert.equal(M.buyCardUnlock(poor, M.lockedCards(poor)[0]), false, 'needs coins'); assert.equal(poor.coins, 0);
   // owning everything: copies instead
   for (const c of M.lockedCards(s)) M.grantCardPrize(s, 1, () => 0);
   assert.equal(M.lockedCards(s).length, 0);

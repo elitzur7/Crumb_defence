@@ -6,7 +6,7 @@ import * as M from './meta.js';
 import * as A from './art.js';
 import { levelHeaderLine } from './uitext.js';
 import { initAudio, sfx, setMuted, setAudioSpeed } from './audio.js';
-import { STEP, advanceFrame, newClock, nextSpeed, startSpeed } from './loop.js';
+import { STEP, PACE, advanceFrame, newClock, nextSpeed, startSpeed } from './loop.js';
 import { smartBotStep } from './bot.js';
 import { addFloatText } from './fx.js';
 import * as Treat from './treat.js';
@@ -174,7 +174,7 @@ function openSettings() {
 function closeSettings() { S.settings = null; S.confirmReset = 0; if (S.settingsPushed) { S.settingsPushed = false; ownBack(); } }
 function go(screen) {
   S.settingsPushed = false; // a leave-the-map navigation reuses the gear panel's history entry (it is the screen's 'inner' entry)
-  S.screen = screen; S.guide = null; S.antCard = null; S.starCard = null; S.prepTip = null; S.sel = null; S.info = null; S.drag = null; S.mergeAnim = null; S.toast = null; S.dialog = null; S.cal = null; S.settings = null; S.mode = null; S.shopFx = null; sfx('tap');
+  S.screen = screen; S.guide = null; S.antCard = null; S.starCard = null; S.prepTip = null; S.sel = null; S.info = null; S.drag = null; S.mergeAnim = null; S.toast = null; S.dialog = null; S.cabAsk = null; S.cal = null; S.settings = null; S.mode = null; S.shopFx = null; sfx('tap');
   if (screen === 'map') { S.mapScroll = autoMapScroll(); maybeShowCalendar(); }
   // keep one history entry while away from the map so the Android back button maps to in-game "back"
   try {
@@ -222,7 +222,7 @@ function startBattle(levelIndex = S.levelIndex, deck = S.prep.deck, bonuses = S.
     onBonusUsed: (type) => { M.consumeBonus(S.save, type); persist(); } }); // deducted immediately: Restart/Quit can't refund it
   S.battleStartStock = { ...S.save.bonusStock };
   capsReset(); S.queenIntro = null; S._bubbleShown = false; S.impactT = {}; S.crumbSprites = []; S.sparkles = []; // v0.8.1 J11: maxima since battle start
-  S.fx = []; S.swatQ = []; S.ui = []; S.result = null; setPaused(false); S.speed = startSpeed(S.speed, C.UI.speedMaxAtStart); clock.acc = 0; S.sel = null; S.info = null; S.mode = null; S.queenDown = null; S.modeHint = false; S.nurseTip = false; S.battle.rescueScale = S.speed;
+  S.fx = []; S.swatQ = []; S.ui = []; S.result = null; setPaused(false); S.speed = startSpeed(S.speed, C.UI.speedMaxAtStart); clock.acc = 0; S.sel = null; S.info = null; S.mode = null; S.queenDown = null; S.modeHint = false; S.nurseTip = false; S.battle.rescueScale = S.speed * PACE; // divisor matches the faster sim fill so the rescue window stays 3 s of wall time
   go('battle');
   S.guide = guideWanted(levelIndex) ? { step: 1 } : null; // v0.8.1 U1 (after go(), which clears it)
   S.specialBanner = null; // v0.8.2 U11: the awakening beat - the first W6 battle with a card at CL >= 5: a 2 s banner, once per tower (save.seenSpecial[type]); never on W1-W5 (the special sleeps there)
@@ -319,8 +319,8 @@ function mapTap(p) {
 // v0.7.4 M1: a one-time tip (per battle, never while paused) the first time a tank (Armoured / Big / Heavy / Queen) steals food, if a tower could change its target
 const W6_STORY = 'Drones fly in. Bring a tower that hits flyers.'; // v0.8.2 PP8: the world-6 map story line (<= 60 chars)
 const W5_STORY = 'Glaze grows back: hit hard, hit fast!'; // v0.8.1 W9: the world-5 map story line (<= 60 chars)
-const TREAT_NAME = { cookie: 'Cookie', cake: 'Cake', pie: 'Pie', sundae: 'Sundae', donut: 'Donut', pancake: 'Pancakes' }; // v0.7.7; v0.8.1 W8: donut
-const HINT_ANTS = new Set(['armored', 'big', 'heavy', 'queen', 'queen2', 'greasy', 'mama', 'queen3', 'nurse', 'queen4', 'glazed', 'queen5', 'drone', 'queen6']); // v0.8.2: + drone / queen6; v0.8.1 W5: + glazed / queen5 (the one-time mode tip also fires on a Glazed steal); v0.7.7: + world 3's ants; v0.7.9: + world 4's
+const TREAT_NAME = { cookie: 'Cookie', cake: 'Cake', pie: 'Pie', sundae: 'Sundae', donut: 'Donut', pancake: 'Pancakes', tart: 'Tart' };
+const HINT_ANTS = new Set(['armored', 'big', 'heavy', 'queen', 'queen2', 'greasy', 'mama', 'queen3', 'nurse', 'queen4', 'glazed', 'queen5', 'drone', 'queen6', 'shieldbearer', 'queen7']);
 function maybeModeHint(b, e) {
   if (S.modeHint || S.paused || !e.ant || !HINT_ANTS.has(e.ant) || !(e.n > 0)) return;
   if (!b.towers.some((q) => hasTargetModes(q.type))) return;
@@ -458,13 +458,15 @@ function spCue(e) {
     case 'burnthrough': addFx({ k: 'spCrack', x: e.x, y: e.y, life: 0.12, max: 0.12 }); break;
     case 'crescendo': addFx({ k: 'spGold', x: e.x, y: e.y, r: 52, life: 0.4, max: 0.4 }); break;
     case 'pounce': addFx({ k: 'txt', s: '!', x: e.x, y: e.y - 6, size: 14, col: '#fff2b8', life: 0.5, max: 0.5 }); addFx({ k: 'impact', shape: 'spoke3', col: '#fff4c8', x: e.x, y: e.y, life: 0.2, max: 0.2 }); break;
+    case 'static': addFx({ k: 'spArc', x: e.x, y: e.y, tx: e.tx, ty: e.ty, life: 0.1, max: 0.1, bright: 1 }); break;
   }
 }
 function consumeEvents() {
   const b = S.battle; const ev = b.events; b.events = []; spCueN = 0;
   for (const e of ev) {
     switch (e.type) {
-      case 'special': if (C.ART81) spCue(e); break; // v0.8.3 M7h: field-layer cues only (no background layer, no sim event added)
+      case 'special': if (C.ART81) spCue(e); break;
+      case 'clang': if (C.ART81 && e.armor > 0) addFx({ k: 'spark', x: e.x, y: e.y - 6, col: '#d7e2ee', life: 0.12, max: 0.12 }); break;
       case 'kill':
         if (e.src === 'swatter' && !reducedMotion() && b.swatFx > 0) { // v0.7.3: a swatter kill shows on the slap frame (ant ghost stays until then)
           S.swatQ.push({ at: swatHitTime(b), kill: e, ghost: e.ref, x: e.x, y: e.y }); break;
@@ -555,7 +557,8 @@ function consumeEvents() {
         if (C.ART81) addFx({ k: 'banner', pill: true, last: lastW, s: queen ? 'Queen!' : lastW ? `Final wave ${e.n}/${b.totalWaves}` : `Wave ${e.n}/${b.totalWaves}`, life: 1.08, max: 1.08 });
         else addFx({ k: 'banner', s: `Wave ${e.n}`, life: 1.4, max: 1.4 });
         sfx('wave'); if (lastW && C.ART81) setTimeout(() => sfx('wave'), 380);
-        if (C.ART81 && b.levelIndex >= 50 && b.levelIndex <= 59 && e.n === 2 && C.W6_TIPS[b.levelIndex] && M.markAntSeen(S.save, 'tip:w6-' + (b.levelIndex + 1))) { persist(); toast(C.W6_TIPS[b.levelIndex], '#ffe39a'); S.toast.hint = true; } // v0.8.3 PP9: one short non-advice line per World 6 level, once per save (no hints on how to win - U16 is not built)
+        if (C.ART81 && b.levelIndex >= 50 && b.levelIndex <= 59 && e.n === 2 && C.W6_TIPS[b.levelIndex] && M.markAntSeen(S.save, 'tip:w6-' + (b.levelIndex + 1))) { persist(); toast(C.W6_TIPS[b.levelIndex], '#ffe39a'); S.toast.hint = true; }
+        if (C.ART81 && b.levelIndex >= 60 && b.levelIndex <= 69 && e.n === 2 && C.W7_TIPS[b.levelIndex] && M.markAntSeen(S.save, 'tip:w7-' + (b.levelIndex + 1))) { persist(); toast(C.W7_TIPS[b.levelIndex], '#f3d0f6'); S.toast.hint = true; }
         if (C.ART81 && b.levelIndex === 41 && e.n === 2 && M.markAntSeen(S.save, 'tip:glazed42')) { persist(); toast(C.L42_TIP, '#ffe39a'); S.toast.hint = true; } // v0.8.1 W9: the first Glazed wave of L42 - one tip, once per save (save.seenAnts)
         if (b.levelIndex === 31 && e.n === 2 && !S.nurseTip) { S.nurseTip = true; toast('Nurse ants heal their friends. Pop them first!', '#ffe39a'); S.toast.hint = true; } // v0.7.9: the first nurse arrives in wave 2 of level 32
         break;
@@ -609,7 +612,7 @@ const clock = newClock();
 // swatter queue flushed after EVERY sub-step, so the slap lands within one STEP (1/60 s) of its battle time at any speed (it used to wait for the frame end).
 function battleStep(dt) {
   const b = S.battle;
-  b.rescueScale = S.speed; // a rescue piece lives its window in WALL time
+  b.rescueScale = S.speed * PACE; // wall window stays rescue.window seconds (sim seconds arrive at label * PACE per wall second). Audio still uses the label.
   b.update(dt);
   if (S.autoBot) smartBotStep(b);
   if (S.speed > 1 || b.result) { consumeEvents(); flushSwat(!!b.result); }
@@ -1818,7 +1821,16 @@ function drawTowerObj(tw) {
     ctx.beginPath(); ctx.arc(0, 0, 8, 0, 7); ctx.fillStyle = '#fffaf5'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = A.INK; ctx.stroke(); // v0.7.5 C18: 12+ px cream disc, INK 2.0
     drawModeIcon(tw.mode, 0, 0, 0.55); ctx.restore();
   }
-  if (tw.lvl > 1) for (let k = 0; k < tw.lvl; k++) { let ps = 1; if (C.ART81 && k === tw.lvl - 1 && tw._upAt !== undefined && !reducedMotion()) { const pk = (S.t - tw._upAt - 0.22) / 0.16; if (pk >= 0 && pk < 1) ps = Math.max(0.01, A.easeOutBack(pk)); else if (pk < 0) ps = 0.01; } A.starShape(ctx, -(tw.lvl - 1) * 3.6 + k * 7.2, 16, 3.6 * ps, '#ffd45e', 1.1); } // up to 6 pips (v0.6 item 11)
+  if (tw.lvl > 1) { // v0.8.4 G12: up to 5 stars above the tower. Level 6 adds a crown dot. The new star eases from 1.6 to 1 in 120 ms.
+    const n = Math.min(5, tw.lvl);
+    for (let k = 0; k < n; k++) {
+      let ps = 1;
+      if (C.ART81 && k === n - 1 && tw._upAt !== undefined && !reducedMotion()) { const pk = (S.t - tw._upAt) / 0.12; if (pk >= 0 && pk < 1) ps = 1.6 - 0.6 * pk; else if (pk < 0) ps = 1; }
+      const ang = (k - (n - 1) / 2) * 0.45;
+      A.starShape(ctx, Math.sin(ang) * 18, -28 - Math.cos(ang) * 6, 5 * ps, '#ffd24a', 1);
+    }
+    if (tw.lvl >= 6) { ctx.beginPath(); ctx.arc(0, -40, 2.4, 0, 7); ctx.fillStyle = '#ffd24a'; ctx.fill(); ctx.lineWidth = 1; ctx.strokeStyle = A.INK; ctx.stroke(); }
+  }
   ctx.restore();
 }
 // v0.7.2 C13: the cookie guard. Leans on the right of the cookie; a swat is wind-up 0.10 s, slap 0.08 s, hold 0.06 s, return 0.26 s (0.5 s).
@@ -1889,7 +1901,10 @@ function drawAntObj(a, ghost = false) {
   const H = C.ANTS[a.type].heal, spent = !!H && (frozen || a.healCd > 0); // v0.7.9: a recharging / frozen nurse wears the grey cap
   const mood = spent ? 'g' : (a.hitFlash > 0.02 && !reducedMotion()) ? 'h' : a.stunT > 0 ? 'd' : ''; // v0.8.0: hurt face (> <) on a hit, dizzy face while stunned (baked lazily per type/frame)
   const droneFx = C.ART81 && a.type === 'drone' && !reducedMotion() && !still; // v0.8.3 PP3: a Drone's wings flutter between two poses at 14 Hz and it hovers +-2 px at 1.6 Hz (reduced motion: still pose)
-  const spr = A.antSprite(a.type, droneFx ? (Math.floor((b.time + a.id * 0.037) * 14) % 2 ? 3 : 9) : fr, a.carrying > 0, pxRatio, mood);
+  const vary = a.type === 'worker' || a.type === 'small' || a.type === 'flyer'; // v0.8.4 G14: hue and size only on these three. Queens, the shield bearer, and status types stay fixed.
+  const hue = vary ? ((a.id * 17) % 13) - 6 : 0;
+  const jit = vary ? 0.97 + ((a.id * 13) % 6) * 0.02 : 1;
+  const spr = A.antSprite(a.type, droneFx ? (Math.floor((b.time + a.id * 0.037) * 14) % 2 ? 3 : 9) : fr, a.carrying > 0, pxRatio, mood, { play: true, hue });
   const breathe = still ? 1 + Math.sin(S.t * 5 + a.id) * 0.035 : 1;
   // tiny lateral offset per id so crowds don't stack perfectly
   let lat = ((a.id * 37) % 9 - 4) * 1.2;
@@ -1898,7 +1913,7 @@ function drawAntObj(a, ghost = false) {
   let hopY = 0, hopS = 1; if (a._hopT && !reducedMotion()) { const hk = (S.t - a._hopT) / 0.24; if (hk >= 0 && hk < 1) { hopY = -Math.sin(hk * Math.PI) * 4; hopS = 1 + 0.1 * Math.sin(hk * Math.PI * 2) * (1 - hk); } } // v0.7.10 cookie-pause hop
   let gsx = 1, gsy = 1; if (a._grabT && !reducedMotion()) { const gk = (S.t - a._grabT) / 0.08; if (gk >= 0 && gk < 1) { const q = Math.sin(gk * Math.PI); gsx = 1 + 0.12 * q; gsy = 1 - 0.12 * q; } } // v0.8.1 J3: grab squash 1.12 / .88 over 80 ms
   if (droneFx) hopY += Math.sin((b.time + a.id * 0.7) * Math.PI * 2 * 1.6) * 2;
-  ctx.save(); ctx.translate(x, y + 4 + hopY); ctx.scale(face / breathe * gsx, breathe * hopS * gsy);
+  ctx.save(); ctx.translate(x, y + 4 + hopY); ctx.scale(face / breathe * gsx * jit, breathe * hopS * gsy * jit);
   if (C.ART81) { // v0.8.2 G13: 80 ms hit squash (scaleX 1.08 / scaleY 0.88); a 2nd-Nth hit within 120 ms does not restart it; none with more than 25 ants on screen or under reduced motion
     if (a.hitFlash > 0.05 && !(S.t - (a._sqT ?? -9) < 0.12) && b.ants.length <= 25 && !reducedMotion()) a._sqT = S.t;
     const sk = (S.t - (a._sqT ?? -9)) / 0.08; if (sk >= 0 && sk < 1) { const q = (1 - sk) * (1 - sk); ctx.scale(1 + 0.08 * q, 1 - 0.12 * q); }
@@ -1907,9 +1922,11 @@ function drawAntObj(a, ghost = false) {
   if (a.hitFlash > 0.04) { ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = 0.6; ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h); } // hit flash: white-add 0.6 for the first 80 ms
   if (a._healFlash > S.t && !ghost) { ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = reducedMotion() ? 0.35 : 0.55 * Math.min(1, (a._healFlash - S.t) / 0.2); ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h); } // v0.7.9: white flash on a healed ant
   ctx.restore();
-  if (C.ART81 && a.type === 'queen6' && !ghost && !frozen && a.spawnT > 0 && a.spawnT <= 0.4) { // v0.8.3 PP5: a syrup drip forms and falls in the 0.4 s before each Drone spawns (reduced motion: a still amber blot)
-    const q = 1 - a.spawnT / 0.4, dx0 = x - 20 * a.size * face, dy0 = y + 10 + (reducedMotion() ? 8 : q * q * 22), rr = 1 + q * 0.7;
-    ctx.save(); ctx.beginPath(); ctx.ellipse(dx0, dy0, 4.2 * rr, 5.6 * rr, 0, 0, 7); ctx.fillStyle = '#ffe07a'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = A.INK; ctx.stroke(); ctx.beginPath(); ctx.arc(dx0 - 1.4 * rr, dy0 - 1.6 * rr, 1.3 * rr, 0, 7); ctx.fillStyle = '#fffbe0'; ctx.fill(); ctx.restore();
+  if (C.ART81 && (a.type === 'queen6' || a.type === 'queen7') && !ghost && !frozen && a.spawnT > 0 && a.spawnT <= 0.4) {
+    const jam = a.type === 'queen7', q = 1 - a.spawnT / 0.4, q4 = reducedMotion() ? 1 : (Math.min(3, Math.floor(q * 4)) + 1) / 4;
+    const dx0 = x - 20 * a.size * face, dy0 = y + 10 + (reducedMotion() ? 6 : q4 * q4 * 26);
+    const rx = reducedMotion() ? 6 : 4.2 * (1 + q4 * 0.7) * 1.7, ry = reducedMotion() ? 6 : 5.6 * (1 + q4 * 0.7) * 1.7;
+    ctx.save(); ctx.beginPath(); ctx.ellipse(dx0, dy0, rx, ry, 0, 0, 7); ctx.fillStyle = jam ? '#c45ad0' : '#e8a33d'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = jam ? '#8a3a96' : '#b56a18'; ctx.stroke(); ctx.restore();
   }
   if (a._bubbleUntil > S.t && !ghost && !reducedMotion()) { const bx = x, by = y - 40 * a.size - Math.abs(Math.sin(S.t * 6)) * 2; ctx.save(); ctx.beginPath(); ctx.arc(bx, by, 7.5, 0, 7); ctx.fillStyle = '#fffdf0'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = A.INK; ctx.stroke(); ctx.beginPath(); ctx.moveTo(bx - 2.5, by + 6.5); ctx.lineTo(bx + 1, by + 12); ctx.lineTo(bx + 3, by + 6); ctx.fillStyle = '#fffdf0'; ctx.fill(); A.drawChunkyText(ctx, '!', bx, by + 0.5, 12, { mode: 'btn', fill: '#e0524f', outline: 2 }); ctx.restore(); } // v0.8.1 J3
   if (H && !ghost) drawNurseHud(a, H, x, y, frozen);
@@ -1919,7 +1936,7 @@ function drawAntObj(a, ghost = false) {
   if (a.charmT > 0) A.heart(ctx, x + Math.sin(S.t * 4 + a.id) * 4, y - 32 * a.size - Math.abs(Math.sin(S.t * 3)) * 4, 3, '#ff8fbf');
   if (a.shieldMax > 0 && !ghost) drawShield(a, x, y);
   if (a.hp < a.maxHp && !ghost) {
-    const w = a.type === 'queen' || a.type === 'queen3' || a.type === 'queen4' || a.type === 'queen5' || a.type === 'queen6' ? 60 : 22, hy = y - (a.flying ? 44 : 33) * a.size;
+    const w = a.type === 'queen' || a.type === 'queen3' || a.type === 'queen4' || a.type === 'queen5' || a.type === 'queen6' ? 60 : 22, hy = y - (a.flying ? 44 : 33) * a.size - 3;
     A.rr(ctx, x - w / 2 - 1, hy - 1, w + 2, 6, 3); ctx.fillStyle = A.INK; ctx.fill();
     const f = Math.max(0, a.hp / a.maxHp);
     A.rr(ctx, x - w / 2, hy, w * f, 4, 2); ctx.fillStyle = f > 0.5 ? '#8fe388' : f > 0.25 ? '#ffd45e' : '#ff7a7a'; ctx.fill();
@@ -1935,7 +1952,7 @@ function renderFx(dt) {
     ctx.save();
     switch (f.k) {
       case 'thrown': { // v0.6 item 6: an ant thrown off the trail by the Tractor - an arc with a spin, then a puff where it lands
-        const spr = A.antSprite(f.ant, 0, false, pxRatio);
+        const spr = A.antSprite(f.ant, 0, false, pxRatio, '', { play: true });
         const x = f.x0 + (f.x1 - f.x0) * k, y = f.y0 + (f.y1 - f.y0) * k - Math.sin(k * Math.PI) * f.h;
         ctx.globalAlpha = k > 0.8 ? (1 - k) / 0.2 : 1; ctx.translate(x, y); ctx.rotate(k * f.spin); const sc = 1 - k * 0.35; ctx.scale(sc, sc);
         ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h);
@@ -1944,7 +1961,7 @@ function renderFx(dt) {
       }
       case 'crumbFly': { const x = f.x0 + (f.x1 - f.x0) * k, y = f.y0 + (f.y1 - f.y0) * k - Math.sin(k * Math.PI) * 24; ctx.globalAlpha = k > 0.85 ? (1 - k) / 0.15 : 1; A.crumbIcon(ctx, x, y, 1.1 - k * 0.5, true); break; }
       case 'ko': {
-        const spr = A.antSprite(f.ant, 0, false, pxRatio);
+        const spr = A.antSprite(f.ant, 0, false, pxRatio, '', { play: true });
         // v0.7.6 V4: death = scale 1 -> 1.25 in 80 ms (first 25%), then -> 0 over 240 ms; life 0.32 s (was 0.2); reduced motion: a plain fade of the same length, no scale / spin
         const rmo = reducedMotion(), ds = rmo ? 1 : k < 0.25 ? 1 + 0.25 * (k / 0.25) : 1.25 * (1 - (k - 0.25) / 0.75);
         ctx.globalAlpha = rmo ? 1 - k : 1 - k * k; ctx.translate(f.x, f.y - (rmo ? 0 : f.fall ? -k * k * 20 + Math.sin(k * 14) * 3 : k * 24)); ctx.rotate(rmo ? 0 : Math.PI * k * (f.fall ? 2.2 : 0.4) * f.face); // v0.8.1 J2: a flyer spins and drops ctx.scale(f.face * ds, -ds);
@@ -1969,7 +1986,7 @@ function renderFx(dt) {
       case 'dizzy': ctx.globalAlpha = 1 - k; for (let i = 0; i < 3; i++) { const a = k * 10 + i * 2.1; A.starShape(ctx, f.x + Math.cos(a) * 12, f.y - 16 + Math.sin(a) * 4, 3, '#fff27a', 1); } break;
       case 'beam': ctx.globalAlpha = 1 - k; ctx.lineCap = 'round'; ctx.lineWidth = 6 + (f.heat || 0) * 5; ctx.strokeStyle = (f.heat || 0) > 0.6 ? 'rgba(255,150,60,0.55)' : 'rgba(255,90,120,0.4)'; ctx.beginPath(); ctx.moveTo(f.x, f.y); ctx.lineTo(f.tx, f.ty - 4); ctx.stroke(); ctx.lineWidth = 2; ctx.strokeStyle = '#fff'; ctx.stroke(); break;
       case 'zap': {
-        ctx.globalAlpha = 1 - k; ctx.lineWidth = f.chain ? 2.2 : 3; ctx.strokeStyle = f.chain ? '#e4d0ff' : '#bfe0ff'; ctx.beginPath(); ctx.moveTo(f.x, f.y);
+        ctx.globalAlpha = 1 - k; ctx.lineWidth = f.static ? 3.4 : f.chain ? 2.2 : 3; ctx.strokeStyle = f.static ? '#ffffff' : f.chain ? '#e4d0ff' : '#bfe0ff'; ctx.beginPath(); ctx.moveTo(f.x, f.y);
         for (let i = 1; i < 6; i++) { const q = i / 6; ctx.lineTo(f.x + (f.tx - f.x) * q + (Math.random() - 0.5) * 10, f.y + (f.ty - f.y) * q + (Math.random() - 0.5) * 10); }
         ctx.lineTo(f.tx, f.ty); ctx.stroke(); ctx.lineWidth = 1.2; ctx.strokeStyle = '#fff'; ctx.stroke(); break;
       }
@@ -1979,7 +1996,7 @@ function renderFx(dt) {
         ctx.lineCap = 'round'; ctx.lineWidth = 5; ctx.strokeStyle = A.INK; ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(ex, ey); ctx.stroke();
         ctx.lineWidth = 3; ctx.strokeStyle = '#ff8fab'; ctx.stroke(); A.blob(ctx, ex, ey, 4, 4, '#ff8fab', 1.5); break;
       }
-      case 'spArc': { ctx.lineCap = 'round'; const mx = (f.x + f.tx) / 2, my = (f.y + f.ty) / 2 - 10; ctx.beginPath(); ctx.moveTo(f.x, f.y); ctx.quadraticCurveTo(mx, my, f.tx, f.ty); ctx.lineWidth = 2; ctx.strokeStyle = A.INK; ctx.stroke(); ctx.beginPath(); ctx.arc(mx * 0.5 + (f.x + f.tx) * 0.25, my * 0.5 + (f.y + f.ty) * 0.25, 2.4, 0, 7); ctx.fillStyle = '#fff2b8'; ctx.fill(); break; } // v0.8.3 M7h Ricochet
+      case 'spArc': { ctx.lineCap = 'round'; const mx = (f.x + f.tx) / 2, my = (f.y + f.ty) / 2 - 10; ctx.beginPath(); ctx.moveTo(f.x, f.y); ctx.quadraticCurveTo(mx, my, f.tx, f.ty); ctx.lineWidth = f.bright ? 3 : 2; ctx.strokeStyle = f.bright ? '#ffffff' : A.INK; ctx.stroke(); ctx.beginPath(); ctx.arc(mx * 0.5 + (f.x + f.tx) * 0.25, my * 0.5 + (f.y + f.ty) * 0.25, f.bright ? 3 : 2.4, 0, 7); ctx.fillStyle = f.bright ? '#ffffff' : '#fff2b8'; ctx.fill(); break; }
       case 'spCrack': { ctx.globalAlpha = 1 - k; ctx.lineCap = 'round'; ctx.lineWidth = 2; ctx.strokeStyle = '#fff2b8'; ctx.beginPath(); for (let i = 0; i < 3; i++) { const a = -1.2 + i * 1.2 + 0.4; ctx.moveTo(f.x + Math.cos(a) * 3, f.y + Math.sin(a) * 3); ctx.lineTo(f.x + Math.cos(a) * (8 + 4 * k), f.y + Math.sin(a) * (8 + 4 * k)); } ctx.stroke(); break; } // v0.8.3 M7h Burn-through
       case 'spGold': ctx.globalAlpha = (1 - k) * 0.9; ctx.beginPath(); ctx.arc(f.x, f.y - 6, f.r * (0.2 + 0.8 * k), 0, 7); ctx.lineWidth = 6.5 * (1 - k) + 1.3; ctx.strokeStyle = '#ffd24a'; ctx.stroke(); break; // v0.8.3 M7h Crescendo: 30 % thicker, gold
       case 'ring': ctx.globalAlpha = (1 - k) * 0.8; ctx.beginPath(); ctx.arc(f.x, f.y - 6, f.r * (0.2 + 0.8 * k), 0, 7); ctx.lineWidth = 5 * (1 - k) + 1; ctx.strokeStyle = f.col; ctx.stroke();
@@ -2321,7 +2338,7 @@ function renderResult(dt) {
     for (const [ax, k, ty] of [[92, 0, 'worker'], [308, 1.7, 'small']]) { const sp = A.antSprite(ty, 0, false, pxRatio * 1.25, 'cheer'); ctx.save(); ctx.translate(ax, 240 - hop(k)); ctx.scale(1.25 * (k ? -1 : 1), 1.25); ctx.drawImage(sp.cv, -sp.ox, -sp.oy, sp.w, sp.h); ctx.restore(); A.contactShadow(ctx, ax, 244, 20, 5, 0.22); }
   }
   if (R.queenKilled) plainFit(tk === 'pancake' ? 'Way to go, you saved the pancakes!' : tk === 'donut' ? 'Way to go, you saved the donut!' : tk === 'cake' ? 'Way to go, you saved the cake!' : tk === 'pie' ? 'Way to go, you saved the pie!' : tk === 'sundae' ? 'Way to go, you saved the sundae!' : 'Way to go, you saved the cookies!', 200, 180, 300, 13, '#e0607e', 'center', '800'); // v0.5 item 16
-  for (let s = 0; s < 3; s++) { const on = s < R.stars && R.t > 0.3 + s * 0.25; const sc = on ? 1 + Math.max(0, 0.2 - (R.t - 0.3 - s * 0.25)) * 3 : 1; A.starShape(ctx, 140 + s * 60, 270, 18 * sc, on ? '#ffd45e' : '#e8dde4', 2.5); }
+  for (let s = 0; s < 3; s++) { const gap = 0.35, on = s < R.stars && (reducedMotion() || R.t > 0.3 + s * gap); const sc = !on || reducedMotion() ? 1 : 1 + Math.max(0, 0.2 - (R.t - 0.3 - s * gap)) * 3; if (on && !((R._heard || 0) & (1 << s))) { R._heard = (R._heard || 0) | (1 << s); sfx(['starC', 'starE', 'starG'][s]); } A.starShape(ctx, 140 + s * 60, 270, 18 * sc, on ? '#ffd45e' : '#e8dde4', 2.5); }
   if (R.chip2 && R.t > 0.55) { // the 2-star chip: a small coin pill beside the stars, pops when the second star lands
     const k = Math.min(1, (R.t - 0.55) * 5), cx2 = 322, cy2 = 270; ctx.save(); ctx.translate(cx2, cy2); ctx.scale(0.6 + 0.4 * A.easeOutBack(k), 0.6 + 0.4 * A.easeOutBack(k)); A.drawBeveledTile(ctx, -32, -14, 64, 28, '#ffe9a8', { lip: 2, r: 14, lw: 2, hi: 0.6 }); A.coinIcon(ctx, -19, 0, 1.1); A.drawChunkyText(ctx, `+${R.chip2}`, 9, 0, 16, { mode: 'num' }); // v0.8.1 F4: 64x28 pill, 16 px number ctx.restore();
   }
@@ -2400,9 +2417,11 @@ function renderResult(dt) {
   drawButton(52, by, 92, 50, 'Map', '#fff3e6'); button('rmap', 52, by - 3, 92, 56, () => { S.battle = null; go('map'); });
   drawButton(154, by, 92, 50, 'Retry', '#ffd27a'); button('rretry', 154, by - 3, 92, 56, () => openPrep(S.levelIndex));
   const hasNext = R.win && S.levelIndex + 1 < C.LEVELS.length;
-  const ow6 = C.ART81 && hasNext && S.levelIndex === 49 && out.firstClear && M.worldUnlocked(S.save, 6); // v0.8.3 PP10: the L50 first win that opens World 6 -> 'Open World 6', which goes to the map and shows the new node for 1.2 s
-  drawButton(256, by, 92, 50, ow6 ? 'Open World 6' : 'Next', '#9fe0b5', ow6 ? { disabled: !hasNext, size: 13 } : { disabled: !hasNext });
-  if (hasNext) button('rnext', 256, by - 3, 92, 56, ow6 ? () => { S.battle = null; go('map'); S.worldReveal = { i: 50, t0: S.t }; } : () => openPrep(S.levelIndex + 1));
+  const ow6 = C.ART81 && hasNext && S.levelIndex === 49 && out.firstClear && M.worldUnlocked(S.save, 6);
+  const ow7 = C.ART81 && hasNext && S.levelIndex === 59 && out.firstClear && M.worldUnlocked(S.save, 7);
+  const openLbl = ow7 ? 'Open World 7' : ow6 ? 'Open World 6' : 'Next';
+  drawButton(256, by, 92, 50, openLbl, '#9fe0b5', (ow6 || ow7) ? { disabled: !hasNext, size: 12 } : { disabled: !hasNext });
+  if (hasNext) button('rnext', 256, by - 3, 92, 56, ow7 ? () => { S.battle = null; go('map'); S.worldReveal = { i: 60, t0: S.t }; } : ow6 ? () => { S.battle = null; go('map'); S.worldReveal = { i: 50, t0: S.t }; } : () => openPrep(S.levelIndex + 1));
 }
 
 // ---------------- CARDS / MERGE ----------------
@@ -2748,7 +2767,7 @@ function renderCabinet() {
   const st = M.skinState(S.save);
   panel(12, 12, 376, 636, '#fff6ee');
   A.text(ctx, 'Cabinet', 200, 36, 28, '#ffd27a');
-  drawButton(22, 16, 72, 36, 'Back', '#d9cfe0', { size: 14 }); button('cabBack', 22, 14, 72, 42, () => { sfx('tap'); S.screen = 'shop'; });
+  drawButton(22, 16, 72, 36, 'Back', '#d9cfe0', { size: 14 }); button('cabBack', 22, 14, 72, 42, () => { sfx('tap'); S.cabAsk = null; S.screen = 'shop'; });
   panel(206, 56, 132, 32, '#fff1d6', 16); A.coinIcon(ctx, 228, 72, 1.1); A.text(ctx, String(S.save.coins), 284, 73, 17, '#ffd45e');
   plainText('Skins change a pad colour only - never stats.', 200, 108, 12, '#7a5a6a', 'center', '700');
   C.SKIN_TOWERS.forEach((tw, i) => {
@@ -2764,14 +2783,28 @@ function renderCabinet() {
       const lab = on ? 'On' : own ? 'Owned' : `${ch.price}c`, col = on ? '#3a9a45' : own ? '#7a5a6a' : (S.save.coins >= ch.price ? '#c9962a' : '#e0607e');
       plainText(lab, x + w / 2, y + 73, 13, col, 'center', '800');
       button('skin' + (ch.id || tw), x, y, w, h, () => {
-        if (own) { M.equipSkin(S.save, tw, ch.id); persist(); sfx('tap'); return; }
-        const r = M.buySkin(S.save, ch.id);
-        if (r.ok) { persist(); sfx('upgrade'); toast(`${ch.name} unlocked!`); } else toast(r.reason === 'coins' ? `Need ${ch.price} coins` : 'Not available');
+        if (own) { M.equipSkin(S.save, tw, ch.id); persist(); sfx('tap'); S.cabAsk = null; return; }
+        S.cabAsk = { id: ch.id, name: ch.name, price: ch.price }; sfx('tap');
       });
     });
   });
   const nx = M.nextSkinPrice(S.save);
   plainText(`Owned ${st.owned.length}/${C.SKINS.length}${nx ? ` - next skin ${nx}c` : ' - all collected!'}`, 200, 612, 13, '#7a5a6a', 'center', '700');
+  if (S.cabAsk) { // v0.8.4 EC11: a buy confirms before the coins leave
+    const ask = S.cabAsk, afford = (S.save.coins || 0) >= ask.price;
+    ctx.fillStyle = 'rgba(60,40,55,0.45)'; ctx.fillRect(-2000, -2000, W + 4000, H + 4000);
+    button('cabBlock', -2000, -2000, W + 4000, H + 4000, () => {});
+    panel(44, 250, 312, 180, '#fff6ee');
+    A.text(ctx, 'Buy this skin?', 200, 286, 20, '#ffd27a');
+    plainFit(`${ask.name} for ${ask.price} coins`, 200, 322, 280, 14, '#7a5a6a', 'center', '700');
+    drawButton(64, 360, 128, 46, 'Cancel', '#fff3e6'); button('cabNo', 60, 358, 136, 52, () => { S.cabAsk = null; sfx('tap'); });
+    drawButton(208, 360, 128, 46, 'Buy', '#9fe0b5', { disabled: !afford });
+    button('cabYes', 204, 358, 136, 52, () => {
+      if (!afford) { toast(`Need ${ask.price} coins`); return; }
+      const r = M.buySkin(S.save, ask.id); S.cabAsk = null;
+      if (r.ok) { persist(); sfx('upgrade'); toast(`${ask.name} unlocked!`); } else toast(r.reason === 'coins' ? `Need ${ask.price} coins` : 'Not available');
+    });
+  }
 }
 function claimGift() {
   const res = M.claimZapperGift(S.save); if (!res) return;

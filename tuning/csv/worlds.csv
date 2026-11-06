@@ -5,3 +5,4 @@ id,name,treat,queen,levels,unlock,cardLevelCap,coinMul
 4,Ice-Cream Parlour,sundae,queen4,10,"{""allLevelsWonInWorld"":3,""minStarsInWorld"":14}",6,1.5
 5,Donut Diner,donut,queen5,10,"{""allLevelsWonInWorld"":4,""minStarsInWorld"":14}",6,1.75
 6,Pancake Picnic,pancake,queen6,10,"{""allLevelsWonInWorld"":5,""minStarsInWorld"":14}",6,2
+7,Jelly Jamboree,tart,queen7,10,"{""allLevelsWonInWorld"":6,""minStarsInWorld"":14}",6,2.25

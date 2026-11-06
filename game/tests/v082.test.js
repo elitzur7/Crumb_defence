@@ -52,9 +52,9 @@ test('R7: the wood plank seam alpha is 15 % lower (ART81 only)', () => { assert.
 test('R5b: the prize strip is skipped while k <= 0 (no negative-scale flip)', () => { assert.match(src('game.js'), /if \(!\(k > 0\)\) return; \/\/ v0\.8\.2 R5b/); });
 
 // ---- Pass 4: World 6 "Pancake Picnic" (PP1, PP2, PP4, PP6, PP7, PP11, M7g, U11) ----
-const W6_HP = [6, 7.2, 9.19, 9.5, 4.84, 9.57, 5.9, 5.36, 4.05, 1.7]; // v0.8.3 F1: L59 4.16 -> 4.05
+const W6_HP = [6, 7.2, 9.19, 9.5, 4.84, 9.57, 5.9, 5.29, 4.12, 1.7]; // v0.8.4 F11: mirrored L58/L59
 test('PP1: World 6 exists (id 6, pancake, queen6, 10 levels, gate 14 stars in W5 + all won, cap 6, coinMul 2.0)', () => {
-  const W = C.WORLDS.find((x) => x.id === 6); assert.ok(W); assert.equal(W.treat, 'pancake'); assert.equal(W.queen, 'queen6'); assert.equal(C.LEVELS.length, 60);
+  const W = C.WORLDS.find((x) => x.id === 6); assert.ok(W); assert.equal(W.treat, 'pancake'); assert.equal(W.queen, 'queen6'); assert.equal(C.LEVELS.length, 70);
   assert.equal(W.levels, 10); assert.equal(W.cardLevelCap, 6); assert.equal(W.coinMul, 2); assert.deepEqual(W.unlock, { allLevelsWonInWorld: 5, minStarsInWorld: 14 });
   assert.equal(C.LEVELS.filter((L) => L.world === 6).length, 10);
 });
@@ -78,8 +78,8 @@ test('PP2/PP4: the Drone and the Syrup Queen data equal the plan table', () => {
   assert.ok(C.ANT_CARD.drone && C.ANT_CARD.queen6 && C.ANTS.drone.name && C.ANTS.queen6.intro);
 });
 test('PP7: the ten W6 levels carry the plan hp multipliers and 1 s spawn interval', () => {
-  const L = C.LEVELS.slice(50); assert.deepEqual(L.map((x) => x.hpMul), W6_HP); assert.ok(L.every((x) => x.interval === 1 || x.interval === undefined || x.interval === 1.0));
-  assert.equal(L[4].hpMul, 4.84); assert.equal(L[8].hpMul, 4.05); // L55 / L59 are never hand-raised: the plan values stay
+  const L = C.LEVELS.slice(50, 60); assert.deepEqual(L.map((x) => x.hpMul), W6_HP); assert.ok(L.every((x) => x.interval === 1 || x.interval === undefined || x.interval === 1.0));
+  assert.equal(L[4].hpMul, 4.84); assert.equal(L[8].hpMul, 4.12); // L59 is the F11 mirrored value (was 4.05 on the unmirrored grid)
 });
 test('PP6: ten W6 maps, theme 9, route counts 1,1,1,1,2,1,2,1,2,1, # counts and buildable tiles within the source maps', () => {
   const routes = [1, 1, 1, 1, 2, 1, 2, 1, 2, 1], hash = [31, 45, 27, 47, 22, 26, 29, 40, 27, 28], dots = [85, 71, 88, 69, 93, 90, 87, 76, 88, 87];

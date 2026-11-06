@@ -206,7 +206,7 @@ export class Path {
 export const SPLIT_BACK = 3, SPLIT_STEP = 7, MAX_SPLIT_DEPTH = 1;
 // ---------- waves ----------
 const SPACING = { small: 0.45, worker: 1, big: 1.6, gasmask: 1, armored: 1.5, flyer: 0.8, sprinter: 0.9, heavy: 1.7, queen: 1, queen2: 1,
-  small_gasmask: 0.45, small_armed: 0.6, small_fly: 0.5, greasy: 1.1, mama: 1.6, queen3: 1, nurse: 1.5, queen4: 1, drone: 0.8, queen6: 1 }; // v0.7: small variants (Yair ANT-STATS-v0.6.3); v0.7.7: W3 ants + v0.7.9 nurse/queen4 (only used by the random-mix generator; W3/W4 levels have explicit waves)
+  small_gasmask: 0.45, small_armed: 0.6, small_fly: 0.5, greasy: 1.1, mama: 1.6, queen3: 1, nurse: 1.5, queen4: 1, drone: 0.8, queen6: 1, shieldbearer: 1.2, queen7: 1 }; // v0.8.4 W7 spacing (explicit waves; this table is only the random-mix generator)
 export function generateWaves(levelIndex, levels = C.LEVELS) {
   const L = levels[levelIndex];
   if (L.waves) return L.waves.map((groups) => expandGroups(groups, L.interval || 1));
@@ -408,7 +408,9 @@ export class Battle {
   damage(ant, dmg, opt = {}) {
     if (ant.dead || dmg <= 0) return 0;
     if (opt.gas && ant.gasImmune) { if (opt.fx !== false && this.rng() < 0.05) this.emit({ type: 'immune', x: ant.x, y: ant.y }); return 0; }
+    const armorNow = ant.armor || 0;
     const real = applyArmor(dmg, ant.armor, opt.ignoreArmor);
+    const armorBlocked = opt.ignoreArmor ? 0 : Math.max(0, dmg - real);
     let toHp = real;
     if (ant.shieldMax > 0) { // v0.8.1 M4: armor first (above), then the shield absorbs, the rest hits hp. ANY damage call (even after the shield broke) restarts the regen timer
       ant.shieldT = 0;
@@ -419,6 +421,7 @@ export class Battle {
     }
     ant.hitFlash = 0.12;
     if (toHp > 1e-12) { ant.hp -= toHp; if (ant.hp <= 0) this.kill(ant, opt.src); }
+    if (!opt.fx && armorNow > 0 && !opt.ignoreArmor) this.emit({ type: 'clang', x: ant.x, y: ant.y, armor: armorNow, armorBlocked, src: opt.src && opt.src.type });
     return real;
   }
   kill(ant, src) {
@@ -705,6 +708,28 @@ export class Battle {
     const frozen = t < this.freezeUntil;
 
     for (const a of this.ants) a.slow = 0;
+    // v0.8.4 W7a: Shield Bearer aura. No bearers leaves armor at base minus shred, so W1-W6 results stay put.
+    {
+      const au = C.ANTS.shieldbearer && C.ANTS.shieldbearer.aura;
+      const bearers = au ? this.ants.filter((x) => !x.dead && x.type === 'shieldbearer') : [];
+      if (au && (bearers.length || this.ants.some((a) => a.auraArmor))) {
+        for (const a of this.ants) {
+          if (a.dead) continue;
+          const base = (C.ANTS[a.type].armor || 0) - (a.shred || 0);
+          let bonus = 0;
+          if (!C.ANTS[a.type].boss && bearers.length) {
+            for (const b of bearers) {
+              const dx = a.x - b.x, dy = a.y - b.y;
+              if (dx * dx + dy * dy <= au.radius * au.radius) { bonus = au.armor; break; }
+            }
+          }
+          let arm = base + bonus;
+          if (C.ANTS[a.type].flying) arm = Math.min(arm, au.maxArmor || 2);
+          a.armor = Math.max(0, arm);
+          a.auraArmor = bonus;
+        }
+      }
+    }
     // v0.7.8 nurse (tuning.json ants[].heal = { radius (tiles), pct (of the TARGET's max hp per pulse), every (s, cooldown after a pulse), bossMul (queen multiplier) }):
     // a nurse that is ready and has at least one hurt ant in range pulses once: every hurt ant within `radius` tiles regains pct x its max hp (a queen: x bossMul).
     // She never heals herself or another nurse (no stacking). A frozen nurse (Freeze booster) neither pulses nor recharges. No hurt ant in range: she stays ready.
@@ -762,7 +787,7 @@ export class Battle {
       if (a.stunT > 0) { a.stunT -= dt; v = 0; }
       if (a.waitT > 0) { a.waitT -= dt; v = 0; }
       if (a.state === 'back') v *= this.cfg.carrierSpeedMul;
-      if (A.spawn && !frozen) { a.spawnT -= dt; if (a.spawnT <= 0) { a.spawnT = A.spawn.every; for (let k = 0; k < A.spawn.count; k++) this.spawn(A.spawn.type, Math.max(0, a.d - 6 - k * 10), a.ri); this.emit({ type: 'queenCall', x: a.x, y: a.y, calls: A.spawn.type }); } }
+      if (A.spawn && !frozen) { a.spawnT -= dt; if (a.spawnT <= 0) { a.spawnT = A.spawn.every; let call = A.spawn.type; if (A.spawn.alt) { a.spawnFlip = !a.spawnFlip; call = a.spawnFlip ? A.spawn.alt : A.spawn.type; } for (let k = 0; k < A.spawn.count; k++) this.spawn(call, Math.max(0, a.d - 6 - k * 10), a.ri); this.emit({ type: 'queenCall', x: a.x, y: a.y, calls: call }); } }
       const dd = this.decoy && t < this.decoy.until ? this.decoy.ds[a.ri] : null;
       if (dd != null) {
         const diff = dd - a.d;
@@ -857,12 +882,15 @@ export class Battle {
         const hit = new Set([target.id]); let cur = target, dmg = tw.stat('power');
         this.damage(target, dmg, { src: tw }); this.emit({ type: 'zap', x: tw.x, y: tw.y - 14, tx: target.x, ty: target.y });
         const spZ = this.spec(tw);
-        for (let k = 0; k < tw.stat('chain') + (spZ ? spZ.plus : 0); k++) {
+        const baseChain = tw.stat('chain');
+        for (let k = 0; k < baseChain + (spZ ? spZ.plus : 0); k++) {
           let nx = null, nd = T.chainRange;
           for (const a of this.ants) { if (a.dead || !a.flying || hit.has(a.id)) continue; const q = Math.hypot(a.x - cur.x, a.y - cur.y); if (q <= nd) { nd = q; nx = a; } }
           if (!nx) break;
           dmg *= T.chainFalloff; hit.add(nx.id);
-          this.emit({ type: 'zap', x: cur.x, y: cur.y, tx: nx.x, ty: nx.y, chain: true });
+          const isStatic = !!(spZ && k >= baseChain);
+          this.emit({ type: 'zap', x: cur.x, y: cur.y, tx: nx.x, ty: nx.y, chain: true, static: isStatic });
+          if (isStatic) this.emit({ type: 'special', sp: 'static', x: cur.x, y: cur.y, tx: nx.x, ty: nx.y });
           this.damage(nx, dmg, { src: tw }); cur = nx;
         }
       } else if (tw.type === 'lizard') { const spP = this.spec(tw), pounce = spP && target.hp >= target.maxHp - 1e-6 && !(target.shield > 0); if (pounce) this.emit({ type: 'special', sp: 'pounce', x: target.x, y: target.y }); this.damage(target, tw.stat('power') * (pounce ? spP.mul : 1), { src: tw }); this.emit({ type: 'tongue', x: tw.x, y: tw.y, tx: target.x, ty: target.y }); tw.fireFx = 0.25; }
@@ -876,7 +904,7 @@ export class Battle {
       const tg = p.target;
       const dx = tg.x - p.x, dy = tg.y - p.y, dist = Math.hypot(dx, dy);
       const step = p.speed * dt;
-      if (dist <= step || tg.dead) { if (!tg.dead) { this.damage(tg, p.dmg, { src: p.src }); const spR = p.src && p.src.type === 'slingshot' ? this.spec(p.src) : null; if (spR) { let nx = null, nd = spR.radius; for (const o of this.ants) { if (o.dead || o === tg || o.flying) continue; const q = Math.hypot(o.x - tg.x, o.y - tg.y); if (q <= nd) { nd = q; nx = o; } } if (nx) { this.damage(nx, p.dmg * spR.mul, { src: p.src }); this.emit({ type: 'special', sp: 'ricochet', x: tg.x, y: tg.y, tx: nx.x, ty: nx.y }); } } } p.done = true; this.emit({ type: 'hit', x: tg.x, y: tg.y, src: p.src && p.src.type }); } // v0.8.1 J1: src = payload only (the view picks the slingshot burst)
+      if (dist <= step || tg.dead) { if (!tg.dead) { const armor = tg.armor || 0, blocked = Math.max(0, p.dmg - applyArmor(p.dmg, armor, false)); this.damage(tg, p.dmg, { src: p.src }); const spR = p.src && p.src.type === 'slingshot' ? this.spec(p.src) : null; if (spR) { let nx = null, nd = spR.radius; for (const o of this.ants) { if (o.dead || o === tg || o.flying) continue; const q = Math.hypot(o.x - tg.x, o.y - tg.y); if (q <= nd) { nd = q; nx = o; } } if (nx) { this.damage(nx, p.dmg * spR.mul, { src: p.src }); this.emit({ type: 'special', sp: 'ricochet', x: tg.x, y: tg.y, tx: nx.x, ty: nx.y }); } } p.done = true; this.emit({ type: 'hit', x: tg.x, y: tg.y, src: p.src && p.src.type, armor, armorBlocked: blocked }); } else { p.done = true; this.emit({ type: 'hit', x: tg.x, y: tg.y, src: p.src && p.src.type, armor: tg.armor || 0, armorBlocked: 0 }); } } // v0.8.1 J1 + v0.8.4 armor fields
       else { p.x += (dx / dist) * step; p.y += (dy / dist) * step; }
     }
     this.projectiles = this.projectiles.filter((p) => !p.done);
