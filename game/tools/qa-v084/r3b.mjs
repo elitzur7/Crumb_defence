@@ -1,4 +1,8 @@
 // L38 at label 4x for 40 s of 60 Hz frames. Reports p95 of sim+render work.
+// Each frame returns to the event loop before the next one is timed. A tight loop
+// never presents, so Chrome flushes a backlog of canvas commands onto one call
+// (~210 ms, a different draw each time). The game itself pumps one frame per
+// requestAnimationFrame, which is the same yield.
 import puppeteer from 'puppeteer-core';
 import { serve } from '../serve.mjs';
 import fs from 'node:fs';
@@ -16,9 +20,12 @@ const out = await page.evaluate(async () => {
   g.setSave(save);
   g.startBattle(37, ['slingshot', 'spray', 'laser', 'zapper', 'fan'], []);
   g.S.speed = 4; g.setAutoBot(true);
+  // The page's own rAF loop would also step the battle during the yield.
+  window.requestAnimationFrame = () => 0;
   const times = [];
   const frames = 40 * 60;
   for (let i = 0; i < frames && g.S.battle && !g.S.battle.result; i++) {
+    await new Promise((r) => setTimeout(r, 0));
     const a = performance.now();
     g.battleFrame(1 / 60);
     g.renderOnce(0);

@@ -9211,7 +9211,7 @@ var tuning_default = {
       name: "Cream Hill",
       map: "w7_cream_hill",
       waveCount: 7,
-      hpMul: 4.25,
+      hpMul: 4.68,
       interval: 1,
       waves: [
         [
@@ -9361,7 +9361,7 @@ var tuning_default = {
       name: "Press Plate",
       map: "w7_press_plate",
       waveCount: 8,
-      hpMul: 5.51,
+      hpMul: 7.05,
       interval: 1,
       waves: [
         [
@@ -13645,7 +13645,10 @@ function starShape(ctx2, x, y, r, fill, lw = 2) {
 var ANT_COL = { small: "#f8c07e", worker: "#f0994d", big: "#d97a3f", gasmask: "#f0994d", armored: "#e48a47", flyer: "#f9b878", queen: "#f59b9b", queen2: "#c7a6f5", sprinter: "#f0994d", heavy: "#b95b34", greasy: "#ee9f45", mama: "#d9774a", queen3: "#e9b05c", nurse: "#f2b49b", queen4: "#f4b9c8", glazed: "#f1cf9a", queen5: "#e8789c", drone: "#e8a33d", queen6: "#c9772b", shieldbearer: "#8b6ecf", queen7: "#c45ad0" }, ALW = 2.4, PLAY_ANT_SCALE = 0.62, _play = null;
 function playSegment(ctx2, x, y, rx, ry, col) {
   let g = ctx2.createLinearGradient(x - rx, y - ry, x + rx * 0.35, y + ry);
-  g.addColorStop(0, shade(col, 0.18)), g.addColorStop(0.48, col), g.addColorStop(1, shade(col, -0.16)), ctx2.beginPath(), ctx2.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2), ctx2.fillStyle = g, ctx2.fill(), ctx2.beginPath(), ctx2.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2), ctx2.save(), ctx2.globalAlpha *= 0.5, ctx2.lineWidth = 1, ctx2.strokeStyle = shade(col, -0.22), ctx2.stroke(), ctx2.restore(), ctx2.save(), ctx2.translate(x, y), ctx2.beginPath(), ctx2.ellipse(-rx * 0.28, -ry * 0.36, Math.max(1.2, rx * 0.3), Math.max(0.8, ry * 0.2), -0.5, 0, Math.PI * 2), ctx2.fillStyle = "#ffffff", ctx2.globalAlpha = 0.35, ctx2.fill(), Math.min(rx, ry) >= 5 && (ctx2.beginPath(), ctx2.arc(-rx * 0.46, -ry * 0.12, 1, 0, Math.PI * 2), ctx2.globalAlpha = 0.5, ctx2.fill()), ctx2.restore();
+  g.addColorStop(0, shade(col, 0.18)), g.addColorStop(0.48, col), g.addColorStop(1, shade(col, -0.16)), ctx2.beginPath(), ctx2.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2), ctx2.fillStyle = g, ctx2.fill(), ctx2.beginPath(), ctx2.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2), ctx2.save(), ctx2.globalAlpha *= 0.18, ctx2.lineWidth = 1, ctx2.strokeStyle = shade(col, -0.22), ctx2.stroke(), ctx2.restore(), ctx2.save(), ctx2.translate(x, y), ctx2.beginPath(), ctx2.ellipse(-rx * 0.32, -ry * 0.38, Math.max(1.4, rx * 0.42), Math.max(0.9, ry * 0.28), -0.5, 0, Math.PI * 2), ctx2.fillStyle = "#ffffff", ctx2.globalAlpha = 0.35, ctx2.fill(), ctx2.restore();
+}
+function playEye(ctx2, x, y, rx, ry) {
+  ctx2.beginPath(), ctx2.ellipse(x, y, rx, ry, 0, 0, 7), ctx2.fillStyle = "#fffdf8", ctx2.fill(), ctx2.beginPath(), ctx2.ellipse(x + rx * 0.15, y + ry * 0.1, rx * 0.46, ry * 0.5, 0, 0, 7), ctx2.fillStyle = "#2a1c24", ctx2.fill(), ctx2.beginPath(), ctx2.arc(x - rx * 0.22, y - ry * 0.28, Math.max(0.6, rx * 0.2), 0, 7), ctx2.fillStyle = "#ffffff", ctx2.fill();
 }
 function softBlob(ctx2, x, y, rx, ry, col, lw = ALW, gloss = 1) {
   if (_play) {
@@ -13716,7 +13719,7 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
   let endAnt = () => {
     ctx2.stroke = _stroke, _play = null, ctx2.restore();
   };
-  opt.play ? flying ? shadow(ctx2, 0, 16, 8, 2.2, 0.14) : shadow(ctx2, 0, 8, 9, 2.4, 0.18) : ART81 ? flying ? shadow(ctx2, 0, 24, 11 * (1 - 0.1 * hop), 3.3 * (1 - 0.1 * hop), 0.15) : shadow(ctx2, 0, 10.5, 15 - hop * 2, 4, 0.22) : flying ? shadow(ctx2, 0, 21, 10, 3, 0.13) : shadow(ctx2, 0, 10.5, 15 - hop * 2, 4, 0.2);
+  opt.play ? flying ? shadow(ctx2, 0, 16, 10, 2.8, 0.12) : shadow(ctx2, 0, 9, 12, 3.2, 0.14) : ART81 ? flying ? shadow(ctx2, 0, 24, 11 * (1 - 0.1 * hop), 3.3 * (1 - 0.1 * hop), 0.15) : shadow(ctx2, 0, 10.5, 15 - hop * 2, 4, 0.22) : flying ? shadow(ctx2, 0, 21, 10, 3, 0.13) : shadow(ctx2, 0, 10.5, 15 - hop * 2, 4, 0.2);
   let lift = flying ? 9 + Math.sin(P * 2) * 2 : big ? hop * 1.8 : hop * 3.2;
   if (big && !flying && (ctx2.translate(0, 10), ctx2.rotate(Math.sin(P) * 0.06), ctx2.translate(0, -10), hop < 0.18)) {
     ctx2.save(), ctx2.globalAlpha = (0.18 - hop) * 3;
@@ -13739,15 +13742,15 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
   if (glazed && ART81 && (ctx2.beginPath(), ctx2.ellipse(1, -1, 20.5, 19, 0, 0, 7), ctx2.lineWidth = 5, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(1, -1, 20.5, 19, 0, 0, 7), ctx2.lineWidth = 2.4, ctx2.strokeStyle = "#9fe7ff", ctx2.stroke()), flying) {
     let flap = Math.sin(P * 8);
     for (let k of [1, 0])
-      ctx2.save(), ctx2.translate(-2, -4), ctx2.rotate(-2 - flap * 0.45 - k * 0.5), ctx2.beginPath(), ctx2.ellipse(11, 0, 12.5, 6.5, 0, 0, 7), ctx2.fillStyle = k ? "rgba(205,236,255,0.8)" : "rgba(232,247,255,0.92)", ctx2.fill(), ctx2.lineWidth = 2, ctx2.strokeStyle = "#6f9cc2", ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(13, -1.5, 5, 1.6, 0, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.8)", ctx2.fill(), ctx2.restore();
+      ctx2.save(), ctx2.translate(-2, -4), ctx2.rotate(-2 - flap * 0.45 - k * 0.5), ctx2.beginPath(), ctx2.ellipse(11, 0, 12.5, 6.5, 0, 0, 7), ctx2.fillStyle = k ? "rgba(205,236,255,0.8)" : "rgba(232,247,255,0.92)", ctx2.fill(), ctx2.lineWidth = _play ? 1 : 2, ctx2.strokeStyle = _play ? "rgba(111,156,194,0.45)" : "#6f9cc2", ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(13, -1.5, 5, 1.6, 0, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.8)", ctx2.fill(), ctx2.restore();
     if (drone) for (let k of [1, 0])
-      ctx2.save(), ctx2.translate(-5, -1), ctx2.rotate(-0.55 + flap * 0.4 - k * 0.55), ctx2.beginPath(), ctx2.ellipse(8.5, 0, 9.5, 4.8, 0, 0, 7), ctx2.fillStyle = k ? "rgba(255,238,200,0.78)" : "rgba(255,246,222,0.92)", ctx2.fill(), ctx2.lineWidth = 2, ctx2.strokeStyle = "#b07a3a", ctx2.stroke(), ctx2.restore();
+      ctx2.save(), ctx2.translate(-5, -1), ctx2.rotate(-0.55 + flap * 0.4 - k * 0.55), ctx2.beginPath(), ctx2.ellipse(8.5, 0, 9.5, 4.8, 0, 0, 7), ctx2.fillStyle = k ? "rgba(255,238,200,0.78)" : "rgba(255,246,222,0.92)", ctx2.fill(), ctx2.lineWidth = _play ? 1 : 2, ctx2.strokeStyle = _play ? "rgba(176,122,58,0.4)" : "#b07a3a", ctx2.stroke(), ctx2.restore();
   }
   if (queen) {
     let sw = Math.sin(P) * 1.5;
     ctx2.beginPath(), ctx2.moveTo(3, -8), ctx2.quadraticCurveTo(-14, -12 + sw, -24, 7), ctx2.quadraticCurveTo(-11, 11, 2, 5), ctx2.closePath();
     let g = ctx2.createLinearGradient(0, -10, 0, 10);
-    g.addColorStop(0, jamQueen ? "#e7a0ea" : syrupQueen ? "#f3b868" : glazeQueen ? "#9fe3e6" : sundaeQueen ? "#8fe0c8" : pieQueen ? "#7f9be6" : "#b597f0"), g.addColorStop(1, jamQueen ? "#8a3a96" : syrupQueen ? "#a85f1c" : glazeQueen ? "#4fb3bd" : sundaeQueen ? "#3fa88f" : pieQueen ? "#4f69b8" : "#8a68d8"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = LW, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(-22, 6.5), ctx2.quadraticCurveTo(-10, 10, 1.5, 4.5), ctx2.lineWidth = 3.4, ctx2.strokeStyle = "#ffffff", ctx2.stroke(), ctx2.fillStyle = INK;
+    g.addColorStop(0, jamQueen ? "#e7a0ea" : syrupQueen ? "#f3b868" : glazeQueen ? "#9fe3e6" : sundaeQueen ? "#8fe0c8" : pieQueen ? "#7f9be6" : "#b597f0"), g.addColorStop(1, jamQueen ? "#8a3a96" : syrupQueen ? "#a85f1c" : glazeQueen ? "#4fb3bd" : sundaeQueen ? "#3fa88f" : pieQueen ? "#4f69b8" : "#8a68d8"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = LW, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(-22, 6.5), ctx2.quadraticCurveTo(-10, 10, 1.5, 4.5), ctx2.lineWidth = _play ? 1.6 : 3.4, ctx2.strokeStyle = _play ? "rgba(255,255,255,0.55)" : "#ffffff", ctx2.stroke(), ctx2.fillStyle = INK;
     for (let [a, b] of [[-17, 6.8], [-10, 8], [-4, 6.6]])
       ctx2.beginPath(), ctx2.arc(a, b, 0.9, 0, 7), ctx2.fill();
   }
@@ -13757,7 +13760,7 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
     leg(ctx2, -8 + i * 4.8, legY, -7 + i * 4.8 - sw, footY - 0.5, farCol), sprinter && sneaker(ctx2, -7 + i * 4.8 - sw, footY - 0.5, !0);
   }
   let abRx = queen ? 13 : big ? 12 : 11, abRy = queen ? 11 : big ? 10 : 9.5;
-  softBlob(ctx2, -10, 0.5, abRx, abRy, col, LW, 0.85), ctx2.save(), ctx2.beginPath(), ctx2.ellipse(-10, 0.5, abRx - 1, abRy - 1, 0, 0, 7), ctx2.clip(), ctx2.strokeStyle = drone ? INK : shade(col, -0.14), ctx2.lineWidth = drone ? 3.6 : 2;
+  softBlob(ctx2, -10, 0.5, abRx, abRy, col, LW, 0.85), ctx2.save(), ctx2.beginPath(), ctx2.ellipse(-10, 0.5, abRx - 1, abRy - 1, 0, 0, 7), ctx2.clip(), ctx2.strokeStyle = drone ? INK : shade(col, -0.14), ctx2.lineWidth = _play ? 1 : drone ? 3.6 : 2, _play && (ctx2.globalAlpha *= 0.28);
   for (let sx of [-15, -10.5])
     ctx2.beginPath(), ctx2.ellipse(sx - (big ? 1.5 : 0), 0.5, 2, abRy + 2, 0, -1.3, 1.3), ctx2.stroke();
   if (syrupQueen && (ctx2.beginPath(), ctx2.moveTo(-20.5, -5.2), ctx2.quadraticCurveTo(-11, -9.6, -1.5, -6.4), ctx2.lineWidth = 3, ctx2.strokeStyle = "rgba(255,248,224,0.72)", ctx2.stroke()), ctx2.restore(), type === "shieldbearer" && (ctx2.save(), ctx2.translate(-15, -7), ctx2.rotate(-0.35), ctx2.scale(1.12, 1.12), _play ? playSegment(ctx2, 0, 0, 7.4, 8.4, "#8b6ecf") : softBlob(ctx2, 0, 0, 7.4, 8.4, "#8b6ecf", 2), ctx2.beginPath(), ctx2.moveTo(0, -4.2), ctx2.lineTo(3.2, -1.2), ctx2.lineTo(0.4, 3.4), ctx2.lineTo(-2.6, -0.6), ctx2.closePath(), ctx2.fillStyle = "rgba(255,255,255,0.9)", ctx2.fill(), ctx2.restore()), mama)
@@ -13798,7 +13801,9 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
     for (let dx of [-1.8, 0.4, 2.6])
       ctx2.beginPath(), ctx2.arc(hx2 + 5 + dx, hy + 7.6, 0.8, 0, 7), ctx2.fill();
     blob(ctx2, hx2 + 10.5, hy + 9.2, 2.8, 3.1, "#7fd3ad", 2.2);
-  } else {
+  } else if (_play && !blink && !mood)
+    playEye(ctx2, e1x, ey, 5, 5.8), playEye(ctx2, e2x, ey - 0.3, 4.6, 5.4), cheek(ctx2, hx2 - 4.2, hy + 7), cheek(ctx2, hx2 + 12.2, hy + 6.6, 2.4), ctx2.save(), ctx2.beginPath(), ctx2.ellipse(hx2 + 4.2, hy + 6.6, 1.5, 1.05, 0, 0, 7), ctx2.fillStyle = shade(col, -0.35), ctx2.globalAlpha = 0.55, ctx2.fill(), ctx2.restore();
+  else {
     if (glossyEye(ctx2, e1x, ey, 3.3, 4.6, blink, mood, -1), glossyEye(ctx2, e2x, ey - 0.3, 3, 4.3, blink, mood, 1), cheek(ctx2, hx2 - 4.2, hy + 7), cheek(ctx2, hx2 + 12.2, hy + 6.6, 2.4), opt.carrying && !mood)
       for (let [bx, k] of [[e1x, -1], [e2x, 1]])
         ctx2.beginPath(), ctx2.moveTo(bx - 3.2 * k, ey - 6.9 + 0.3), ctx2.lineTo(bx + 3 * k, ey - 6.4 - 0.9), ctx2.lineWidth = 1.8, ctx2.strokeStyle = INK, ctx2.stroke();
@@ -15759,7 +15764,7 @@ function closeSettings() {
   S.settings = null, S.confirmReset = 0, S.settingsPushed && (S.settingsPushed = !1, ownBack());
 }
 function go(screen) {
-  S.settingsPushed = !1, S.screen = screen, S.guide = null, S.antCard = null, S.starCard = null, S.prepTip = null, S.sel = null, S.info = null, S.drag = null, S.mergeAnim = null, S.toast = null, S.dialog = null, S.cal = null, S.settings = null, S.mode = null, S.shopFx = null, sfx("tap"), screen === "map" && (S.mapScroll = autoMapScroll(), maybeShowCalendar());
+  S.settingsPushed = !1, S.screen = screen, S.guide = null, S.antCard = null, S.starCard = null, S.prepTip = null, S.sel = null, S.info = null, S.drag = null, S.mergeAnim = null, S.toast = null, S.dialog = null, S.cabAsk = null, S.cal = null, S.settings = null, S.mode = null, S.shopFx = null, sfx("tap"), screen === "map" && (S.mapScroll = autoMapScroll(), maybeShowCalendar());
   try {
     let inner = history.state && history.state.inner;
     screen !== "map" && !inner ? history.pushState({ inner: 1 }, "") : screen === "map" && inner && ownBack();
@@ -17391,7 +17396,7 @@ function drawShield(a, x, y) {
 function drawAntObj(a, ghost = !1) {
   let b = S.battle, frozen = b.time < b.freezeUntil, p = b.route(a).at(a.d);
   Math.abs(p.dx) > 0.3 && (a._face = p.dx * (a.dir || 1) >= 0 ? 1 : -1);
-  let face = a._face ?? 1, speedK2 = a.type === "small" ? 2.2 : a.type === "sprinter" ? 2.4 : a.type === "queen" ? 0.6 : a.type === "big" ? 1 : a.type === "heavy" ? 0.9 : 1.5, still = frozen || a.stunT > 0, fr = still ? 0 : Math.floor((b.time + a.id * 0.37) * speedK2 * ANT_FRAMES) % ANT_FRAMES, H2 = ANTS[a.type].heal, mood = !!H2 && (frozen || a.healCd > 0) ? "g" : a.hitFlash > 0.02 && !reducedMotion() ? "h" : a.stunT > 0 ? "d" : "", droneFx = ART81 && a.type === "drone" && !reducedMotion() && !still, spr = antSprite(a.type, droneFx ? Math.floor((b.time + a.id * 0.037) * 14) % 2 ? 3 : 9 : fr, a.carrying > 0, pxRatio, mood, { play: !0 }), breathe = still ? 1 + Math.sin(S.t * 5 + a.id) * 0.035 : 1, lat = (a.id * 37 % 9 - 4) * 1.2;
+  let face = a._face ?? 1, speedK2 = a.type === "small" ? 2.2 : a.type === "sprinter" ? 2.4 : a.type === "queen" ? 0.6 : a.type === "big" ? 1 : a.type === "heavy" ? 0.9 : 1.5, still = frozen || a.stunT > 0, fr = still ? 0 : Math.floor((b.time + a.id * 0.37) * speedK2 * ANT_FRAMES) % ANT_FRAMES, H2 = ANTS[a.type].heal, mood = !!H2 && (frozen || a.healCd > 0) ? "g" : a.hitFlash > 0.02 && !reducedMotion() ? "h" : a.stunT > 0 ? "d" : "", droneFx = ART81 && a.type === "drone" && !reducedMotion() && !still, vary = a.type === "worker" || a.type === "small" || a.type === "flyer", hue = vary ? a.id * 17 % 13 - 6 : 0, jit = vary ? 0.97 + a.id * 13 % 6 * 0.02 : 1, spr = antSprite(a.type, droneFx ? Math.floor((b.time + a.id * 0.037) * 14) % 2 ? 3 : 9 : fr, a.carrying > 0, pxRatio, mood, { play: !0, hue }), breathe = still ? 1 + Math.sin(S.t * 5 + a.id) * 0.035 : 1, lat = (a.id * 37 % 9 - 4) * 1.2;
   a.state === "back" && (lat = UI.carrierLane + lat * 0.4);
   let x = a.x + p.dy * lat, y = a.y - p.dx * lat, hopY = 0, hopS = 1;
   if (a._hopT && !reducedMotion()) {
@@ -17406,7 +17411,7 @@ function drawAntObj(a, ghost = !1) {
       gsx = 1 + 0.12 * q, gsy = 1 - 0.12 * q;
     }
   }
-  if (droneFx && (hopY += Math.sin((b.time + a.id * 0.7) * Math.PI * 2 * 1.6) * 2), ctx.save(), ctx.translate(x, y + 4 + hopY), ctx.scale(face / breathe * gsx, breathe * hopS * gsy), ART81) {
+  if (droneFx && (hopY += Math.sin((b.time + a.id * 0.7) * Math.PI * 2 * 1.6) * 2), ctx.save(), ctx.translate(x, y + 4 + hopY), ctx.scale(face / breathe * gsx * jit, breathe * hopS * gsy * jit), ART81) {
     a.hitFlash > 0.05 && !(S.t - (a._sqT ?? -9) < 0.12) && b.ants.length <= 25 && !reducedMotion() && (a._sqT = S.t);
     let sk = (S.t - (a._sqT ?? -9)) / 0.08;
     if (sk >= 0 && sk < 1) {
@@ -18330,7 +18335,7 @@ function renderAntBook() {
 function renderCabinet() {
   let st = skinState(S.save);
   panel(12, 12, 376, 636, "#fff6ee"), text(ctx, "Cabinet", 200, 36, 28, "#ffd27a"), drawButton(22, 16, 72, 36, "Back", "#d9cfe0", { size: 14 }), button("cabBack", 22, 14, 72, 42, () => {
-    sfx("tap"), S.screen = "shop";
+    sfx("tap"), S.cabAsk = null, S.screen = "shop";
   }), panel(206, 56, 132, 32, "#fff1d6", 16), coinIcon(ctx, 228, 72, 1.1), text(ctx, String(S.save.coins), 284, 73, 17, "#ffd45e"), plainText("Skins change a pad colour only - never stats.", 200, 108, 12, "#7a5a6a", "center", "700"), SKIN_TOWERS.forEach((tw, i) => {
     let y0 = 124 + i * 114;
     plainText(TOWERS[tw].name, 30, y0 + 8, 14, "#7a4a5a", "left", "800"), [{ id: null, name: "Classic", pad: TOWER_PAD[tw] }].concat(SKINS.filter((x) => x.tower === tw)).forEach((ch2, k) => {
@@ -18339,16 +18344,28 @@ function renderCabinet() {
       let lab = on ? "On" : own ? "Owned" : `${ch2.price}c`, col = on ? "#3a9a45" : own ? "#7a5a6a" : S.save.coins >= ch2.price ? "#c9962a" : "#e0607e";
       plainText(lab, x + w / 2, y + 73, 13, col, "center", "800"), button("skin" + (ch2.id || tw), x, y, w, h, () => {
         if (own) {
-          equipSkin(S.save, tw, ch2.id), persist(), sfx("tap");
+          equipSkin(S.save, tw, ch2.id), persist(), sfx("tap"), S.cabAsk = null;
           return;
         }
-        let r = buySkin(S.save, ch2.id);
-        r.ok ? (persist(), sfx("upgrade"), toast(`${ch2.name} unlocked!`)) : toast(r.reason === "coins" ? `Need ${ch2.price} coins` : "Not available");
+        S.cabAsk = { id: ch2.id, name: ch2.name, price: ch2.price }, sfx("tap");
       });
     });
   });
   let nx = nextSkinPrice(S.save);
-  plainText(`Owned ${st.owned.length}/${SKINS.length}${nx ? ` - next skin ${nx}c` : " - all collected!"}`, 200, 612, 13, "#7a5a6a", "center", "700");
+  if (plainText(`Owned ${st.owned.length}/${SKINS.length}${nx ? ` - next skin ${nx}c` : " - all collected!"}`, 200, 612, 13, "#7a5a6a", "center", "700"), S.cabAsk) {
+    let ask = S.cabAsk, afford = (S.save.coins || 0) >= ask.price;
+    ctx.fillStyle = "rgba(60,40,55,0.45)", ctx.fillRect(-2e3, -2e3, W + 4e3, H + 4e3), button("cabBlock", -2e3, -2e3, W + 4e3, H + 4e3, () => {
+    }), panel(44, 250, 312, 180, "#fff6ee"), text(ctx, "Buy this skin?", 200, 286, 20, "#ffd27a"), plainFit(`${ask.name} for ${ask.price} coins`, 200, 322, 280, 14, "#7a5a6a", "center", "700"), drawButton(64, 360, 128, 46, "Cancel", "#fff3e6"), button("cabNo", 60, 358, 136, 52, () => {
+      S.cabAsk = null, sfx("tap");
+    }), drawButton(208, 360, 128, 46, "Buy", "#9fe0b5", { disabled: !afford }), button("cabYes", 204, 358, 136, 52, () => {
+      if (!afford) {
+        toast(`Need ${ask.price} coins`);
+        return;
+      }
+      let r = buySkin(S.save, ask.id);
+      S.cabAsk = null, r.ok ? (persist(), sfx("upgrade"), toast(`${ask.name} unlocked!`)) : toast(r.reason === "coins" ? `Need ${ask.price} coins` : "Not available");
+    });
+  }
 }
 function claimGift() {
   let res = claimZapperGift(S.save);

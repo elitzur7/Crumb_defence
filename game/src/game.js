@@ -174,7 +174,7 @@ function openSettings() {
 function closeSettings() { S.settings = null; S.confirmReset = 0; if (S.settingsPushed) { S.settingsPushed = false; ownBack(); } }
 function go(screen) {
   S.settingsPushed = false; // a leave-the-map navigation reuses the gear panel's history entry (it is the screen's 'inner' entry)
-  S.screen = screen; S.guide = null; S.antCard = null; S.starCard = null; S.prepTip = null; S.sel = null; S.info = null; S.drag = null; S.mergeAnim = null; S.toast = null; S.dialog = null; S.cal = null; S.settings = null; S.mode = null; S.shopFx = null; sfx('tap');
+  S.screen = screen; S.guide = null; S.antCard = null; S.starCard = null; S.prepTip = null; S.sel = null; S.info = null; S.drag = null; S.mergeAnim = null; S.toast = null; S.dialog = null; S.cabAsk = null; S.cal = null; S.settings = null; S.mode = null; S.shopFx = null; sfx('tap');
   if (screen === 'map') { S.mapScroll = autoMapScroll(); maybeShowCalendar(); }
   // keep one history entry while away from the map so the Android back button maps to in-game "back"
   try {
@@ -1901,7 +1901,10 @@ function drawAntObj(a, ghost = false) {
   const H = C.ANTS[a.type].heal, spent = !!H && (frozen || a.healCd > 0); // v0.7.9: a recharging / frozen nurse wears the grey cap
   const mood = spent ? 'g' : (a.hitFlash > 0.02 && !reducedMotion()) ? 'h' : a.stunT > 0 ? 'd' : ''; // v0.8.0: hurt face (> <) on a hit, dizzy face while stunned (baked lazily per type/frame)
   const droneFx = C.ART81 && a.type === 'drone' && !reducedMotion() && !still; // v0.8.3 PP3: a Drone's wings flutter between two poses at 14 Hz and it hovers +-2 px at 1.6 Hz (reduced motion: still pose)
-  const spr = A.antSprite(a.type, droneFx ? (Math.floor((b.time + a.id * 0.037) * 14) % 2 ? 3 : 9) : fr, a.carrying > 0, pxRatio, mood, { play: true });
+  const vary = a.type === 'worker' || a.type === 'small' || a.type === 'flyer'; // v0.8.4 G14: hue and size only on these three. Queens, the shield bearer, and status types stay fixed.
+  const hue = vary ? ((a.id * 17) % 13) - 6 : 0;
+  const jit = vary ? 0.97 + ((a.id * 13) % 6) * 0.02 : 1;
+  const spr = A.antSprite(a.type, droneFx ? (Math.floor((b.time + a.id * 0.037) * 14) % 2 ? 3 : 9) : fr, a.carrying > 0, pxRatio, mood, { play: true, hue });
   const breathe = still ? 1 + Math.sin(S.t * 5 + a.id) * 0.035 : 1;
   // tiny lateral offset per id so crowds don't stack perfectly
   let lat = ((a.id * 37) % 9 - 4) * 1.2;
@@ -1910,7 +1913,7 @@ function drawAntObj(a, ghost = false) {
   let hopY = 0, hopS = 1; if (a._hopT && !reducedMotion()) { const hk = (S.t - a._hopT) / 0.24; if (hk >= 0 && hk < 1) { hopY = -Math.sin(hk * Math.PI) * 4; hopS = 1 + 0.1 * Math.sin(hk * Math.PI * 2) * (1 - hk); } } // v0.7.10 cookie-pause hop
   let gsx = 1, gsy = 1; if (a._grabT && !reducedMotion()) { const gk = (S.t - a._grabT) / 0.08; if (gk >= 0 && gk < 1) { const q = Math.sin(gk * Math.PI); gsx = 1 + 0.12 * q; gsy = 1 - 0.12 * q; } } // v0.8.1 J3: grab squash 1.12 / .88 over 80 ms
   if (droneFx) hopY += Math.sin((b.time + a.id * 0.7) * Math.PI * 2 * 1.6) * 2;
-  ctx.save(); ctx.translate(x, y + 4 + hopY); ctx.scale(face / breathe * gsx, breathe * hopS * gsy);
+  ctx.save(); ctx.translate(x, y + 4 + hopY); ctx.scale(face / breathe * gsx * jit, breathe * hopS * gsy * jit);
   if (C.ART81) { // v0.8.2 G13: 80 ms hit squash (scaleX 1.08 / scaleY 0.88); a 2nd-Nth hit within 120 ms does not restart it; none with more than 25 ants on screen or under reduced motion
     if (a.hitFlash > 0.05 && !(S.t - (a._sqT ?? -9) < 0.12) && b.ants.length <= 25 && !reducedMotion()) a._sqT = S.t;
     const sk = (S.t - (a._sqT ?? -9)) / 0.08; if (sk >= 0 && sk < 1) { const q = (1 - sk) * (1 - sk); ctx.scale(1 + 0.08 * q, 1 - 0.12 * q); }
@@ -2764,7 +2767,7 @@ function renderCabinet() {
   const st = M.skinState(S.save);
   panel(12, 12, 376, 636, '#fff6ee');
   A.text(ctx, 'Cabinet', 200, 36, 28, '#ffd27a');
-  drawButton(22, 16, 72, 36, 'Back', '#d9cfe0', { size: 14 }); button('cabBack', 22, 14, 72, 42, () => { sfx('tap'); S.screen = 'shop'; });
+  drawButton(22, 16, 72, 36, 'Back', '#d9cfe0', { size: 14 }); button('cabBack', 22, 14, 72, 42, () => { sfx('tap'); S.cabAsk = null; S.screen = 'shop'; });
   panel(206, 56, 132, 32, '#fff1d6', 16); A.coinIcon(ctx, 228, 72, 1.1); A.text(ctx, String(S.save.coins), 284, 73, 17, '#ffd45e');
   plainText('Skins change a pad colour only - never stats.', 200, 108, 12, '#7a5a6a', 'center', '700');
   C.SKIN_TOWERS.forEach((tw, i) => {
@@ -2780,14 +2783,28 @@ function renderCabinet() {
       const lab = on ? 'On' : own ? 'Owned' : `${ch.price}c`, col = on ? '#3a9a45' : own ? '#7a5a6a' : (S.save.coins >= ch.price ? '#c9962a' : '#e0607e');
       plainText(lab, x + w / 2, y + 73, 13, col, 'center', '800');
       button('skin' + (ch.id || tw), x, y, w, h, () => {
-        if (own) { M.equipSkin(S.save, tw, ch.id); persist(); sfx('tap'); return; }
-        const r = M.buySkin(S.save, ch.id);
-        if (r.ok) { persist(); sfx('upgrade'); toast(`${ch.name} unlocked!`); } else toast(r.reason === 'coins' ? `Need ${ch.price} coins` : 'Not available');
+        if (own) { M.equipSkin(S.save, tw, ch.id); persist(); sfx('tap'); S.cabAsk = null; return; }
+        S.cabAsk = { id: ch.id, name: ch.name, price: ch.price }; sfx('tap');
       });
     });
   });
   const nx = M.nextSkinPrice(S.save);
   plainText(`Owned ${st.owned.length}/${C.SKINS.length}${nx ? ` - next skin ${nx}c` : ' - all collected!'}`, 200, 612, 13, '#7a5a6a', 'center', '700');
+  if (S.cabAsk) { // v0.8.4 EC11: a buy confirms before the coins leave
+    const ask = S.cabAsk, afford = (S.save.coins || 0) >= ask.price;
+    ctx.fillStyle = 'rgba(60,40,55,0.45)'; ctx.fillRect(-2000, -2000, W + 4000, H + 4000);
+    button('cabBlock', -2000, -2000, W + 4000, H + 4000, () => {});
+    panel(44, 250, 312, 180, '#fff6ee');
+    A.text(ctx, 'Buy this skin?', 200, 286, 20, '#ffd27a');
+    plainFit(`${ask.name} for ${ask.price} coins`, 200, 322, 280, 14, '#7a5a6a', 'center', '700');
+    drawButton(64, 360, 128, 46, 'Cancel', '#fff3e6'); button('cabNo', 60, 358, 136, 52, () => { S.cabAsk = null; sfx('tap'); });
+    drawButton(208, 360, 128, 46, 'Buy', '#9fe0b5', { disabled: !afford });
+    button('cabYes', 204, 358, 136, 52, () => {
+      if (!afford) { toast(`Need ${ask.price} coins`); return; }
+      const r = M.buySkin(S.save, ask.id); S.cabAsk = null;
+      if (r.ok) { persist(); sfx('upgrade'); toast(`${ask.name} unlocked!`); } else toast(r.reason === 'coins' ? `Need ${ask.price} coins` : 'Not available');
+    });
+  }
 }
 function claimGift() {
   const res = M.claimZapperGift(S.save); if (!res) return;

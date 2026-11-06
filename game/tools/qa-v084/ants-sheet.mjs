@@ -1,35 +1,49 @@
-// Before (ink, full size) vs after (play scale 0.62, no ink) on a trail-colored ground.
+// Before (ink) / after (play) / a Colony Flow reference crop beside the new ants.
 import puppeteer from 'puppeteer-core';
 import fs from 'node:fs';
 import { serve } from '../serve.mjs';
 
-const port = 8791;
-const srv = await serve(port, 'www-test');
+const ref = fs.readFileSync('/tmp/cf-ants/ref-group.png').toString('base64');
+const srv = await serve(8791, 'www-test');
 const browser = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: true, args: ['--no-sandbox'] });
 const page = await browser.newPage();
-await page.goto(`http://127.0.0.1:${port}/index.html`);
+await page.goto('http://127.0.0.1:8791/index.html');
 await page.waitForFunction(() => window.__game && window.__game.A);
-const url = await page.evaluate(() => {
+const url = await page.evaluate(async (refB64) => {
   const { A, C } = window.__game;
   const types = ['small', 'worker', 'flyer', 'armored', 'drone', 'queen6'];
-  const cv = document.createElement('canvas'); cv.width = 980; cv.height = 520;
+  const cv = document.createElement('canvas'); cv.width = 1100; cv.height = 560;
   const g = cv.getContext('2d');
-  g.fillStyle = '#3d6b4f'; g.fillRect(0, 0, 980, 520);
-  g.fillStyle = '#fffaf0'; g.fillRect(40, 70, 900, 70); g.fillRect(40, 280, 900, 70);
-  g.fillStyle = '#fff'; g.font = 'bold 22px sans-serif';
-  g.fillText('Before  vc28 ink outline, full size', 40, 40);
-  g.fillText('After  v0.8.4 play scale 0.62, no ink', 40, 250);
+  g.fillStyle = '#3d6b4f'; g.fillRect(0, 0, 1100, 560);
+  g.fillStyle = '#fff'; g.font = 'bold 22px sans-serif'; g.textAlign = 'left';
+  g.fillText('Before  vc28 ink outline, full size', 36, 36);
+  g.fillText('After  play scale 0.62, soft shading', 36, 210);
+  g.fillStyle = '#fffaf0'; g.fillRect(28, 52, 1044, 100); g.fillRect(28, 228, 700, 140); g.fillRect(744, 228, 328, 250);
   types.forEach((t, i) => {
-    const x = 90 + i * 145;
-    g.save(); g.translate(x, 130); A.drawAnt(g, t, 0.2, {}); g.restore();
-    g.save(); g.translate(x, 340); A.drawAnt(g, t, 0.2, { play: true }); g.restore();
-    g.fillStyle = '#fff'; g.font = '14px sans-serif'; g.textAlign = 'center';
-    g.fillText(C.ANTS[t].name, x, 190); g.fillText(C.ANTS[t].name, x, 400);
+    const x = 110 + i * 170;
+    g.save(); g.translate(x, 108); A.drawAnt(g, t, 0.2, {}); g.restore();
+    g.fillStyle = '#3d2a24'; g.font = '13px sans-serif'; g.textAlign = 'center';
+    g.fillText(C.ANTS[t].name, x, 142);
   });
-  g.textAlign = 'left'; g.font = '13px sans-serif';
-  g.fillText('Trail band is #fffaf0. Play ants use PLAY_ANT_SCALE ' + A.PLAY_ANT_SCALE + '. Hitboxes are unchanged.', 40, 470);
+  types.forEach((t, i) => {
+    const x = 86 + i * 114;
+    g.save(); g.translate(x, 300); A.drawAnt(g, t, 0.2, { play: true }); g.restore();
+    g.fillStyle = '#3d2a24'; g.font = '12px sans-serif'; g.textAlign = 'center';
+    g.fillText(C.ANTS[t].name.replace(' Ant', ''), x, 342);
+  });
+  const img = new Image();
+  img.src = 'data:image/png;base64,' + refB64;
+  await img.decode();
+  const rw = 300, rh = Math.round(img.height * rw / img.width);
+  g.drawImage(img, 758, 268, rw, rh);
+  g.fillStyle = '#3d2a24'; g.font = 'bold 15px sans-serif'; g.textAlign = 'center';
+  g.fillText('Colony Flow reference', 908, 252);
+  g.font = '12px sans-serif';
+  g.fillText('colonyflow-play-4', 908, 268 + rh + 16);
+  g.fillStyle = '#fff'; g.font = '13px sans-serif'; g.textAlign = 'left';
+  g.fillText('Play ants stay at PLAY_ANT_SCALE ' + A.PLAY_ANT_SCALE + ' (worker long axis stays in 26–30 px). Hitboxes unchanged. Book, prep and results keep the ink outline.', 36, 500);
   return cv.toDataURL('image/png');
-});
+}, ref);
 const buf = Buffer.from(url.split(',')[1], 'base64');
 fs.mkdirSync('/workspace/qa/v0.8.4', { recursive: true });
 fs.mkdirSync('/opt/cursor/artifacts', { recursive: true });

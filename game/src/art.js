@@ -193,12 +193,17 @@ function playSegment(ctx, x, y, rx, ry, col) {
   g.addColorStop(0, shade(col, 0.18)); g.addColorStop(0.48, col); g.addColorStop(1, shade(col, -0.16));
   ctx.beginPath(); ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill();
   ctx.beginPath(); ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
-  ctx.save(); ctx.globalAlpha *= 0.5; ctx.lineWidth = 1; ctx.strokeStyle = shade(col, -0.22); ctx.stroke(); ctx.restore();
+  // Colony Flow ants have no ink rim: a faint tone edge only, so the gradient reads as the edge.
+  ctx.save(); ctx.globalAlpha *= 0.18; ctx.lineWidth = 1; ctx.strokeStyle = shade(col, -0.22); ctx.stroke(); ctx.restore();
   ctx.save(); ctx.translate(x, y);
-  ctx.beginPath(); ctx.ellipse(-rx * 0.28, -ry * 0.36, Math.max(1.2, rx * 0.30), Math.max(0.8, ry * 0.20), -0.5, 0, Math.PI * 2);
+  ctx.beginPath(); ctx.ellipse(-rx * 0.32, -ry * 0.38, Math.max(1.4, rx * 0.42), Math.max(0.9, ry * 0.28), -0.5, 0, Math.PI * 2);
   ctx.fillStyle = '#ffffff'; ctx.globalAlpha = 0.35; ctx.fill();
-  if (Math.min(rx, ry) >= 5) { ctx.beginPath(); ctx.arc(-rx * 0.46, -ry * 0.12, 1, 0, Math.PI * 2); ctx.globalAlpha = 0.5; ctx.fill(); }
   ctx.restore();
+}
+function playEye(ctx, x, y, rx, ry) {
+  ctx.beginPath(); ctx.ellipse(x, y, rx, ry, 0, 0, 7); ctx.fillStyle = '#fffdf8'; ctx.fill();
+  ctx.beginPath(); ctx.ellipse(x + rx * 0.15, y + ry * 0.1, rx * 0.46, ry * 0.5, 0, 0, 7); ctx.fillStyle = '#2a1c24'; ctx.fill();
+  ctx.beginPath(); ctx.arc(x - rx * 0.22, y - ry * 0.28, Math.max(0.6, rx * 0.2), 0, 7); ctx.fillStyle = '#ffffff'; ctx.fill();
 }
 function softBlob(ctx, x, y, rx, ry, col, lw = ALW, gloss = 1) {
   if (_play) { playSegment(ctx, x, y, rx, ry, col); return; }
@@ -277,7 +282,7 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
     ctx.strokeStyle = ss; ctx.globalAlpha = al; ctx.lineWidth = lw;
   };
   const endAnt = () => { ctx.stroke = _stroke; _play = null; ctx.restore(); };
-  if (opt.play) { if (!flying) shadow(ctx, 0, 8, 9, 2.4, 0.18); else shadow(ctx, 0, 16, 8, 2.2, 0.14); }
+  if (opt.play) { if (!flying) shadow(ctx, 0, 9, 12, 3.2, 0.14); else shadow(ctx, 0, 16, 10, 2.8, 0.12); }
   else if (C.ART81) { if (!flying) shadow(ctx, 0, 10.5, 15 - hop * 2, 4, 0.22); else shadow(ctx, 0, 24, 11 * (1 - 0.1 * hop), 3.3 * (1 - 0.1 * hop), 0.15); }
   else if (!flying) shadow(ctx, 0, 10.5, 15 - hop * 2, 4, 0.2); else shadow(ctx, 0, 21, 10, 3, 0.13);
   // large ants: lower, heavier steps with a side-to-side waddle and a stomp puff (v0.4 item 14a: nicer large-ant animation)
@@ -303,7 +308,7 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
       ctx.save(); ctx.translate(-2, -4); ctx.rotate(-2.0 - flap * 0.45 - k * 0.5);
       ctx.beginPath(); ctx.ellipse(11, 0, 12.5, 6.5, 0, 0, 7);
       ctx.fillStyle = k ? 'rgba(205,236,255,0.8)' : 'rgba(232,247,255,0.92)'; ctx.fill();
-      ctx.lineWidth = 2; ctx.strokeStyle = '#6f9cc2'; ctx.stroke();
+      ctx.lineWidth = _play ? 1 : 2; ctx.strokeStyle = _play ? 'rgba(111,156,194,0.45)' : '#6f9cc2'; ctx.stroke();
       ctx.beginPath(); ctx.ellipse(13, -1.5, 5, 1.6, 0, 0, 7); ctx.fillStyle = 'rgba(255,255,255,0.8)'; ctx.fill();
       ctx.restore();
     }
@@ -311,7 +316,7 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
       ctx.save(); ctx.translate(-5, -1); ctx.rotate(-0.55 + flap * 0.4 - k * 0.55);
       ctx.beginPath(); ctx.ellipse(8.5, 0, 9.5, 4.8, 0, 0, 7);
       ctx.fillStyle = k ? 'rgba(255,238,200,0.78)' : 'rgba(255,246,222,0.92)'; ctx.fill();
-      ctx.lineWidth = 2; ctx.strokeStyle = '#b07a3a'; ctx.stroke();
+      ctx.lineWidth = _play ? 1 : 2; ctx.strokeStyle = _play ? 'rgba(176,122,58,0.4)' : '#b07a3a'; ctx.stroke();
       ctx.restore();
     }
   }
@@ -320,7 +325,7 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
     ctx.beginPath(); ctx.moveTo(3, -8); ctx.quadraticCurveTo(-14, -12 + sw, -24, 7); ctx.quadraticCurveTo(-11, 11, 2, 5); ctx.closePath();
     const g = ctx.createLinearGradient(0, -10, 0, 10); g.addColorStop(0, jamQueen ? '#e7a0ea' : syrupQueen ? '#f3b868' : glazeQueen ? '#9fe3e6' : sundaeQueen ? '#8fe0c8' : pieQueen ? '#7f9be6' : '#b597f0'); g.addColorStop(1, jamQueen ? '#8a3a96' : syrupQueen ? '#a85f1c' : glazeQueen ? '#4fb3bd' : sundaeQueen ? '#3fa88f' : pieQueen ? '#4f69b8' : '#8a68d8');
     ctx.fillStyle = g; ctx.fill(); ctx.lineWidth = LW; ctx.strokeStyle = INK; ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(-22, 6.5); ctx.quadraticCurveTo(-10, 10, 1.5, 4.5); ctx.lineWidth = 3.4; ctx.strokeStyle = '#ffffff'; ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(-22, 6.5); ctx.quadraticCurveTo(-10, 10, 1.5, 4.5); ctx.lineWidth = _play ? 1.6 : 3.4; ctx.strokeStyle = _play ? 'rgba(255,255,255,0.55)' : '#ffffff'; ctx.stroke();
     ctx.fillStyle = INK; for (const [a, b] of [[-17, 6.8], [-10, 8], [-4, 6.6]]) { ctx.beginPath(); ctx.arc(a, b, 0.9, 0, 7); ctx.fill(); }
   }
   const legY = 4.2, footY = flying ? 8.2 : 10.4;
@@ -330,7 +335,7 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
   const abRx = queen ? 13 : big ? 12 : 11, abRy = queen ? 11 : big ? 10 : 9.5; // v0.8.0 chibi: one plump abdomen
   softBlob(ctx, -10, 0.5, abRx, abRy, col, LW, 0.85);
   ctx.save(); ctx.beginPath(); ctx.ellipse(-10, 0.5, abRx - 1, abRy - 1, 0, 0, 7); ctx.clip();
-  ctx.strokeStyle = drone ? INK : shade(col, -0.14); ctx.lineWidth = drone ? 3.6 : 2; // v0.8.2 PP2: two INK stripes on the Drone's abdomen
+  ctx.strokeStyle = drone ? INK : shade(col, -0.14); ctx.lineWidth = _play ? 1 : (drone ? 3.6 : 2); if (_play) ctx.globalAlpha *= 0.28; // v0.8.2 PP2: two INK stripes on the Drone's abdomen. Play: a soft shade, not a line.
   for (const sx of [-15, -10.5]) { ctx.beginPath(); ctx.ellipse(sx - (big ? 1.5 : 0), 0.5, 2, abRy + 2, 0, -1.3, 1.3); ctx.stroke(); }
   if (syrupQueen) { ctx.beginPath(); ctx.moveTo(-20.5, -5.2); ctx.quadraticCurveTo(-11, -9.6, -1.5, -6.4); ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(255,248,224,0.72)'; ctx.stroke(); } // v0.8.2 PP4: the glossy syrup stripe
   ctx.restore();
@@ -405,6 +410,11 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
     blob(ctx, hx + 5, hy + 7.4, 5.2, 3.8, '#a7afbb', 2.4);
     ctx.fillStyle = '#7d8592'; for (const dx of [-1.8, 0.4, 2.6]) { ctx.beginPath(); ctx.arc(hx + 5 + dx, hy + 7.6, 0.8, 0, 7); ctx.fill(); }
     blob(ctx, hx + 10.5, hy + 9.2, 2.8, 3.1, '#7fd3ad', 2.2);
+  } else if (_play && !blink && !mood) {
+    playEye(ctx, e1x, ey, 5.0, 5.8);
+    playEye(ctx, e2x, ey - 0.3, 4.6, 5.4);
+    cheek(ctx, hx - 4.2, hy + 7); cheek(ctx, hx + 12.2, hy + 6.6, 2.4);
+    ctx.save(); ctx.beginPath(); ctx.ellipse(hx + 4.2, hy + 6.6, 1.5, 1.05, 0, 0, 7); ctx.fillStyle = shade(col, -0.35); ctx.globalAlpha = 0.55; ctx.fill(); ctx.restore();
   } else {
     glossyEye(ctx, e1x, ey, 3.3, 4.6, blink, mood, -1);
     glossyEye(ctx, e2x, ey - 0.3, 3.0, 4.3, blink, mood, 1);

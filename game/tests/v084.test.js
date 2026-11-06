@@ -142,7 +142,7 @@ test('ANT1/ANT2: play ants scale by 0.62 with the soft recipe; book art stays ou
   assert.match(src('art.js'), /if \(opt\.play\) ctx\.scale\(PLAY_ANT_SCALE, PLAY_ANT_SCALE\)/);
   assert.match(src('art.js'), /if \(_play\) \{ playSegment/);
   assert.match(src('art.js'), /if \(_play\) \{ ctx\.lineWidth = 2; ctx\.strokeStyle = col/);
-  assert.match(src('game.js'), /pxRatio, mood, \{ play: true \}/);
+  assert.match(src('game.js'), /pxRatio, mood, \{ play: true/);
   assert.equal(C.ANT_SIZES.regular, 1);
   assert.equal(C.ANTS.worker.size, 1);
 });
