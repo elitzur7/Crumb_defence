@@ -14,114 +14,295 @@ var tuning_default = {
   },
   shop: {
     _about: "v0.6.2 items 12/13. unlockPrice: coins to unlock a locked tower in the Shop (tiered by base power, approved by Yair). packNewTowerChance: chance that a card pack holds ONE new (locked) tower card (L1) as one of its cards.",
-    unlockPrice: { sound: 100, pheromone: 100, lava: 100, lizard: 200, gate: 200, zapper: 200, laser: 400, tractor: 400 },
+    unlockPrice: {
+      sound: 100,
+      pheromone: 100,
+      lava: 100,
+      lizard: 200,
+      gate: 200,
+      zapper: 200,
+      laser: 400,
+      tractor: 400
+    },
     unlockPriceDefault: 200,
     packNewTowerChance: 0.1
   },
   economy: {
     _about: "v0.7.6 E1/E2/E3/E5. starBonus: coins paid ONCE per level the first time it reaches 2 (key 2) and 3 (key 3) stars (a 1 -> 3 star jump pays both; stored stars count as already paid, no retroactive grant). bossGems: diamonds on the FIRST clear of a world's last level (its queen) and on the first 3 stars there. calendar.coinsByStreak: coins of the 1st, 2nd, 3rd, 4th+ coin prize of a streak, multiplied by 1 + worldStep x (highest unlocked world - 1), rounded to a multiple of roundTo. worlds[].coinMul (default 1) multiplies the win coins of that world's levels (not the first-clear bonus, not loss coins).",
-    starBonus: { "2": 15, "3": 75 },
+    starBonus: {
+      "2": 15,
+      "3": 75
+    },
     starBonusScale: "coinMul",
-    bossGems: { firstClear: 10, firstThreeStars: 5 },
-    calendar: { coinsByStreak: [30, 60, 90, 120], worldStep: 0.5, roundTo: 5 }
+    bossGems: {
+      firstClear: 10,
+      firstThreeStars: 5
+    },
+    calendar: {
+      coinsByStreak: [
+        30,
+        60,
+        90,
+        120
+      ],
+      worldStep: 0.5,
+      roundTo: 5
+    }
   },
-  queenTraitMods: { fast: -10, flying: -15, slow: 0, slower: 5, slowest: 10, vulnerable: 5, veryVulnerable: 10 },
-  antSizes: { small: 0.7, regular: 1, large: 1.12, queen: 2.1 },
+  queenTraitMods: {
+    fast: -10,
+    flying: -15,
+    slow: 0,
+    slower: 5,
+    slowest: 10,
+    vulnerable: 5,
+    veryVulnerable: 10
+  },
+  antSizes: {
+    small: 0.7,
+    regular: 1,
+    large: 1.12,
+    queen: 2.1
+  },
   towers: {
     slingshot: {
       power: 6,
       rate: 1.1,
       rangeTiles: 1.5,
-      params: { projSpeed: 380 },
+      params: {
+        projSpeed: 380
+      },
       battleUpgrades: [
-        { power: 2 },
-        { rate: 1.3, range: 1.1, power: 1.154 },
-        { power: 1.333 },
-        { rate: 1.15, power: 1.087 },
-        { range: 1.1, power: 1.2 }
+        {
+          power: 2
+        },
+        {
+          rate: 1.3,
+          range: 1.1,
+          power: 1.154
+        },
+        {
+          power: 1.333
+        },
+        {
+          rate: 1.15,
+          power: 1.087
+        },
+        {
+          range: 1.1,
+          power: 1.2
+        }
       ],
       cardUpgrades: [
-        { range: 0.2 },
-        { power: 0.1 },
-        { range: 0.2 },
-        { rate: 0.1 },
-        { power: 0.1 },
-        { power: 0.12 },
-        { rate: 0.1 },
-        { range: 0.2 },
-        { range: 0.2, power: 0.1 }
+        {
+          range: 0.2
+        },
+        {
+          power: 0.1
+        },
+        {
+          range: 0.2
+        },
+        {
+          rate: 0.1
+        },
+        {
+          power: 0.1
+        },
+        {
+          power: 0.12
+        },
+        {
+          rate: 0.1
+        },
+        {
+          range: 0.2
+        },
+        {
+          range: 0.2,
+          power: 0.1
+        }
       ]
     },
     spray: {
       power: 6,
       rate: 0.42,
       rangeTiles: 1.5,
-      params: { cloudTime: 2.6, cloudRadius: 42 },
+      params: {
+        cloudTime: 2.6,
+        cloudRadius: 42
+      },
       battleUpgrades: [
-        { power: 2, cloudRadius: 1.2 },
-        { rate: 1.3, power: 1.154 },
-        { cloudRadius: 1.15, range: 1.1, power: 1.333 },
-        { power: 1.25 },
-        { rate: 1.2 }
+        {
+          power: 2,
+          cloudRadius: 1.2
+        },
+        {
+          rate: 1.3,
+          power: 1.154
+        },
+        {
+          cloudRadius: 1.15,
+          range: 1.1,
+          power: 1.333
+        },
+        {
+          power: 1.25
+        },
+        {
+          rate: 1.2
+        }
       ],
       cardUpgrades: [
-        { power: 0.1 },
-        { rate: 0.08 },
-        { range: 0.2 },
-        { power: 0.12 },
-        { range: 0.15 },
-        { rate: 0.1 },
-        { power: 0.1 },
-        { range: 0.2 },
-        { power: 0.1, rate: 0.1 }
+        {
+          power: 0.1
+        },
+        {
+          rate: 0.08
+        },
+        {
+          range: 0.2
+        },
+        {
+          power: 0.12
+        },
+        {
+          range: 0.15
+        },
+        {
+          rate: 0.1
+        },
+        {
+          power: 0.1
+        },
+        {
+          range: 0.2
+        },
+        {
+          power: 0.1,
+          rate: 0.1
+        }
       ]
     },
     sound: {
       power: 4,
       rate: 0.75,
       rangeTiles: 1.5,
-      params: { ignoreArmor: !0, stagger: 0.18 },
+      params: {
+        ignoreArmor: !0,
+        stagger: 0.18
+      },
       battleUpgrades: [
-        { power: 2 },
-        { range: 1.15, rate: 1.2, power: 1.25 },
-        { stagger: 1.3, power: 1.333 },
-        { power: 1.25 },
-        { rate: 1.15, stagger: 1.25, power: 1.043 }
+        {
+          power: 2
+        },
+        {
+          range: 1.15,
+          rate: 1.2,
+          power: 1.25
+        },
+        {
+          stagger: 1.3,
+          power: 1.333
+        },
+        {
+          power: 1.25
+        },
+        {
+          rate: 1.15,
+          stagger: 1.25,
+          power: 1.043
+        }
       ],
       cardUpgrades: [
-        { rate: 0.1 },
-        { range: 0.2 },
-        { power: 0.1 },
-        { power: 0.1 },
-        { range: 0.2 },
-        { rate: 0.08 },
-        { range: 0.15 },
-        { power: 0.12 },
-        { rate: 0.1, range: 0.2 }
+        {
+          rate: 0.1
+        },
+        {
+          range: 0.2
+        },
+        {
+          power: 0.1
+        },
+        {
+          power: 0.1
+        },
+        {
+          range: 0.2
+        },
+        {
+          rate: 0.08
+        },
+        {
+          range: 0.15
+        },
+        {
+          power: 0.12
+        },
+        {
+          rate: 0.1,
+          range: 0.2
+        }
       ]
     },
     ball: {
       power: 16,
       rate: 0.16,
       rangeTiles: null,
-      params: { ballRadius: 13, rollSpeed: 230, maxBalls: 1 },
+      params: {
+        ballRadius: 13,
+        rollSpeed: 230,
+        maxBalls: 1
+      },
       battleUpgrades: [
-        { power: 2, ballRadius: 1.2 },
-        { rate: 1.3, power: 1.154 },
-        { ballRadius: 1.1, power: 1.333 },
-        { power: 1.25 },
-        { rate: 1.2 }
+        {
+          power: 2,
+          ballRadius: 1.2
+        },
+        {
+          rate: 1.3,
+          power: 1.154
+        },
+        {
+          ballRadius: 1.1,
+          power: 1.333
+        },
+        {
+          power: 1.25
+        },
+        {
+          rate: 1.2
+        }
       ],
       cardUpgrades: [
-        { power: 0.1 },
-        { rate: 0.1 },
-        { ballRadius: 0.1 },
-        { power: 0.12 },
-        { rate: 0.08 },
-        { power: 0.1 },
-        { ballRadius: 0.1 },
-        { rate: 0.1 },
-        { power: 0.1, rate: 0.1 }
+        {
+          power: 0.1
+        },
+        {
+          rate: 0.1
+        },
+        {
+          ballRadius: 0.1
+        },
+        {
+          power: 0.12
+        },
+        {
+          rate: 0.08
+        },
+        {
+          power: 0.1
+        },
+        {
+          ballRadius: 0.1
+        },
+        {
+          rate: 0.1
+        },
+        {
+          power: 0.1,
+          rate: 0.1
+        }
       ]
     },
     fan: {
@@ -129,186 +310,552 @@ var tuning_default = {
       rate: 0.36,
       rangeTiles: 1.5,
       params: {},
-      battleUpgrades: [{ power: 1.3 }, { rate: 1.25, range: 1.1 }, { power: 1.15 }, { range: 1.1 }, { rate: 1.15 }],
+      battleUpgrades: [
+        {
+          power: 1.3
+        },
+        {
+          rate: 1.25,
+          range: 1.1
+        },
+        {
+          power: 1.15
+        },
+        {
+          range: 1.1
+        },
+        {
+          rate: 1.15
+        }
+      ],
       cardUpgrades: [
-        { range: 0.2 },
-        { rate: 0.1 },
-        { power: 0.1 },
-        { range: 0.2 },
-        { range: 0.15 },
-        { power: 0.1 },
-        { rate: 0.1 },
-        { power: 0.12 },
-        { range: 0.2, rate: 0.1 }
+        {
+          range: 0.2
+        },
+        {
+          rate: 0.1
+        },
+        {
+          power: 0.1
+        },
+        {
+          range: 0.2
+        },
+        {
+          range: 0.15
+        },
+        {
+          power: 0.1
+        },
+        {
+          rate: 0.1
+        },
+        {
+          power: 0.12
+        },
+        {
+          range: 0.2,
+          rate: 0.1
+        }
       ]
     },
     pheromone: {
       power: 2.5,
       rate: null,
       rangeTiles: 1,
-      params: { ignoreArmor: !0, slow: 0.35, charmTime: 1.6 },
-      battleUpgrades: [{ power: 1.5 }, { charmTime: 1.4, slow: 1.25 }, { power: 1.2 }, { charmTime: 1.2 }, { slow: 1.15 }],
+      params: {
+        ignoreArmor: !0,
+        slow: 0.35,
+        charmTime: 1.6
+      },
+      battleUpgrades: [
+        {
+          power: 1.5
+        },
+        {
+          charmTime: 1.4,
+          slow: 1.25
+        },
+        {
+          power: 1.2
+        },
+        {
+          charmTime: 1.2
+        },
+        {
+          slow: 1.15
+        }
+      ],
       cardUpgrades: [
-        { power: 0.12 },
-        { slow: 0.1 },
-        { charmTime: 0.1 },
-        { power: 0.1 },
-        { slow: 0.08 },
-        { power: 0.1 },
-        { charmTime: 0.1 },
-        { charmTime: 0.12 },
-        { power: 0.1, slow: 0.08 }
+        {
+          power: 0.12
+        },
+        {
+          slow: 0.1
+        },
+        {
+          charmTime: 0.1
+        },
+        {
+          power: 0.1
+        },
+        {
+          slow: 0.08
+        },
+        {
+          power: 0.1
+        },
+        {
+          charmTime: 0.1
+        },
+        {
+          charmTime: 0.12
+        },
+        {
+          power: 0.1,
+          slow: 0.08
+        }
       ]
     },
     lizard: {
       power: 38,
       rate: 0.42,
       rangeTiles: 1.5,
-      params: { chewTime: 1.4 },
+      params: {
+        chewTime: 1.4
+      },
       battleUpgrades: [
-        { power: 2 },
-        { chewTime: 0.6, range: 1.1, power: 1.5 },
-        { rate: 1.2, power: 1.111 },
-        { power: 1.25 },
-        { chewTime: 0.75, power: 1.2 }
+        {
+          power: 2
+        },
+        {
+          chewTime: 0.6,
+          range: 1.1,
+          power: 1.5
+        },
+        {
+          rate: 1.2,
+          power: 1.111
+        },
+        {
+          power: 1.25
+        },
+        {
+          chewTime: 0.75,
+          power: 1.2
+        }
       ],
       cardUpgrades: [
-        { power: 0.12 },
-        { rate: 0.08 },
-        { range: 0.2 },
-        { power: 0.1 },
-        { range: 0.2 },
-        { rate: 0.1 },
-        { power: 0.1 },
-        { power: 0.12 },
-        { range: 0.2, power: 0.1 }
+        {
+          power: 0.12
+        },
+        {
+          rate: 0.08
+        },
+        {
+          range: 0.2
+        },
+        {
+          power: 0.1
+        },
+        {
+          range: 0.2
+        },
+        {
+          rate: 0.1
+        },
+        {
+          power: 0.1
+        },
+        {
+          power: 0.12
+        },
+        {
+          range: 0.2,
+          power: 0.1
+        }
       ]
     },
     laser: {
       power: 3,
       rate: 3.2,
       rangeTiles: 2.5,
-      params: { heatPerHit: 0.1, heatMax: 1 },
+      params: {
+        heatPerHit: 0.1,
+        heatMax: 1
+      },
       battleUpgrades: [
-        { power: 1.7 },
-        { rate: 1.15, power: 1.228 },
-        { range: 1.1, power: 1.292 },
-        { power: 1.15, heatMax: 1.5 },
-        { rate: 1.2, heatMax: 1.3 }
+        {
+          power: 1.7
+        },
+        {
+          rate: 1.15,
+          power: 1.228
+        },
+        {
+          range: 1.1,
+          power: 1.292
+        },
+        {
+          power: 1.15,
+          heatMax: 1.5
+        },
+        {
+          rate: 1.2,
+          heatMax: 1.3
+        }
       ],
       cardUpgrades: [
-        { rate: 0.08 },
-        { power: 0.1 },
-        { range: 0.2 },
-        { rate: 0.1 },
-        { power: 0.1 },
-        { range: 0.2 },
-        { power: 0.12 },
-        { rate: 0.1 },
-        { power: 0.1, rate: 0.1 }
+        {
+          rate: 0.08
+        },
+        {
+          power: 0.1
+        },
+        {
+          range: 0.2
+        },
+        {
+          rate: 0.1
+        },
+        {
+          power: 0.1
+        },
+        {
+          range: 0.2
+        },
+        {
+          power: 0.12
+        },
+        {
+          rate: 0.1
+        },
+        {
+          power: 0.1,
+          rate: 0.1
+        }
       ]
     },
     zapper: {
       power: 10,
       rate: 1.5,
       rangeTiles: 2,
-      params: { chain: 2, chainRange: 75, chainFalloff: 0.6 },
+      params: {
+        chain: 2,
+        chainRange: 75,
+        chainFalloff: 0.6
+      },
       battleUpgrades: [
-        { power: 2 },
-        { chain: 1.5, range: 1.1, power: 1.5 },
-        { rate: 1.2, power: 1.111 },
-        { power: 1.25 },
-        { rate: 1.15, chain: 1.34, power: 1.043 }
+        {
+          power: 2
+        },
+        {
+          chain: 1.5,
+          range: 1.1,
+          power: 1.5
+        },
+        {
+          rate: 1.2,
+          power: 1.111
+        },
+        {
+          power: 1.25
+        },
+        {
+          rate: 1.15,
+          chain: 1.34,
+          power: 1.043
+        }
       ],
       cardUpgrades: [
-        { range: 0.2 },
-        { power: 0.1 },
-        { rate: 0.1 },
-        { range: 0.2 },
-        { power: 0.12 },
-        { rate: 0.08 },
-        { power: 0.1 },
-        { range: 0.2 },
-        { power: 0.1, range: 0.15 }
+        {
+          range: 0.2
+        },
+        {
+          power: 0.1
+        },
+        {
+          rate: 0.1
+        },
+        {
+          range: 0.2
+        },
+        {
+          power: 0.12
+        },
+        {
+          rate: 0.08
+        },
+        {
+          power: 0.1
+        },
+        {
+          range: 0.2
+        },
+        {
+          power: 0.1,
+          range: 0.15
+        }
       ]
     },
     glue: {
       power: 0.55,
       rate: null,
       rangeTiles: 1,
-      params: { stickTime: 0.5 },
-      battleUpgrades: [{ power: 1.15 }, { stickTime: 2 }, { stickTime: 1.25 }, { power: 1.1 }, { stickTime: 1.2 }],
+      params: {
+        stickTime: 0.5
+      },
+      battleUpgrades: [
+        {
+          power: 1.15
+        },
+        {
+          stickTime: 2
+        },
+        {
+          stickTime: 1.25
+        },
+        {
+          power: 1.1
+        },
+        {
+          stickTime: 1.2
+        }
+      ],
       cardUpgrades: [
-        { stickTime: 0.12 },
-        { power: 0.08 },
-        { stickTime: 0.15 },
-        { power: 0.06 },
-        { power: 0.08 },
-        { stickTime: 0.1 },
-        { stickTime: 0.15 },
-        { power: 0.08 },
-        { stickTime: 0.12, power: 0.05 }
+        {
+          stickTime: 0.12
+        },
+        {
+          power: 0.08
+        },
+        {
+          stickTime: 0.15
+        },
+        {
+          power: 0.06
+        },
+        {
+          power: 0.08
+        },
+        {
+          stickTime: 0.1
+        },
+        {
+          stickTime: 0.15
+        },
+        {
+          power: 0.08
+        },
+        {
+          stickTime: 0.12,
+          power: 0.05
+        }
       ]
     },
     gate: {
       power: 4.5,
       rate: 2.85,
       rangeTiles: 1,
-      params: { ignoreArmor: !0 },
-      battleUpgrades: [{ power: 2 }, { rate: 1.3, power: 1.154 }, { rate: 1.15, power: 1.159 }, { power: 1.25 }, { power: 1.1, rate: 1.1 }],
+      params: {
+        ignoreArmor: !0
+      },
+      battleUpgrades: [
+        {
+          power: 2
+        },
+        {
+          rate: 1.3,
+          power: 1.154
+        },
+        {
+          rate: 1.15,
+          power: 1.159
+        },
+        {
+          power: 1.25
+        },
+        {
+          power: 1.1,
+          rate: 1.1
+        }
+      ],
       cardUpgrades: [
-        { rate: 0.1 },
-        { power: 0.1 },
-        { power: 0.12 },
-        { rate: 0.08 },
-        { rate: 0.08 },
-        { power: 0.1 },
-        { power: 0.08 },
-        { rate: 0.1 },
-        { power: 0.1, rate: 0.06 }
+        {
+          rate: 0.1
+        },
+        {
+          power: 0.1
+        },
+        {
+          power: 0.12
+        },
+        {
+          rate: 0.08
+        },
+        {
+          rate: 0.08
+        },
+        {
+          power: 0.1
+        },
+        {
+          power: 0.08
+        },
+        {
+          rate: 0.1
+        },
+        {
+          power: 0.1,
+          rate: 0.06
+        }
       ]
     },
     lava: {
       power: 6,
       rate: null,
       rangeTiles: 1,
-      params: { ignoreArmor: !0, slow: 0.2 },
-      battleUpgrades: [{ power: 2 }, { slow: 1.25, power: 1.5 }, { power: 1.333 }, { slow: 1.15, power: 1.25 }, { power: 1.2 }],
+      params: {
+        ignoreArmor: !0,
+        slow: 0.2
+      },
+      battleUpgrades: [
+        {
+          power: 2
+        },
+        {
+          slow: 1.25,
+          power: 1.5
+        },
+        {
+          power: 1.333
+        },
+        {
+          slow: 1.15,
+          power: 1.25
+        },
+        {
+          power: 1.2
+        }
+      ],
       cardUpgrades: [
-        { power: 0.1 },
-        { slow: 0.08 },
-        { power: 0.1 },
-        { slow: 0.1 },
-        { power: 0.08 },
-        { power: 0.12 },
-        { slow: 0.08 },
-        { power: 0.1 },
-        { slow: 0.1, power: 0.1 }
+        {
+          power: 0.1
+        },
+        {
+          slow: 0.08
+        },
+        {
+          power: 0.1
+        },
+        {
+          slow: 0.1
+        },
+        {
+          power: 0.08
+        },
+        {
+          power: 0.12
+        },
+        {
+          slow: 0.08
+        },
+        {
+          power: 0.1
+        },
+        {
+          slow: 0.1,
+          power: 0.1
+        }
       ]
     },
     tractor: {
       power: null,
       rate: 0.13,
       rangeTiles: null,
-      params: { liftSize: 1 },
-      battleUpgrades: [{ rate: 1.12 }, { rate: 1.1 }, { rate: 1.12 }, { liftSize: 1, rateIfMaxLift: 1.15 }, { rate: 1.1 }],
+      params: {
+        liftSize: 1
+      },
+      battleUpgrades: [
+        {
+          rate: 1.12
+        },
+        {
+          rate: 1.1
+        },
+        {
+          rate: 1.12
+        },
+        {
+          liftSize: 1,
+          rateIfMaxLift: 1.15
+        },
+        {
+          rate: 1.1
+        }
+      ],
       cardUpgrades: [
-        { rate: 0.05 },
-        { liftSize: 1 },
-        { rate: 0.06 },
-        { rate: 0.05 },
-        { rate: 0.07 },
-        { rate: 0.05 },
-        { liftSize: 1 },
-        { rate: 0.06 },
-        { rate: 0.07 }
+        {
+          rate: 0.05
+        },
+        {
+          liftSize: 1
+        },
+        {
+          rate: 0.06
+        },
+        {
+          rate: 0.05
+        },
+        {
+          rate: 0.07
+        },
+        {
+          rate: 0.05
+        },
+        {
+          liftSize: 1
+        },
+        {
+          rate: 0.06
+        },
+        {
+          rate: 0.07
+        }
       ]
     }
   },
   ants: {
-    small: { hp: 4, speed: 60, armor: 0, steal: 0.9, weight: 1.2, size: "small", crumbs: 1, rarity: "common" },
-    worker: { hp: 20, speed: 40, armor: 0, steal: 0.9, weight: 1, size: "regular", crumbs: 1, rarity: "common" },
-    big: { hp: 100, speed: 27, armor: 2, steal: 1.8, weight: 0.5, size: "large", crumbs: 4, rarity: "rare" },
+    small: {
+      hp: 4,
+      speed: 60,
+      armor: 0,
+      steal: 0.9,
+      weight: 1.2,
+      size: "small",
+      crumbs: 1,
+      rarity: "common"
+    },
+    worker: {
+      hp: 20,
+      speed: 40,
+      armor: 0,
+      steal: 0.9,
+      weight: 1,
+      size: "regular",
+      crumbs: 1,
+      rarity: "common"
+    },
+    big: {
+      hp: 100,
+      speed: 27,
+      armor: 2,
+      steal: 1.8,
+      weight: 0.5,
+      size: "large",
+      crumbs: 4,
+      rarity: "rare"
+    },
     gasmask: {
       hp: 16,
       speed: 40,
@@ -320,7 +867,16 @@ var tuning_default = {
       rarity: "uncommon",
       gasImmune: !0
     },
-    armored: { hp: 40, speed: 30, armor: 6, steal: 1.8, weight: 0.6, size: "regular", crumbs: 4, rarity: "rare" },
+    armored: {
+      hp: 40,
+      speed: 30,
+      armor: 6,
+      steal: 1.8,
+      weight: 0.6,
+      size: "regular",
+      crumbs: 4,
+      rarity: "rare"
+    },
     flyer: {
       hp: 12,
       speed: 62,
@@ -364,8 +920,14 @@ var tuning_default = {
       rarity: "boss",
       slowResist: 0.5,
       boss: !0,
-      spawn: { type: "small", every: 5, count: 1 },
-      queenTraits: ["slow"]
+      spawn: {
+        type: "small",
+        every: 5,
+        count: 1
+      },
+      queenTraits: [
+        "slow"
+      ]
     },
     queen2: {
       hp: 2e3,
@@ -377,8 +939,14 @@ var tuning_default = {
       rarity: "boss",
       slowResist: 0.4,
       boss: !0,
-      spawn: { type: "flyer", every: 6, count: 1 },
-      queenTraits: ["fast"]
+      spawn: {
+        type: "flyer",
+        every: 6,
+        count: 1
+      },
+      queenTraits: [
+        "fast"
+      ]
     },
     small_gasmask: {
       hp: 4,
@@ -391,7 +959,16 @@ var tuning_default = {
       rarity: "uncommon",
       gasImmune: !0
     },
-    small_armed: { hp: 10, speed: 45, armor: 4, steal: 0.9, weight: 1, size: "small", crumbs: 1, rarity: "uncommon" },
+    small_armed: {
+      hp: 10,
+      speed: 45,
+      armor: 4,
+      steal: 0.9,
+      weight: 1,
+      size: "small",
+      crumbs: 1,
+      rarity: "uncommon"
+    },
     small_fly: {
       hp: 3,
       speed: 70,
@@ -423,7 +1000,10 @@ var tuning_default = {
       size: "large",
       crumbs: 3,
       rarity: "rare",
-      splitInto: { type: "small", count: 3 }
+      splitInto: {
+        type: "small",
+        count: 3
+      }
     },
     queen3: {
       hp: 2300,
@@ -435,8 +1015,14 @@ var tuning_default = {
       rarity: "boss",
       slowResist: 0.7,
       boss: !0,
-      spawn: { type: "greasy", every: 7, count: 1 },
-      queenTraits: ["slower"]
+      spawn: {
+        type: "greasy",
+        every: 7,
+        count: 1
+      },
+      queenTraits: [
+        "slower"
+      ]
     },
     nurse: {
       hp: 60,
@@ -447,7 +1033,12 @@ var tuning_default = {
       size: "regular",
       crumbs: 3,
       rarity: "rare",
-      heal: { radius: 1.5, pct: 0.2, every: 3, bossMul: 0.1 }
+      heal: {
+        radius: 1.5,
+        pct: 0.2,
+        every: 3,
+        bossMul: 0.1
+      }
     },
     queen4: {
       hp: 2600,
@@ -459,8 +1050,14 @@ var tuning_default = {
       rarity: "boss",
       slowResist: 0.6,
       boss: !0,
-      spawn: { type: "nurse", every: 9, count: 1 },
-      queenTraits: ["slow"]
+      spawn: {
+        type: "nurse",
+        every: 9,
+        count: 1
+      },
+      queenTraits: [
+        "slow"
+      ]
     },
     glazed: {
       hp: 24,
@@ -471,7 +1068,12 @@ var tuning_default = {
       size: "regular",
       crumbs: 3,
       rarity: "uncommon",
-      shield: { pts: 30, regenDelay: 2.5, regenRate: 0.3, when: "always" }
+      shield: {
+        pts: 30,
+        regenDelay: 2.5,
+        regenRate: 0.3,
+        when: "always"
+      }
     },
     queen5: {
       hp: 2400,
@@ -483,9 +1085,20 @@ var tuning_default = {
       rarity: "boss",
       slowResist: 0.6,
       boss: !0,
-      spawn: { type: "glazed", every: 10, count: 1 },
-      shield: { pts: 600, regenDelay: 4, regenRate: 0.25, when: "always" },
-      queenTraits: ["slow"]
+      spawn: {
+        type: "glazed",
+        every: 10,
+        count: 1
+      },
+      shield: {
+        pts: 600,
+        regenDelay: 4,
+        regenRate: 0.25,
+        when: "always"
+      },
+      queenTraits: [
+        "slow"
+      ]
     },
     drone: {
       hp: 30,
@@ -508,8 +1121,51 @@ var tuning_default = {
       rarity: "boss",
       slowResist: 0.6,
       boss: !0,
-      spawn: { type: "drone", every: 12, count: 1 },
-      queenTraits: ["slow"]
+      spawn: {
+        type: "drone",
+        every: 12,
+        count: 1
+      },
+      queenTraits: [
+        "slow"
+      ]
+    },
+    shieldbearer: {
+      hp: 50,
+      speed: 28,
+      armor: 2,
+      steal: 1.2,
+      weight: 1.4,
+      size: "regular",
+      crumbs: 6,
+      rarity: "rare",
+      aura: {
+        armor: 1,
+        radius: 55,
+        maxArmor: 2,
+        excludeBoss: !0,
+        excludeSelf: !1
+      }
+    },
+    queen7: {
+      hp: 3200,
+      speed: 14,
+      armor: 6,
+      weight: 0,
+      size: "queen",
+      crumbs: 240,
+      rarity: "boss",
+      slowResist: 0.55,
+      boss: !0,
+      spawn: {
+        type: "drone",
+        every: 14,
+        count: 1,
+        alt: "worker"
+      },
+      queenTraits: [
+        "slow"
+      ]
     }
   },
   worlds: [
@@ -529,7 +1185,10 @@ var tuning_default = {
       treat: "cake",
       queen: "queen2",
       levels: 10,
-      unlock: { allLevelsWonInWorld: 1, minStarsInWorld: 18 },
+      unlock: {
+        allLevelsWonInWorld: 1,
+        minStarsInWorld: 18
+      },
       cardLevelCap: 5,
       coinMul: 1
     },
@@ -539,7 +1198,10 @@ var tuning_default = {
       treat: "pie",
       queen: "queen3",
       levels: 10,
-      unlock: { allLevelsWonInWorld: 2, minStarsInWorld: 18 },
+      unlock: {
+        allLevelsWonInWorld: 2,
+        minStarsInWorld: 18
+      },
       cardLevelCap: 5,
       coinMul: 1.25
     },
@@ -549,7 +1211,10 @@ var tuning_default = {
       treat: "sundae",
       queen: "queen4",
       levels: 10,
-      unlock: { allLevelsWonInWorld: 3, minStarsInWorld: 14 },
+      unlock: {
+        allLevelsWonInWorld: 3,
+        minStarsInWorld: 14
+      },
       cardLevelCap: 6,
       coinMul: 1.5
     },
@@ -559,7 +1224,10 @@ var tuning_default = {
       treat: "donut",
       queen: "queen5",
       levels: 10,
-      unlock: { allLevelsWonInWorld: 4, minStarsInWorld: 14 },
+      unlock: {
+        allLevelsWonInWorld: 4,
+        minStarsInWorld: 14
+      },
       cardLevelCap: 6,
       coinMul: 1.75
     },
@@ -569,9 +1237,25 @@ var tuning_default = {
       treat: "pancake",
       queen: "queen6",
       levels: 10,
-      unlock: { allLevelsWonInWorld: 5, minStarsInWorld: 14 },
+      unlock: {
+        allLevelsWonInWorld: 5,
+        minStarsInWorld: 14
+      },
       cardLevelCap: 6,
       coinMul: 2
+    },
+    {
+      id: 7,
+      name: "Jelly Jamboree",
+      treat: "tart",
+      queen: "queen7",
+      levels: 10,
+      unlock: {
+        allLevelsWonInWorld: 6,
+        minStarsInWorld: 14
+      },
+      cardLevelCap: 6,
+      coinMul: 2.25
     }
   ],
   levels: [
@@ -584,7 +1268,17 @@ var tuning_default = {
       base: 8.1,
       growth: 1.44,
       interval: 1.1,
-      mix: [{ type: "worker", w: 4 }, { type: "small", w: 3, from: 2 }]
+      mix: [
+        {
+          type: "worker",
+          w: 4
+        },
+        {
+          type: "small",
+          w: 3,
+          from: 2
+        }
+      ]
     },
     {
       world: 1,
@@ -595,7 +1289,21 @@ var tuning_default = {
       base: 7,
       growth: 1.8,
       interval: 1,
-      mix: [{ type: "worker", w: 4 }, { type: "small", w: 3 }, { type: "small_gasmask", w: 1, from: 3 }]
+      mix: [
+        {
+          type: "worker",
+          w: 4
+        },
+        {
+          type: "small",
+          w: 3
+        },
+        {
+          type: "small_gasmask",
+          w: 1,
+          from: 3
+        }
+      ]
     },
     {
       world: 1,
@@ -606,35 +1314,140 @@ var tuning_default = {
       interval: 1,
       waves: [
         [
-          { type: "worker", count: 4, interval: 1, delay: 0 },
-          { type: "small", count: 6, interval: 0.45, delay: 0 },
-          { type: "small_gasmask", count: 2, interval: 0.45, delay: 0 }
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 6,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "small_gasmask",
+            count: 2,
+            interval: 0.45,
+            delay: 0
+          }
         ],
         [
-          { type: "small_gasmask", count: 6, interval: 0.45, delay: 0 },
-          { type: "small_fly", count: 2, interval: 0.5, delay: 0 },
-          { type: "worker", count: 4, interval: 1, delay: 0 },
-          { type: "gasmask", count: 3, interval: 1, delay: 0 }
+          {
+            type: "small_gasmask",
+            count: 6,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "small_fly",
+            count: 2,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "gasmask",
+            count: 3,
+            interval: 1,
+            delay: 0
+          }
         ],
         [
-          { type: "worker", count: 3, interval: 1, delay: 0 },
-          { type: "small", count: 6, interval: 0.45, delay: 0 },
-          { type: "small_fly", count: 4, interval: 0.5, delay: 0 },
-          { type: "small_gasmask", count: 8, interval: 0.45, delay: 0 },
-          { type: "gasmask", count: 1, interval: 1, delay: 0 }
+          {
+            type: "worker",
+            count: 3,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 6,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "small_fly",
+            count: 4,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "small_gasmask",
+            count: 8,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "gasmask",
+            count: 1,
+            interval: 1,
+            delay: 0
+          }
         ],
         [
-          { type: "worker", count: 7, interval: 1, delay: 0 },
-          { type: "small_fly", count: 5, interval: 0.5, delay: 0 },
-          { type: "small", count: 8, interval: 0.45, delay: 0 },
-          { type: "gasmask", count: 1, interval: 1, delay: 0 }
+          {
+            type: "worker",
+            count: 7,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small_fly",
+            count: 5,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "gasmask",
+            count: 1,
+            interval: 1,
+            delay: 0
+          }
         ],
         [
-          { type: "worker", count: 3, interval: 1, delay: 0 },
-          { type: "small", count: 14, interval: 0.45, delay: 0 },
-          { type: "small_fly", count: 5, interval: 0.5, delay: 0 },
-          { type: "small_gasmask", count: 6, interval: 0.45, delay: 0 },
-          { type: "gasmask", count: 2, interval: 1, delay: 0 }
+          {
+            type: "worker",
+            count: 3,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 14,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "small_fly",
+            count: 5,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "small_gasmask",
+            count: 6,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "gasmask",
+            count: 2,
+            interval: 1,
+            delay: 0
+          }
         ]
       ]
     },
@@ -647,7 +1460,25 @@ var tuning_default = {
       base: 7.2,
       growth: 1.8,
       interval: 0.95,
-      mix: [{ type: "worker", w: 3 }, { type: "small", w: 2 }, { type: "flyer", w: 2, from: 2 }, { type: "small_fly", w: 3 }]
+      mix: [
+        {
+          type: "worker",
+          w: 3
+        },
+        {
+          type: "small",
+          w: 2
+        },
+        {
+          type: "flyer",
+          w: 2,
+          from: 2
+        },
+        {
+          type: "small_fly",
+          w: 3
+        }
+      ]
     },
     {
       world: 1,
@@ -659,12 +1490,34 @@ var tuning_default = {
       growth: 1.96,
       interval: 0.95,
       mix: [
-        { type: "worker", w: 3 },
-        { type: "small", w: 2 },
-        { type: "armored", w: 2, from: 2 },
-        { type: "small_armed", w: 3, from: 2 }
+        {
+          type: "worker",
+          w: 3
+        },
+        {
+          type: "small",
+          w: 2
+        },
+        {
+          type: "armored",
+          w: 2,
+          from: 2
+        },
+        {
+          type: "small_armed",
+          w: 3,
+          from: 2
+        }
       ],
-      special: { "6": [{ type: "big", count: 2, interval: 1.6 }] }
+      special: {
+        "6": [
+          {
+            type: "big",
+            count: 2,
+            interval: 1.6
+          }
+        ]
+      }
     },
     {
       world: 1,
@@ -676,11 +1529,26 @@ var tuning_default = {
       growth: 2,
       interval: 0.9,
       mix: [
-        { type: "worker", w: 2 },
-        { type: "small", w: 3 },
-        { type: "flyer", w: 3 },
-        { type: "small_fly", w: 2 },
-        { type: "gasmask", w: 1 }
+        {
+          type: "worker",
+          w: 2
+        },
+        {
+          type: "small",
+          w: 3
+        },
+        {
+          type: "flyer",
+          w: 3
+        },
+        {
+          type: "small_fly",
+          w: 2
+        },
+        {
+          type: "gasmask",
+          w: 1
+        }
       ]
     },
     {
@@ -693,11 +1561,27 @@ var tuning_default = {
       growth: 2.07,
       interval: 0.9,
       mix: [
-        { type: "worker", w: 2 },
-        { type: "small", w: 2 },
-        { type: "big", w: 2, from: 3 },
-        { type: "armored", w: 2 },
-        { type: "small_armed", w: 2 }
+        {
+          type: "worker",
+          w: 2
+        },
+        {
+          type: "small",
+          w: 2
+        },
+        {
+          type: "big",
+          w: 2,
+          from: 3
+        },
+        {
+          type: "armored",
+          w: 2
+        },
+        {
+          type: "small_armed",
+          w: 2
+        }
       ]
     },
     {
@@ -710,11 +1594,27 @@ var tuning_default = {
       growth: 2.2,
       interval: 0.85,
       mix: [
-        { type: "worker", w: 2 },
-        { type: "small", w: 2 },
-        { type: "gasmask", w: 3 },
-        { type: "small_gasmask", w: 3 },
-        { type: "flyer", w: 2, from: 2 }
+        {
+          type: "worker",
+          w: 2
+        },
+        {
+          type: "small",
+          w: 2
+        },
+        {
+          type: "gasmask",
+          w: 3
+        },
+        {
+          type: "small_gasmask",
+          w: 3
+        },
+        {
+          type: "flyer",
+          w: 2,
+          from: 2
+        }
       ]
     },
     {
@@ -727,11 +1627,27 @@ var tuning_default = {
       growth: 2.28,
       interval: 0.75,
       mix: [
-        { type: "small", w: 4 },
-        { type: "worker", w: 2 },
-        { type: "small_fly", w: 2 },
-        { type: "sprinter", w: 1, from: 2 },
-        { type: "small_armed", w: 1 }
+        {
+          type: "small",
+          w: 4
+        },
+        {
+          type: "worker",
+          w: 2
+        },
+        {
+          type: "small_fly",
+          w: 2
+        },
+        {
+          type: "sprinter",
+          w: 1,
+          from: 2
+        },
+        {
+          type: "small_armed",
+          w: 1
+        }
       ]
     },
     {
@@ -743,8 +1659,35 @@ var tuning_default = {
       base: 12,
       growth: 2.4,
       interval: 0.8,
-      mix: [{ type: "worker", w: 2 }, { type: "small", w: 2 }, { type: "heavy", w: 2, from: 3 }, { type: "flyer", w: 2 }],
-      special: { "9": [{ type: "queen", count: 1, interval: 1, delay: 4 }] }
+      mix: [
+        {
+          type: "worker",
+          w: 2
+        },
+        {
+          type: "small",
+          w: 2
+        },
+        {
+          type: "heavy",
+          w: 2,
+          from: 3
+        },
+        {
+          type: "flyer",
+          w: 2
+        }
+      ],
+      special: {
+        "9": [
+          {
+            type: "queen",
+            count: 1,
+            interval: 1,
+            delay: 4
+          }
+        ]
+      }
     },
     {
       world: 2,
@@ -756,10 +1699,24 @@ var tuning_default = {
       growth: 1.8,
       interval: 1,
       mix: [
-        { type: "worker", w: 3 },
-        { type: "small", w: 3 },
-        { type: "small_fly", w: 1, from: 2 },
-        { type: "gasmask", w: 2, from: 2 }
+        {
+          type: "worker",
+          w: 3
+        },
+        {
+          type: "small",
+          w: 3
+        },
+        {
+          type: "small_fly",
+          w: 1,
+          from: 2
+        },
+        {
+          type: "gasmask",
+          w: 2,
+          from: 2
+        }
       ]
     },
     {
@@ -772,11 +1729,29 @@ var tuning_default = {
       growth: 2,
       interval: 0.95,
       mix: [
-        { type: "worker", w: 3 },
-        { type: "small", w: 2 },
-        { type: "small_armed", w: 2, from: 2 },
-        { type: "armored", w: 1, from: 3 },
-        { type: "big", w: 1, from: 4 }
+        {
+          type: "worker",
+          w: 3
+        },
+        {
+          type: "small",
+          w: 2
+        },
+        {
+          type: "small_armed",
+          w: 2,
+          from: 2
+        },
+        {
+          type: "armored",
+          w: 1,
+          from: 3
+        },
+        {
+          type: "big",
+          w: 1,
+          from: 4
+        }
       ]
     },
     {
@@ -789,11 +1764,28 @@ var tuning_default = {
       growth: 2,
       interval: 0.95,
       mix: [
-        { type: "worker", w: 3 },
-        { type: "small", w: 2 },
-        { type: "flyer", w: 2, from: 2 },
-        { type: "small_gasmask", w: 2 },
-        { type: "gasmask", w: 1, from: 3 }
+        {
+          type: "worker",
+          w: 3
+        },
+        {
+          type: "small",
+          w: 2
+        },
+        {
+          type: "flyer",
+          w: 2,
+          from: 2
+        },
+        {
+          type: "small_gasmask",
+          w: 2
+        },
+        {
+          type: "gasmask",
+          w: 1,
+          from: 3
+        }
       ]
     },
     {
@@ -806,11 +1798,27 @@ var tuning_default = {
       growth: 2.1,
       interval: 0.9,
       mix: [
-        { type: "worker", w: 2 },
-        { type: "small", w: 2 },
-        { type: "armored", w: 2 },
-        { type: "small_armed", w: 2 },
-        { type: "sprinter", w: 1, from: 3 }
+        {
+          type: "worker",
+          w: 2
+        },
+        {
+          type: "small",
+          w: 2
+        },
+        {
+          type: "armored",
+          w: 2
+        },
+        {
+          type: "small_armed",
+          w: 2
+        },
+        {
+          type: "sprinter",
+          w: 1,
+          from: 3
+        }
       ]
     },
     {
@@ -823,11 +1831,26 @@ var tuning_default = {
       growth: 2.1,
       interval: 0.9,
       mix: [
-        { type: "worker", w: 2 },
-        { type: "small", w: 3 },
-        { type: "small_fly", w: 2 },
-        { type: "flyer", w: 2 },
-        { type: "gasmask", w: 1 }
+        {
+          type: "worker",
+          w: 2
+        },
+        {
+          type: "small",
+          w: 3
+        },
+        {
+          type: "small_fly",
+          w: 2
+        },
+        {
+          type: "flyer",
+          w: 2
+        },
+        {
+          type: "gasmask",
+          w: 1
+        }
       ]
     },
     {
@@ -840,11 +1863,26 @@ var tuning_default = {
       growth: 2.2,
       interval: 0.85,
       mix: [
-        { type: "small", w: 3 },
-        { type: "worker", w: 2 },
-        { type: "sprinter", w: 3 },
-        { type: "small_armed", w: 1 },
-        { type: "flyer", w: 1 }
+        {
+          type: "small",
+          w: 3
+        },
+        {
+          type: "worker",
+          w: 2
+        },
+        {
+          type: "sprinter",
+          w: 3
+        },
+        {
+          type: "small_armed",
+          w: 1
+        },
+        {
+          type: "flyer",
+          w: 1
+        }
       ]
     },
     {
@@ -857,11 +1895,27 @@ var tuning_default = {
       growth: 2.2,
       interval: 0.9,
       mix: [
-        { type: "worker", w: 2 },
-        { type: "big", w: 2 },
-        { type: "heavy", w: 1, from: 3 },
-        { type: "armored", w: 2 },
-        { type: "small", w: 2 }
+        {
+          type: "worker",
+          w: 2
+        },
+        {
+          type: "big",
+          w: 2
+        },
+        {
+          type: "heavy",
+          w: 1,
+          from: 3
+        },
+        {
+          type: "armored",
+          w: 2
+        },
+        {
+          type: "small",
+          w: 2
+        }
       ]
     },
     {
@@ -874,11 +1928,26 @@ var tuning_default = {
       growth: 2.3,
       interval: 0.85,
       mix: [
-        { type: "small", w: 3 },
-        { type: "flyer", w: 2 },
-        { type: "small_fly", w: 3 },
-        { type: "worker", w: 2 },
-        { type: "small_gasmask", w: 2 }
+        {
+          type: "small",
+          w: 3
+        },
+        {
+          type: "flyer",
+          w: 2
+        },
+        {
+          type: "small_fly",
+          w: 3
+        },
+        {
+          type: "worker",
+          w: 2
+        },
+        {
+          type: "small_gasmask",
+          w: 2
+        }
       ]
     },
     {
@@ -891,11 +1960,26 @@ var tuning_default = {
       growth: 2.4,
       interval: 0.8,
       mix: [
-        { type: "worker", w: 2 },
-        { type: "small", w: 3 },
-        { type: "heavy", w: 1 },
-        { type: "sprinter", w: 2 },
-        { type: "small_fly", w: 2 }
+        {
+          type: "worker",
+          w: 2
+        },
+        {
+          type: "small",
+          w: 3
+        },
+        {
+          type: "heavy",
+          w: 1
+        },
+        {
+          type: "sprinter",
+          w: 2
+        },
+        {
+          type: "small_fly",
+          w: 2
+        }
       ]
     },
     {
@@ -907,8 +1991,34 @@ var tuning_default = {
       base: 12,
       growth: 2.4,
       interval: 0.8,
-      mix: [{ type: "worker", w: 2 }, { type: "small", w: 2 }, { type: "sprinter", w: 2 }, { type: "flyer", w: 2 }],
-      special: { "9": [{ type: "queen2", count: 1, interval: 1, delay: 4 }] }
+      mix: [
+        {
+          type: "worker",
+          w: 2
+        },
+        {
+          type: "small",
+          w: 2
+        },
+        {
+          type: "sprinter",
+          w: 2
+        },
+        {
+          type: "flyer",
+          w: 2
+        }
+      ],
+      special: {
+        "9": [
+          {
+            type: "queen2",
+            count: 1,
+            interval: 1,
+            delay: 4
+          }
+        ]
+      }
     },
     {
       world: 3,
@@ -918,23 +2028,101 @@ var tuning_default = {
       hpMul: 3.3,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1.1, delay: 0 }],
-        [{ type: "small", count: 8, interval: 0.45, delay: 0 }, { type: "worker", count: 4, interval: 1.1, delay: 1 }],
         [
-          { type: "worker", count: 6, interval: 1, delay: 0 },
-          { type: "flyer", count: 2, interval: 0.8, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
-        ],
-        [{ type: "flyer", count: 4, interval: 0.8, delay: 0 }, { type: "worker", count: 6, interval: 1, delay: 0 }],
-        [
-          { type: "small", count: 10, interval: 0.45, delay: 0 },
-          { type: "worker", count: 6, interval: 1, delay: 0 },
-          { type: "flyer", count: 3, interval: 0.8, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1.1,
+            delay: 0
+          }
         ],
         [
-          { type: "worker", count: 8, interval: 0.9, delay: 0 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 },
-          { type: "flyer", count: 4, interval: 0.8, delay: 1 }
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1.1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 2,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          }
+        ],
+        [
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 3,
+            interval: 0.8,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          },
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          }
         ]
       ]
     },
@@ -946,32 +2134,133 @@ var tuning_default = {
       hpMul: 4.3,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 5, interval: 1, delay: 0 }, { type: "small", count: 6, interval: 0.45, delay: 1 }],
         [
-          { type: "worker", count: 4, interval: 1, delay: 0 },
-          { type: "greasy", count: 2, interval: 1.2, delay: 2 },
-          { type: "small", count: 6, interval: 0.45, delay: 1 }
-        ],
-        [{ type: "small", count: 10, interval: 0.45, delay: 0 }, { type: "greasy", count: 3, interval: 1.1, delay: 2 }],
-        [
-          { type: "worker", count: 6, interval: 1, delay: 0 },
-          { type: "small_fly", count: 6, interval: 0.5, delay: 1 },
-          { type: "greasy", count: 3, interval: 1.1, delay: 1 }
-        ],
-        [
-          { type: "greasy", count: 4, interval: 1, delay: 0 },
-          { type: "small", count: 10, interval: 0.45, delay: 0 },
-          { type: "worker", count: 4, interval: 1, delay: 0 }
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 6,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "small_fly", count: 8, interval: 0.5, delay: 0 },
-          { type: "greasy", count: 5, interval: 1, delay: 1 },
-          { type: "worker", count: 5, interval: 1, delay: 0 }
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "greasy",
+            count: 2,
+            interval: 1.2,
+            delay: 2
+          },
+          {
+            type: "small",
+            count: 6,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "greasy", count: 6, interval: 0.9, delay: 0 },
-          { type: "worker", count: 6, interval: 1, delay: 1 },
-          { type: "small", count: 12, interval: 0.45, delay: 1 }
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "greasy",
+            count: 3,
+            interval: 1.1,
+            delay: 2
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small_fly",
+            count: 6,
+            interval: 0.5,
+            delay: 1
+          },
+          {
+            type: "greasy",
+            count: 3,
+            interval: 1.1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "greasy",
+            count: 4,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 0
+          }
+        ],
+        [
+          {
+            type: "small_fly",
+            count: 8,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "greasy",
+            count: 5,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 0
+          }
+        ],
+        [
+          {
+            type: "greasy",
+            count: 6,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 1
+          }
         ]
       ]
     },
@@ -983,32 +2272,133 @@ var tuning_default = {
       hpMul: 5.2,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
-        [{ type: "flyer", count: 4, interval: 0.8, delay: 0 }, { type: "worker", count: 5, interval: 1, delay: 1 }],
         [
-          { type: "small_fly", count: 8, interval: 0.5, delay: 0 },
-          { type: "worker", count: 6, interval: 1, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "flyer", count: 5, interval: 0.8, delay: 0 },
-          { type: "worker", count: 6, interval: 1, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "small_fly", count: 10, interval: 0.5, delay: 0 },
-          { type: "flyer", count: 4, interval: 0.8, delay: 1 },
-          { type: "worker", count: 6, interval: 1, delay: 1 }
+          {
+            type: "small_fly",
+            count: 8,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "worker", count: 8, interval: 0.9, delay: 0 },
-          { type: "flyer", count: 6, interval: 0.8, delay: 1 },
-          { type: "small", count: 12, interval: 0.45, delay: 1 }
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "small_fly", count: 12, interval: 0.5, delay: 0 },
-          { type: "flyer", count: 6, interval: 0.75, delay: 1 },
-          { type: "worker", count: 8, interval: 0.9, delay: 1 }
+          {
+            type: "small_fly",
+            count: 10,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 6,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small_fly",
+            count: 12,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 6,
+            interval: 0.75,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 1
+          }
         ]
       ]
     },
@@ -1020,33 +2410,139 @@ var tuning_default = {
       hpMul: 4.9,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 5, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
-        [{ type: "small_armed", count: 6, interval: 0.6, delay: 0 }, { type: "worker", count: 4, interval: 1, delay: 1 }],
         [
-          { type: "worker", count: 6, interval: 1, delay: 0 },
-          { type: "armored", count: 1, interval: 1.5, delay: 2 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "small_armed", count: 8, interval: 0.6, delay: 0 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 },
-          { type: "armored", count: 2, interval: 1.5, delay: 2 }
+          {
+            type: "small_armed",
+            count: 6,
+            interval: 0.6,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "worker", count: 8, interval: 0.9, delay: 0 },
-          { type: "small_armed", count: 6, interval: 0.6, delay: 1 },
-          { type: "armored", count: 2, interval: 1.5, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "armored",
+            count: 1,
+            interval: 1.5,
+            delay: 2
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "small", count: 12, interval: 0.45, delay: 0 },
-          { type: "armored", count: 3, interval: 1.5, delay: 1 },
-          { type: "small_armed", count: 6, interval: 0.6, delay: 1 }
+          {
+            type: "small_armed",
+            count: 8,
+            interval: 0.6,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          },
+          {
+            type: "armored",
+            count: 2,
+            interval: 1.5,
+            delay: 2
+          }
         ],
         [
-          { type: "armored", count: 4, interval: 1.4, delay: 0 },
-          { type: "worker", count: 8, interval: 0.9, delay: 1 },
-          { type: "small_armed", count: 8, interval: 0.6, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "small_armed",
+            count: 6,
+            interval: 0.6,
+            delay: 1
+          },
+          {
+            type: "armored",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "armored",
+            count: 3,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "small_armed",
+            count: 6,
+            interval: 0.6,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "armored",
+            count: 4,
+            interval: 1.4,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "small_armed",
+            count: 8,
+            interval: 0.6,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
         ]
       ]
     },
@@ -1058,36 +2554,139 @@ var tuning_default = {
       hpMul: 8,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
         [
-          { type: "worker", count: 6, interval: 1, delay: 0 },
-          { type: "mama", count: 1, interval: 1.6, delay: 2 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "small_gasmask", count: 8, interval: 0.45, delay: 0 },
-          { type: "worker", count: 6, interval: 1, delay: 1 },
-          { type: "mama", count: 1, interval: 1.6, delay: 2 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "mama",
+            count: 1,
+            interval: 1.6,
+            delay: 2
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "small", count: 10, interval: 0.45, delay: 0 },
-          { type: "mama", count: 2, interval: 1.6, delay: 1 },
-          { type: "worker", count: 5, interval: 1, delay: 1 }
+          {
+            type: "small_gasmask",
+            count: 8,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "mama",
+            count: 1,
+            interval: 1.6,
+            delay: 2
+          }
         ],
         [
-          { type: "small_gasmask", count: 10, interval: 0.45, delay: 0 },
-          { type: "worker", count: 6, interval: 1, delay: 0 },
-          { type: "mama", count: 2, interval: 1.6, delay: 2 }
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "mama",
+            count: 2,
+            interval: 1.6,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "worker", count: 8, interval: 0.9, delay: 0 },
-          { type: "mama", count: 3, interval: 1.6, delay: 1 },
-          { type: "small", count: 12, interval: 0.45, delay: 1 }
+          {
+            type: "small_gasmask",
+            count: 10,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "mama",
+            count: 2,
+            interval: 1.6,
+            delay: 2
+          }
         ],
         [
-          { type: "mama", count: 3, interval: 1.5, delay: 0 },
-          { type: "small_gasmask", count: 12, interval: 0.45, delay: 1 },
-          { type: "worker", count: 8, interval: 0.9, delay: 1 }
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "mama",
+            count: 3,
+            interval: 1.6,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "mama",
+            count: 3,
+            interval: 1.5,
+            delay: 0
+          },
+          {
+            type: "small_gasmask",
+            count: 12,
+            interval: 0.45,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 1
+          }
         ]
       ]
     },
@@ -1099,23 +2698,107 @@ var tuning_default = {
       hpMul: 6,
       interval: 1,
       waves: [
-        [{ type: "flyer", count: 4, interval: 0.8, delay: 0 }, { type: "worker", count: 5, interval: 1, delay: 1 }],
-        [{ type: "small_fly", count: 8, interval: 0.5, delay: 0 }, { type: "worker", count: 5, interval: 1, delay: 1 }],
-        [{ type: "flyer", count: 6, interval: 0.8, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
         [
-          { type: "small_fly", count: 10, interval: 0.5, delay: 0 },
-          { type: "flyer", count: 4, interval: 0.8, delay: 1 },
-          { type: "worker", count: 4, interval: 1, delay: 1 }
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "flyer", count: 8, interval: 0.75, delay: 0 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 },
-          { type: "worker", count: 5, interval: 1, delay: 0 }
+          {
+            type: "small_fly",
+            count: 8,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "small_fly", count: 12, interval: 0.5, delay: 0 },
-          { type: "flyer", count: 8, interval: 0.7, delay: 1 },
-          { type: "worker", count: 6, interval: 0.9, delay: 1 }
+          {
+            type: "flyer",
+            count: 6,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small_fly",
+            count: 10,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "flyer",
+            count: 8,
+            interval: 0.75,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 0
+          }
+        ],
+        [
+          {
+            type: "small_fly",
+            count: 12,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 8,
+            interval: 0.7,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 0.9,
+            delay: 1
+          }
         ]
       ]
     },
@@ -1128,44 +2811,164 @@ var tuning_default = {
       interval: 1,
       waves: [
         [
-          { type: "worker", count: 5, interval: 1, delay: 0 },
-          { type: "small_gasmask", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small_gasmask",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "gasmask", count: 4, interval: 1, delay: 0 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small_gasmask", count: 6, interval: 0.45, delay: 1 }
+          {
+            type: "gasmask",
+            count: 4,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small_gasmask",
+            count: 6,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "greasy", count: 3, interval: 1.1, delay: 0 },
-          { type: "gasmask", count: 4, interval: 1, delay: 1 },
-          { type: "small_gasmask", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "greasy",
+            count: 3,
+            interval: 1.1,
+            delay: 0
+          },
+          {
+            type: "gasmask",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small_gasmask",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "flyer", count: 5, interval: 0.8, delay: 0 },
-          { type: "gasmask", count: 5, interval: 1, delay: 1 },
-          { type: "greasy", count: 3, interval: 1.1, delay: 1 }
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "gasmask",
+            count: 5,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "greasy",
+            count: 3,
+            interval: 1.1,
+            delay: 1
+          }
         ],
         [
-          { type: "small_gasmask", count: 12, interval: 0.45, delay: 0 },
-          { type: "greasy", count: 4, interval: 1, delay: 1 },
-          { type: "gasmask", count: 4, interval: 1, delay: 1 }
+          {
+            type: "small_gasmask",
+            count: 12,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "greasy",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "gasmask",
+            count: 4,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "gasmask", count: 6, interval: 0.9, delay: 0 },
-          { type: "greasy", count: 5, interval: 1, delay: 1 },
-          { type: "flyer", count: 4, interval: 0.8, delay: 1 }
+          {
+            type: "gasmask",
+            count: 6,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "greasy",
+            count: 5,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          }
         ],
         [
-          { type: "small_gasmask", count: 14, interval: 0.45, delay: 0 },
-          { type: "gasmask", count: 6, interval: 0.9, delay: 1 },
-          { type: "greasy", count: 5, interval: 1, delay: 1 }
+          {
+            type: "small_gasmask",
+            count: 14,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "gasmask",
+            count: 6,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "greasy",
+            count: 5,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "gasmask", count: 8, interval: 0.85, delay: 0 },
-          { type: "greasy", count: 6, interval: 0.95, delay: 1 },
-          { type: "flyer", count: 5, interval: 0.8, delay: 1 },
-          { type: "small_gasmask", count: 12, interval: 0.45, delay: 1 }
+          {
+            type: "gasmask",
+            count: 8,
+            interval: 0.85,
+            delay: 0
+          },
+          {
+            type: "greasy",
+            count: 6,
+            interval: 0.95,
+            delay: 1
+          },
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "small_gasmask",
+            count: 12,
+            interval: 0.45,
+            delay: 1
+          }
         ]
       ]
     },
@@ -1177,44 +2980,177 @@ var tuning_default = {
       hpMul: 6,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
         [
-          { type: "flyer", count: 4, interval: 0.8, delay: 0 },
-          { type: "worker", count: 6, interval: 1, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "big", count: 2, interval: 1.6, delay: 1 },
-          { type: "worker", count: 6, interval: 1, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "flyer", count: 5, interval: 0.8, delay: 0 },
-          { type: "big", count: 3, interval: 1.6, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "big",
+            count: 2,
+            interval: 1.6,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "heavy", count: 1, interval: 1.7, delay: 2 },
-          { type: "big", count: 2, interval: 1.6, delay: 0 },
-          { type: "worker", count: 6, interval: 1, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "big",
+            count: 3,
+            interval: 1.6,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "big", count: 4, interval: 1.5, delay: 0 },
-          { type: "flyer", count: 5, interval: 0.8, delay: 1 },
-          { type: "small", count: 12, interval: 0.45, delay: 1 }
+          {
+            type: "heavy",
+            count: 1,
+            interval: 1.7,
+            delay: 2
+          },
+          {
+            type: "big",
+            count: 2,
+            interval: 1.6,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "heavy", count: 2, interval: 1.7, delay: 2 },
-          { type: "big", count: 3, interval: 1.5, delay: 0 },
-          { type: "worker", count: 8, interval: 0.9, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "big",
+            count: 4,
+            interval: 1.5,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "heavy", count: 3, interval: 1.6, delay: 1 },
-          { type: "big", count: 4, interval: 1.5, delay: 1 },
-          { type: "flyer", count: 5, interval: 0.8, delay: 1 },
-          { type: "worker", count: 6, interval: 0.9, delay: 1 }
+          {
+            type: "heavy",
+            count: 2,
+            interval: 1.7,
+            delay: 2
+          },
+          {
+            type: "big",
+            count: 3,
+            interval: 1.5,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "heavy",
+            count: 3,
+            interval: 1.6,
+            delay: 1
+          },
+          {
+            type: "big",
+            count: 4,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 0.9,
+            delay: 1
+          }
         ]
       ]
     },
@@ -1226,48 +3162,191 @@ var tuning_default = {
       hpMul: 8.7,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
         [
-          { type: "greasy", count: 3, interval: 1.1, delay: 0 },
-          { type: "small", count: 8, interval: 0.45, delay: 0 },
-          { type: "worker", count: 4, interval: 1, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "sprinter", count: 4, interval: 0.9, delay: 1 },
-          { type: "worker", count: 6, interval: 1, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 0 }
+          {
+            type: "greasy",
+            count: 3,
+            interval: 1.1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "mama", count: 1, interval: 1.6, delay: 2 },
-          { type: "greasy", count: 4, interval: 1, delay: 0 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "sprinter",
+            count: 4,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 0
+          }
         ],
         [
-          { type: "sprinter", count: 6, interval: 0.9, delay: 0 },
-          { type: "worker", count: 6, interval: 1, delay: 1 },
-          { type: "greasy", count: 4, interval: 1, delay: 1 }
+          {
+            type: "mama",
+            count: 1,
+            interval: 1.6,
+            delay: 2
+          },
+          {
+            type: "greasy",
+            count: 4,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "mama", count: 2, interval: 1.6, delay: 0 },
-          { type: "small", count: 12, interval: 0.45, delay: 1 },
-          { type: "sprinter", count: 4, interval: 0.9, delay: 1 }
+          {
+            type: "sprinter",
+            count: 6,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "greasy",
+            count: 4,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "greasy", count: 6, interval: 0.95, delay: 0 },
-          { type: "sprinter", count: 6, interval: 0.9, delay: 1 },
-          { type: "worker", count: 8, interval: 0.9, delay: 1 }
+          {
+            type: "mama",
+            count: 2,
+            interval: 1.6,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 1
+          },
+          {
+            type: "sprinter",
+            count: 4,
+            interval: 0.9,
+            delay: 1
+          }
         ],
         [
-          { type: "mama", count: 3, interval: 1.5, delay: 0 },
-          { type: "small", count: 14, interval: 0.45, delay: 1 },
-          { type: "greasy", count: 5, interval: 1, delay: 1 }
+          {
+            type: "greasy",
+            count: 6,
+            interval: 0.95,
+            delay: 0
+          },
+          {
+            type: "sprinter",
+            count: 6,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 1
+          }
         ],
         [
-          { type: "sprinter", count: 8, interval: 0.85, delay: 0 },
-          { type: "mama", count: 3, interval: 1.5, delay: 1 },
-          { type: "greasy", count: 6, interval: 0.95, delay: 1 },
-          { type: "worker", count: 8, interval: 0.9, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "mama",
+            count: 3,
+            interval: 1.5,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 14,
+            interval: 0.45,
+            delay: 1
+          },
+          {
+            type: "greasy",
+            count: 5,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "sprinter",
+            count: 8,
+            interval: 0.85,
+            delay: 0
+          },
+          {
+            type: "mama",
+            count: 3,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "greasy",
+            count: 6,
+            interval: 0.95,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
         ]
       ]
     },
@@ -1279,49 +3358,197 @@ var tuning_default = {
       hpMul: 1.45,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
         [
-          { type: "flyer", count: 4, interval: 0.8, delay: 0 },
-          { type: "worker", count: 5, interval: 1, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "greasy", count: 3, interval: 1.1, delay: 0 },
-          { type: "worker", count: 6, interval: 1, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "flyer", count: 5, interval: 0.8, delay: 0 },
-          { type: "greasy", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 0 }
+          {
+            type: "greasy",
+            count: 3,
+            interval: 1.1,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "worker", count: 8, interval: 0.9, delay: 0 },
-          { type: "greasy", count: 4, interval: 1, delay: 1 },
-          { type: "flyer", count: 4, interval: 0.8, delay: 1 }
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "greasy",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 0
+          }
         ],
         [
-          { type: "small", count: 14, interval: 0.45, delay: 0 },
-          { type: "flyer", count: 6, interval: 0.8, delay: 1 },
-          { type: "greasy", count: 4, interval: 1, delay: 1 }
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "greasy",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          }
         ],
         [
-          { type: "greasy", count: 6, interval: 0.95, delay: 0 },
-          { type: "worker", count: 8, interval: 0.9, delay: 0 },
-          { type: "flyer", count: 6, interval: 0.8, delay: 1 }
+          {
+            type: "small",
+            count: 14,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 6,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "greasy",
+            count: 4,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "small", count: 14, interval: 0.45, delay: 0 },
-          { type: "greasy", count: 6, interval: 0.95, delay: 1 },
-          { type: "worker", count: 8, interval: 0.9, delay: 1 },
-          { type: "flyer", count: 5, interval: 0.8, delay: 1 }
+          {
+            type: "greasy",
+            count: 6,
+            interval: 0.95,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 6,
+            interval: 0.8,
+            delay: 1
+          }
         ],
         [
-          { type: "worker", count: 8, interval: 0.9, delay: 0 },
-          { type: "greasy", count: 5, interval: 1, delay: 1 },
-          { type: "flyer", count: 5, interval: 0.8, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 },
-          { type: "queen3", count: 1, interval: 1, delay: 4 }
+          {
+            type: "small",
+            count: 14,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "greasy",
+            count: 6,
+            interval: 0.95,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "greasy",
+            count: 5,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          },
+          {
+            type: "queen3",
+            count: 1,
+            interval: 1,
+            delay: 4
+          }
         ]
       ]
     },
@@ -1333,23 +3560,101 @@ var tuning_default = {
       hpMul: 3.9,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1.1, delay: 0 }],
-        [{ type: "small", count: 8, interval: 0.45, delay: 0 }, { type: "worker", count: 4, interval: 1.1, delay: 1 }],
         [
-          { type: "worker", count: 6, interval: 1, delay: 0 },
-          { type: "flyer", count: 3, interval: 0.8, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
-        ],
-        [{ type: "flyer", count: 4, interval: 0.8, delay: 0 }, { type: "worker", count: 6, interval: 1, delay: 0 }],
-        [
-          { type: "small", count: 10, interval: 0.45, delay: 0 },
-          { type: "worker", count: 6, interval: 1, delay: 0 },
-          { type: "flyer", count: 4, interval: 0.8, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1.1,
+            delay: 0
+          }
         ],
         [
-          { type: "worker", count: 8, interval: 0.9, delay: 0 },
-          { type: "small", count: 12, interval: 0.45, delay: 1 },
-          { type: "flyer", count: 4, interval: 0.8, delay: 1 }
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1.1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 3,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          }
+        ],
+        [
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 1
+          },
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          }
         ]
       ]
     },
@@ -1361,36 +3666,139 @@ var tuning_default = {
       hpMul: 4.5,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
         [
-          { type: "worker", count: 5, interval: 1, delay: 0 },
-          { type: "nurse", count: 1, interval: 1.5, delay: 2 },
-          { type: "small", count: 6, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "small", count: 10, interval: 0.45, delay: 0 },
-          { type: "nurse", count: 1, interval: 1.5, delay: 1 },
-          { type: "worker", count: 5, interval: 1, delay: 1 }
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "nurse",
+            count: 1,
+            interval: 1.5,
+            delay: 2
+          },
+          {
+            type: "small",
+            count: 6,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "worker", count: 6, interval: 1, delay: 0 },
-          { type: "nurse", count: 2, interval: 1.5, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "nurse",
+            count: 1,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "small", count: 12, interval: 0.45, delay: 0 },
-          { type: "nurse", count: 2, interval: 1.5, delay: 2 },
-          { type: "worker", count: 6, interval: 1, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "nurse",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "worker", count: 8, interval: 0.9, delay: 0 },
-          { type: "nurse", count: 2, interval: 1.4, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "nurse",
+            count: 2,
+            interval: 1.5,
+            delay: 2
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "small", count: 12, interval: 0.45, delay: 0 },
-          { type: "nurse", count: 3, interval: 1.4, delay: 1 },
-          { type: "worker", count: 8, interval: 0.9, delay: 1 }
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "nurse",
+            count: 2,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "nurse",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 1
+          }
         ]
       ]
     },
@@ -1402,35 +3810,151 @@ var tuning_default = {
       hpMul: 7.4,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
-        [{ type: "flyer", count: 4, interval: 0.8, delay: 0 }, { type: "worker", count: 5, interval: 1, delay: 1 }],
         [
-          { type: "small_fly", count: 8, interval: 0.5, delay: 0 },
-          { type: "worker", count: 6, interval: 1, delay: 1 },
-          { type: "nurse", count: 1, interval: 1.5, delay: 2 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "flyer", count: 5, interval: 0.8, delay: 0 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 },
-          { type: "nurse", count: 1, interval: 1.5, delay: 1 }
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "small_fly", count: 10, interval: 0.5, delay: 0 },
-          { type: "flyer", count: 4, interval: 0.8, delay: 1 },
-          { type: "worker", count: 6, interval: 1, delay: 1 },
-          { type: "nurse", count: 2, interval: 1.5, delay: 2 }
+          {
+            type: "small_fly",
+            count: 8,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "nurse",
+            count: 1,
+            interval: 1.5,
+            delay: 2
+          }
         ],
         [
-          { type: "worker", count: 8, interval: 0.9, delay: 0 },
-          { type: "flyer", count: 6, interval: 0.8, delay: 1 },
-          { type: "nurse", count: 2, interval: 1.4, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 0 }
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          },
+          {
+            type: "nurse",
+            count: 1,
+            interval: 1.5,
+            delay: 1
+          }
         ],
         [
-          { type: "small_fly", count: 12, interval: 0.5, delay: 0 },
-          { type: "flyer", count: 6, interval: 0.75, delay: 1 },
-          { type: "worker", count: 8, interval: 0.9, delay: 1 },
-          { type: "nurse", count: 2, interval: 1.4, delay: 2 }
+          {
+            type: "small_fly",
+            count: 10,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "nurse",
+            count: 2,
+            interval: 1.5,
+            delay: 2
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 6,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "nurse",
+            count: 2,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 0
+          }
+        ],
+        [
+          {
+            type: "small_fly",
+            count: 12,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 6,
+            interval: 0.75,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "nurse",
+            count: 2,
+            interval: 1.4,
+            delay: 2
+          }
         ]
       ]
     },
@@ -1442,40 +3966,163 @@ var tuning_default = {
       hpMul: 7.25,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
         [
-          { type: "small_armed", count: 4, interval: 0.6, delay: 0 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 6, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "armored", count: 2, interval: 1.5, delay: 1 },
-          { type: "worker", count: 4, interval: 1, delay: 0 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "small_armed",
+            count: 4,
+            interval: 0.6,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 6,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "nurse", count: 1, interval: 1.5, delay: 0 },
-          { type: "armored", count: 2, interval: 1.5, delay: 0.5 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "armored",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "nurse", count: 1, interval: 1.5, delay: 0 },
-          { type: "armored", count: 3, interval: 1.4, delay: 0.5 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "nurse",
+            count: 1,
+            interval: 1.5,
+            delay: 0
+          },
+          {
+            type: "armored",
+            count: 2,
+            interval: 1.5,
+            delay: 0.5
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "nurse", count: 2, interval: 1.4, delay: 0 },
-          { type: "armored", count: 3, interval: 1.4, delay: 0.5 },
-          { type: "small_armed", count: 4, interval: 0.6, delay: 2 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "nurse",
+            count: 1,
+            interval: 1.5,
+            delay: 0
+          },
+          {
+            type: "armored",
+            count: 3,
+            interval: 1.4,
+            delay: 0.5
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "nurse", count: 2, interval: 1.4, delay: 0 },
-          { type: "armored", count: 4, interval: 1.3, delay: 0.5 },
-          { type: "worker", count: 6, interval: 1, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "nurse",
+            count: 2,
+            interval: 1.4,
+            delay: 0
+          },
+          {
+            type: "armored",
+            count: 3,
+            interval: 1.4,
+            delay: 0.5
+          },
+          {
+            type: "small_armed",
+            count: 4,
+            interval: 0.6,
+            delay: 2
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "nurse",
+            count: 2,
+            interval: 1.4,
+            delay: 0
+          },
+          {
+            type: "armored",
+            count: 4,
+            interval: 1.3,
+            delay: 0.5
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
         ]
       ]
     },
@@ -1487,40 +4134,163 @@ var tuning_default = {
       hpMul: 6.65,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
         [
-          { type: "greasy", count: 3, interval: 1.1, delay: 0 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "mama", count: 1, interval: 1.6, delay: 1 },
-          { type: "worker", count: 4, interval: 1, delay: 0 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "greasy",
+            count: 3,
+            interval: 1.1,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "nurse", count: 1, interval: 1.5, delay: 0 },
-          { type: "mama", count: 1, interval: 1.6, delay: 0.5 },
-          { type: "greasy", count: 3, interval: 1, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "mama",
+            count: 1,
+            interval: 1.6,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "nurse", count: 1, interval: 1.5, delay: 0 },
-          { type: "mama", count: 2, interval: 1.6, delay: 0.5 },
-          { type: "greasy", count: 3, interval: 1, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "nurse",
+            count: 1,
+            interval: 1.5,
+            delay: 0
+          },
+          {
+            type: "mama",
+            count: 1,
+            interval: 1.6,
+            delay: 0.5
+          },
+          {
+            type: "greasy",
+            count: 3,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "nurse", count: 2, interval: 1.4, delay: 0 },
-          { type: "mama", count: 2, interval: 1.5, delay: 0.5 },
-          { type: "greasy", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "nurse",
+            count: 1,
+            interval: 1.5,
+            delay: 0
+          },
+          {
+            type: "mama",
+            count: 2,
+            interval: 1.6,
+            delay: 0.5
+          },
+          {
+            type: "greasy",
+            count: 3,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "nurse", count: 2, interval: 1.4, delay: 0 },
-          { type: "mama", count: 3, interval: 1.5, delay: 0.5 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 12, interval: 0.45, delay: 1 }
+          {
+            type: "nurse",
+            count: 2,
+            interval: 1.4,
+            delay: 0
+          },
+          {
+            type: "mama",
+            count: 2,
+            interval: 1.5,
+            delay: 0.5
+          },
+          {
+            type: "greasy",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "nurse",
+            count: 2,
+            interval: 1.4,
+            delay: 0
+          },
+          {
+            type: "mama",
+            count: 3,
+            interval: 1.5,
+            delay: 0.5
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 1
+          }
         ]
       ]
     },
@@ -1532,28 +4302,119 @@ var tuning_default = {
       hpMul: 7.7,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
-        [{ type: "flyer", count: 4, interval: 0.8, delay: 0 }, { type: "worker", count: 5, interval: 1, delay: 1 }],
         [
-          { type: "small_fly", count: 8, interval: 0.5, delay: 0 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 },
-          { type: "nurse", count: 1, interval: 1.5, delay: 2 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "worker", count: 6, interval: 1, delay: 0 },
-          { type: "flyer", count: 5, interval: 0.8, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "small_fly", count: 10, interval: 0.5, delay: 0 },
-          { type: "nurse", count: 1, interval: 1.5, delay: 1 },
-          { type: "worker", count: 6, interval: 1, delay: 1 }
+          {
+            type: "small_fly",
+            count: 8,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          },
+          {
+            type: "nurse",
+            count: 1,
+            interval: 1.5,
+            delay: 2
+          }
         ],
         [
-          { type: "worker", count: 8, interval: 0.9, delay: 0 },
-          { type: "flyer", count: 6, interval: 0.8, delay: 1 },
-          { type: "small", count: 12, interval: 0.45, delay: 1 },
-          { type: "nurse", count: 2, interval: 1.4, delay: 2 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small_fly",
+            count: 10,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "nurse",
+            count: 1,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 6,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 1
+          },
+          {
+            type: "nurse",
+            count: 2,
+            interval: 1.4,
+            delay: 2
+          }
         ]
       ]
     },
@@ -1566,49 +4427,194 @@ var tuning_default = {
       interval: 1,
       waves: [
         [
-          { type: "worker", count: 5, interval: 1, delay: 0 },
-          { type: "small_gasmask", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small_gasmask",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "gasmask", count: 4, interval: 1, delay: 0 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small_gasmask", count: 6, interval: 0.45, delay: 1 }
+          {
+            type: "gasmask",
+            count: 4,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small_gasmask",
+            count: 6,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "flyer", count: 4, interval: 0.8, delay: 0 },
-          { type: "gasmask", count: 4, interval: 1, delay: 1 },
-          { type: "small_gasmask", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "gasmask",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small_gasmask",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "gasmask", count: 5, interval: 1, delay: 0 },
-          { type: "flyer", count: 4, interval: 0.8, delay: 1 },
-          { type: "nurse", count: 1, interval: 1.5, delay: 2 },
-          { type: "worker", count: 4, interval: 1, delay: 0 }
+          {
+            type: "gasmask",
+            count: 5,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "nurse",
+            count: 1,
+            interval: 1.5,
+            delay: 2
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 0
+          }
         ],
         [
-          { type: "small_gasmask", count: 12, interval: 0.45, delay: 0 },
-          { type: "flyer", count: 4, interval: 0.8, delay: 1 },
-          { type: "gasmask", count: 4, interval: 1, delay: 1 },
-          { type: "nurse", count: 1, interval: 1.5, delay: 2 }
+          {
+            type: "small_gasmask",
+            count: 12,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "gasmask",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "nurse",
+            count: 1,
+            interval: 1.5,
+            delay: 2
+          }
         ],
         [
-          { type: "gasmask", count: 6, interval: 0.9, delay: 0 },
-          { type: "flyer", count: 5, interval: 0.8, delay: 1 },
-          { type: "nurse", count: 2, interval: 1.4, delay: 1 },
-          { type: "worker", count: 4, interval: 1, delay: 0 }
+          {
+            type: "gasmask",
+            count: 6,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "nurse",
+            count: 2,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 0
+          }
         ],
         [
-          { type: "small_gasmask", count: 14, interval: 0.45, delay: 0 },
-          { type: "gasmask", count: 6, interval: 0.9, delay: 1 },
-          { type: "flyer", count: 5, interval: 0.8, delay: 1 },
-          { type: "nurse", count: 2, interval: 1.4, delay: 2 }
+          {
+            type: "small_gasmask",
+            count: 14,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "gasmask",
+            count: 6,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "nurse",
+            count: 2,
+            interval: 1.4,
+            delay: 2
+          }
         ],
         [
-          { type: "gasmask", count: 8, interval: 0.85, delay: 0 },
-          { type: "flyer", count: 6, interval: 0.8, delay: 1 },
-          { type: "nurse", count: 2, interval: 1.4, delay: 1 },
-          { type: "small_gasmask", count: 12, interval: 0.45, delay: 1 },
-          { type: "worker", count: 5, interval: 0.9, delay: 0 }
+          {
+            type: "gasmask",
+            count: 8,
+            interval: 0.85,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 6,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "nurse",
+            count: 2,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "small_gasmask",
+            count: 12,
+            interval: 0.45,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 0.9,
+            delay: 0
+          }
         ]
       ]
     },
@@ -1620,46 +4626,189 @@ var tuning_default = {
       hpMul: 7.4,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
         [
-          { type: "flyer", count: 4, interval: 0.8, delay: 0 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "nurse", count: 1, interval: 1.5, delay: 1 },
-          { type: "worker", count: 4, interval: 1, delay: 0 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "nurse", count: 1, interval: 1.5, delay: 0 },
-          { type: "flyer", count: 4, interval: 0.8, delay: 1 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "nurse",
+            count: 1,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "heavy", count: 1, interval: 1.7, delay: 1 },
-          { type: "nurse", count: 1, interval: 1.5, delay: 0.5 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "nurse",
+            count: 1,
+            interval: 1.5,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "heavy", count: 1, interval: 1.7, delay: 0.5 },
-          { type: "nurse", count: 2, interval: 1.4, delay: 0 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "heavy",
+            count: 1,
+            interval: 1.7,
+            delay: 1
+          },
+          {
+            type: "nurse",
+            count: 1,
+            interval: 1.5,
+            delay: 0.5
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "heavy", count: 2, interval: 1.7, delay: 0.5 },
-          { type: "nurse", count: 2, interval: 1.4, delay: 0 },
-          { type: "flyer", count: 4, interval: 0.8, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "heavy",
+            count: 1,
+            interval: 1.7,
+            delay: 0.5
+          },
+          {
+            type: "nurse",
+            count: 2,
+            interval: 1.4,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "heavy", count: 3, interval: 1.6, delay: 0.5 },
-          { type: "nurse", count: 2, interval: 1.4, delay: 0 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 12, interval: 0.45, delay: 1 }
+          {
+            type: "heavy",
+            count: 2,
+            interval: 1.7,
+            delay: 0.5
+          },
+          {
+            type: "nurse",
+            count: 2,
+            interval: 1.4,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "heavy",
+            count: 3,
+            interval: 1.6,
+            delay: 0.5
+          },
+          {
+            type: "nurse",
+            count: 2,
+            interval: 1.4,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 1
+          }
         ]
       ]
     },
@@ -1671,53 +4820,221 @@ var tuning_default = {
       hpMul: 5.35,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
         [
-          { type: "greasy", count: 3, interval: 1.1, delay: 0 },
-          { type: "small", count: 8, interval: 0.45, delay: 0 },
-          { type: "worker", count: 4, interval: 1, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "sprinter", count: 4, interval: 0.9, delay: 1 },
-          { type: "worker", count: 6, interval: 1, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 0 },
-          { type: "nurse", count: 1, interval: 1.5, delay: 2 }
+          {
+            type: "greasy",
+            count: 3,
+            interval: 1.1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "greasy", count: 4, interval: 1, delay: 0 },
-          { type: "nurse", count: 1, interval: 1.5, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "sprinter",
+            count: 4,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "nurse",
+            count: 1,
+            interval: 1.5,
+            delay: 2
+          }
         ],
         [
-          { type: "sprinter", count: 6, interval: 0.9, delay: 0 },
-          { type: "worker", count: 6, interval: 1, delay: 1 },
-          { type: "greasy", count: 4, interval: 1, delay: 1 },
-          { type: "nurse", count: 1, interval: 1.5, delay: 2 }
+          {
+            type: "greasy",
+            count: 4,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "nurse",
+            count: 1,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "small", count: 14, interval: 0.45, delay: 0 },
-          { type: "nurse", count: 2, interval: 1.4, delay: 1 },
-          { type: "greasy", count: 5, interval: 1, delay: 1 },
-          { type: "sprinter", count: 4, interval: 0.9, delay: 1 }
+          {
+            type: "sprinter",
+            count: 6,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "greasy",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "nurse",
+            count: 1,
+            interval: 1.5,
+            delay: 2
+          }
         ],
         [
-          { type: "worker", count: 8, interval: 0.9, delay: 0 },
-          { type: "sprinter", count: 6, interval: 0.85, delay: 1 },
-          { type: "greasy", count: 5, interval: 1, delay: 1 },
-          { type: "nurse", count: 2, interval: 1.4, delay: 2 }
+          {
+            type: "small",
+            count: 14,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "nurse",
+            count: 2,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "greasy",
+            count: 5,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "sprinter",
+            count: 4,
+            interval: 0.9,
+            delay: 1
+          }
         ],
         [
-          { type: "small", count: 14, interval: 0.45, delay: 0 },
-          { type: "greasy", count: 6, interval: 0.95, delay: 1 },
-          { type: "sprinter", count: 6, interval: 0.85, delay: 1 },
-          { type: "nurse", count: 3, interval: 1.4, delay: 1 }
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "sprinter",
+            count: 6,
+            interval: 0.85,
+            delay: 1
+          },
+          {
+            type: "greasy",
+            count: 5,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "nurse",
+            count: 2,
+            interval: 1.4,
+            delay: 2
+          }
         ],
         [
-          { type: "worker", count: 8, interval: 0.9, delay: 0 },
-          { type: "sprinter", count: 8, interval: 0.8, delay: 1 },
-          { type: "greasy", count: 6, interval: 0.95, delay: 1 },
-          { type: "nurse", count: 3, interval: 1.4, delay: 1 },
-          { type: "small", count: 12, interval: 0.45, delay: 1 }
+          {
+            type: "small",
+            count: 14,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "greasy",
+            count: 6,
+            interval: 0.95,
+            delay: 1
+          },
+          {
+            type: "sprinter",
+            count: 6,
+            interval: 0.85,
+            delay: 1
+          },
+          {
+            type: "nurse",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "sprinter",
+            count: 8,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "greasy",
+            count: 6,
+            interval: 0.95,
+            delay: 1
+          },
+          {
+            type: "nurse",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 1
+          }
         ]
       ]
     },
@@ -1729,49 +5046,197 @@ var tuning_default = {
       hpMul: 0.8,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
         [
-          { type: "flyer", count: 4, interval: 0.8, delay: 0 },
-          { type: "worker", count: 5, interval: 1, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "nurse", count: 1, interval: 1.5, delay: 2 },
-          { type: "worker", count: 6, interval: 1, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "flyer", count: 5, interval: 0.8, delay: 0 },
-          { type: "nurse", count: 1, interval: 1.5, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 0 }
+          {
+            type: "nurse",
+            count: 1,
+            interval: 1.5,
+            delay: 2
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "worker", count: 8, interval: 0.9, delay: 0 },
-          { type: "nurse", count: 2, interval: 1.5, delay: 1 },
-          { type: "flyer", count: 4, interval: 0.8, delay: 1 }
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "nurse",
+            count: 1,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 0
+          }
         ],
         [
-          { type: "small", count: 14, interval: 0.45, delay: 0 },
-          { type: "flyer", count: 6, interval: 0.8, delay: 1 },
-          { type: "nurse", count: 2, interval: 1.4, delay: 1 }
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "nurse",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          }
         ],
         [
-          { type: "nurse", count: 2, interval: 1.4, delay: 0 },
-          { type: "worker", count: 8, interval: 0.9, delay: 1 },
-          { type: "flyer", count: 6, interval: 0.8, delay: 1 }
+          {
+            type: "small",
+            count: 14,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 6,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "nurse",
+            count: 2,
+            interval: 1.4,
+            delay: 1
+          }
         ],
         [
-          { type: "small", count: 14, interval: 0.45, delay: 0 },
-          { type: "nurse", count: 3, interval: 1.4, delay: 1 },
-          { type: "worker", count: 8, interval: 0.9, delay: 1 },
-          { type: "flyer", count: 5, interval: 0.8, delay: 1 }
+          {
+            type: "nurse",
+            count: 2,
+            interval: 1.4,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "flyer",
+            count: 6,
+            interval: 0.8,
+            delay: 1
+          }
         ],
         [
-          { type: "worker", count: 8, interval: 0.9, delay: 0 },
-          { type: "nurse", count: 2, interval: 1.4, delay: 1 },
-          { type: "flyer", count: 5, interval: 0.8, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 },
-          { type: "queen4", count: 1, interval: 1, delay: 4 }
+          {
+            type: "small",
+            count: 14,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "nurse",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "nurse",
+            count: 2,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          },
+          {
+            type: "queen4",
+            count: 1,
+            interval: 1,
+            delay: 4
+          }
         ]
       ]
     },
@@ -1783,23 +5248,107 @@ var tuning_default = {
       hpMul: 4.2,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
-        [{ type: "small", count: 8, interval: 0.45, delay: 0 }, { type: "worker", count: 4, interval: 1, delay: 1 }],
         [
-          { type: "worker", count: 6, interval: 1, delay: 0 },
-          { type: "flyer", count: 3, interval: 0.8, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
-        [{ type: "flyer", count: 4, interval: 0.8, delay: 0 }, { type: "worker", count: 6, interval: 1, delay: 0 }],
         [
-          { type: "small", count: 10, interval: 0.45, delay: 0 },
-          { type: "worker", count: 6, interval: 1, delay: 0 },
-          { type: "flyer", count: 4, interval: 0.8, delay: 1 }
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "worker", count: 8, interval: 0.9, delay: 0 },
-          { type: "small", count: 12, interval: 0.45, delay: 1 },
-          { type: "flyer", count: 4, interval: 0.8, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 3,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          }
+        ],
+        [
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 1
+          },
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          }
         ]
       ]
     },
@@ -1811,31 +5360,119 @@ var tuning_default = {
       hpMul: 4.5,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
         [
-          { type: "worker", count: 5, interval: 1, delay: 0 },
-          { type: "glazed", count: 2, interval: 1.5, delay: 2 },
-          { type: "small", count: 6, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "small", count: 10, interval: 0.45, delay: 0 },
-          { type: "glazed", count: 2, interval: 1.5, delay: 1 },
-          { type: "worker", count: 5, interval: 1, delay: 1 }
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 2,
+            interval: 1.5,
+            delay: 2
+          },
+          {
+            type: "small",
+            count: 6,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "worker", count: 6, interval: 1, delay: 0 },
-          { type: "glazed", count: 3, interval: 1.4, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "small", count: 12, interval: 0.45, delay: 0 },
-          { type: "glazed", count: 3, interval: 1.4, delay: 2 },
-          { type: "worker", count: 6, interval: 1, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "worker", count: 8, interval: 0.9, delay: 0 },
-          { type: "glazed", count: 4, interval: 1.3, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 2
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 4,
+            interval: 1.3,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
         ]
       ]
     },
@@ -1847,34 +5484,145 @@ var tuning_default = {
       hpMul: 9.3,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
-        [{ type: "flyer", count: 4, interval: 0.8, delay: 0 }, { type: "worker", count: 5, interval: 1, delay: 1 }],
         [
-          { type: "small_fly", count: 8, interval: 0.5, delay: 0 },
-          { type: "glazed", count: 2, interval: 1.5, delay: 1 },
-          { type: "worker", count: 6, interval: 1, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "flyer", count: 5, interval: 0.8, delay: 0 },
-          { type: "glazed", count: 3, interval: 1.4, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "small_fly", count: 10, interval: 0.5, delay: 0 },
-          { type: "flyer", count: 4, interval: 0.8, delay: 1 },
-          { type: "glazed", count: 3, interval: 1.4, delay: 1 },
-          { type: "worker", count: 6, interval: 1, delay: 1 }
+          {
+            type: "small_fly",
+            count: 8,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "worker", count: 8, interval: 0.9, delay: 0 },
-          { type: "flyer", count: 6, interval: 0.8, delay: 1 },
-          { type: "glazed", count: 4, interval: 1.3, delay: 1 }
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "small_fly", count: 12, interval: 0.5, delay: 0 },
-          { type: "flyer", count: 6, interval: 0.75, delay: 1 },
-          { type: "glazed", count: 4, interval: 1.3, delay: 1 },
-          { type: "worker", count: 8, interval: 0.9, delay: 1 }
+          {
+            type: "small_fly",
+            count: 10,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 6,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "glazed",
+            count: 4,
+            interval: 1.3,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small_fly",
+            count: 12,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 6,
+            interval: 0.75,
+            delay: 1
+          },
+          {
+            type: "glazed",
+            count: 4,
+            interval: 1.3,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 1
+          }
         ]
       ]
     },
@@ -1886,40 +5634,163 @@ var tuning_default = {
       hpMul: 8.35,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
         [
-          { type: "small_armed", count: 4, interval: 0.6, delay: 0 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 6, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "armored", count: 2, interval: 1.5, delay: 1 },
-          { type: "worker", count: 4, interval: 1, delay: 0 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "small_armed",
+            count: 4,
+            interval: 0.6,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 6,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "glazed", count: 3, interval: 1.4, delay: 0 },
-          { type: "armored", count: 2, interval: 1.5, delay: 1 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "armored",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "glazed", count: 3, interval: 1.4, delay: 0 },
-          { type: "armored", count: 3, interval: 1.4, delay: 1 },
-          { type: "small_armed", count: 4, interval: 0.6, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 0
+          },
+          {
+            type: "armored",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "glazed", count: 4, interval: 1.3, delay: 0 },
-          { type: "armored", count: 3, interval: 1.4, delay: 1 },
-          { type: "worker", count: 6, interval: 1, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 0
+          },
+          {
+            type: "armored",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "small_armed",
+            count: 4,
+            interval: 0.6,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "glazed", count: 4, interval: 1.3, delay: 0 },
-          { type: "armored", count: 4, interval: 1.3, delay: 1 },
-          { type: "worker", count: 6, interval: 1, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "glazed",
+            count: 4,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "armored",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "glazed",
+            count: 4,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "armored",
+            count: 4,
+            interval: 1.3,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
         ]
       ]
     },
@@ -1931,40 +5802,163 @@ var tuning_default = {
       hpMul: 5.4,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
         [
-          { type: "greasy", count: 3, interval: 1.1, delay: 0 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "glazed", count: 3, interval: 1.4, delay: 0 },
-          { type: "mama", count: 1, interval: 1.6, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "greasy",
+            count: 3,
+            interval: 1.1,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "glazed", count: 3, interval: 1.3, delay: 0 },
-          { type: "mama", count: 1, interval: 1.6, delay: 1 },
-          { type: "greasy", count: 3, interval: 1, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 0
+          },
+          {
+            type: "mama",
+            count: 1,
+            interval: 1.6,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "glazed", count: 3, interval: 1.3, delay: 0 },
-          { type: "mama", count: 1, interval: 1.6, delay: 1 },
-          { type: "greasy", count: 3, interval: 1, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "mama",
+            count: 1,
+            interval: 1.6,
+            delay: 1
+          },
+          {
+            type: "greasy",
+            count: 3,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "glazed", count: 3, interval: 1.2, delay: 0 },
-          { type: "mama", count: 2, interval: 1.5, delay: 1 },
-          { type: "greasy", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "mama",
+            count: 1,
+            interval: 1.6,
+            delay: 1
+          },
+          {
+            type: "greasy",
+            count: 3,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "glazed", count: 3, interval: 1.2, delay: 0 },
-          { type: "mama", count: 2, interval: 1.5, delay: 1 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 12, interval: 0.45, delay: 1 }
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.2,
+            delay: 0
+          },
+          {
+            type: "mama",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "greasy",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.2,
+            delay: 0
+          },
+          {
+            type: "mama",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 1
+          }
         ]
       ]
     },
@@ -1976,28 +5970,119 @@ var tuning_default = {
       hpMul: 8.8,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
-        [{ type: "flyer", count: 4, interval: 0.8, delay: 0 }, { type: "worker", count: 5, interval: 1, delay: 1 }],
         [
-          { type: "small_fly", count: 8, interval: 0.5, delay: 0 },
-          { type: "glazed", count: 2, interval: 1.5, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "worker", count: 6, interval: 1, delay: 0 },
-          { type: "flyer", count: 5, interval: 0.8, delay: 1 },
-          { type: "glazed", count: 2, interval: 1.5, delay: 1 }
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "small_fly", count: 10, interval: 0.5, delay: 0 },
-          { type: "glazed", count: 3, interval: 1.4, delay: 1 },
-          { type: "worker", count: 6, interval: 1, delay: 1 }
+          {
+            type: "small_fly",
+            count: 8,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "worker", count: 8, interval: 0.9, delay: 0 },
-          { type: "flyer", count: 6, interval: 0.8, delay: 1 },
-          { type: "glazed", count: 3, interval: 1.4, delay: 1 },
-          { type: "small", count: 12, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "glazed",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small_fly",
+            count: 10,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 6,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 1
+          }
         ]
       ]
     },
@@ -2010,39 +6095,144 @@ var tuning_default = {
       interval: 1,
       waves: [
         [
-          { type: "worker", count: 5, interval: 1, delay: 0 },
-          { type: "small_gasmask", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small_gasmask",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "gasmask", count: 4, interval: 1, delay: 0 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small_gasmask", count: 6, interval: 0.45, delay: 1 }
+          {
+            type: "gasmask",
+            count: 4,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small_gasmask",
+            count: 6,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "flyer", count: 4, interval: 0.8, delay: 0 },
-          { type: "gasmask", count: 4, interval: 1, delay: 1 },
-          { type: "small_gasmask", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "gasmask",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small_gasmask",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "gasmask", count: 5, interval: 1, delay: 0 },
-          { type: "glazed", count: 3, interval: 1.4, delay: 1 },
-          { type: "worker", count: 4, interval: 1, delay: 1 }
+          {
+            type: "gasmask",
+            count: 5,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "small_gasmask", count: 12, interval: 0.45, delay: 0 },
-          { type: "glazed", count: 3, interval: 1.4, delay: 1 },
-          { type: "gasmask", count: 4, interval: 1, delay: 1 }
+          {
+            type: "small_gasmask",
+            count: 12,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "gasmask",
+            count: 4,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "gasmask", count: 6, interval: 0.9, delay: 0 },
-          { type: "glazed", count: 4, interval: 1.3, delay: 1 },
-          { type: "flyer", count: 5, interval: 0.8, delay: 1 }
+          {
+            type: "gasmask",
+            count: 6,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 4,
+            interval: 1.3,
+            delay: 1
+          },
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 1
+          }
         ],
         [
-          { type: "small_gasmask", count: 14, interval: 0.45, delay: 0 },
-          { type: "gasmask", count: 6, interval: 0.9, delay: 1 },
-          { type: "glazed", count: 4, interval: 1.3, delay: 1 },
-          { type: "flyer", count: 5, interval: 0.8, delay: 1 }
+          {
+            type: "small_gasmask",
+            count: 14,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "gasmask",
+            count: 6,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "glazed",
+            count: 4,
+            interval: 1.3,
+            delay: 1
+          },
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 1
+          }
         ]
       ]
     },
@@ -2054,46 +6244,189 @@ var tuning_default = {
       hpMul: 6.75,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
         [
-          { type: "flyer", count: 4, interval: 0.8, delay: 0 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "glazed", count: 3, interval: 1.4, delay: 0 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "glazed", count: 4, interval: 1.3, delay: 0 },
-          { type: "flyer", count: 4, interval: 0.8, delay: 1 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "heavy", count: 1, interval: 1.7, delay: 1 },
-          { type: "glazed", count: 3, interval: 1.4, delay: 1 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "glazed",
+            count: 4,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "heavy", count: 1, interval: 1.7, delay: 0.5 },
-          { type: "glazed", count: 4, interval: 1.3, delay: 0 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "heavy",
+            count: 1,
+            interval: 1.7,
+            delay: 1
+          },
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "heavy", count: 2, interval: 1.7, delay: 0.5 },
-          { type: "glazed", count: 4, interval: 1.3, delay: 0 },
-          { type: "flyer", count: 4, interval: 0.8, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "heavy",
+            count: 1,
+            interval: 1.7,
+            delay: 0.5
+          },
+          {
+            type: "glazed",
+            count: 4,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "heavy", count: 3, interval: 1.6, delay: 0.5 },
-          { type: "glazed", count: 5, interval: 1.2, delay: 0 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 12, interval: 0.45, delay: 1 }
+          {
+            type: "heavy",
+            count: 2,
+            interval: 1.7,
+            delay: 0.5
+          },
+          {
+            type: "glazed",
+            count: 4,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "heavy",
+            count: 3,
+            interval: 1.6,
+            delay: 0.5
+          },
+          {
+            type: "glazed",
+            count: 5,
+            interval: 1.2,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 1
+          }
         ]
       ]
     },
@@ -2105,40 +6438,163 @@ var tuning_default = {
       hpMul: 5.45,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
         [
-          { type: "sprinter", count: 4, interval: 0.9, delay: 1 },
-          { type: "worker", count: 5, interval: 1, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "glazed", count: 3, interval: 1.4, delay: 0 },
-          { type: "sprinter", count: 4, interval: 0.9, delay: 1 },
-          { type: "worker", count: 5, interval: 1, delay: 1 }
+          {
+            type: "sprinter",
+            count: 4,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "glazed", count: 4, interval: 1.3, delay: 0 },
-          { type: "nurse", count: 1, interval: 1.5, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 },
-          { type: "sprinter", count: 4, interval: 0.9, delay: 1 }
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 0
+          },
+          {
+            type: "sprinter",
+            count: 4,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "glazed", count: 4, interval: 1.3, delay: 0 },
-          { type: "sprinter", count: 6, interval: 0.9, delay: 1 },
-          { type: "nurse", count: 1, interval: 1.5, delay: 1 },
-          { type: "worker", count: 6, interval: 1, delay: 1 }
+          {
+            type: "glazed",
+            count: 4,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "nurse",
+            count: 1,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          },
+          {
+            type: "sprinter",
+            count: 4,
+            interval: 0.9,
+            delay: 1
+          }
         ],
         [
-          { type: "glazed", count: 5, interval: 1.2, delay: 0 },
-          { type: "nurse", count: 2, interval: 1.4, delay: 1 },
-          { type: "small", count: 14, interval: 0.45, delay: 1 },
-          { type: "sprinter", count: 4, interval: 0.9, delay: 1 }
+          {
+            type: "glazed",
+            count: 4,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "sprinter",
+            count: 6,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "nurse",
+            count: 1,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "glazed", count: 5, interval: 1.2, delay: 0 },
-          { type: "sprinter", count: 6, interval: 0.85, delay: 1 },
-          { type: "nurse", count: 2, interval: 1.4, delay: 1 },
-          { type: "worker", count: 8, interval: 0.9, delay: 1 }
+          {
+            type: "glazed",
+            count: 5,
+            interval: 1.2,
+            delay: 0
+          },
+          {
+            type: "nurse",
+            count: 2,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 14,
+            interval: 0.45,
+            delay: 1
+          },
+          {
+            type: "sprinter",
+            count: 4,
+            interval: 0.9,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "glazed",
+            count: 5,
+            interval: 1.2,
+            delay: 0
+          },
+          {
+            type: "sprinter",
+            count: 6,
+            interval: 0.85,
+            delay: 1
+          },
+          {
+            type: "nurse",
+            count: 2,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 1
+          }
         ]
       ]
     },
@@ -2150,49 +6606,197 @@ var tuning_default = {
       hpMul: 0.87,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
         [
-          { type: "flyer", count: 4, interval: 0.8, delay: 0 },
-          { type: "worker", count: 5, interval: 1, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "glazed", count: 2, interval: 1.5, delay: 2 },
-          { type: "worker", count: 6, interval: 1, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "flyer", count: 5, interval: 0.8, delay: 0 },
-          { type: "glazed", count: 2, interval: 1.5, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 0 }
+          {
+            type: "glazed",
+            count: 2,
+            interval: 1.5,
+            delay: 2
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "worker", count: 8, interval: 0.9, delay: 0 },
-          { type: "glazed", count: 3, interval: 1.4, delay: 1 },
-          { type: "flyer", count: 4, interval: 0.8, delay: 1 }
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 0
+          }
         ],
         [
-          { type: "small", count: 14, interval: 0.45, delay: 0 },
-          { type: "flyer", count: 6, interval: 0.8, delay: 1 },
-          { type: "glazed", count: 3, interval: 1.4, delay: 1 }
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          }
         ],
         [
-          { type: "glazed", count: 4, interval: 1.3, delay: 0 },
-          { type: "worker", count: 8, interval: 0.9, delay: 1 },
-          { type: "flyer", count: 6, interval: 0.8, delay: 1 }
+          {
+            type: "small",
+            count: 14,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 6,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          }
         ],
         [
-          { type: "small", count: 14, interval: 0.45, delay: 0 },
-          { type: "glazed", count: 4, interval: 1.3, delay: 1 },
-          { type: "worker", count: 8, interval: 0.9, delay: 1 },
-          { type: "flyer", count: 5, interval: 0.8, delay: 1 }
+          {
+            type: "glazed",
+            count: 4,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "flyer",
+            count: 6,
+            interval: 0.8,
+            delay: 1
+          }
         ],
         [
-          { type: "worker", count: 8, interval: 0.9, delay: 0 },
-          { type: "glazed", count: 3, interval: 1.4, delay: 1 },
-          { type: "flyer", count: 5, interval: 0.8, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 },
-          { type: "queen5", count: 1, interval: 1, delay: 4 }
+          {
+            type: "small",
+            count: 14,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 4,
+            interval: 1.3,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          },
+          {
+            type: "queen5",
+            count: 1,
+            interval: 1,
+            delay: 4
+          }
         ]
       ]
     },
@@ -2204,23 +6808,107 @@ var tuning_default = {
       hpMul: 6,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
-        [{ type: "small", count: 8, interval: 0.45, delay: 0 }, { type: "worker", count: 4, interval: 1, delay: 1 }],
         [
-          { type: "worker", count: 6, interval: 1, delay: 0 },
-          { type: "flyer", count: 3, interval: 0.8, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
-        [{ type: "flyer", count: 4, interval: 0.8, delay: 0 }, { type: "worker", count: 6, interval: 1, delay: 0 }],
         [
-          { type: "small", count: 10, interval: 0.45, delay: 0 },
-          { type: "worker", count: 6, interval: 1, delay: 0 },
-          { type: "flyer", count: 4, interval: 0.8, delay: 1 }
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "worker", count: 8, interval: 0.9, delay: 0 },
-          { type: "small", count: 12, interval: 0.45, delay: 1 },
-          { type: "flyer", count: 4, interval: 0.8, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 3,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          }
+        ],
+        [
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 1
+          },
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          }
         ]
       ]
     },
@@ -2232,31 +6920,119 @@ var tuning_default = {
       hpMul: 7.2,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
         [
-          { type: "worker", count: 5, interval: 1, delay: 0 },
-          { type: "drone", count: 2, interval: 1.5, delay: 2 },
-          { type: "small", count: 6, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "small", count: 10, interval: 0.45, delay: 0 },
-          { type: "drone", count: 2, interval: 1.5, delay: 1 },
-          { type: "worker", count: 5, interval: 1, delay: 1 }
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "drone",
+            count: 2,
+            interval: 1.5,
+            delay: 2
+          },
+          {
+            type: "small",
+            count: 6,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "worker", count: 6, interval: 1, delay: 0 },
-          { type: "drone", count: 3, interval: 1.4, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "drone",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "small", count: 12, interval: 0.45, delay: 0 },
-          { type: "drone", count: 3, interval: 1.4, delay: 2 },
-          { type: "worker", count: 6, interval: 1, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "drone",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "worker", count: 8, interval: 0.9, delay: 0 },
-          { type: "drone", count: 4, interval: 1.3, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "drone",
+            count: 3,
+            interval: 1.4,
+            delay: 2
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "drone",
+            count: 4,
+            interval: 1.3,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
         ]
       ]
     },
@@ -2268,34 +7044,145 @@ var tuning_default = {
       hpMul: 9.19,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
-        [{ type: "flyer", count: 4, interval: 0.8, delay: 0 }, { type: "worker", count: 5, interval: 1, delay: 1 }],
         [
-          { type: "small_fly", count: 8, interval: 0.5, delay: 0 },
-          { type: "drone", count: 2, interval: 1.5, delay: 1 },
-          { type: "worker", count: 6, interval: 1, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "flyer", count: 5, interval: 0.8, delay: 0 },
-          { type: "drone", count: 3, interval: 1.4, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "small_fly", count: 10, interval: 0.5, delay: 0 },
-          { type: "flyer", count: 4, interval: 0.8, delay: 1 },
-          { type: "drone", count: 3, interval: 1.4, delay: 1 },
-          { type: "worker", count: 6, interval: 1, delay: 1 }
+          {
+            type: "small_fly",
+            count: 8,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "drone",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "worker", count: 8, interval: 0.9, delay: 0 },
-          { type: "flyer", count: 6, interval: 0.8, delay: 1 },
-          { type: "drone", count: 4, interval: 1.3, delay: 1 }
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "drone",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "small_fly", count: 12, interval: 0.5, delay: 0 },
-          { type: "flyer", count: 6, interval: 0.75, delay: 1 },
-          { type: "drone", count: 4, interval: 1.3, delay: 1 },
-          { type: "worker", count: 8, interval: 0.9, delay: 1 }
+          {
+            type: "small_fly",
+            count: 10,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "drone",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 6,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "drone",
+            count: 4,
+            interval: 1.3,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small_fly",
+            count: 12,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 6,
+            interval: 0.75,
+            delay: 1
+          },
+          {
+            type: "drone",
+            count: 4,
+            interval: 1.3,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 1
+          }
         ]
       ]
     },
@@ -2307,40 +7194,163 @@ var tuning_default = {
       hpMul: 9.5,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
         [
-          { type: "small_armed", count: 4, interval: 0.6, delay: 0 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 6, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "armored", count: 2, interval: 1.5, delay: 1 },
-          { type: "worker", count: 4, interval: 1, delay: 0 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "small_armed",
+            count: 4,
+            interval: 0.6,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 6,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "drone", count: 3, interval: 1.4, delay: 0 },
-          { type: "armored", count: 2, interval: 1.5, delay: 1 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "armored",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "drone", count: 3, interval: 1.4, delay: 0 },
-          { type: "armored", count: 3, interval: 1.4, delay: 1 },
-          { type: "small_armed", count: 4, interval: 0.6, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "drone",
+            count: 3,
+            interval: 1.4,
+            delay: 0
+          },
+          {
+            type: "armored",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "drone", count: 4, interval: 1.3, delay: 0 },
-          { type: "armored", count: 3, interval: 1.4, delay: 1 },
-          { type: "worker", count: 6, interval: 1, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "drone",
+            count: 3,
+            interval: 1.4,
+            delay: 0
+          },
+          {
+            type: "armored",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "small_armed",
+            count: 4,
+            interval: 0.6,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "drone", count: 4, interval: 1.3, delay: 0 },
-          { type: "armored", count: 4, interval: 1.3, delay: 1 },
-          { type: "worker", count: 6, interval: 1, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "drone",
+            count: 4,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "armored",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "drone",
+            count: 4,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "armored",
+            count: 4,
+            interval: 1.3,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
         ]
       ]
     },
@@ -2352,40 +7362,163 @@ var tuning_default = {
       hpMul: 4.84,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
         [
-          { type: "drone", count: 3, interval: 1.1, delay: 0 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "glazed", count: 3, interval: 1.4, delay: 0 },
-          { type: "mama", count: 1, interval: 1.6, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "drone",
+            count: 3,
+            interval: 1.1,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "glazed", count: 3, interval: 1.3, delay: 0 },
-          { type: "mama", count: 1, interval: 1.6, delay: 1 },
-          { type: "drone", count: 3, interval: 1, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 0
+          },
+          {
+            type: "mama",
+            count: 1,
+            interval: 1.6,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "glazed", count: 3, interval: 1.3, delay: 0 },
-          { type: "mama", count: 1, interval: 1.6, delay: 1 },
-          { type: "drone", count: 3, interval: 1, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "mama",
+            count: 1,
+            interval: 1.6,
+            delay: 1
+          },
+          {
+            type: "drone",
+            count: 3,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "glazed", count: 3, interval: 1.2, delay: 0 },
-          { type: "mama", count: 2, interval: 1.5, delay: 1 },
-          { type: "drone", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "mama",
+            count: 1,
+            interval: 1.6,
+            delay: 1
+          },
+          {
+            type: "drone",
+            count: 3,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "glazed", count: 3, interval: 1.2, delay: 0 },
-          { type: "mama", count: 2, interval: 1.5, delay: 1 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 12, interval: 0.45, delay: 1 }
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.2,
+            delay: 0
+          },
+          {
+            type: "mama",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "drone",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.2,
+            delay: 0
+          },
+          {
+            type: "mama",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 1
+          }
         ]
       ]
     },
@@ -2397,28 +7530,119 @@ var tuning_default = {
       hpMul: 9.57,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
-        [{ type: "flyer", count: 4, interval: 0.8, delay: 0 }, { type: "worker", count: 5, interval: 1, delay: 1 }],
         [
-          { type: "small_fly", count: 8, interval: 0.5, delay: 0 },
-          { type: "drone", count: 2, interval: 1.5, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "worker", count: 6, interval: 1, delay: 0 },
-          { type: "flyer", count: 5, interval: 0.8, delay: 1 },
-          { type: "drone", count: 2, interval: 1.5, delay: 1 }
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "small_fly", count: 10, interval: 0.5, delay: 0 },
-          { type: "drone", count: 3, interval: 1.4, delay: 1 },
-          { type: "worker", count: 6, interval: 1, delay: 1 }
+          {
+            type: "small_fly",
+            count: 8,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "drone",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "worker", count: 8, interval: 0.9, delay: 0 },
-          { type: "flyer", count: 6, interval: 0.8, delay: 1 },
-          { type: "drone", count: 3, interval: 1.4, delay: 1 },
-          { type: "small", count: 12, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "drone",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small_fly",
+            count: 10,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "drone",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 6,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "drone",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 1
+          }
         ]
       ]
     },
@@ -2431,39 +7655,144 @@ var tuning_default = {
       interval: 1,
       waves: [
         [
-          { type: "worker", count: 5, interval: 1, delay: 0 },
-          { type: "small_gasmask", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small_gasmask",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "gasmask", count: 4, interval: 1, delay: 0 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small_gasmask", count: 6, interval: 0.45, delay: 1 }
+          {
+            type: "gasmask",
+            count: 4,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small_gasmask",
+            count: 6,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "drone", count: 4, interval: 0.8, delay: 0 },
-          { type: "gasmask", count: 4, interval: 1, delay: 1 },
-          { type: "small_gasmask", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "drone",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "gasmask",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small_gasmask",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "gasmask", count: 5, interval: 1, delay: 0 },
-          { type: "glazed", count: 3, interval: 1.4, delay: 1 },
-          { type: "worker", count: 4, interval: 1, delay: 1 }
+          {
+            type: "gasmask",
+            count: 5,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "small_gasmask", count: 12, interval: 0.45, delay: 0 },
-          { type: "glazed", count: 3, interval: 1.4, delay: 1 },
-          { type: "gasmask", count: 4, interval: 1, delay: 1 }
+          {
+            type: "small_gasmask",
+            count: 12,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "gasmask",
+            count: 4,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "gasmask", count: 6, interval: 0.9, delay: 0 },
-          { type: "glazed", count: 4, interval: 1.3, delay: 1 },
-          { type: "drone", count: 5, interval: 0.8, delay: 1 }
+          {
+            type: "gasmask",
+            count: 6,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 4,
+            interval: 1.3,
+            delay: 1
+          },
+          {
+            type: "drone",
+            count: 5,
+            interval: 0.8,
+            delay: 1
+          }
         ],
         [
-          { type: "small_gasmask", count: 14, interval: 0.45, delay: 0 },
-          { type: "gasmask", count: 6, interval: 0.9, delay: 1 },
-          { type: "glazed", count: 4, interval: 1.3, delay: 1 },
-          { type: "drone", count: 5, interval: 0.8, delay: 1 }
+          {
+            type: "small_gasmask",
+            count: 14,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "gasmask",
+            count: 6,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "glazed",
+            count: 4,
+            interval: 1.3,
+            delay: 1
+          },
+          {
+            type: "drone",
+            count: 5,
+            interval: 0.8,
+            delay: 1
+          }
         ]
       ]
     },
@@ -2472,49 +7801,192 @@ var tuning_default = {
       name: "Waffle Iron",
       map: "w6_waffle_iron",
       waveCount: 8,
-      hpMul: 5.36,
+      hpMul: 5.29,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
         [
-          { type: "drone", count: 4, interval: 0.8, delay: 0 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "nurse", count: 3, interval: 1.4, delay: 0 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "drone",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "nurse", count: 4, interval: 1.3, delay: 0 },
-          { type: "drone", count: 4, interval: 0.8, delay: 1 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "nurse",
+            count: 3,
+            interval: 1.4,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "heavy", count: 1, interval: 1.7, delay: 1 },
-          { type: "nurse", count: 3, interval: 1.4, delay: 1 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "nurse",
+            count: 4,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "drone",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "heavy", count: 1, interval: 1.7, delay: 0.5 },
-          { type: "nurse", count: 4, interval: 1.3, delay: 0 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "heavy",
+            count: 1,
+            interval: 1.7,
+            delay: 1
+          },
+          {
+            type: "nurse",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "heavy", count: 2, interval: 1.7, delay: 0.5 },
-          { type: "nurse", count: 4, interval: 1.3, delay: 0 },
-          { type: "drone", count: 4, interval: 0.8, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "heavy",
+            count: 1,
+            interval: 1.7,
+            delay: 0.5
+          },
+          {
+            type: "nurse",
+            count: 4,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "heavy", count: 3, interval: 1.6, delay: 0.5 },
-          { type: "nurse", count: 5, interval: 1.2, delay: 0 },
-          { type: "worker", count: 4, interval: 1, delay: 1 },
-          { type: "small", count: 12, interval: 0.45, delay: 1 }
+          {
+            type: "heavy",
+            count: 2,
+            interval: 1.7,
+            delay: 0.5
+          },
+          {
+            type: "nurse",
+            count: 4,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "drone",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "heavy",
+            count: 3,
+            interval: 1.6,
+            delay: 0.5
+          },
+          {
+            type: "nurse",
+            count: 5,
+            interval: 1.2,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 1
+          }
         ]
       ]
     },
@@ -2523,43 +7995,166 @@ var tuning_default = {
       name: "Picnic Blanket",
       map: "w6_picnic_blanket",
       waveCount: 7,
-      hpMul: 4.05,
+      hpMul: 4.12,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
         [
-          { type: "drone", count: 4, interval: 0.9, delay: 1 },
-          { type: "worker", count: 5, interval: 1, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "glazed", count: 3, interval: 1.4, delay: 0 },
-          { type: "drone", count: 4, interval: 0.9, delay: 1 },
-          { type: "worker", count: 5, interval: 1, delay: 1 }
+          {
+            type: "drone",
+            count: 4,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "glazed", count: 4, interval: 1.3, delay: 0 },
-          { type: "nurse", count: 1, interval: 1.5, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 },
-          { type: "drone", count: 4, interval: 0.9, delay: 1 }
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 0
+          },
+          {
+            type: "drone",
+            count: 4,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "glazed", count: 4, interval: 1.3, delay: 0 },
-          { type: "drone", count: 6, interval: 0.9, delay: 1 },
-          { type: "nurse", count: 1, interval: 1.5, delay: 1 },
-          { type: "worker", count: 6, interval: 1, delay: 1 }
+          {
+            type: "glazed",
+            count: 4,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "nurse",
+            count: 1,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          },
+          {
+            type: "drone",
+            count: 4,
+            interval: 0.9,
+            delay: 1
+          }
         ],
         [
-          { type: "glazed", count: 5, interval: 1.2, delay: 0 },
-          { type: "nurse", count: 2, interval: 1.4, delay: 1 },
-          { type: "small", count: 14, interval: 0.45, delay: 1 },
-          { type: "drone", count: 4, interval: 0.9, delay: 1 }
+          {
+            type: "glazed",
+            count: 4,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "drone",
+            count: 6,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "nurse",
+            count: 1,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          }
         ],
         [
-          { type: "glazed", count: 5, interval: 1.2, delay: 0 },
-          { type: "drone", count: 6, interval: 0.85, delay: 1 },
-          { type: "nurse", count: 2, interval: 1.4, delay: 1 },
-          { type: "worker", count: 8, interval: 0.9, delay: 1 }
+          {
+            type: "glazed",
+            count: 5,
+            interval: 1.2,
+            delay: 0
+          },
+          {
+            type: "nurse",
+            count: 2,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 14,
+            interval: 0.45,
+            delay: 1
+          },
+          {
+            type: "drone",
+            count: 4,
+            interval: 0.9,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "glazed",
+            count: 5,
+            interval: 1.2,
+            delay: 0
+          },
+          {
+            type: "drone",
+            count: 6,
+            interval: 0.85,
+            delay: 1
+          },
+          {
+            type: "nurse",
+            count: 2,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 1
+          }
         ]
       ]
     },
@@ -2571,49 +8166,1757 @@ var tuning_default = {
       hpMul: 1.7,
       interval: 1,
       waves: [
-        [{ type: "worker", count: 6, interval: 1, delay: 0 }, { type: "small", count: 8, interval: 0.45, delay: 1 }],
         [
-          { type: "drone", count: 4, interval: 0.8, delay: 0 },
-          { type: "worker", count: 5, interval: 1, delay: 1 },
-          { type: "small", count: 8, interval: 0.45, delay: 1 }
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "glazed", count: 2, interval: 1.5, delay: 2 },
-          { type: "worker", count: 6, interval: 1, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 }
+          {
+            type: "drone",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "drone", count: 5, interval: 0.8, delay: 0 },
-          { type: "glazed", count: 2, interval: 1.5, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 0 }
+          {
+            type: "glazed",
+            count: 2,
+            interval: 1.5,
+            delay: 2
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
         ],
         [
-          { type: "worker", count: 8, interval: 0.9, delay: 0 },
-          { type: "glazed", count: 3, interval: 1.4, delay: 1 },
-          { type: "drone", count: 4, interval: 0.8, delay: 1 }
+          {
+            type: "drone",
+            count: 5,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 0
+          }
         ],
         [
-          { type: "small", count: 14, interval: 0.45, delay: 0 },
-          { type: "drone", count: 6, interval: 0.8, delay: 1 },
-          { type: "glazed", count: 3, interval: 1.4, delay: 1 }
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "drone",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          }
         ],
         [
-          { type: "glazed", count: 4, interval: 1.3, delay: 0 },
-          { type: "worker", count: 8, interval: 0.9, delay: 1 },
-          { type: "drone", count: 6, interval: 0.8, delay: 1 }
+          {
+            type: "small",
+            count: 14,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "drone",
+            count: 6,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          }
         ],
         [
-          { type: "small", count: 14, interval: 0.45, delay: 0 },
-          { type: "glazed", count: 4, interval: 1.3, delay: 1 },
-          { type: "worker", count: 8, interval: 0.9, delay: 1 },
-          { type: "drone", count: 5, interval: 0.8, delay: 1 }
+          {
+            type: "glazed",
+            count: 4,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "drone",
+            count: 6,
+            interval: 0.8,
+            delay: 1
+          }
         ],
         [
-          { type: "worker", count: 8, interval: 0.9, delay: 0 },
-          { type: "glazed", count: 3, interval: 1.4, delay: 1 },
-          { type: "drone", count: 5, interval: 0.8, delay: 1 },
-          { type: "small", count: 10, interval: 0.45, delay: 1 },
-          { type: "queen6", count: 1, interval: 1, delay: 4 }
+          {
+            type: "small",
+            count: 14,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 4,
+            interval: 1.3,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "drone",
+            count: 5,
+            interval: 0.8,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "drone",
+            count: 5,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          },
+          {
+            type: "queen6",
+            count: 1,
+            interval: 1,
+            delay: 4
+          }
+        ]
+      ]
+    },
+    {
+      world: 7,
+      name: "Jam Jar",
+      map: "w7_jam_jar",
+      waveCount: 6,
+      hpMul: 6,
+      interval: 1,
+      waves: [
+        [
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 3,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          }
+        ],
+        [
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 1
+          },
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          }
+        ]
+      ]
+    },
+    {
+      world: 7,
+      name: "Grape Spoon",
+      map: "w7_grape_spoon",
+      waveCount: 6,
+      hpMul: 7.4,
+      interval: 1,
+      waves: [
+        [
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "shieldbearer",
+            count: 2,
+            interval: 1.5,
+            delay: 2
+          },
+          {
+            type: "small",
+            count: 6,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "shieldbearer",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "shieldbearer",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "shieldbearer",
+            count: 3,
+            interval: 1.4,
+            delay: 2
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "shieldbearer",
+            count: 4,
+            interval: 1.3,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
+        ]
+      ]
+    },
+    {
+      world: 7,
+      name: "Violet Cloth",
+      map: "w7_violet_cloth",
+      waveCount: 7,
+      hpMul: 9.6,
+      interval: 1,
+      waves: [
+        [
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small_fly",
+            count: 8,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "shieldbearer",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "shieldbearer",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small_fly",
+            count: 10,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "shieldbearer",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 6,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "shieldbearer",
+            count: 4,
+            interval: 1.3,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small_fly",
+            count: 12,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 6,
+            interval: 0.75,
+            delay: 1
+          },
+          {
+            type: "shieldbearer",
+            count: 4,
+            interval: 1.3,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 1
+          }
+        ]
+      ]
+    },
+    {
+      world: 7,
+      name: "Toast Rack",
+      map: "w7_toast_rack",
+      waveCount: 7,
+      hpMul: 12,
+      interval: 1,
+      waves: [
+        [
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small_armed",
+            count: 4,
+            interval: 0.6,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 6,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "shieldbearer",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "shieldbearer",
+            count: 3,
+            interval: 1.4,
+            delay: 0
+          },
+          {
+            type: "shieldbearer",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "shieldbearer",
+            count: 3,
+            interval: 1.4,
+            delay: 0
+          },
+          {
+            type: "shieldbearer",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "small_armed",
+            count: 4,
+            interval: 0.6,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "shieldbearer",
+            count: 4,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "shieldbearer",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "shieldbearer",
+            count: 4,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "shieldbearer",
+            count: 4,
+            interval: 1.3,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
+        ]
+      ]
+    },
+    {
+      world: 7,
+      name: "Jelly Alley",
+      map: "w7_jelly_alley",
+      waveCount: 7,
+      hpMul: 5.42,
+      interval: 1,
+      waves: [
+        [
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "shieldbearer",
+            count: 3,
+            interval: 1.1,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 0
+          },
+          {
+            type: "shieldbearer",
+            count: 1,
+            interval: 1.6,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "shieldbearer",
+            count: 1,
+            interval: 1.6,
+            delay: 1
+          },
+          {
+            type: "shieldbearer",
+            count: 3,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "shieldbearer",
+            count: 1,
+            interval: 1.6,
+            delay: 1
+          },
+          {
+            type: "shieldbearer",
+            count: 3,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.2,
+            delay: 0
+          },
+          {
+            type: "shieldbearer",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "shieldbearer",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.2,
+            delay: 0
+          },
+          {
+            type: "shieldbearer",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 1
+          }
+        ]
+      ]
+    },
+    {
+      world: 7,
+      name: "Seed Basket",
+      map: "w7_seed_basket",
+      waveCount: 6,
+      hpMul: 9.5,
+      interval: 1,
+      waves: [
+        [
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small_fly",
+            count: 8,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "shieldbearer",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "shieldbearer",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small_fly",
+            count: 10,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "shieldbearer",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 6,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "shieldbearer",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 1
+          }
+        ]
+      ]
+    },
+    {
+      world: 7,
+      name: "Cream Hill",
+      map: "w7_cream_hill",
+      waveCount: 7,
+      hpMul: 4.25,
+      interval: 1,
+      waves: [
+        [
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small_gasmask",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "shieldbearer",
+            count: 4,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small_gasmask",
+            count: 6,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "shieldbearer",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small_gasmask",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "shieldbearer",
+            count: 5,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small_gasmask",
+            count: 12,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "shieldbearer",
+            count: 4,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "shieldbearer",
+            count: 6,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 4,
+            interval: 1.3,
+            delay: 1
+          },
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small_gasmask",
+            count: 14,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "shieldbearer",
+            count: 6,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "glazed",
+            count: 4,
+            interval: 1.3,
+            delay: 1
+          },
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 1
+          }
+        ]
+      ]
+    },
+    {
+      world: 7,
+      name: "Press Plate",
+      map: "w7_press_plate",
+      waveCount: 8,
+      hpMul: 5.51,
+      interval: 1,
+      waves: [
+        [
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "nurse",
+            count: 3,
+            interval: 1.4,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "nurse",
+            count: 4,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "shieldbearer",
+            count: 1,
+            interval: 1.7,
+            delay: 1
+          },
+          {
+            type: "nurse",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "shieldbearer",
+            count: 1,
+            interval: 1.7,
+            delay: 0.5
+          },
+          {
+            type: "nurse",
+            count: 4,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "shieldbearer",
+            count: 2,
+            interval: 1.7,
+            delay: 0.5
+          },
+          {
+            type: "nurse",
+            count: 4,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "shieldbearer",
+            count: 3,
+            interval: 1.6,
+            delay: 0.5
+          },
+          {
+            type: "nurse",
+            count: 5,
+            interval: 1.2,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 1
+          }
+        ]
+      ]
+    },
+    {
+      world: 7,
+      name: "Picnic Cloth",
+      map: "w7_picnic_cloth",
+      waveCount: 7,
+      hpMul: 3.99,
+      interval: 1,
+      waves: [
+        [
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "shieldbearer",
+            count: 4,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 0
+          },
+          {
+            type: "shieldbearer",
+            count: 4,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "glazed",
+            count: 4,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "nurse",
+            count: 1,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          },
+          {
+            type: "shieldbearer",
+            count: 4,
+            interval: 0.9,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "glazed",
+            count: 4,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "shieldbearer",
+            count: 6,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "nurse",
+            count: 1,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "glazed",
+            count: 5,
+            interval: 1.2,
+            delay: 0
+          },
+          {
+            type: "nurse",
+            count: 2,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 14,
+            interval: 0.45,
+            delay: 1
+          },
+          {
+            type: "shieldbearer",
+            count: 4,
+            interval: 0.9,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "glazed",
+            count: 5,
+            interval: 1.2,
+            delay: 0
+          },
+          {
+            type: "shieldbearer",
+            count: 6,
+            interval: 0.85,
+            delay: 1
+          },
+          {
+            type: "nurse",
+            count: 2,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 1
+          }
+        ]
+      ]
+    },
+    {
+      world: 7,
+      name: "Jam Falls",
+      map: "w7_jam_falls",
+      waveCount: 9,
+      hpMul: 1.64,
+      interval: 1,
+      waves: [
+        [
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "drone",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "glazed",
+            count: 2,
+            interval: 1.5,
+            delay: 2
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "drone",
+            count: 5,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 0
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "drone",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small",
+            count: 14,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "drone",
+            count: 6,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "glazed",
+            count: 4,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "drone",
+            count: 6,
+            interval: 0.8,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small",
+            count: 14,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 4,
+            interval: 1.3,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "drone",
+            count: 5,
+            interval: 0.8,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "drone",
+            count: 5,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          },
+          {
+            type: "queen7",
+            count: 1,
+            interval: 1,
+            delay: 4
+          }
         ]
       ]
     }
@@ -2622,20 +9925,152 @@ var tuning_default = {
     zigzag: {
       name: "Breakfast Counter",
       theme: 0,
-      path: [[1, -0.6], [1, 2], [8, 2], [8, 5], [1, 5], [1, 8], [8, 8], [8, 10]],
-      props: [{ k: "sugar", c: 5, r: 10 }, { k: "mug", c: 9, r: 6 }]
+      path: [
+        [
+          1,
+          -0.6
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          8,
+          2
+        ],
+        [
+          8,
+          5
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          1,
+          8
+        ],
+        [
+          8,
+          8
+        ],
+        [
+          8,
+          10
+        ]
+      ],
+      props: [
+        {
+          k: "sugar",
+          c: 5,
+          r: 10
+        },
+        {
+          k: "mug",
+          c: 9,
+          r: 6
+        }
+      ]
     },
     hook: {
       name: "Baking Table",
       theme: 1,
-      path: [[8, -0.6], [8, 1], [2, 1], [2, 4], [7, 4], [7, 7], [2, 7], [2, 10], [6, 10]],
-      props: [{ k: "jam", c: 0, r: 11 }, { k: "plant", c: 9, r: 9 }]
+      path: [
+        [
+          8,
+          -0.6
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          7,
+          7
+        ],
+        [
+          2,
+          7
+        ],
+        [
+          2,
+          10
+        ],
+        [
+          6,
+          10
+        ]
+      ],
+      props: [
+        {
+          k: "jam",
+          c: 0,
+          r: 11
+        },
+        {
+          k: "plant",
+          c: 9,
+          r: 9
+        }
+      ]
     },
     spiral: {
       name: "Midnight Snack",
       theme: 2,
-      path: [[-0.6, 1], [8, 1], [8, 10], [1, 10], [1, 4], [5, 4], [5, 7]],
-      props: [{ k: "mug", c: 3, r: 7 }, { k: "spoon", c: 9, r: 11 }]
+      path: [
+        [
+          -0.6,
+          1
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          10
+        ],
+        [
+          1,
+          10
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          5,
+          7
+        ]
+      ],
+      props: [
+        {
+          k: "mug",
+          c: 3,
+          r: 7
+        },
+        {
+          k: "spoon",
+          c: 9,
+          r: 11
+        }
+      ]
     },
     fork: {
       name: "Sugar Bowl Split",
@@ -2820,8 +10255,56 @@ var tuning_default = {
     w3_butter: {
       name: "Butter Dish",
       theme: 4,
-      path: [[1, -0.6], [1, 1], [7, 1], [7, 4], [2, 4], [2, 7], [7, 7], [7, 10], [3, 10]],
-      props: [{ k: "jam", c: 9, r: 11 }, { k: "plant", c: 0, r: 9 }]
+      path: [
+        [
+          1,
+          -0.6
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          7
+        ],
+        [
+          7,
+          7
+        ],
+        [
+          7,
+          10
+        ],
+        [
+          3,
+          10
+        ]
+      ],
+      props: [
+        {
+          k: "jam",
+          c: 9,
+          r: 11
+        },
+        {
+          k: "plant",
+          c: 0,
+          r: 9
+        }
+      ]
     },
     w3_lattice: {
       name: "Lattice Crust",
@@ -3455,8 +10938,197 @@ var tuning_default = {
     },
     w6_waffle_iron: {
       name: "Waffle Iron",
-      art: { plate: { hide: !0 } },
+      art: {
+        plate: {
+          hide: !0
+        }
+      },
       theme: 9,
+      grid: [
+        "S........N",
+        ".........#",
+        ".#######.#",
+        ".#.....#.#",
+        ".#.....#.#",
+        ".#..B..#.#",
+        ".#.....#.#",
+        ".#.....#.#",
+        ".#..C###.#",
+        ".#.......#",
+        ".#########",
+        ".........."
+      ]
+    },
+    w6_picnic_blanket: {
+      name: "Picnic Blanket",
+      theme: 9,
+      grid: [
+        ".N......N.",
+        ".#..P...#.",
+        ".#......#.",
+        ".#......#.",
+        ".######.#.",
+        "......#.#.",
+        "..#######.",
+        "..#.......",
+        "..#.......",
+        ".##....P..",
+        ".#........",
+        ".C........"
+      ]
+    },
+    w6_syrup_falls: {
+      name: "Syrup Falls",
+      theme: 9,
+      grid: [
+        "..N.......",
+        "..#.......",
+        "..######..",
+        "....M..#..",
+        ".......#..",
+        ".#######..",
+        ".#........",
+        ".#........",
+        ".########.",
+        "........#.",
+        "....S...#.",
+        "M.......C."
+      ]
+    },
+    w7_jam_jar: {
+      name: "Jam Jar",
+      theme: 10,
+      grid: [
+        ".N..J.....",
+        ".#........",
+        ".########.",
+        "........#.",
+        "........#.",
+        ".########.",
+        ".#........",
+        ".#........",
+        ".#######..",
+        ".......#..",
+        ".....B.#..",
+        ".......#C."
+      ]
+    },
+    w7_grape_spoon: {
+      name: "Grape Spoon",
+      theme: 10,
+      grid: [
+        "S........N",
+        ".........#",
+        ".#########",
+        ".#........",
+        ".########.",
+        "........#.",
+        ".########.",
+        ".#..S.....",
+        ".#........",
+        ".#######..",
+        ".......#..",
+        "C#######.."
+      ]
+    },
+    w7_violet_cloth: {
+      name: "Violet Cloth",
+      theme: 10,
+      grid: [
+        ".......N..",
+        ".......#..",
+        ".#####.#..",
+        ".#...#.#..",
+        ".#...#.#..",
+        ".####+##..",
+        ".....#....",
+        "...M.#....",
+        ".....#...J",
+        "..####....",
+        "..#.......",
+        "..C......."
+      ]
+    },
+    w7_toast_rack: {
+      name: "Toast Rack",
+      theme: 10,
+      grid: [
+        "B........N",
+        ".........#",
+        ".#########",
+        ".#........",
+        ".########.",
+        "........#.",
+        ".########.",
+        ".#........",
+        ".########.",
+        "........#.",
+        "#########.",
+        "C...B....."
+      ]
+    },
+    w7_jelly_alley: {
+      name: "Jelly Alley",
+      theme: 10,
+      grid: [
+        ".N......N.",
+        ".#......#.",
+        ".#......#.",
+        ".#......#.",
+        ".#..#####.",
+        ".#..#.....",
+        ".####.....",
+        "....#.....",
+        "....#.P...",
+        "S...#.....",
+        "....#.....",
+        "....C....."
+      ]
+    },
+    w7_seed_basket: {
+      name: "Seed Basket",
+      theme: 10,
+      grid: [
+        "....J.....",
+        "..........",
+        ".########N",
+        ".#........",
+        ".#........",
+        ".########.",
+        "........#.",
+        "........#.",
+        ".....####.",
+        "J....#....",
+        ".....#....",
+        ".....C...."
+      ]
+    },
+    w7_cream_hill: {
+      name: "Cream Hill",
+      theme: 10,
+      grid: [
+        "....N.....",
+        "....#.....",
+        "....#.....",
+        ".########.",
+        ".#......#.",
+        ".#......#.",
+        ".#....M.#.",
+        ".####...#.",
+        "....#...#.",
+        "....#####.",
+        "M...#.....",
+        "....C....."
+      ]
+    },
+    w7_press_plate: {
+      name: "Press Plate",
+      art: {
+        plate: {
+          hide: !0
+        }
+      },
+      theme: 10,
       grid: [
         "N........S",
         "#.........",
@@ -3472,9 +11144,9 @@ var tuning_default = {
         ".........."
       ]
     },
-    w6_picnic_blanket: {
-      name: "Picnic Blanket",
-      theme: 9,
+    w7_picnic_cloth: {
+      name: "Picnic Cloth",
+      theme: 10,
       grid: [
         ".N......N.",
         ".#...P..#.",
@@ -3490,9 +11162,9 @@ var tuning_default = {
         "........C."
       ]
     },
-    w6_syrup_falls: {
-      name: "Syrup Falls",
-      theme: 9,
+    w7_jam_falls: {
+      name: "Jam Falls",
+      theme: 10,
       grid: [
         "..N.......",
         "..#.......",
@@ -3824,7 +11496,7 @@ var AIR_COUNTERS = ["laser", "zapper"], TARGET_MODE_TEXT = {
   lizard: { carrier: "Targets ants carrying food first, then fewest HP left; chews after kills.", healer: "Targets healer ants first, then fewest HP left; chews after kills.", strong: "Targets the toughest ant first; chews after kills. For queen levels." },
   laser: { carrier: "Aims at ants carrying food first, then fewest HP. Heat: +12% per hit on the same ant.", healer: "Aims at healer ants first, then fewest HP. Heat: +12% per hit on the same ant.", strong: "Aims at the toughest ant first. Heat: +12% per hit. For queen levels." },
   zapper: { carrier: "First zap: food carriers first, then fewest HP. Chains to the nearest flyers (60% each jump).", healer: "First zap: healer flyers first, then fewest HP. Chains to the nearest flyers (60% each jump).", strong: "First zap: the toughest flyer first. Chains to the nearest flyers. For queen levels." }
-}, HINT_OK = { healer: [35, 39, 49, 59], carrier: [40, 50, 59, 60], drone: [60] }, ART81 = !0, VERSION = "0.8.3", ANT_SIZES = { ...tuning_default.antSizes }, ANT_TEXT = {
+}, HINT_OK = { healer: [35, 39, 49, 59], carrier: [40, 50, 59, 60], drone: [60] }, ART81 = !0, VERSION = "0.8.4", ANT_SIZES = { ...tuning_default.antSizes }, ANT_TEXT = {
   small: { name: "Scout Ant", desc: "Tiny, fast, comes in swarms.", intro: "Tiny and fast. They come in swarms." },
   worker: { name: "Worker Ant", desc: "The regular. Hard hat included.", intro: "The regular ant. Easy to stop." },
   big: { name: "Big Ant", desc: "Slow, chunky, a bit of armor.", intro: "Slow and chunky, with a bit of armour." },
@@ -3852,6 +11524,8 @@ var AIR_COUNTERS = ["laser", "zapper"], TARGET_MODE_TEXT = {
   // v0.8.2 world 6 (Pancake Picnic)
   drone: { name: "Drone Ant", desc: "A four-winged flyer with armor 2. Laser, Zapper or Fan can hit it; Burn-through strips its armor.", intro: "Flies, with armor 2. Laser, Zapper or Fan!" },
   queen6: { name: "Syrup Queen", desc: "BOSS of world 6. Walks slowly and drips a Drone every 12 seconds. Takes 50 of the pancakes. Ignores most slowing.", intro: "Syrup Queen: a new Drone every 12 seconds." },
+  shieldbearer: { name: "Shield Bearer", desc: "While alive, nearby ants gain +1 armor. Rare.", intro: "Shield Bearer: nearby ants gain armor." },
+  queen7: { name: "Jam Queen", desc: "BOSS of world 7. Walks and calls a Worker, then a Drone, every 14 seconds. Takes 50 of the tart. Ignores most slowing.", intro: "Jam Queen: a Worker, then a Drone, every 14 seconds." },
   queen4: { name: "Sundae Queen", desc: "BOSS of world 4. Calls a nurse every 9 seconds, and the nurses heal her. Takes 50 of the sundae.", intro: "BOSS. Calls nurses that heal her." }
 }, ANT_CARD = {
   glazed: "Glazed Ant \u2014 sweet armor. Its glaze soaks up damage, then grows back. Hit it hard and fast, or use Spray and Bombs.",
@@ -3859,9 +11533,12 @@ var AIR_COUNTERS = ["laser", "zapper"], TARGET_MODE_TEXT = {
   nurse: "Nurse Ant \u2014 heals friends nearby every 3 seconds. Pop her first!",
   drone: "Drone Ant \u2014 flies, armor 2. Laser, Zapper and Fan can hit flyers.",
   // v0.8.2 PP9 (shown once on the first prep screen of L52)
-  queen6: "Syrup Queen \u2014 she walks, and drips a Drone every 12 seconds. Keep an air tower ready."
+  queen6: "Syrup Queen \u2014 she walks, and drips a Drone every 12 seconds. Keep an air tower ready.",
   // v0.8.2 PP5/PP9
-}, W6_TIPS = { 50: "Pancakes first. Syrup is next.", 51: "Drones fly. Only air towers hit them.", 52: "A long, winding picnic path.", 53: "Syrup is sticky. So are queens.", 54: "Halfway through the picnic.", 55: "Heavy hitters on this table.", 56: "Fewer ant types, bigger crowds.", 57: "The cookie waits at the end.", 58: "Drones and nurses arrive together.", 59: "The Syrup Queen drips Drones." }, L42_TIP = "Glaze grows back. Focus fire.", QUEEN_TRAITS = { ...tuning_default.queenTraitMods };
+  shieldbearer: "Shield Bearer \u2014 nearby ants gain +1 armor while it lives. Burn-through strips armor.",
+  queen7: "Jam Queen \u2014 she walks, and calls a Worker, then a Drone, every 14 seconds."
+}, W6_TIPS = { 50: "Pancakes first. Syrup is next.", 51: "Drones fly. Only air towers hit them.", 52: "A long, winding picnic path.", 53: "Syrup is sticky. So are queens.", 54: "Halfway through the picnic.", 55: "Heavy hitters on this table.", 56: "Fewer ant types, bigger crowds.", 57: "The cookie waits at the end.", 58: "Drones and nurses arrive together.", 59: "The Syrup Queen drips Drones." }, W7_TIPS = { 60: "Jam first. The tart is next.", 61: "A violet ant carries a shield.", 62: "Flyers cross the violet cloth.", 63: "Armor walks the toast rack.", 64: "The alley fills up fast.", 65: "A quiet basket between peaks.", 66: "Shields glow on the hill.", 67: "Heavy steps on the plate.", 68: "The cloth holds a hard mix.", 69: "The Jam Queen calls both." };
+var L42_TIP = "Glaze grows back. Focus fire.", QUEEN_TRAITS = { ...tuning_default.queenTraitMods };
 function queenTake(traits = [], T = QUEEN_TRAITS) {
   return 50 + traits.reduce((s, t) => s + (T[t] || 0), 0);
 }
@@ -4219,7 +11896,9 @@ var Path = class {
   nurse: 1.5,
   queen4: 1,
   drone: 0.8,
-  queen6: 1
+  queen6: 1,
+  shieldbearer: 1.2,
+  queen7: 1
 };
 function generateWaves(levelIndex, levels = LEVELS) {
   let L = levels[levelIndex];
@@ -4428,12 +12107,12 @@ var NEXT_ID = 1, Battle = class {
     if (ant.dead || dmg <= 0) return 0;
     if (opt.gas && ant.gasImmune)
       return opt.fx !== !1 && this.rng() < 0.05 && this.emit({ type: "immune", x: ant.x, y: ant.y }), 0;
-    let real = applyArmor(dmg, ant.armor, opt.ignoreArmor), toHp = real;
+    let armorNow = ant.armor || 0, real = applyArmor(dmg, ant.armor, opt.ignoreArmor), armorBlocked = opt.ignoreArmor ? 0 : Math.max(0, dmg - real), toHp = real;
     if (ant.shieldMax > 0 && (ant.shieldT = 0, ant.shield > 0)) {
       let ab = Math.min(ant.shield, real);
       ant.shield -= ab, toHp -= ab, this.stats.shieldAbsorbed = (this.stats.shieldAbsorbed || 0) + ab, ant.shield <= 1e-9 && (ant.shield = 0, this.stats.shieldBreaks = (this.stats.shieldBreaks || 0) + 1, this.emit({ type: "shieldBreak", x: ant.x, y: ant.y, id: ant.id, ant: ant.type }));
     }
-    return ant.hitFlash = 0.12, toHp > 1e-12 && (ant.hp -= toHp, ant.hp <= 0 && this.kill(ant, opt.src)), real;
+    return ant.hitFlash = 0.12, toHp > 1e-12 && (ant.hp -= toHp, ant.hp <= 0 && this.kill(ant, opt.src)), !opt.fx && armorNow > 0 && !opt.ignoreArmor && this.emit({ type: "clang", x: ant.x, y: ant.y, armor: armorNow, armorBlocked, src: opt.src && opt.src.type }), real;
   }
   kill(ant, src) {
     ant.dead = !0;
@@ -4709,6 +12388,24 @@ var NEXT_ID = 1, Battle = class {
     }
     let frozen = t < this.freezeUntil;
     for (let a of this.ants) a.slow = 0;
+    {
+      let au = ANTS.shieldbearer && ANTS.shieldbearer.aura, bearers = au ? this.ants.filter((x) => !x.dead && x.type === "shieldbearer") : [];
+      if (au && (bearers.length || this.ants.some((a) => a.auraArmor)))
+        for (let a of this.ants) {
+          if (a.dead) continue;
+          let base = (ANTS[a.type].armor || 0) - (a.shred || 0), bonus = 0;
+          if (!ANTS[a.type].boss && bearers.length)
+            for (let b of bearers) {
+              let dx = a.x - b.x, dy = a.y - b.y;
+              if (dx * dx + dy * dy <= au.radius * au.radius) {
+                bonus = au.armor;
+                break;
+              }
+            }
+          let arm = base + bonus;
+          ANTS[a.type].flying && (arm = Math.min(arm, au.maxArmor || 2)), a.armor = Math.max(0, arm), a.auraArmor = bonus;
+        }
+    }
     for (let h of this.ants) {
       let H2 = ANTS[h.type].heal;
       if (!H2 || h.dead || (h.healFx = Math.max(0, h.healFx - dt), frozen) || h.healCd > 0 && (h.healCd = Math.max(0, h.healCd - dt), h.healCd > 0))
@@ -4760,8 +12457,10 @@ var NEXT_ID = 1, Battle = class {
       let A = ANTS[a.type], slow = a.slow * (1 - (A.slowResist || 0)), v = a.speed * (1 - slow);
       if (frozen && (v = 0), a.stunT > 0 && (a.stunT -= dt, v = 0), a.waitT > 0 && (a.waitT -= dt, v = 0), a.state === "back" && (v *= this.cfg.carrierSpeedMul), A.spawn && !frozen && (a.spawnT -= dt, a.spawnT <= 0)) {
         a.spawnT = A.spawn.every;
-        for (let k = 0; k < A.spawn.count; k++) this.spawn(A.spawn.type, Math.max(0, a.d - 6 - k * 10), a.ri);
-        this.emit({ type: "queenCall", x: a.x, y: a.y, calls: A.spawn.type });
+        let call = A.spawn.type;
+        A.spawn.alt && (a.spawnFlip = !a.spawnFlip, call = a.spawnFlip ? A.spawn.alt : A.spawn.type);
+        for (let k = 0; k < A.spawn.count; k++) this.spawn(call, Math.max(0, a.d - 6 - k * 10), a.ri);
+        this.emit({ type: "queenCall", x: a.x, y: a.y, calls: call });
       }
       let dd = this.decoy && t < this.decoy.until ? this.decoy.ds[a.ri] : null;
       if (dd != null) {
@@ -4848,8 +12547,8 @@ var NEXT_ID = 1, Battle = class {
       } else if (tw.type === "zapper") {
         let hit2 = /* @__PURE__ */ new Set([target.id]), cur = target, dmg = tw.stat("power");
         this.damage(target, dmg, { src: tw }), this.emit({ type: "zap", x: tw.x, y: tw.y - 14, tx: target.x, ty: target.y });
-        let spZ = this.spec(tw);
-        for (let k = 0; k < tw.stat("chain") + (spZ ? spZ.plus : 0); k++) {
+        let spZ = this.spec(tw), baseChain = tw.stat("chain");
+        for (let k = 0; k < baseChain + (spZ ? spZ.plus : 0); k++) {
           let nx = null, nd = T.chainRange;
           for (let a of this.ants) {
             if (a.dead || !a.flying || hit2.has(a.id)) continue;
@@ -4857,7 +12556,9 @@ var NEXT_ID = 1, Battle = class {
             q <= nd && (nd = q, nx = a);
           }
           if (!nx) break;
-          dmg *= T.chainFalloff, hit2.add(nx.id), this.emit({ type: "zap", x: cur.x, y: cur.y, tx: nx.x, ty: nx.y, chain: !0 }), this.damage(nx, dmg, { src: tw }), cur = nx;
+          dmg *= T.chainFalloff, hit2.add(nx.id);
+          let isStatic = !!(spZ && k >= baseChain);
+          this.emit({ type: "zap", x: cur.x, y: cur.y, tx: nx.x, ty: nx.y, chain: !0, static: isStatic }), isStatic && this.emit({ type: "special", sp: "static", x: cur.x, y: cur.y, tx: nx.x, ty: nx.y }), this.damage(nx, dmg, { src: tw }), cur = nx;
         }
       } else if (tw.type === "lizard") {
         let spP = this.spec(tw), pounce = spP && target.hp >= target.maxHp - 1e-6 && !(target.shield > 0);
@@ -4866,8 +12567,11 @@ var NEXT_ID = 1, Battle = class {
     }
     for (let p of this.projectiles) {
       let tg = p.target, dx = tg.x - p.x, dy = tg.y - p.y, dist = Math.hypot(dx, dy), step = p.speed * dt;
-      if (dist <= step || tg.dead) {
-        if (!tg.dead) {
+      if (dist <= step || tg.dead)
+        if (tg.dead)
+          p.done = !0, this.emit({ type: "hit", x: tg.x, y: tg.y, src: p.src && p.src.type, armor: tg.armor || 0, armorBlocked: 0 });
+        else {
+          let armor = tg.armor || 0, blocked = Math.max(0, p.dmg - applyArmor(p.dmg, armor, !1));
           this.damage(tg, p.dmg, { src: p.src });
           let spR = p.src && p.src.type === "slingshot" ? this.spec(p.src) : null;
           if (spR) {
@@ -4879,9 +12583,9 @@ var NEXT_ID = 1, Battle = class {
             }
             nx && (this.damage(nx, p.dmg * spR.mul, { src: p.src }), this.emit({ type: "special", sp: "ricochet", x: tg.x, y: tg.y, tx: nx.x, ty: nx.y }));
           }
+          p.done = !0, this.emit({ type: "hit", x: tg.x, y: tg.y, src: p.src && p.src.type, armor, armorBlocked: blocked });
         }
-        p.done = !0, this.emit({ type: "hit", x: tg.x, y: tg.y, src: p.src && p.src.type });
-      } else
+      else
         p.x += dx / dist * step, p.y += dy / dist * step;
     }
     this.projectiles = this.projectiles.filter((p) => !p.done);
@@ -5861,7 +13565,7 @@ function monthBox(ctx2, x, y, s, tier, t = 0, reached = !1) {
     starShape(ctx2, x + Math.cos(a) * 20 * s, y + bob + Math.sin(a) * 13 * s, (tier === 3 ? 3.4 : 2.4) * (0.75 + 0.25 * Math.sin(t * 5 + k)), "#fff7a8", 1);
   }
 }
-var NODE_COLS = ["#ffc38a", "#ffb3c1", "#b9e89a", "#9fd6ff", "#c9b6f2", "#ffd27a", "#ff9e9e", "#a8e6e0", "#f7b6e8", "#d7b8ff"], W5_NODE_COLS = ["#a9d8de", "#8fcbd5", "#b9e2e6", "#9ecfd6", "#c4e8ec"], W6_NODE_COLS = ["#f0c078", "#e8a33d", "#f6d49a", "#eab25a", "#f9dfae"], NODE_ORN = ["leaf", "crumb", "bubble", "wing", "shield", "cloud", "cone", "mask", "dots", "crown"];
+var NODE_COLS = ["#ffc38a", "#ffb3c1", "#b9e89a", "#9fd6ff", "#c9b6f2", "#ffd27a", "#ff9e9e", "#a8e6e0", "#f7b6e8", "#d7b8ff"], W5_NODE_COLS = ["#a9d8de", "#8fcbd5", "#b9e2e6", "#9ecfd6", "#c4e8ec"], W6_NODE_COLS = ["#f0c078", "#e8a33d", "#f6d49a", "#eab25a", "#f9dfae"], W7_NODE_COLS = ["#d2b1e4", "#c45ad0", "#e7c6f2", "#b48cc8", "#f3c9ef"], NODE_ORN = ["leaf", "crumb", "bubble", "wing", "shield", "cloud", "cone", "mask", "dots", "crown"];
 function miniCrown(ctx2, x, y, s, fill = "#ffe36e") {
   ctx2.save(), ctx2.translate(x, y), ctx2.scale(s, s), ctx2.beginPath(), ctx2.moveTo(-7, 3), ctx2.lineTo(-8, -5), ctx2.lineTo(-3.5, -1), ctx2.lineTo(0, -7), ctx2.lineTo(3.5, -1), ctx2.lineTo(8, -5), ctx2.lineTo(7, 3), ctx2.closePath(), ctx2.fillStyle = fill, ctx2.fill(), ctx2.lineWidth = 1.8, ctx2.strokeStyle = INK, ctx2.lineJoin = "round", ctx2.stroke(), ctx2.beginPath(), ctx2.arc(0, -0.5, 1.4, 0, 7), ctx2.fillStyle = "#ff6f91", ctx2.fill(), ctx2.restore();
 }
@@ -5912,6 +13616,9 @@ function nodeOrnament(ctx2, kind, x, y, t) {
       rr(ctx2, -1.8, -4.4, 3.6, 2.4, 0.8), ctx2.fillStyle = "#fff2b8", ctx2.fill();
       break;
     // v0.8.2 PP8
+    case "tart":
+      ctx2.beginPath(), ctx2.arc(0, 0, 5.2, 0, 7), ctx2.fillStyle = "#e0a15a", ctx2.fill(), ctx2.stroke(), ctx2.beginPath(), ctx2.arc(0, 0, 3.1, 0, 7), ctx2.fillStyle = "#c45ad0", ctx2.fill();
+      break;
     case "donut":
       ctx2.beginPath(), ctx2.arc(0, 0, 5.4, 0, 7), ctx2.fillStyle = "#f7b6c8", ctx2.fill(), ctx2.stroke(), ctx2.beginPath(), ctx2.arc(0, 0, 1.7, 0, 7), ctx2.fillStyle = "#8a5a3a", ctx2.fill();
       for (let [dx, dy, c] of [[-3, -2.4, "#ffe27a"], [3, -2, "#8fd0f7"], [0, 3.6, "#ffffff"]])
@@ -5921,7 +13628,7 @@ function nodeOrnament(ctx2, kind, x, y, t) {
   ctx2.restore();
 }
 function mapNode(ctx2, x, y, i, st, t = 0) {
-  let w5 = ART81 && worldOf(i) === 5, w6 = ART81 && worldOf(i) === 6, base = st.open ? w6 ? W6_NODE_COLS[i % W6_NODE_COLS.length] : w5 ? W5_NODE_COLS[i % W5_NODE_COLS.length] : NODE_COLS[i % NODE_COLS.length] : "#cfc6cf", R = st.boss ? 29 : 27, depth = 7;
+  let w5 = ART81 && worldOf(i) === 5, w6 = ART81 && worldOf(i) === 6, w7 = ART81 && worldOf(i) === 7, base = st.open ? w7 ? W7_NODE_COLS[i % W7_NODE_COLS.length] : w6 ? W6_NODE_COLS[i % W6_NODE_COLS.length] : w5 ? W5_NODE_COLS[i % W5_NODE_COLS.length] : NODE_COLS[i % NODE_COLS.length] : "#cfc6cf", R = st.boss ? 29 : 27, depth = 7;
   if (ctx2.save(), shadow(ctx2, x, y + 26, 30, 7, 0.28), st.next && (ctx2.beginPath(), ctx2.ellipse(x, y + 3, R + 7 + Math.sin(t * 4) * 2, R * 0.92 + 6, 0, 0, 7), ctx2.fillStyle = "rgba(255,212,94,0.35)", ctx2.fill()), ctx2.beginPath(), ctx2.ellipse(x, y + depth, R, R * 0.9, 0, 0, Math.PI), ctx2.lineTo(x - R, y), ctx2.ellipse(x, y, R, R * 0.9, 0, Math.PI, 0, !0), ctx2.closePath(), ctx2.fillStyle = shade(base, -0.3), ctx2.fill(), ctx2.lineWidth = 3, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), st.boss) {
     for (let k = 0; k <= 10; k++) {
       let a = Math.PI + k / 10 * Math.PI, rr2 = k % 2 ? R * 0.82 : R;
@@ -5930,13 +13637,21 @@ function mapNode(ctx2, x, y, i, st, t = 0) {
     ctx2.ellipse(x, y, R, R * 0.9, 0, 0, Math.PI);
   } else ctx2.ellipse(x, y, R, R * 0.9, 0, 0, 7);
   let g = ctx2.createRadialGradient(x - R * 0.35, y - R * 0.4, 2, x, y, R * 1.1);
-  g.addColorStop(0, shade(base, 0.55)), g.addColorStop(0.6, base), g.addColorStop(1, shade(base, -0.12)), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = 3, ctx2.strokeStyle = st.cleared ? "#e0a830" : INK, ctx2.stroke(), st.cleared && (ctx2.beginPath(), ctx2.ellipse(x, y, R - 2.5, R * 0.9 - 2.5, 0, 0, 7), ctx2.lineWidth = 2, ctx2.strokeStyle = "#ffe9a0", ctx2.stroke()), ctx2.beginPath(), ctx2.ellipse(x, y + 1, R * 0.66, R * 0.6, 0, 0, 7), ctx2.lineWidth = 2, ctx2.strokeStyle = w6 && st.open ? "rgba(201,119,43,0.95)" : w5 && st.open ? "rgba(247,182,200,0.95)" : `rgba(255,255,255,${st.open ? 0.55 : 0.3})`, ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(x - R * 0.38, y - R * 0.5, R * 0.36, R * 0.16, -0.4, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.6)", ctx2.fill(), st.open ? (drawChunkyText(ctx2, String(i + 1), x, y + 1, 25, { mode: "num" }), nodeOrnament(ctx2, w6 ? st.boss ? "crown" : "pancake" : w5 ? st.boss ? "crown" : "donut" : NODE_ORN[i % NODE_ORN.length], x + R * 0.72, y - R * 0.72, t), st.stars >= 3 && !st.boss && miniCrown(ctx2, x, y - R - 3, 1.1)) : (rr(ctx2, x - 8, y - 3, 16, 13, 3), ctx2.fillStyle = "#8c8090", ctx2.fill(), ctx2.beginPath(), ctx2.arc(x, y - 4, 5.5, Math.PI, 0), ctx2.lineWidth = 3, ctx2.strokeStyle = "#8c8090", ctx2.stroke()), ctx2.restore();
+  g.addColorStop(0, shade(base, 0.55)), g.addColorStop(0.6, base), g.addColorStop(1, shade(base, -0.12)), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = 3, ctx2.strokeStyle = st.cleared ? "#e0a830" : INK, ctx2.stroke(), st.cleared && (ctx2.beginPath(), ctx2.ellipse(x, y, R - 2.5, R * 0.9 - 2.5, 0, 0, 7), ctx2.lineWidth = 2, ctx2.strokeStyle = "#ffe9a0", ctx2.stroke()), ctx2.beginPath(), ctx2.ellipse(x, y + 1, R * 0.66, R * 0.6, 0, 0, 7), ctx2.lineWidth = 2, ctx2.strokeStyle = w6 && st.open ? "rgba(201,119,43,0.95)" : w5 && st.open ? "rgba(247,182,200,0.95)" : `rgba(255,255,255,${st.open ? 0.55 : 0.3})`, ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(x - R * 0.38, y - R * 0.5, R * 0.36, R * 0.16, -0.4, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.6)", ctx2.fill(), st.open ? (drawChunkyText(ctx2, String(i + 1), x, y + 1, 25, { mode: "num" }), nodeOrnament(ctx2, w7 ? st.boss ? "crown" : "tart" : w6 ? st.boss ? "crown" : "pancake" : w5 ? st.boss ? "crown" : "donut" : NODE_ORN[i % NODE_ORN.length], x + R * 0.72, y - R * 0.72, t), st.stars >= 3 && !st.boss && miniCrown(ctx2, x, y - R - 3, 1.1)) : (rr(ctx2, x - 8, y - 3, 16, 13, 3), ctx2.fillStyle = "#8c8090", ctx2.fill(), ctx2.beginPath(), ctx2.arc(x, y - 4, 5.5, Math.PI, 0), ctx2.lineWidth = 3, ctx2.strokeStyle = "#8c8090", ctx2.stroke()), ctx2.restore();
 }
 function starShape(ctx2, x, y, r, fill, lw = 2) {
   candyStar(ctx2, x, y, r, fill, lw);
 }
-var ANT_COL = { small: "#f8c07e", worker: "#f0994d", big: "#d97a3f", gasmask: "#f0994d", armored: "#e48a47", flyer: "#f9b878", queen: "#f59b9b", queen2: "#c7a6f5", sprinter: "#f0994d", heavy: "#b95b34", greasy: "#ee9f45", mama: "#d9774a", queen3: "#e9b05c", nurse: "#f2b49b", queen4: "#f4b9c8", glazed: "#f1cf9a", queen5: "#e8789c", drone: "#e8a33d", queen6: "#c9772b" }, ALW = 2.4;
+var ANT_COL = { small: "#f8c07e", worker: "#f0994d", big: "#d97a3f", gasmask: "#f0994d", armored: "#e48a47", flyer: "#f9b878", queen: "#f59b9b", queen2: "#c7a6f5", sprinter: "#f0994d", heavy: "#b95b34", greasy: "#ee9f45", mama: "#d9774a", queen3: "#e9b05c", nurse: "#f2b49b", queen4: "#f4b9c8", glazed: "#f1cf9a", queen5: "#e8789c", drone: "#e8a33d", queen6: "#c9772b", shieldbearer: "#8b6ecf", queen7: "#c45ad0" }, ALW = 2.4, PLAY_ANT_SCALE = 0.62, _play = null;
+function playSegment(ctx2, x, y, rx, ry, col) {
+  let g = ctx2.createLinearGradient(x - rx, y - ry, x + rx * 0.35, y + ry);
+  g.addColorStop(0, shade(col, 0.18)), g.addColorStop(0.48, col), g.addColorStop(1, shade(col, -0.16)), ctx2.beginPath(), ctx2.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2), ctx2.fillStyle = g, ctx2.fill(), ctx2.beginPath(), ctx2.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2), ctx2.save(), ctx2.globalAlpha *= 0.5, ctx2.lineWidth = 1, ctx2.strokeStyle = shade(col, -0.22), ctx2.stroke(), ctx2.restore(), ctx2.save(), ctx2.translate(x, y), ctx2.beginPath(), ctx2.ellipse(-rx * 0.28, -ry * 0.36, Math.max(1.2, rx * 0.3), Math.max(0.8, ry * 0.2), -0.5, 0, Math.PI * 2), ctx2.fillStyle = "#ffffff", ctx2.globalAlpha = 0.35, ctx2.fill(), Math.min(rx, ry) >= 5 && (ctx2.beginPath(), ctx2.arc(-rx * 0.46, -ry * 0.12, 1, 0, Math.PI * 2), ctx2.globalAlpha = 0.5, ctx2.fill()), ctx2.restore();
+}
 function softBlob(ctx2, x, y, rx, ry, col, lw = ALW, gloss = 1) {
+  if (_play) {
+    playSegment(ctx2, x, y, rx, ry, col);
+    return;
+  }
   drawGlossyBlob(ctx2, x, y, rx, ry, col, { lw, gloss });
 }
 function glossyEye(ctx2, x, y, rx, ry, blink, mood = "", side = 1) {
@@ -5966,10 +13681,14 @@ function glossyEye(ctx2, x, y, rx, ry, blink, mood = "", side = 1) {
   g.addColorStop(0, "#24151f"), g.addColorStop(0.65, "#3b2533"), g.addColorStop(1, "#7a4f62"), ctx2.fillStyle = g, ctx2.fill(), ctx2.beginPath(), ctx2.ellipse(x - rx * 0.26, y - ry * 0.36, rx * 0.48, ry * 0.3, -0.3, 0, 7), ctx2.fillStyle = "#ffffff", ctx2.fill(), ctx2.beginPath(), ctx2.arc(x + rx * 0.4, y + ry * 0.42, rx * 0.22, 0, 7), ctx2.fillStyle = "rgba(255,255,255,0.92)", ctx2.fill();
 }
 function cheek(ctx2, x, y, r = 2.8) {
-  ctx2.beginPath(), ctx2.ellipse(x, y, r, r * 0.66, 0, 0, 7), ctx2.fillStyle = "rgba(255,100,130,0.6)", ctx2.fill();
+  ctx2.beginPath(), ctx2.ellipse(x, y, r, r * 0.66, 0, 0, 7), ctx2.fillStyle = _play ? "rgba(255,100,130,0.55)" : "rgba(255,100,130,0.6)", ctx2.fill();
 }
 function leg(ctx2, x0, y0, x1, y1, col) {
-  ctx2.lineCap = "round", ctx2.beginPath(), ctx2.moveTo(x0, y0), ctx2.quadraticCurveTo((x0 + x1) / 2 + 0.6, (y0 + y1) / 2 + 0.6, x1, y1), ctx2.lineWidth = 5.6, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.lineWidth = 3.4, ctx2.strokeStyle = col, ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(x1 + 0.7, y1 + 0.5, 2.7, 1.9, 0, 0, 7), ctx2.fillStyle = col, ctx2.fill(), ctx2.lineWidth = 1.7, ctx2.strokeStyle = INK, ctx2.stroke();
+  if (ctx2.lineCap = "round", ctx2.beginPath(), ctx2.moveTo(x0, y0), ctx2.quadraticCurveTo((x0 + x1) / 2 + 0.6, (y0 + y1) / 2 + 0.6, x1, y1), _play) {
+    ctx2.lineWidth = 2, ctx2.strokeStyle = col, ctx2.stroke(), ctx2.beginPath(), ctx2.arc(x1, y1, 0.8, 0, 7), ctx2.fillStyle = col, ctx2.fill();
+    return;
+  }
+  ctx2.lineWidth = 5.6, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.lineWidth = 3.4, ctx2.strokeStyle = col, ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(x1 + 0.7, y1 + 0.5, 2.7, 1.9, 0, 0, 7), ctx2.fillStyle = col, ctx2.fill(), ctx2.lineWidth = 1.7, ctx2.strokeStyle = INK, ctx2.stroke();
 }
 function sneaker(ctx2, x, y, far) {
   ctx2.beginPath(), ctx2.ellipse(x + 1, y + 0.6, 2.8, 1.7, 0, 0, 7), ctx2.fillStyle = far ? "#e6e6ee" : "#ffffff", ctx2.fill(), ctx2.lineWidth = 1.3, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(x - 0.8, y + 0.4), ctx2.lineTo(x + 2.4, y + 0.1), ctx2.lineWidth = 1.1, ctx2.strokeStyle = "#ff5a6e", ctx2.stroke();
@@ -5982,8 +13701,22 @@ function plusShape(ctx2, x, y, s, fill, lw = 1.5) {
 function drawAnt(ctx2, type, phase = 0, opt = {}) {
   let S2 = ANTS[type].size, LW = Math.min(3, Math.max(1.8, 2.2 * S2)) / S2;
   type = ANT_LOOK[type] || type;
-  let col = ANT_COL[type], legCol = shade(col, -0.18), farCol = shade(col, -0.32), P = phase * Math.PI * 2, step = Math.sin(P), hop = Math.abs(Math.sin(P)), drone = type === "drone", syrupQueen = type === "queen6", flying = type === "flyer" || drone, queen = type === "queen" || type === "queen2" || type === "queen3" || type === "queen4" || type === "queen5" || syrupQueen, swiftQueen = type === "queen2", mama = type === "mama", greasy = type === "greasy", pieQueen = type === "queen3", nurse = type === "nurse", sundaeQueen = type === "queen4", glazed = type === "glazed", glazeQueen = type === "queen5", big = type === "big" || type === "heavy" || mama, shell = type === "armored" || type === "heavy" || type === "sprinter", sprinter = type === "sprinter", heavy = type === "heavy", cheer = opt.pose === "cheer";
-  ctx2.save(), ctx2.scale(S2, S2), ctx2.lineJoin = "round", ctx2.lineCap = "round", drone && ctx2.scale(1.15, 1.15), ART81 ? flying ? shadow(ctx2, 0, 24, 11 * (1 - 0.1 * hop), 3.3 * (1 - 0.1 * hop), 0.15) : shadow(ctx2, 0, 10.5, 15 - hop * 2, 4, 0.22) : flying ? shadow(ctx2, 0, 21, 10, 3, 0.13) : shadow(ctx2, 0, 10.5, 15 - hop * 2, 4, 0.2);
+  let hue = opt.hue || 0, col0 = ANT_COL[type], col = hue ? mixHex(col0, hue > 0 ? "#ffe0b0" : "#ffc0cc", Math.min(0.22, Math.abs(hue) / 28)) : col0, legCol = shade(col, -0.18), farCol = shade(col, -0.32), P = phase * Math.PI * 2, step = Math.sin(P) * (opt.play ? 0.85 : 1), hop = Math.abs(Math.sin(P)) * (opt.play ? 0.75 : 1), drone = type === "drone", syrupQueen = type === "queen6", jamQueen = type === "queen7", flying = type === "flyer" || drone, queen = type === "queen" || type === "queen2" || type === "queen3" || type === "queen4" || type === "queen5" || syrupQueen || jamQueen, swiftQueen = type === "queen2", mama = type === "mama", greasy = type === "greasy", pieQueen = type === "queen3", nurse = type === "nurse", sundaeQueen = type === "queen4", glazed = type === "glazed", glazeQueen = type === "queen5", big = type === "big" || type === "heavy" || mama, shell = type === "armored" || type === "heavy" || type === "sprinter", sprinter = type === "sprinter", heavy = type === "heavy", cheer = opt.pose === "cheer";
+  ctx2.save(), ctx2.scale(S2, S2), ctx2.lineJoin = "round", ctx2.lineCap = "round", opt.play && ctx2.scale(PLAY_ANT_SCALE, PLAY_ANT_SCALE), drone && ctx2.scale(1.15, 1.15), _play = opt.play ? { col } : null;
+  let _stroke = ctx2.stroke;
+  opt.play && (ctx2.stroke = function() {
+    let ss = ctx2.strokeStyle;
+    if (ss !== INK && ss !== "#523c4b") {
+      _stroke.call(ctx2);
+      return;
+    }
+    let lw = ctx2.lineWidth, al = ctx2.globalAlpha;
+    ctx2.strokeStyle = shade(col, -0.22), ctx2.globalAlpha = al * 0.5, ctx2.lineWidth = 1, _stroke.call(ctx2), ctx2.strokeStyle = ss, ctx2.globalAlpha = al, ctx2.lineWidth = lw;
+  });
+  let endAnt = () => {
+    ctx2.stroke = _stroke, _play = null, ctx2.restore();
+  };
+  opt.play ? flying ? shadow(ctx2, 0, 16, 8, 2.2, 0.14) : shadow(ctx2, 0, 8, 9, 2.4, 0.18) : ART81 ? flying ? shadow(ctx2, 0, 24, 11 * (1 - 0.1 * hop), 3.3 * (1 - 0.1 * hop), 0.15) : shadow(ctx2, 0, 10.5, 15 - hop * 2, 4, 0.22) : flying ? shadow(ctx2, 0, 21, 10, 3, 0.13) : shadow(ctx2, 0, 10.5, 15 - hop * 2, 4, 0.2);
   let lift = flying ? 9 + Math.sin(P * 2) * 2 : big ? hop * 1.8 : hop * 3.2;
   if (big && !flying && (ctx2.translate(0, 10), ctx2.rotate(Math.sin(P) * 0.06), ctx2.translate(0, -10), hop < 0.18)) {
     ctx2.save(), ctx2.globalAlpha = (0.18 - hop) * 3;
@@ -6014,7 +13747,7 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
     let sw = Math.sin(P) * 1.5;
     ctx2.beginPath(), ctx2.moveTo(3, -8), ctx2.quadraticCurveTo(-14, -12 + sw, -24, 7), ctx2.quadraticCurveTo(-11, 11, 2, 5), ctx2.closePath();
     let g = ctx2.createLinearGradient(0, -10, 0, 10);
-    g.addColorStop(0, syrupQueen ? "#f3b868" : glazeQueen ? "#9fe3e6" : sundaeQueen ? "#8fe0c8" : pieQueen ? "#7f9be6" : "#b597f0"), g.addColorStop(1, syrupQueen ? "#a85f1c" : glazeQueen ? "#4fb3bd" : sundaeQueen ? "#3fa88f" : pieQueen ? "#4f69b8" : "#8a68d8"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = LW, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(-22, 6.5), ctx2.quadraticCurveTo(-10, 10, 1.5, 4.5), ctx2.lineWidth = 3.4, ctx2.strokeStyle = "#ffffff", ctx2.stroke(), ctx2.fillStyle = INK;
+    g.addColorStop(0, jamQueen ? "#e7a0ea" : syrupQueen ? "#f3b868" : glazeQueen ? "#9fe3e6" : sundaeQueen ? "#8fe0c8" : pieQueen ? "#7f9be6" : "#b597f0"), g.addColorStop(1, jamQueen ? "#8a3a96" : syrupQueen ? "#a85f1c" : glazeQueen ? "#4fb3bd" : sundaeQueen ? "#3fa88f" : pieQueen ? "#4f69b8" : "#8a68d8"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = LW, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(-22, 6.5), ctx2.quadraticCurveTo(-10, 10, 1.5, 4.5), ctx2.lineWidth = 3.4, ctx2.strokeStyle = "#ffffff", ctx2.stroke(), ctx2.fillStyle = INK;
     for (let [a, b] of [[-17, 6.8], [-10, 8], [-4, 6.6]])
       ctx2.beginPath(), ctx2.arc(a, b, 0.9, 0, 7), ctx2.fill();
   }
@@ -6027,7 +13760,7 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
   softBlob(ctx2, -10, 0.5, abRx, abRy, col, LW, 0.85), ctx2.save(), ctx2.beginPath(), ctx2.ellipse(-10, 0.5, abRx - 1, abRy - 1, 0, 0, 7), ctx2.clip(), ctx2.strokeStyle = drone ? INK : shade(col, -0.14), ctx2.lineWidth = drone ? 3.6 : 2;
   for (let sx of [-15, -10.5])
     ctx2.beginPath(), ctx2.ellipse(sx - (big ? 1.5 : 0), 0.5, 2, abRy + 2, 0, -1.3, 1.3), ctx2.stroke();
-  if (syrupQueen && (ctx2.beginPath(), ctx2.moveTo(-20.5, -5.2), ctx2.quadraticCurveTo(-11, -9.6, -1.5, -6.4), ctx2.lineWidth = 3, ctx2.strokeStyle = "rgba(255,248,224,0.72)", ctx2.stroke()), ctx2.restore(), mama)
+  if (syrupQueen && (ctx2.beginPath(), ctx2.moveTo(-20.5, -5.2), ctx2.quadraticCurveTo(-11, -9.6, -1.5, -6.4), ctx2.lineWidth = 3, ctx2.strokeStyle = "rgba(255,248,224,0.72)", ctx2.stroke()), ctx2.restore(), type === "shieldbearer" && (ctx2.save(), ctx2.translate(-15, -7), ctx2.rotate(-0.35), ctx2.scale(1.12, 1.12), _play ? playSegment(ctx2, 0, 0, 7.4, 8.4, "#8b6ecf") : softBlob(ctx2, 0, 0, 7.4, 8.4, "#8b6ecf", 2), ctx2.beginPath(), ctx2.moveTo(0, -4.2), ctx2.lineTo(3.2, -1.2), ctx2.lineTo(0.4, 3.4), ctx2.lineTo(-2.6, -0.6), ctx2.closePath(), ctx2.fillStyle = "rgba(255,255,255,0.9)", ctx2.fill(), ctx2.restore()), mama)
     for (let [ex, ey2, er] of [[-16.5, -2.2, 2.9], [-10.5, -4.6, 3.1], [-5.2, -1.4, 2.7]])
       ctx2.beginPath(), ctx2.ellipse(ex, ey2, er, er * 1.2, 0.2, 0, 7), ctx2.fillStyle = "#fffaf0", ctx2.fill(), ctx2.lineWidth = 1.7, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.arc(ex - 0.7, ey2 - 0.8, 0.8, 0, 7), ctx2.fillStyle = "#f2a0b0", ctx2.fill();
   if (shell) {
@@ -6038,7 +13771,7 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
       ctx2.beginPath(), ctx2.arc(rx, -3, 1.1, 0, 7), ctx2.fill();
     heavy && (ctx2.beginPath(), ctx2.ellipse(-10, -2.5, abRx * 0.8, 1.4, 0, Math.PI * 1.1, Math.PI * 1.9), ctx2.lineWidth = 1.6, ctx2.strokeStyle = "#f4b632", ctx2.stroke()), ctx2.restore();
   }
-  softBlob(ctx2, -1, 1.5, 6.5, 6, col, LW, 0), opt.carrying && crumbIcon(ctx2, -10.5, -12.5, 1.4, !0);
+  softBlob(ctx2, -1, 1.5, 6.5, 6, col, LW, 0), opt.carrying && (_play && (ctx2.save(), ctx2.translate(-10.5, -12.5), ctx2.scale(0.75, 0.75), ctx2.translate(10.5, 12.5)), crumbIcon(ctx2, -10.5, -12.5, 1.4, !0), _play && ctx2.restore());
   for (let i = 0; i < 3; i++) {
     let sw = (i % 2 ? 1 : -1) * step * 2.2;
     cheer && i === 2 || (leg(ctx2, -6 + i * 4.8, legY + 1.2, -5 + i * 4.8 + sw, footY + 0.5, legCol), sprinter && sneaker(ctx2, -5 + i * 4.8 + sw, footY + 0.5, !1));
@@ -6053,9 +13786,9 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
   if (type !== "armored" && type !== "heavy" && type !== "small")
     for (let k of [0, 1]) {
       let bx0 = hx2 - 3 + k * 6, by0 = hy - hr + 3, tx0 = hx2 - 4.5 + k * 10 + bob * (k ? 1 : -0.6), ty0 = hy - hr - 4.5 + k * 0.5 - Math.abs(bob) * 0.5, tx = bx0 + (tx0 - bx0) * 1.2, ty = by0 + (ty0 - by0) * 1.2;
-      ctx2.beginPath(), ctx2.moveTo(bx0, by0), ctx2.quadraticCurveTo(bx0 + (k ? 3 : -2), ty + 3, tx, ty), ctx2.lineWidth = 3.2, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.lineWidth = 1.5, ctx2.strokeStyle = legCol, ctx2.stroke(), blob(ctx2, tx, ty, 2, 2, shade(col, 0.25), 1.5, 0, { gloss: 0.6 });
+      ctx2.beginPath(), ctx2.moveTo(bx0, by0), ctx2.quadraticCurveTo(bx0 + (k ? 3 : -2), ty + 3, tx, ty), _play ? (ctx2.lineWidth = 1.4, ctx2.strokeStyle = legCol, ctx2.stroke(), blob(ctx2, tx, ty, 0.8, 0.8, shade(col, 0.25), 0, 0, { gloss: 0.4 })) : (ctx2.lineWidth = 3.2, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.lineWidth = 1.5, ctx2.strokeStyle = legCol, ctx2.stroke(), blob(ctx2, tx, ty, 2, 2, shade(col, 0.25), 1.5, 0, { gloss: 0.6 }));
     }
-  softBlob(ctx2, hx2, hy, hr, hr * 0.92, col, LW);
+  softBlob(ctx2, hx2, hy, hr, hr * 0.92, col, LW), flying && ART81 && (ctx2.beginPath(), ctx2.ellipse(hx2 - 2, hy - 2, hr * 0.72, hr * 0.5, -0.4, Math.PI * 1.05, Math.PI * 1.7), ctx2.lineWidth = 1, ctx2.strokeStyle = "rgba(255,255,255,0.6)", ctx2.stroke());
   let e1x = hx2 + 0.2, e2x = hx2 + 8.6, ey = hy + 1.6, blink = opt.blink, mood = opt.mood || (cheer ? "cheer" : "");
   if (type === "gasmask") {
     ctx2.beginPath(), ctx2.moveTo(hx2 - hr + 1, hy - 3), ctx2.quadraticCurveTo(hx2 - 2, hy - 6, e1x, ey - 1), ctx2.lineWidth = 3, ctx2.strokeStyle = "#6f6a7c", ctx2.stroke();
@@ -6155,7 +13888,7 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
         ctx2.save(), ctx2.translate(hx2 + dx, cy + dy), ctx2.rotate(rot), rr(ctx2, -1.6, -0.6, 3.2, 1.2, 0.6), ctx2.fillStyle = c2, ctx2.fill(), ctx2.restore();
       if (ART81) for (let [dx, dy, c2] of [[-6.6, -14, "#6fd0e8"], [0, -18, "#fff3a8"], [6.6, -14, "#8de0a8"]])
         ctx2.beginPath(), ctx2.arc(hx2 + dx, cy + dy, 3.1, 0, 7), ctx2.fillStyle = c2, ctx2.fill(), ctx2.lineWidth = 1.4, ctx2.strokeStyle = INK, ctx2.stroke();
-      ctx2.restore();
+      endAnt();
       return;
     }
     if (syrupQueen) {
@@ -6165,7 +13898,11 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
       blob(ctx2, hx2 - 3.2, cy - 8, 2.8, 1.2, "#fff2b8", 0.1);
       for (let dx of [-7, 0, 7])
         ctx2.beginPath(), ctx2.arc(hx2 + dx, cy - 11.6 - (dx ? 0 : 3), 3, 0, 7), ctx2.fillStyle = "#fff2b8", ctx2.fill(), ctx2.lineWidth = 1.5, ctx2.strokeStyle = INK, ctx2.stroke();
-      ctx2.restore();
+      endAnt();
+      return;
+    }
+    if (jamQueen) {
+      blob(ctx2, hx2, cy - 6.2, 11, 6.4, "#f3c98b", 2.2), blob(ctx2, hx2, cy - 7.2, 8.2, 4.4, "#c45ad0", 1.8), blob(ctx2, hx2 - 2.2, cy - 9.2, 2.4, 1.1, "#f7d0f4", 0.1), endAnt();
       return;
     }
     if (sundaeQueen) {
@@ -6176,7 +13913,7 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
         ctx2.beginPath(), ctx2.moveTo(hx2 + k - 4, cy - 9), ctx2.lineTo(hx2 + k + 4, cy + 1), ctx2.moveTo(hx2 + k + 4, cy - 9), ctx2.lineTo(hx2 + k - 4, cy + 1), ctx2.stroke();
       ctx2.restore(), blob(ctx2, hx2, cy - 11, 8.2, 5.6, "#ff9ec0", 2.2), blob(ctx2, hx2 - 1.6, cy - 12.6, 2.6, 1.4, "#ffd3e2", 0.1), ctx2.beginPath(), ctx2.moveTo(hx2 - 6.5, cy - 8.6);
       for (let k = 0; k < 4; k++) ctx2.quadraticCurveTo(hx2 - 6.5 + k * 4.4 + 1.6, cy - 5.6, hx2 - 6.5 + (k + 1) * 4.4, cy - 8.6);
-      ctx2.lineWidth = 1.6, ctx2.strokeStyle = INK, ctx2.stroke(), blob(ctx2, hx2 + 1, cy - 17.4, 2.6, 2.6, "#e8304e", 1.6), ctx2.beginPath(), ctx2.moveTo(hx2 + 1, cy - 19.6), ctx2.quadraticCurveTo(hx2 + 2.5, cy - 23, hx2 + 5, cy - 23.4), ctx2.lineWidth = 1.6, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.restore();
+      ctx2.lineWidth = 1.6, ctx2.strokeStyle = INK, ctx2.stroke(), blob(ctx2, hx2 + 1, cy - 17.4, 2.6, 2.6, "#e8304e", 1.6), ctx2.beginPath(), ctx2.moveTo(hx2 + 1, cy - 19.6), ctx2.quadraticCurveTo(hx2 + 2.5, cy - 23, hx2 + 5, cy - 23.4), ctx2.lineWidth = 1.6, ctx2.strokeStyle = INK, ctx2.stroke(), endAnt();
       return;
     }
     ctx2.beginPath(), ctx2.moveTo(hx2 - 7, cy), ctx2.lineTo(hx2 - 8, cy - 9), ctx2.lineTo(hx2 - 3.5, cy - 4.5), ctx2.lineTo(hx2, cy - 11), ctx2.lineTo(hx2 + 3.5, cy - 4.5), ctx2.lineTo(hx2 + 8, cy - 9), ctx2.lineTo(hx2 + 7, cy), ctx2.closePath();
@@ -6184,14 +13921,14 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
     g.addColorStop(0, pieQueen ? "#ff8aa0" : "#fff5ad"), g.addColorStop(1, pieQueen ? "#d93a5c" : "#f4b632"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = 2.3, ctx2.strokeStyle = INK, ctx2.stroke(), blob(ctx2, hx2, cy - 2.6, 1.8, 1.8, "#ff6f91", 1.2), blob(ctx2, hx2 - 5, cy - 2.2, 1.2, 1.2, "#7cc6f2", 1), blob(ctx2, hx2 + 5, cy - 2.2, 1.2, 1.2, "#7cc6f2", 1);
     for (let [x, y] of [[hx2 - 8, cy - 9], [hx2, cy - 11], [hx2 + 8, cy - 9]]) blob(ctx2, x, y, 1.4, 1.4, "#fff5ad", 1.2);
   }
-  ctx2.restore();
+  endAnt();
 }
 var spriteCache = /* @__PURE__ */ new Map(), ANT_FRAMES = 12;
-function antSprite(type, frame2, carrying, dpr2, variant = "") {
-  let key = type + frame2 + (carrying ? "c" : "") + dpr2 + variant, s = spriteCache.get(key);
+function antSprite(type, frame2, carrying, dpr2, variant = "", opt = {}) {
+  let play = !!(opt && opt.play), hue = opt && opt.hue || 0, key = type + frame2 + (carrying ? "c" : "") + dpr2 + variant + (play ? "P" : "") + (hue ? "h" + hue : ""), s = spriteCache.get(key);
   if (s) return s;
   let S2 = ANTS[type].size, w = Math.ceil(80 * S2), h = Math.ceil(84 * S2), cv = makeCanvas(Math.ceil(w * dpr2), Math.ceil(h * dpr2)), g = cv.getContext("2d");
-  return g.scale(dpr2, dpr2), g.translate(w / 2, h * 0.66), drawAnt(g, type, frame2 / ANT_FRAMES, { carrying, blink: frame2 === 7 && !isQueen(type), grey: variant === "g", mood: variant === "h" ? "hurt" : variant === "d" ? "dizzy" : "", pose: variant === "cheer" ? "cheer" : "" }), s = { cv, w, h, ox: w / 2, oy: h * 0.66 }, spriteCache.set(key, s), s;
+  return g.scale(dpr2, dpr2), g.translate(w / 2, h * 0.66), drawAnt(g, type, frame2 / ANT_FRAMES, { carrying, blink: frame2 === 7 && !isQueen(type), grey: variant === "g", mood: variant === "h" ? "hurt" : variant === "d" ? "dizzy" : "", pose: variant === "cheer" ? "cheer" : "", play, hue }), s = { cv, w, h, ox: w / 2, oy: h * 0.66 }, spriteCache.set(key, s), s;
 }
 function makeCanvas(w, h) {
   if (typeof OffscreenCanvas < "u") return new OffscreenCanvas(w, h);
@@ -6911,7 +14648,28 @@ function pancakeBody(ctx2, r, pct) {
   }
   ctx2.restore();
 }
-var TREAT_BODIES = { cookie: cookieBody, cake: cakeBody, pie: pieBody, sundae: sundaeBody, donut: donutBody, pancake: pancakeBody };
+function tartBody(ctx2, r, pct) {
+  let bites = Math.round((1 - pct) * 9), bAt = (k) => {
+    let a = -0.6 + k * 0.72;
+    return [Math.cos(a) * r * 0.98, Math.sin(a) * r * 0.98];
+  };
+  ctx2.save(), ctx2.beginPath(), ctx2.arc(0, 0, r, 0, Math.PI * 2);
+  for (let k = 0; k < bites; k++) {
+    let [bx, by] = bAt(k);
+    ctx2.moveTo(bx + 9, by), ctx2.arc(bx, by, 9, 0, Math.PI * 2, !0);
+  }
+  ctx2.clip("evenodd");
+  let g = ctx2.createRadialGradient(-6, -8, 4, 0, 0, r);
+  g.addColorStop(0, "#f7d7a4"), g.addColorStop(1, "#e0a15a"), ctx2.beginPath(), ctx2.arc(0, 0, r, 0, 7), ctx2.fillStyle = g, ctx2.fill(), ctx2.beginPath(), ctx2.arc(0, 0, r * 0.62, 0, 7);
+  let j = ctx2.createRadialGradient(-4, -6, 2, 0, 0, r * 0.7);
+  j.addColorStop(0, "#e7a0ea"), j.addColorStop(1, "#c45ad0"), ctx2.fillStyle = j, ctx2.fill(), ctx2.lineWidth = 3, ctx2.strokeStyle = "#b48cc8", ctx2.stroke(), ctx2.restore(), ctx2.save(), ctx2.beginPath(), ctx2.rect(-r - 12, -r - 12, r * 2 + 24, r * 2 + 24);
+  for (let k = 0; k < bites; k++) {
+    let [bx, by] = bAt(k);
+    ctx2.moveTo(bx + 9, by), ctx2.arc(bx, by, 9, 0, Math.PI * 2, !0);
+  }
+  ctx2.clip("evenodd"), ctx2.beginPath(), ctx2.arc(0, 0, r, 0, 7), ctx2.lineWidth = 3, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.restore();
+}
+var TREAT_BODIES = { cookie: cookieBody, cake: cakeBody, pie: pieBody, sundae: sundaeBody, donut: donutBody, pancake: pancakeBody, tart: tartBody };
 function reactMotion(react, t) {
   if (!react) return { dx: 0, dy: 0, sx: 1, sy: 1 };
   let a = react.age, e = Math.max(0, 1 - a / 1.6);
@@ -7226,7 +14984,8 @@ var THEMES = [
   // v0.8.1 world 5 (plan W4, Crumb Design palettes-W3-W10.json): teal diner, with a pink icing accent for the flowers/dots. A1/A2/A3/A5 measured on the G1 renderer over all ten W5 maps (qa/v0.8.1/contrast-w5.json).
   { name: "W5 teal-diner", a: "#a9d8de", b: "#9ecfd6", check: "rgba(60,150,170,0.13)", grout: "rgba(60,130,150,0.22)", trail: "#fffdf5", edge: "#7fbcc6", dot: "#f7b6c8" },
   // v0.8.2 world 6 (Crumb Design palettes-W3-W10.json 'W6 maple'): warm maple planks. If the rendered A10b is < 1.6 on any W6 map, darken the pad by steps (see qa/v0.8.2 contrast-w6).
-  { name: "W6 maple", a: "#e6b98a", b: "#e1b27f", grain: "rgba(120,70,20,0.15)", grout: "rgba(130,80,30,0.28)", trail: "#fffaf0", edge: "#b98550", dot: "#c99660" }
+  { name: "W6 maple", a: "#e6b98a", b: "#e1b27f", grain: "rgba(120,70,20,0.15)", grout: "rgba(130,80,30,0.28)", trail: "#fffaf0", edge: "#b98550", dot: "#c99660" },
+  { name: "W7 grape", a: "#d2b1e4", b: "#cca8e0", grout: "rgba(120,70,150,0.22)", trail: "#fffaf5", edge: "#b48cc8", dot: "#e7c6f2" }
 ];
 function renderMapBackground(routes, theme, w, h, dpr2, props = [], art = {}) {
   Array.isArray(routes) || (routes = [routes]);
@@ -7267,8 +15026,8 @@ function renderMapBackground(routes, theme, w, h, dpr2, props = [], art = {}) {
     mg.addColorStop(0, "rgba(255,255,230,0.45)"), mg.addColorStop(1, "rgba(255,255,230,0)"), g.fillStyle = mg, g.fillRect(0, 0, w, h);
   }
   if (ART81) {
-    let lp = g.createRadialGradient(130, 110, 20, 130, 110, 300);
-    lp.addColorStop(0, "rgba(255,250,228,0.02)"), lp.addColorStop(1, "rgba(255,250,228,0)"), g.fillStyle = lp, g.fillRect(0, 0, w, h);
+    let end = routes[0] && routes[0].pts && routes[0].pts[routes[0].pts.length - 1], cx = end ? end.x : 130, cy = end ? end.y : 110, rad = Math.min(w, h) * 0.22, pa = art.pool ?? 0.06, lp = g.createRadialGradient(cx, cy, 8, cx, cy, rad);
+    lp.addColorStop(0, "rgba(255,250,228," + pa + ")"), lp.addColorStop(1, "rgba(255,250,228,0)"), g.fillStyle = lp, g.fillRect(0, 0, w, h);
   }
   for (let k = 0; k < 10; k++) {
     let x = rnd() * w, y = rnd() * h;
@@ -7394,7 +15153,7 @@ function drawSwatter(ctx2, x, y, ang = 0, sc = 1, flash = 0) {
     ctx2.beginPath(), ctx2.moveTo(hx2 + 4, hy + 4 + k * 6), ctx2.lineTo(hx2 + hw - 4, hy + 4 + k * 6), ctx2.stroke();
   ctx2.restore(), ctx2.fillStyle = INK, ctx2.beginPath(), ctx2.arc(-4.6, hy + 20, 2.3, 0, 7), ctx2.arc(4.6, hy + 20, 2.3, 0, 7), ctx2.fill(), ctx2.fillStyle = "#fff", ctx2.beginPath(), ctx2.arc(-5.3, hy + 19.2, 0.8, 0, 7), ctx2.arc(3.9, hy + 19.2, 0.8, 0, 7), ctx2.fill(), ctx2.fillStyle = "rgba(255,111,145,0.45)", ctx2.beginPath(), ctx2.ellipse(-8.6, hy + 25, 2.6, 1.7, 0, 0, 7), ctx2.ellipse(8.6, hy + 25, 2.6, 1.7, 0, 0, 7), ctx2.fill(), flash > 0 && (rr(ctx2, hx2, hy, hw, hh, 12), ctx2.globalAlpha = flash * 0.7, ctx2.fillStyle = "#fff", ctx2.fill()), ctx2.restore();
 }
-var TABLE_SETS = { 1: ["leaf", "twig", "leaf", "pebble"], 2: ["pebble", "pebble", "twig", "leaf"], 3: ["cup", "cup", "plate"], 4: ["plate", "cutlery", "plate", "cup"], 5: ["donutbox", "napkin", "ring", "donutbox"], 6: ["syrup", "butter", "berry", "berry"] };
+var TABLE_SETS = { 1: ["leaf", "twig", "leaf", "pebble"], 2: ["pebble", "pebble", "twig", "leaf"], 3: ["cup", "cup", "plate"], 4: ["plate", "cutlery", "plate", "cup"], 5: ["donutbox", "napkin", "ring", "donutbox"], 6: ["syrup", "butter", "berry", "berry"], 7: ["berry", "syrup", "napkin", "plate"] };
 function drawTableProp(g, kind, x, y, r, rot = 0, shadow2 = !0) {
   g.save(), g.translate(x, y), shadow2 && (g.beginPath(), g.ellipse(r * 0.18, r * 0.62, r * 0.95, r * 0.32, 0, 0, 7), g.fillStyle = "rgba(70,35,50,0.18)", g.fill()), g.rotate(rot), g.lineWidth = 2, g.strokeStyle = INK, g.lineJoin = "round", g.lineCap = "round";
   let fs = (col) => {
@@ -7579,6 +15338,15 @@ function sfx(name) {
         tone(1318 + Math.random() * 60, 0.05, "triangle", 0.14, 1.1);
         break;
       // v0.8.1 G4/J10: a small bright tick when crumbs land on the counter
+      case "starC":
+        tone(523, 0.12, "triangle", 0.28);
+        break;
+      case "starE":
+        tone(659, 0.12, "triangle", 0.28);
+        break;
+      case "starG":
+        tone(784, 0.14, "triangle", 0.3);
+        break;
       case "perfect":
         [784, 988, 1175, 1568].forEach((f, i) => tone(f, 0.16, "triangle", 0.3, 1, i * 0.07)), tone(2093, 0.3, "sine", 0.14, 1, 0.3);
         break;
@@ -7614,13 +15382,13 @@ function sfx(name) {
 }
 
 // src/loop.js
-var STEP = 0.016666666666666666, SPEEDS = [1, 2, 4], FRAME_BUDGET_MS = 10, ACC_CAP_STEPS = 8, MAX_FRAME_DT = 0.1, nextSpeed = (s) => SPEEDS[(Math.max(0, SPEEDS.indexOf(s)) + 1) % SPEEDS.length], startSpeed = (s, max = 2) => Math.min(SPEEDS.includes(s) ? s : 1, max);
+var STEP = 0.016666666666666666, SPEEDS = [1, 2, 4], PACE = 1.5, FRAME_BUDGET_MS = 10, ACC_CAP_STEPS = 8, MAX_FRAME_DT = 0.1, nextSpeed = (s) => SPEEDS[(Math.max(0, SPEEDS.indexOf(s)) + 1) % SPEEDS.length], startSpeed = (s, max = 2) => Math.min(SPEEDS.includes(s) ? s : 1, max);
 function newClock() {
   return { acc: 0 };
 }
 function advanceFrame(clk, dtReal, speed, stepFn, opts = {}) {
   let dt = Math.min(MAX_FRAME_DT, Math.max(0, dtReal));
-  clk.acc += dt * speed;
+  clk.acc += dt * speed * PACE;
   let t0 = opts.now ? opts.now() : 0, budget = opts.budgetMs ?? FRAME_BUDGET_MS, n = 0;
   for (; clk.acc >= STEP - 1e-9; ) {
     let over = stepFn(STEP);
@@ -8077,7 +15845,7 @@ function startBattle(levelIndex = S.levelIndex, deck = S.prep.deck, bonuses = S.
     onBonusUsed: (type) => {
       consumeBonus(S.save, type), persist();
     }
-  }), S.battleStartStock = { ...S.save.bonusStock }, capsReset(), S.queenIntro = null, S._bubbleShown = !1, S.impactT = {}, S.crumbSprites = [], S.sparkles = [], S.fx = [], S.swatQ = [], S.ui = [], S.result = null, setPaused(!1), S.speed = startSpeed(S.speed, UI.speedMaxAtStart), clock.acc = 0, S.sel = null, S.info = null, S.mode = null, S.queenDown = null, S.modeHint = !1, S.nurseTip = !1, S.battle.rescueScale = S.speed, go("battle"), S.guide = guideWanted(levelIndex) ? { step: 1 } : null, S.specialBanner = null, ART81 && S.battle.specialsOn && !S.guide) {
+  }), S.battleStartStock = { ...S.save.bonusStock }, capsReset(), S.queenIntro = null, S._bubbleShown = !1, S.impactT = {}, S.crumbSprites = [], S.sparkles = [], S.fx = [], S.swatQ = [], S.ui = [], S.result = null, setPaused(!1), S.speed = startSpeed(S.speed, UI.speedMaxAtStart), clock.acc = 0, S.sel = null, S.info = null, S.mode = null, S.queenDown = null, S.modeHint = !1, S.nurseTip = !1, S.battle.rescueScale = S.speed * PACE, go("battle"), S.guide = guideWanted(levelIndex) ? { step: 1 } : null, S.specialBanner = null, ART81 && S.battle.specialsOn && !S.guide) {
     let seen = S.save.seenSpecial || (S.save.seenSpecial = {}), fresh = deck.filter((id) => specialActive(id, S.battle.level, S.battle.cardLevels ? S.battle.cardLevels[id] : 1) && !seen[id]);
     fresh.length && (fresh.forEach((id) => {
       seen[id] = !0;
@@ -8164,7 +15932,7 @@ function mapTap(p) {
   }
   S.info = tw ? { tower: tw, t: 0 } : null;
 }
-var W6_STORY = "Drones fly in. Bring a tower that hits flyers.", W5_STORY = "Glaze grows back: hit hard, hit fast!", TREAT_NAME = { cookie: "Cookie", cake: "Cake", pie: "Pie", sundae: "Sundae", donut: "Donut", pancake: "Pancakes" }, HINT_ANTS = /* @__PURE__ */ new Set(["armored", "big", "heavy", "queen", "queen2", "greasy", "mama", "queen3", "nurse", "queen4", "glazed", "queen5", "drone", "queen6"]);
+var W6_STORY = "Drones fly in. Bring a tower that hits flyers.", W5_STORY = "Glaze grows back: hit hard, hit fast!", TREAT_NAME = { cookie: "Cookie", cake: "Cake", pie: "Pie", sundae: "Sundae", donut: "Donut", pancake: "Pancakes", tart: "Tart" }, HINT_ANTS = /* @__PURE__ */ new Set(["armored", "big", "heavy", "queen", "queen2", "greasy", "mama", "queen3", "nurse", "queen4", "glazed", "queen5", "drone", "queen6", "shieldbearer", "queen7"]);
 function maybeModeHint(b, e) {
   S.modeHint || S.paused || !e.ant || !HINT_ANTS.has(e.ant) || !(e.n > 0) || b.towers.some((q) => hasTargetModes(q.type)) && (S.modeHint = !0, toast("Tip: tap a tower, then pick who it shoots", "#ffe39a"), S.toast.hint = !0);
 }
@@ -8385,6 +16153,9 @@ function spCue(e) {
       case "pounce":
         addFx({ k: "txt", s: "!", x: e.x, y: e.y - 6, size: 14, col: "#fff2b8", life: 0.5, max: 0.5 }), addFx({ k: "impact", shape: "spoke3", col: "#fff4c8", x: e.x, y: e.y, life: 0.2, max: 0.2 });
         break;
+      case "static":
+        addFx({ k: "spArc", x: e.x, y: e.y, tx: e.tx, ty: e.ty, life: 0.1, max: 0.1, bright: 1 });
+        break;
     }
   }
 }
@@ -8396,7 +16167,9 @@ function consumeEvents() {
       case "special":
         ART81 && spCue(e);
         break;
-      // v0.8.3 M7h: field-layer cues only (no background layer, no sim event added)
+      case "clang":
+        ART81 && e.armor > 0 && addFx({ k: "spark", x: e.x, y: e.y - 6, col: "#d7e2ee", life: 0.12, max: 0.12 });
+        break;
       case "kill":
         if (e.src === "swatter" && !reducedMotion() && b.swatFx > 0) {
           S.swatQ.push({ at: swatHitTime(b), kill: e, ghost: e.ref, x: e.x, y: e.y });
@@ -8535,7 +16308,7 @@ function consumeEvents() {
         break;
       case "wave": {
         let lastW = e.n >= b.totalWaves, queen = lastW && isBossLevel(b.levelIndex);
-        addFx(ART81 ? { k: "banner", pill: !0, last: lastW, s: queen ? "Queen!" : lastW ? `Final wave ${e.n}/${b.totalWaves}` : `Wave ${e.n}/${b.totalWaves}`, life: 1.08, max: 1.08 } : { k: "banner", s: `Wave ${e.n}`, life: 1.4, max: 1.4 }), sfx("wave"), lastW && ART81 && setTimeout(() => sfx("wave"), 380), ART81 && b.levelIndex >= 50 && b.levelIndex <= 59 && e.n === 2 && W6_TIPS[b.levelIndex] && markAntSeen(S.save, "tip:w6-" + (b.levelIndex + 1)) && (persist(), toast(W6_TIPS[b.levelIndex], "#ffe39a"), S.toast.hint = !0), ART81 && b.levelIndex === 41 && e.n === 2 && markAntSeen(S.save, "tip:glazed42") && (persist(), toast(L42_TIP, "#ffe39a"), S.toast.hint = !0), b.levelIndex === 31 && e.n === 2 && !S.nurseTip && (S.nurseTip = !0, toast("Nurse ants heal their friends. Pop them first!", "#ffe39a"), S.toast.hint = !0);
+        addFx(ART81 ? { k: "banner", pill: !0, last: lastW, s: queen ? "Queen!" : lastW ? `Final wave ${e.n}/${b.totalWaves}` : `Wave ${e.n}/${b.totalWaves}`, life: 1.08, max: 1.08 } : { k: "banner", s: `Wave ${e.n}`, life: 1.4, max: 1.4 }), sfx("wave"), lastW && ART81 && setTimeout(() => sfx("wave"), 380), ART81 && b.levelIndex >= 50 && b.levelIndex <= 59 && e.n === 2 && W6_TIPS[b.levelIndex] && markAntSeen(S.save, "tip:w6-" + (b.levelIndex + 1)) && (persist(), toast(W6_TIPS[b.levelIndex], "#ffe39a"), S.toast.hint = !0), ART81 && b.levelIndex >= 60 && b.levelIndex <= 69 && e.n === 2 && W7_TIPS[b.levelIndex] && markAntSeen(S.save, "tip:w7-" + (b.levelIndex + 1)) && (persist(), toast(W7_TIPS[b.levelIndex], "#f3d0f6"), S.toast.hint = !0), ART81 && b.levelIndex === 41 && e.n === 2 && markAntSeen(S.save, "tip:glazed42") && (persist(), toast(L42_TIP, "#ffe39a"), S.toast.hint = !0), b.levelIndex === 31 && e.n === 2 && !S.nurseTip && (S.nurseTip = !0, toast("Nurse ants heal their friends. Pop them first!", "#ffe39a"), S.toast.hint = !0);
         break;
       }
       case "shieldBreak": {
@@ -8592,7 +16365,7 @@ function consumeEvents() {
 var lastT = performance.now(), insetClock = 0, clock = newClock();
 function battleStep(dt) {
   let b = S.battle;
-  return b.rescueScale = S.speed, b.update(dt), S.autoBot && smartBotStep(b), (S.speed > 1 || b.result) && (consumeEvents(), flushSwat(!!b.result)), !!b.result;
+  return b.rescueScale = S.speed * PACE, b.update(dt), S.autoBot && smartBotStep(b), (S.speed > 1 || b.result) && (consumeEvents(), flushSwat(!!b.result)), !!b.result;
 }
 function battleFrame(dt) {
   if (S.guide) {
@@ -9556,13 +17329,18 @@ function drawTowerObj(tw) {
     let bage = S.t - (tw._modeAt ?? -9), bp = bage >= 0 && bage < 0.5 && !reducedMotion() ? 1 + 0.35 * Math.sin(Math.min(1, bage / 0.5) * Math.PI) : 1;
     ctx.save(), ctx.translate(14, 13), ctx.scale(bp, bp), ctx.beginPath(), ctx.arc(0, 0, 8, 0, 7), ctx.fillStyle = "#fffaf5", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), drawModeIcon(tw.mode, 0, 0, 0.55), ctx.restore();
   }
-  if (tw.lvl > 1) for (let k = 0; k < tw.lvl; k++) {
-    let ps = 1;
-    if (ART81 && k === tw.lvl - 1 && tw._upAt !== void 0 && !reducedMotion()) {
-      let pk = (S.t - tw._upAt - 0.22) / 0.16;
-      pk >= 0 && pk < 1 ? ps = Math.max(0.01, easeOutBack(pk)) : pk < 0 && (ps = 0.01);
+  if (tw.lvl > 1) {
+    let n = Math.min(5, tw.lvl);
+    for (let k = 0; k < n; k++) {
+      let ps = 1;
+      if (ART81 && k === n - 1 && tw._upAt !== void 0 && !reducedMotion()) {
+        let pk = (S.t - tw._upAt) / 0.12;
+        pk >= 0 && pk < 1 ? ps = 1.6 - 0.6 * pk : pk < 0 && (ps = 1);
+      }
+      let ang = (k - (n - 1) / 2) * 0.45;
+      starShape(ctx, Math.sin(ang) * 18, -28 - Math.cos(ang) * 6, 5 * ps, "#ffd24a", 1);
     }
-    starShape(ctx, -(tw.lvl - 1) * 3.6 + k * 7.2, 16, 3.6 * ps, "#ffd45e", 1.1);
+    tw.lvl >= 6 && (ctx.beginPath(), ctx.arc(0, -40, 2.4, 0, 7), ctx.fillStyle = "#ffd24a", ctx.fill(), ctx.lineWidth = 1, ctx.strokeStyle = INK, ctx.stroke());
   }
   ctx.restore();
 }
@@ -9613,7 +17391,7 @@ function drawShield(a, x, y) {
 function drawAntObj(a, ghost = !1) {
   let b = S.battle, frozen = b.time < b.freezeUntil, p = b.route(a).at(a.d);
   Math.abs(p.dx) > 0.3 && (a._face = p.dx * (a.dir || 1) >= 0 ? 1 : -1);
-  let face = a._face ?? 1, speedK2 = a.type === "small" ? 2.2 : a.type === "sprinter" ? 2.4 : a.type === "queen" ? 0.6 : a.type === "big" ? 1 : a.type === "heavy" ? 0.9 : 1.5, still = frozen || a.stunT > 0, fr = still ? 0 : Math.floor((b.time + a.id * 0.37) * speedK2 * ANT_FRAMES) % ANT_FRAMES, H2 = ANTS[a.type].heal, mood = !!H2 && (frozen || a.healCd > 0) ? "g" : a.hitFlash > 0.02 && !reducedMotion() ? "h" : a.stunT > 0 ? "d" : "", droneFx = ART81 && a.type === "drone" && !reducedMotion() && !still, spr = antSprite(a.type, droneFx ? Math.floor((b.time + a.id * 0.037) * 14) % 2 ? 3 : 9 : fr, a.carrying > 0, pxRatio, mood), breathe = still ? 1 + Math.sin(S.t * 5 + a.id) * 0.035 : 1, lat = (a.id * 37 % 9 - 4) * 1.2;
+  let face = a._face ?? 1, speedK2 = a.type === "small" ? 2.2 : a.type === "sprinter" ? 2.4 : a.type === "queen" ? 0.6 : a.type === "big" ? 1 : a.type === "heavy" ? 0.9 : 1.5, still = frozen || a.stunT > 0, fr = still ? 0 : Math.floor((b.time + a.id * 0.37) * speedK2 * ANT_FRAMES) % ANT_FRAMES, H2 = ANTS[a.type].heal, mood = !!H2 && (frozen || a.healCd > 0) ? "g" : a.hitFlash > 0.02 && !reducedMotion() ? "h" : a.stunT > 0 ? "d" : "", droneFx = ART81 && a.type === "drone" && !reducedMotion() && !still, spr = antSprite(a.type, droneFx ? Math.floor((b.time + a.id * 0.037) * 14) % 2 ? 3 : 9 : fr, a.carrying > 0, pxRatio, mood, { play: !0 }), breathe = still ? 1 + Math.sin(S.t * 5 + a.id) * 0.035 : 1, lat = (a.id * 37 % 9 - 4) * 1.2;
   a.state === "back" && (lat = UI.carrierLane + lat * 0.4);
   let x = a.x + p.dy * lat, y = a.y - p.dx * lat, hopY = 0, hopS = 1;
   if (a._hopT && !reducedMotion()) {
@@ -9639,16 +17417,16 @@ function drawAntObj(a, ghost = !1) {
     let q = Math.min(1, a.hitFlash / 0.12), sq = 0.12 * q * q;
     ctx.scale(1 + sq, 1 - sq);
   }
-  if (ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h), a.hitFlash > 0.04 && (ctx.globalCompositeOperation = "lighter", ctx.globalAlpha = 0.6, ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h)), a._healFlash > S.t && !ghost && (ctx.globalCompositeOperation = "lighter", ctx.globalAlpha = reducedMotion() ? 0.35 : 0.55 * Math.min(1, (a._healFlash - S.t) / 0.2), ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h)), ctx.restore(), ART81 && a.type === "queen6" && !ghost && !frozen && a.spawnT > 0 && a.spawnT <= 0.4) {
-    let q = 1 - a.spawnT / 0.4, dx0 = x - 20 * a.size * face, dy0 = y + 10 + (reducedMotion() ? 8 : q * q * 22), rr2 = 1 + q * 0.7;
-    ctx.save(), ctx.beginPath(), ctx.ellipse(dx0, dy0, 4.2 * rr2, 5.6 * rr2, 0, 0, 7), ctx.fillStyle = "#ffe07a", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), ctx.beginPath(), ctx.arc(dx0 - 1.4 * rr2, dy0 - 1.6 * rr2, 1.3 * rr2, 0, 7), ctx.fillStyle = "#fffbe0", ctx.fill(), ctx.restore();
+  if (ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h), a.hitFlash > 0.04 && (ctx.globalCompositeOperation = "lighter", ctx.globalAlpha = 0.6, ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h)), a._healFlash > S.t && !ghost && (ctx.globalCompositeOperation = "lighter", ctx.globalAlpha = reducedMotion() ? 0.35 : 0.55 * Math.min(1, (a._healFlash - S.t) / 0.2), ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h)), ctx.restore(), ART81 && (a.type === "queen6" || a.type === "queen7") && !ghost && !frozen && a.spawnT > 0 && a.spawnT <= 0.4) {
+    let jam = a.type === "queen7", q = 1 - a.spawnT / 0.4, q4 = reducedMotion() ? 1 : (Math.min(3, Math.floor(q * 4)) + 1) / 4, dx0 = x - 20 * a.size * face, dy0 = y + 10 + (reducedMotion() ? 6 : q4 * q4 * 26), rx = reducedMotion() ? 6 : 4.2 * (1 + q4 * 0.7) * 1.7, ry = reducedMotion() ? 6 : 5.6 * (1 + q4 * 0.7) * 1.7;
+    ctx.save(), ctx.beginPath(), ctx.ellipse(dx0, dy0, rx, ry, 0, 0, 7), ctx.fillStyle = jam ? "#c45ad0" : "#e8a33d", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = jam ? "#8a3a96" : "#b56a18", ctx.stroke(), ctx.restore();
   }
   if (a._bubbleUntil > S.t && !ghost && !reducedMotion()) {
     let bx = x, by = y - 40 * a.size - Math.abs(Math.sin(S.t * 6)) * 2;
     ctx.save(), ctx.beginPath(), ctx.arc(bx, by, 7.5, 0, 7), ctx.fillStyle = "#fffdf0", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), ctx.beginPath(), ctx.moveTo(bx - 2.5, by + 6.5), ctx.lineTo(bx + 1, by + 12), ctx.lineTo(bx + 3, by + 6), ctx.fillStyle = "#fffdf0", ctx.fill(), drawChunkyText(ctx, "!", bx, by + 0.5, 12, { mode: "btn", fill: "#e0524f", outline: 2 }), ctx.restore();
   }
   if (H2 && !ghost && drawNurseHud(a, H2, x, y, frozen), frozen && (ctx.save(), ctx.globalAlpha = 0.55, rr(ctx, x - 17 * a.size, y - 24 * a.size, 34 * a.size, 32 * a.size, 7), ctx.fillStyle = "#d6f3ff", ctx.fill(), ctx.lineWidth = 1.5, ctx.strokeStyle = "#8fd0f5", ctx.stroke(), ctx.restore()), a.slow > 0.01 && !frozen && (ctx.fillStyle = "rgba(255,240,160,0.8)", ctx.beginPath(), ctx.ellipse(x, y + 8, 9 * a.size, 2.5, 0, 0, 7), ctx.fill()), a.stunT > 0 && !frozen && stunStars(ctx, x, y - 30 * a.size, S.t + a.id, a.size), a.charmT > 0 && heart(ctx, x + Math.sin(S.t * 4 + a.id) * 4, y - 32 * a.size - Math.abs(Math.sin(S.t * 3)) * 4, 3, "#ff8fbf"), a.shieldMax > 0 && !ghost && drawShield(a, x, y), a.hp < a.maxHp && !ghost) {
-    let w = a.type === "queen" || a.type === "queen3" || a.type === "queen4" || a.type === "queen5" || a.type === "queen6" ? 60 : 22, hy = y - (a.flying ? 44 : 33) * a.size;
+    let w = a.type === "queen" || a.type === "queen3" || a.type === "queen4" || a.type === "queen5" || a.type === "queen6" ? 60 : 22, hy = y - (a.flying ? 44 : 33) * a.size - 3;
     rr(ctx, x - w / 2 - 1, hy - 1, w + 2, 6, 3), ctx.fillStyle = INK, ctx.fill();
     let f = Math.max(0, a.hp / a.maxHp);
     rr(ctx, x - w / 2, hy, w * f, 4, 2), ctx.fillStyle = f > 0.5 ? "#8fe388" : f > 0.25 ? "#ffd45e" : "#ff7a7a", ctx.fill();
@@ -9662,7 +17440,7 @@ function renderFx(dt) {
     let k = 1 - f.life / f.max;
     switch (ctx.save(), f.k) {
       case "thrown": {
-        let spr = antSprite(f.ant, 0, !1, pxRatio), x = f.x0 + (f.x1 - f.x0) * k, y = f.y0 + (f.y1 - f.y0) * k - Math.sin(k * Math.PI) * f.h;
+        let spr = antSprite(f.ant, 0, !1, pxRatio, "", { play: !0 }), x = f.x0 + (f.x1 - f.x0) * k, y = f.y0 + (f.y1 - f.y0) * k - Math.sin(k * Math.PI) * f.h;
         ctx.globalAlpha = k > 0.8 ? (1 - k) / 0.2 : 1, ctx.translate(x, y), ctx.rotate(k * f.spin);
         let sc = 1 - k * 0.35;
         if (ctx.scale(sc, sc), ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h), k > 0.82 && !f.landed) {
@@ -9677,7 +17455,7 @@ function renderFx(dt) {
         break;
       }
       case "ko": {
-        let spr = antSprite(f.ant, 0, !1, pxRatio), rmo = reducedMotion(), ds = rmo ? 1 : k < 0.25 ? 1 + 0.25 * (k / 0.25) : 1.25 * (1 - (k - 0.25) / 0.75);
+        let spr = antSprite(f.ant, 0, !1, pxRatio, "", { play: !0 }), rmo = reducedMotion(), ds = rmo ? 1 : k < 0.25 ? 1 + 0.25 * (k / 0.25) : 1.25 * (1 - (k - 0.25) / 0.75);
         ctx.globalAlpha = rmo ? 1 - k : 1 - k * k, ctx.translate(f.x, f.y - (rmo ? 0 : f.fall ? -k * k * 20 + Math.sin(k * 14) * 3 : k * 24)), ctx.rotate(rmo ? 0 : Math.PI * k * (f.fall ? 2.2 : 0.4) * f.face), ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h), ctx.scale(1, -1), ctx.beginPath(), ctx.ellipse(0, -18, 8, 2.5, 0, 0, 7), ctx.lineWidth = 2, ctx.strokeStyle = "#ffe36e", ctx.stroke();
         break;
       }
@@ -9739,7 +17517,7 @@ function renderFx(dt) {
         ctx.globalAlpha = 1 - k, ctx.lineCap = "round", ctx.lineWidth = 6 + (f.heat || 0) * 5, ctx.strokeStyle = (f.heat || 0) > 0.6 ? "rgba(255,150,60,0.55)" : "rgba(255,90,120,0.4)", ctx.beginPath(), ctx.moveTo(f.x, f.y), ctx.lineTo(f.tx, f.ty - 4), ctx.stroke(), ctx.lineWidth = 2, ctx.strokeStyle = "#fff", ctx.stroke();
         break;
       case "zap": {
-        ctx.globalAlpha = 1 - k, ctx.lineWidth = f.chain ? 2.2 : 3, ctx.strokeStyle = f.chain ? "#e4d0ff" : "#bfe0ff", ctx.beginPath(), ctx.moveTo(f.x, f.y);
+        ctx.globalAlpha = 1 - k, ctx.lineWidth = f.static ? 3.4 : f.chain ? 2.2 : 3, ctx.strokeStyle = f.static ? "#ffffff" : f.chain ? "#e4d0ff" : "#bfe0ff", ctx.beginPath(), ctx.moveTo(f.x, f.y);
         for (let i = 1; i < 6; i++) {
           let q = i / 6;
           ctx.lineTo(f.x + (f.tx - f.x) * q + (Math.random() - 0.5) * 10, f.y + (f.ty - f.y) * q + (Math.random() - 0.5) * 10);
@@ -9755,10 +17533,9 @@ function renderFx(dt) {
       case "spArc": {
         ctx.lineCap = "round";
         let mx = (f.x + f.tx) / 2, my = (f.y + f.ty) / 2 - 10;
-        ctx.beginPath(), ctx.moveTo(f.x, f.y), ctx.quadraticCurveTo(mx, my, f.tx, f.ty), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), ctx.beginPath(), ctx.arc(mx * 0.5 + (f.x + f.tx) * 0.25, my * 0.5 + (f.y + f.ty) * 0.25, 2.4, 0, 7), ctx.fillStyle = "#fff2b8", ctx.fill();
+        ctx.beginPath(), ctx.moveTo(f.x, f.y), ctx.quadraticCurveTo(mx, my, f.tx, f.ty), ctx.lineWidth = f.bright ? 3 : 2, ctx.strokeStyle = f.bright ? "#ffffff" : INK, ctx.stroke(), ctx.beginPath(), ctx.arc(mx * 0.5 + (f.x + f.tx) * 0.25, my * 0.5 + (f.y + f.ty) * 0.25, f.bright ? 3 : 2.4, 0, 7), ctx.fillStyle = f.bright ? "#ffffff" : "#fff2b8", ctx.fill();
         break;
       }
-      // v0.8.3 M7h Ricochet
       case "spCrack": {
         ctx.globalAlpha = 1 - k, ctx.lineCap = "round", ctx.lineWidth = 2, ctx.strokeStyle = "#fff2b8", ctx.beginPath();
         for (let i = 0; i < 3; i++) {
@@ -10182,8 +17959,8 @@ function renderResult(dt) {
   }
   R.queenKilled && plainFit(tk === "pancake" ? "Way to go, you saved the pancakes!" : tk === "donut" ? "Way to go, you saved the donut!" : tk === "cake" ? "Way to go, you saved the cake!" : tk === "pie" ? "Way to go, you saved the pie!" : tk === "sundae" ? "Way to go, you saved the sundae!" : "Way to go, you saved the cookies!", 200, 180, 300, 13, "#e0607e", "center", "800");
   for (let s = 0; s < 3; s++) {
-    let on = s < R.stars && R.t > 0.3 + s * 0.25, sc = on ? 1 + Math.max(0, 0.2 - (R.t - 0.3 - s * 0.25)) * 3 : 1;
-    starShape(ctx, 140 + s * 60, 270, 18 * sc, on ? "#ffd45e" : "#e8dde4", 2.5);
+    let on = s < R.stars && (reducedMotion() || R.t > 0.3 + s * 0.35), sc = !on || reducedMotion() ? 1 : 1 + Math.max(0, 0.2 - (R.t - 0.3 - s * 0.35)) * 3;
+    on && !((R._heard || 0) & 1 << s) && (R._heard = (R._heard || 0) | 1 << s, sfx(["starC", "starE", "starG"][s])), starShape(ctx, 140 + s * 60, 270, 18 * sc, on ? "#ffd45e" : "#e8dde4", 2.5);
   }
   if (R.chip2 && R.t > 0.55) {
     let k = Math.min(1, (R.t - 0.55) * 5), cx2 = 322, cy2 = 270;
@@ -10243,8 +18020,10 @@ function renderResult(dt) {
   drawButton(52, by, 92, 50, "Map", "#fff3e6"), button("rmap", 52, by - 3, 92, 56, () => {
     S.battle = null, go("map");
   }), drawButton(154, by, 92, 50, "Retry", "#ffd27a"), button("rretry", 154, by - 3, 92, 56, () => openPrep(S.levelIndex));
-  let hasNext = R.win && S.levelIndex + 1 < LEVELS.length, ow6 = ART81 && hasNext && S.levelIndex === 49 && out.firstClear && worldUnlocked(S.save, 6);
-  drawButton(256, by, 92, 50, ow6 ? "Open World 6" : "Next", "#9fe0b5", ow6 ? { disabled: !hasNext, size: 13 } : { disabled: !hasNext }), hasNext && button("rnext", 256, by - 3, 92, 56, ow6 ? () => {
+  let hasNext = R.win && S.levelIndex + 1 < LEVELS.length, ow6 = ART81 && hasNext && S.levelIndex === 49 && out.firstClear && worldUnlocked(S.save, 6), ow7 = ART81 && hasNext && S.levelIndex === 59 && out.firstClear && worldUnlocked(S.save, 7);
+  drawButton(256, by, 92, 50, ow7 ? "Open World 7" : ow6 ? "Open World 6" : "Next", "#9fe0b5", ow6 || ow7 ? { disabled: !hasNext, size: 12 } : { disabled: !hasNext }), hasNext && button("rnext", 256, by - 3, 92, 56, ow7 ? () => {
+    S.battle = null, go("map"), S.worldReveal = { i: 60, t0: S.t };
+  } : ow6 ? () => {
     S.battle = null, go("map"), S.worldReveal = { i: 50, t0: S.t };
   } : () => openPrep(S.levelIndex + 1));
 }

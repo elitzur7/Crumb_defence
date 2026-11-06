@@ -9210,7 +9210,7 @@
       "name": "Cream Hill",
       "map": "w7_cream_hill",
       "waveCount": 7,
-      "hpMul": 4.25,
+      "hpMul": 4.68,
       "interval": 1,
       "waves": [
         [
@@ -9360,7 +9360,7 @@
       "name": "Press Plate",
       "map": "w7_press_plate",
       "waveCount": 8,
-      "hpMul": 5.51,
+      "hpMul": 7.05,
       "interval": 1,
       "waves": [
         [

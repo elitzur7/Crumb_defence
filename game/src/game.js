@@ -1821,7 +1821,16 @@ function drawTowerObj(tw) {
     ctx.beginPath(); ctx.arc(0, 0, 8, 0, 7); ctx.fillStyle = '#fffaf5'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = A.INK; ctx.stroke(); // v0.7.5 C18: 12+ px cream disc, INK 2.0
     drawModeIcon(tw.mode, 0, 0, 0.55); ctx.restore();
   }
-  if (tw.lvl > 1) for (let k = 0; k < tw.lvl; k++) { let ps = 1; if (C.ART81 && k === tw.lvl - 1 && tw._upAt !== undefined && !reducedMotion()) { const pk = (S.t - tw._upAt - 0.22) / 0.16; if (pk >= 0 && pk < 1) ps = Math.max(0.01, A.easeOutBack(pk)); else if (pk < 0) ps = 0.01; } A.starShape(ctx, -(tw.lvl - 1) * 3.6 + k * 7.2, 16, 3.6 * ps, '#ffd45e', 1.1); } // up to 6 pips (v0.6 item 11)
+  if (tw.lvl > 1) { // v0.8.4 G12: up to 5 stars above the tower. Level 6 adds a crown dot. The new star eases from 1.6 to 1 in 120 ms.
+    const n = Math.min(5, tw.lvl);
+    for (let k = 0; k < n; k++) {
+      let ps = 1;
+      if (C.ART81 && k === n - 1 && tw._upAt !== undefined && !reducedMotion()) { const pk = (S.t - tw._upAt) / 0.12; if (pk >= 0 && pk < 1) ps = 1.6 - 0.6 * pk; else if (pk < 0) ps = 1; }
+      const ang = (k - (n - 1) / 2) * 0.45;
+      A.starShape(ctx, Math.sin(ang) * 18, -28 - Math.cos(ang) * 6, 5 * ps, '#ffd24a', 1);
+    }
+    if (tw.lvl >= 6) { ctx.beginPath(); ctx.arc(0, -40, 2.4, 0, 7); ctx.fillStyle = '#ffd24a'; ctx.fill(); ctx.lineWidth = 1; ctx.strokeStyle = A.INK; ctx.stroke(); }
+  }
   ctx.restore();
 }
 // v0.7.2 C13: the cookie guard. Leans on the right of the cookie; a swat is wind-up 0.10 s, slap 0.08 s, hold 0.06 s, return 0.26 s (0.5 s).
@@ -2326,7 +2335,7 @@ function renderResult(dt) {
     for (const [ax, k, ty] of [[92, 0, 'worker'], [308, 1.7, 'small']]) { const sp = A.antSprite(ty, 0, false, pxRatio * 1.25, 'cheer'); ctx.save(); ctx.translate(ax, 240 - hop(k)); ctx.scale(1.25 * (k ? -1 : 1), 1.25); ctx.drawImage(sp.cv, -sp.ox, -sp.oy, sp.w, sp.h); ctx.restore(); A.contactShadow(ctx, ax, 244, 20, 5, 0.22); }
   }
   if (R.queenKilled) plainFit(tk === 'pancake' ? 'Way to go, you saved the pancakes!' : tk === 'donut' ? 'Way to go, you saved the donut!' : tk === 'cake' ? 'Way to go, you saved the cake!' : tk === 'pie' ? 'Way to go, you saved the pie!' : tk === 'sundae' ? 'Way to go, you saved the sundae!' : 'Way to go, you saved the cookies!', 200, 180, 300, 13, '#e0607e', 'center', '800'); // v0.5 item 16
-  for (let s = 0; s < 3; s++) { const on = s < R.stars && R.t > 0.3 + s * 0.25; const sc = on ? 1 + Math.max(0, 0.2 - (R.t - 0.3 - s * 0.25)) * 3 : 1; A.starShape(ctx, 140 + s * 60, 270, 18 * sc, on ? '#ffd45e' : '#e8dde4', 2.5); }
+  for (let s = 0; s < 3; s++) { const gap = 0.35, on = s < R.stars && (reducedMotion() || R.t > 0.3 + s * gap); const sc = !on || reducedMotion() ? 1 : 1 + Math.max(0, 0.2 - (R.t - 0.3 - s * gap)) * 3; if (on && !((R._heard || 0) & (1 << s))) { R._heard = (R._heard || 0) | (1 << s); sfx(['starC', 'starE', 'starG'][s]); } A.starShape(ctx, 140 + s * 60, 270, 18 * sc, on ? '#ffd45e' : '#e8dde4', 2.5); }
   if (R.chip2 && R.t > 0.55) { // the 2-star chip: a small coin pill beside the stars, pops when the second star lands
     const k = Math.min(1, (R.t - 0.55) * 5), cx2 = 322, cy2 = 270; ctx.save(); ctx.translate(cx2, cy2); ctx.scale(0.6 + 0.4 * A.easeOutBack(k), 0.6 + 0.4 * A.easeOutBack(k)); A.drawBeveledTile(ctx, -32, -14, 64, 28, '#ffe9a8', { lip: 2, r: 14, lw: 2, hi: 0.6 }); A.coinIcon(ctx, -19, 0, 1.1); A.drawChunkyText(ctx, `+${R.chip2}`, 9, 0, 16, { mode: 'num' }); // v0.8.1 F4: 64x28 pill, 16 px number ctx.restore();
   }
