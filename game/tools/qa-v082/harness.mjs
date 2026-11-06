@@ -1,12 +1,12 @@
 // v0.8.2 QA harness: headless chrome driver for www-test (shared by text-scan, small-targets, contrast, shots, caps)
 import { createRequire } from 'node:module';
 import { createServer } from 'node:http'; import { readFile } from 'node:fs/promises'; import { extname, join } from 'node:path';
-const require = createRequire('/workspace/ant-td/game/package.json');
+const require = createRequire(new URL('../../package.json', import.meta.url));
 export const puppeteer = require('puppeteer-core');
 export const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.ttf': 'font/ttf' };
 export async function launch(opts = {}) {
-  const root = opts.root || process.env.WWW || '/workspace/ant-td/game/www-test';
+  const root = opts.root || process.env.WWW || new URL('../../www-test/', import.meta.url).pathname;
   const srv = createServer(async (q, r) => { let p = q.url.split('?')[0]; if (p.endsWith('/')) p += 'index.html'; try { const d = await readFile(join(root, p)); r.writeHead(200, { 'content-type': types[extname(p)] || 'application/octet-stream' }); r.end(d); } catch (e) { r.writeHead(404); r.end(); } });
   await new Promise((ok) => srv.listen(0, '127.0.0.1', ok));
   const browser = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: true, args: ['--no-sandbox', ...(opts.args || [])] });

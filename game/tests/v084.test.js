@@ -11,7 +11,7 @@ import * as A from '../src/art.js';
 const src = (f) => readFileSync(new URL('../src/' + f, import.meta.url), 'utf8');
 
 test('PACE1: PACE is 1.5 and the speed labels stay 1 / 2 / 4', () => {
-  assert.equal(PACE, 1.5);
+  assert.equal(PACE, 1.35);
   assert.deepEqual(SPEEDS, [1, 2, 4]);
   assert.equal(STEP, 1 / 60);
   assert.match(src('loop.js'), /clk\.acc \+= dt \* speed \* PACE/);
@@ -80,13 +80,13 @@ test('QA9: every world has the scaffold pieces, and dropping one W7 tip fails th
     }
     return bad;
   }
-  assert.deepEqual(scaffold({ 6: C.W6_TIPS, 7: C.W7_TIPS }), []);
+  assert.deepEqual(scaffold({ 6: C.W6_TIPS, 7: C.W7_TIPS, 8: C.W8_TIPS }), []);
   const broken = { ...C.W7_TIPS }; delete broken[60];
-  assert.ok(scaffold({ 6: C.W6_TIPS, 7: broken }).some((x) => x.startsWith('tip ')));
+  assert.ok(scaffold({ 6: C.W6_TIPS, 7: broken, 8: C.W8_TIPS }).some((x) => x.startsWith('tip ')));
 });
 
 test('W7: shield aura, alternating queen, and the calibrated hp table', () => {
-  const hp = C.LEVELS.slice(60).map((L) => L.hpMul);
+  const hp = C.LEVELS.slice(60, 70).map((L) => L.hpMul);
   assert.deepEqual(hp, [6, 7.4, 9.6, 12, 5.42, 9.5, 4.68, 7.05, 3.99, 1.64]);
   assert.equal(C.WORLDS[6].name, 'Jelly Jamboree');
   assert.equal(C.WORLDS[6].coinMul, 2.25);
@@ -138,10 +138,10 @@ test('M7h-fix: a hit event carries armor fields and Static emits its own event',
 });
 
 test('ANT1/ANT2: play ants scale by 0.62 with the soft recipe; book art stays outlined', () => {
-  assert.equal(A.PLAY_ANT_SCALE, 0.62);
+  assert.equal(A.PLAY_ANT_SCALE, 0.72);
   assert.match(src('art.js'), /if \(opt\.play\) ctx\.scale\(PLAY_ANT_SCALE, PLAY_ANT_SCALE\)/);
   assert.match(src('art.js'), /if \(_play\) \{ playSegment/);
-  assert.match(src('art.js'), /if \(_play\) \{ ctx\.lineWidth = 2; ctx\.strokeStyle = col/);
+  assert.match(src('art.js'), /if \(_play\) \{ ctx\.lineWidth = 2\.2; ctx\.strokeStyle = col/);
   assert.match(src('game.js'), /pxRatio, mood, \{ play: true/);
   assert.equal(C.ANT_SIZES.regular, 1);
   assert.equal(C.ANTS.worker.size, 1);

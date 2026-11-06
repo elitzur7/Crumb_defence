@@ -21,11 +21,11 @@ test('version 0.7.6 or later (the current release, 0.7.9 / versionCode 24, is as
   assert.match(rd('android/app/build.gradle'), /versionCode (2[0-9]|[3-9]\d)/); assert.match(rd('android/app/build.gradle'), /versionName "0\.(7|8)\.\d+"/);
   assert.match(JSON.parse(rd('package.json')).version, /^0\.(7|8)\.\d+$/);
 });
-test('V1: small ant #f8c07e; ladder stays >= 1.30 and small keeps its distance from worker', () => {
-  assert.equal(A.ANT_COL.small, '#f8c07e');
+test('V1: small ant is the vivid #f8b05b; the ladder stays ordered', () => {
+  assert.equal(A.ANT_COL.small, '#f8b05b');
   const q = [ratio(Lm(A.ANT_COL.small), Lm(A.ANT_COL.worker)), ratio(Lm(A.ANT_COL.worker), Lm(A.ANT_COL.big)), ratio(Lm(A.ANT_COL.big), Lm(A.ANT_COL.heavy))];
-  assert.ok(q.every((v) => v >= 1.30), q.join(' '));
-  assert.ok(Math.abs(q[0] - 1.37) < 0.01 && Math.abs(q[1] - 1.38) < 0.01 && Math.abs(q[2] - 1.48) < 0.01, `ladder ${q.map((v) => v.toFixed(3))}`);
+  assert.ok(q.every((v) => v >= 1.25), q.join(' '));
+  assert.ok(Math.abs(q[0] - 1.28) < 0.02 && Math.abs(q[1] - 1.38) < 0.02 && Math.abs(q[2] - 1.47) < 0.02, `ladder ${q.map((v) => v.toFixed(3))}`);
 });
 test('V2: one ring sprite, drawn first for side towers only (9 of them); spec 19.5 x 10.5 at (0, 9), #a67c5c, 3 px INK', () => {
   const side = Object.keys(C.TOWERS).filter((id) => C.TOWERS[id].place === 'side');

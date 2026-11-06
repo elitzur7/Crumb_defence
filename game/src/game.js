@@ -319,8 +319,8 @@ function mapTap(p) {
 // v0.7.4 M1: a one-time tip (per battle, never while paused) the first time a tank (Armoured / Big / Heavy / Queen) steals food, if a tower could change its target
 const W6_STORY = 'Drones fly in. Bring a tower that hits flyers.'; // v0.8.2 PP8: the world-6 map story line (<= 60 chars)
 const W5_STORY = 'Glaze grows back: hit hard, hit fast!'; // v0.8.1 W9: the world-5 map story line (<= 60 chars)
-const TREAT_NAME = { cookie: 'Cookie', cake: 'Cake', pie: 'Pie', sundae: 'Sundae', donut: 'Donut', pancake: 'Pancakes', tart: 'Tart' };
-const HINT_ANTS = new Set(['armored', 'big', 'heavy', 'queen', 'queen2', 'greasy', 'mama', 'queen3', 'nurse', 'queen4', 'glazed', 'queen5', 'drone', 'queen6', 'shieldbearer', 'queen7']);
+const TREAT_NAME = { cookie: 'Cookie', cake: 'Cake', pie: 'Pie', sundae: 'Sundae', donut: 'Donut', pancake: 'Pancakes', tart: 'Tart', cupcake: 'Cupcake' };
+const HINT_ANTS = new Set(['armored', 'big', 'heavy', 'queen', 'queen2', 'greasy', 'mama', 'queen3', 'nurse', 'queen4', 'glazed', 'queen5', 'drone', 'queen6', 'shieldbearer', 'queen7', 'sugarcube', 'queen8']);
 function maybeModeHint(b, e) {
   if (S.modeHint || S.paused || !e.ant || !HINT_ANTS.has(e.ant) || !(e.n > 0)) return;
   if (!b.towers.some((q) => hasTargetModes(q.type))) return;
@@ -559,6 +559,7 @@ function consumeEvents() {
         sfx('wave'); if (lastW && C.ART81) setTimeout(() => sfx('wave'), 380);
         if (C.ART81 && b.levelIndex >= 50 && b.levelIndex <= 59 && e.n === 2 && C.W6_TIPS[b.levelIndex] && M.markAntSeen(S.save, 'tip:w6-' + (b.levelIndex + 1))) { persist(); toast(C.W6_TIPS[b.levelIndex], '#ffe39a'); S.toast.hint = true; }
         if (C.ART81 && b.levelIndex >= 60 && b.levelIndex <= 69 && e.n === 2 && C.W7_TIPS[b.levelIndex] && M.markAntSeen(S.save, 'tip:w7-' + (b.levelIndex + 1))) { persist(); toast(C.W7_TIPS[b.levelIndex], '#f3d0f6'); S.toast.hint = true; }
+        if (C.ART81 && b.levelIndex >= 70 && b.levelIndex <= 79 && e.n === 2 && C.W8_TIPS[b.levelIndex] && M.markAntSeen(S.save, 'tip:w8-' + (b.levelIndex + 1))) { persist(); toast(C.W8_TIPS[b.levelIndex], '#d7f4ff'); S.toast.hint = true; }
         if (C.ART81 && b.levelIndex === 41 && e.n === 2 && M.markAntSeen(S.save, 'tip:glazed42')) { persist(); toast(C.L42_TIP, '#ffe39a'); S.toast.hint = true; } // v0.8.1 W9: the first Glazed wave of L42 - one tip, once per save (save.seenAnts)
         if (b.levelIndex === 31 && e.n === 2 && !S.nurseTip) { S.nurseTip = true; toast('Nurse ants heal their friends. Pop them first!', '#ffe39a'); S.toast.hint = true; } // v0.7.9: the first nurse arrives in wave 2 of level 32
         break;
@@ -1902,8 +1903,8 @@ function drawAntObj(a, ghost = false) {
   const mood = spent ? 'g' : (a.hitFlash > 0.02 && !reducedMotion()) ? 'h' : a.stunT > 0 ? 'd' : ''; // v0.8.0: hurt face (> <) on a hit, dizzy face while stunned (baked lazily per type/frame)
   const droneFx = C.ART81 && a.type === 'drone' && !reducedMotion() && !still; // v0.8.3 PP3: a Drone's wings flutter between two poses at 14 Hz and it hovers +-2 px at 1.6 Hz (reduced motion: still pose)
   const vary = a.type === 'worker' || a.type === 'small' || a.type === 'flyer'; // v0.8.4 G14: hue and size only on these three. Queens, the shield bearer, and status types stay fixed.
-  const hue = vary ? ((a.id * 17) % 13) - 6 : 0;
-  const jit = vary ? 0.97 + ((a.id * 13) % 6) * 0.02 : 1;
+  const hue = vary ? ((a.id * 17) % 11) - 5 : 0; // v0.8.5 G14b: hue ±5 after the vivid colours
+  const jit = vary ? 0.97 + ((a.id * 13) % 5) * 0.02 : 1; // 0.97–1.05 on top of PLAY_ANT_SCALE
   const spr = A.antSprite(a.type, droneFx ? (Math.floor((b.time + a.id * 0.037) * 14) % 2 ? 3 : 9) : fr, a.carrying > 0, pxRatio, mood, { play: true, hue });
   const breathe = still ? 1 + Math.sin(S.t * 5 + a.id) * 0.035 : 1;
   // tiny lateral offset per id so crowds don't stack perfectly
@@ -1922,11 +1923,11 @@ function drawAntObj(a, ghost = false) {
   if (a.hitFlash > 0.04) { ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = 0.6; ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h); } // hit flash: white-add 0.6 for the first 80 ms
   if (a._healFlash > S.t && !ghost) { ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = reducedMotion() ? 0.35 : 0.55 * Math.min(1, (a._healFlash - S.t) / 0.2); ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h); } // v0.7.9: white flash on a healed ant
   ctx.restore();
-  if (C.ART81 && (a.type === 'queen6' || a.type === 'queen7') && !ghost && !frozen && a.spawnT > 0 && a.spawnT <= 0.4) {
-    const jam = a.type === 'queen7', q = 1 - a.spawnT / 0.4, q4 = reducedMotion() ? 1 : (Math.min(3, Math.floor(q * 4)) + 1) / 4;
+  if (C.ART81 && (a.type === 'queen6' || a.type === 'queen7' || a.type === 'queen8') && !ghost && !frozen && a.spawnT > 0 && a.spawnT <= 0.4) {
+    const jam = a.type === 'queen7', frost = a.type === 'queen8', q = 1 - a.spawnT / 0.4, q4 = reducedMotion() ? 1 : (Math.min(3, Math.floor(q * 4)) + 1) / 4;
     const dx0 = x - 20 * a.size * face, dy0 = y + 10 + (reducedMotion() ? 6 : q4 * q4 * 26);
-    const rx = reducedMotion() ? 6 : 4.2 * (1 + q4 * 0.7) * 1.7, ry = reducedMotion() ? 6 : 5.6 * (1 + q4 * 0.7) * 1.7;
-    ctx.save(); ctx.beginPath(); ctx.ellipse(dx0, dy0, rx, ry, 0, 0, 7); ctx.fillStyle = jam ? '#c45ad0' : '#e8a33d'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = jam ? '#8a3a96' : '#b56a18'; ctx.stroke(); ctx.restore();
+    const rx = reducedMotion() ? 8 : Math.max(8, 4.2 * (1 + q4 * 0.7) * 1.7), ry = reducedMotion() ? 8 : Math.max(8, 5.6 * (1 + q4 * 0.7) * 1.7);
+    ctx.save(); ctx.beginPath(); ctx.ellipse(dx0, dy0, rx, ry, 0, 0, 7); ctx.fillStyle = frost ? '#7ec8e8' : jam ? '#d046df' : '#e8a33d'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = frost ? '#3a8fb8' : jam ? '#8a3a96' : '#b56a18'; ctx.stroke(); ctx.restore();
   }
   if (a._bubbleUntil > S.t && !ghost && !reducedMotion()) { const bx = x, by = y - 40 * a.size - Math.abs(Math.sin(S.t * 6)) * 2; ctx.save(); ctx.beginPath(); ctx.arc(bx, by, 7.5, 0, 7); ctx.fillStyle = '#fffdf0'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = A.INK; ctx.stroke(); ctx.beginPath(); ctx.moveTo(bx - 2.5, by + 6.5); ctx.lineTo(bx + 1, by + 12); ctx.lineTo(bx + 3, by + 6); ctx.fillStyle = '#fffdf0'; ctx.fill(); A.drawChunkyText(ctx, '!', bx, by + 0.5, 12, { mode: 'btn', fill: '#e0524f', outline: 2 }); ctx.restore(); } // v0.8.1 J3
   if (H && !ghost) drawNurseHud(a, H, x, y, frozen);
@@ -1936,7 +1937,7 @@ function drawAntObj(a, ghost = false) {
   if (a.charmT > 0) A.heart(ctx, x + Math.sin(S.t * 4 + a.id) * 4, y - 32 * a.size - Math.abs(Math.sin(S.t * 3)) * 4, 3, '#ff8fbf');
   if (a.shieldMax > 0 && !ghost) drawShield(a, x, y);
   if (a.hp < a.maxHp && !ghost) {
-    const w = a.type === 'queen' || a.type === 'queen3' || a.type === 'queen4' || a.type === 'queen5' || a.type === 'queen6' ? 60 : 22, hy = y - (a.flying ? 44 : 33) * a.size - 3;
+    const w = a.type === 'queen' || a.type === 'queen3' || a.type === 'queen4' || a.type === 'queen5' || a.type === 'queen6' || a.type === 'queen7' || a.type === 'queen8' ? 60 : 22, hy = y - (a.flying ? 44 : 33) * a.size - 3;
     A.rr(ctx, x - w / 2 - 1, hy - 1, w + 2, 6, 3); ctx.fillStyle = A.INK; ctx.fill();
     const f = Math.max(0, a.hp / a.maxHp);
     A.rr(ctx, x - w / 2, hy, w * f, 4, 2); ctx.fillStyle = f > 0.5 ? '#8fe388' : f > 0.25 ? '#ffd45e' : '#ff7a7a'; ctx.fill();
@@ -2419,9 +2420,10 @@ function renderResult(dt) {
   const hasNext = R.win && S.levelIndex + 1 < C.LEVELS.length;
   const ow6 = C.ART81 && hasNext && S.levelIndex === 49 && out.firstClear && M.worldUnlocked(S.save, 6);
   const ow7 = C.ART81 && hasNext && S.levelIndex === 59 && out.firstClear && M.worldUnlocked(S.save, 7);
-  const openLbl = ow7 ? 'Open World 7' : ow6 ? 'Open World 6' : 'Next';
-  drawButton(256, by, 92, 50, openLbl, '#9fe0b5', (ow6 || ow7) ? { disabled: !hasNext, size: 12 } : { disabled: !hasNext });
-  if (hasNext) button('rnext', 256, by - 3, 92, 56, ow7 ? () => { S.battle = null; go('map'); S.worldReveal = { i: 60, t0: S.t }; } : ow6 ? () => { S.battle = null; go('map'); S.worldReveal = { i: 50, t0: S.t }; } : () => openPrep(S.levelIndex + 1));
+  const ow8 = C.ART81 && hasNext && S.levelIndex === 69 && out.firstClear && M.worldUnlocked(S.save, 8);
+  const openLbl = ow8 ? 'Open World 8' : ow7 ? 'Open World 7' : ow6 ? 'Open World 6' : 'Next';
+  drawButton(256, by, 92, 50, openLbl, '#9fe0b5', (ow6 || ow7 || ow8) ? { disabled: !hasNext, size: 12 } : { disabled: !hasNext });
+  if (hasNext) button('rnext', 256, by - 3, 92, 56, ow8 ? () => { S.battle = null; go('map'); S.worldReveal = { i: 70, t0: S.t }; } : ow7 ? () => { S.battle = null; go('map'); S.worldReveal = { i: 60, t0: S.t }; } : ow6 ? () => { S.battle = null; go('map'); S.worldReveal = { i: 50, t0: S.t }; } : () => openPrep(S.levelIndex + 1));
 }
 
 // ---------------- CARDS / MERGE ----------------

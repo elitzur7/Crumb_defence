@@ -7,7 +7,7 @@ export const SPEEDS = [1, 2, 4];
 // v0.8.4 PACE1: labels stay 1 / 2 / 4. The accumulator fills 1.5x faster, so those labels
 // run at 1.5x / 3x / 6x of the vc28 sim rate. Entity speeds, spawn intervals and hpMul stay put.
 // Real-time systems (toasts, UI tweens, audio throttle) do not read PACE.
-export const PACE = 1.5;
+export const PACE = 1.35; // v0.8.5 PACE2: labels stay 1/2/4, so the sim runs at 1.35x / 2.7x / 5.4x of vc28
 export const FRAME_BUDGET_MS = 10;   // per-frame guard: stop stepping once the loop has used this much wall time ...
 export const ACC_CAP_STEPS = 8;      // ... and drop the backlog beyond this many steps (a slow phone slows the game down instead of freezing)
 export const MAX_FRAME_DT = 0.1;     // a hitch frame counts as at most 0.1 s of real time (as before v0.7.4)

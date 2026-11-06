@@ -125,6 +125,7 @@ const NODE_COLS = ['#ffc38a', '#ffb3c1', '#b9e89a', '#9fd6ff', '#c9b6f2', '#ffd2
 const W5_NODE_COLS = ['#a9d8de', '#8fcbd5', '#b9e2e6', '#9ecfd6', '#c4e8ec']; // v0.8.1 W8: world 5 map nodes - the teal-diner family (#a9d8de) with pink icing accents (ring, sprinkles, donut ornament)
 const W6_NODE_COLS = ['#f0c078', '#e8a33d', '#f6d49a', '#eab25a', '#f9dfae']; // v0.8.2 PP8: world 6 map nodes - the maple/honey family with a syrup-amber ring and a pancake ornament
 const W7_NODE_COLS = ['#d2b1e4', '#c45ad0', '#e7c6f2', '#b48cc8', '#f3c9ef'];
+const W8_NODE_COLS = ['#f3e6d8', '#7ec8e8', '#fff6ea', '#e7b89a', '#d7f4ff'];
 const NODE_ORN = ['leaf', 'crumb', 'bubble', 'wing', 'shield', 'cloud', 'cone', 'mask', 'dots', 'crown'];
 function miniCrown(ctx, x, y, s, fill = '#ffe36e') {
   ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
@@ -153,7 +154,7 @@ function nodeOrnament(ctx, kind, x, y, t) {
   ctx.restore();
 }
 export function mapNode(ctx, x, y, i, st, t = 0) {
-  const w5 = C.ART81 && C.worldOf(i) === 5, w6 = C.ART81 && C.worldOf(i) === 6, w7 = C.ART81 && C.worldOf(i) === 7, base = !st.open ? '#cfc6cf' : w7 ? W7_NODE_COLS[i % W7_NODE_COLS.length] : w6 ? W6_NODE_COLS[i % W6_NODE_COLS.length] : w5 ? W5_NODE_COLS[i % W5_NODE_COLS.length] : NODE_COLS[i % NODE_COLS.length];
+  const w5 = C.ART81 && C.worldOf(i) === 5, w6 = C.ART81 && C.worldOf(i) === 6, w7 = C.ART81 && C.worldOf(i) === 7, w8 = C.ART81 && C.worldOf(i) === 8, base = !st.open ? '#cfc6cf' : w8 ? W8_NODE_COLS[i % W8_NODE_COLS.length] : w7 ? W7_NODE_COLS[i % W7_NODE_COLS.length] : w6 ? W6_NODE_COLS[i % W6_NODE_COLS.length] : w5 ? W5_NODE_COLS[i % W5_NODE_COLS.length] : NODE_COLS[i % NODE_COLS.length];
   const R = st.boss ? 29 : 27, depth = 7;
   ctx.save();
   shadow(ctx, x, y + 26, 30, 7, 0.28);
@@ -184,26 +185,28 @@ export function starShape(ctx, x, y, r, fill, lw = 2) { candyStar(ctx, x, y, r, 
 
 // ---------------- ANTS (chibi, side/3-4 view, facing right) ----------------
 // Warm caramel palette, big heads, glossy eyes, thick clean outlines.
-export const ANT_COL = { small: '#f8c07e', worker: '#f0994d', big: '#d97a3f', gasmask: '#f0994d', armored: '#e48a47', flyer: '#f9b878', queen: '#f59b9b', queen2: '#c7a6f5', sprinter: '#f0994d', heavy: '#b95b34', greasy: '#ee9f45', mama: '#d9774a', queen3: '#e9b05c', nurse: '#f2b49b', queen4: '#f4b9c8', glazed: '#f1cf9a', queen5: '#e8789c', drone: '#e8a33d', queen6: '#c9772b', shieldbearer: '#8b6ecf', queen7: '#c45ad0' }; // v0.8.2 PP2/PP4: the Drone is honey-amber, the Syrup Queen syrup-amber // v0.7.5 C18: value ladder small > worker > big > heavy; v0.7.6 V1 (A5): small #fbc98a -> #f8c07e (>= 1.447 vs the trail on all 20 maps; ladder 1.37 / 1.38 / 1.48)
+export const ANT_COL = { small: '#f8b05b', worker: '#f58f36', big: '#de6f2a', gasmask: '#f58f36', armored: '#e98031', flyer: '#f9a655', queen: '#fa7171', queen2: '#b17cfa', sprinter: '#f58f36', heavy: '#be5022', greasy: '#f3972e', mama: '#de6b36', queen3: '#eeaa46', nurse: '#f79872', queen4: '#f990ab', glazed: '#f6c271', queen5: '#ed5a89', drone: '#ed9f2b', queen6: '#ce7625', shieldbearer: '#7b52dc', queen7: '#d046df', sugarcube: '#efe6ff', queen8: '#7ec8e8' }; // v0.8.5 ANT5a vivid hexes
 const ALW = 2.4; // ant outline width (v0.3: thinner = softer)
-export const PLAY_ANT_SCALE = 0.62; // v0.8.4 ANT1: play-field draw scale only. Book, prep and result stay full size.
+export const PLAY_ANT_SCALE = 0.72; // v0.8.5 ANT4: play-field draw scale only. Book, prep and result stay full size.
 let _play = null;
 function playSegment(ctx, x, y, rx, ry, col) {
-  const g = ctx.createLinearGradient(x - rx, y - ry, x + rx * 0.35, y + ry);
-  g.addColorStop(0, shade(col, 0.18)); g.addColorStop(0.48, col); g.addColorStop(1, shade(col, -0.16));
+  // v0.8.5 ANT5b: radial volume. Highlight up-left, terminator on the far side. No ink.
+  const g = ctx.createRadialGradient(x - rx * 0.35, y - ry * 0.45, Math.max(0.4, Math.min(rx, ry) * 0.05), x, y, Math.max(rx, ry));
+  g.addColorStop(0, shade(col, 0.22)); g.addColorStop(0.45, col); g.addColorStop(0.78, shade(col, -0.14)); g.addColorStop(1, shade(col, -0.28));
   ctx.beginPath(); ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill();
   ctx.beginPath(); ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
-  // Colony Flow ants have no ink rim: a faint tone edge only, so the gradient reads as the edge.
-  ctx.save(); ctx.globalAlpha *= 0.18; ctx.lineWidth = 1; ctx.strokeStyle = shade(col, -0.22); ctx.stroke(); ctx.restore();
+  ctx.save(); ctx.globalAlpha *= 0.22; ctx.lineWidth = 1; ctx.strokeStyle = shade(col, -0.22); ctx.stroke(); ctx.restore();
   ctx.save(); ctx.translate(x, y);
-  ctx.beginPath(); ctx.ellipse(-rx * 0.32, -ry * 0.38, Math.max(1.4, rx * 0.42), Math.max(0.9, ry * 0.28), -0.5, 0, Math.PI * 2);
-  ctx.fillStyle = '#ffffff'; ctx.globalAlpha = 0.35; ctx.fill();
+  ctx.beginPath(); ctx.ellipse(-rx * 0.32, -ry * 0.40, Math.max(1.1, rx * 0.38), Math.max(0.7, ry * 0.22), -0.45, 0, Math.PI * 2);
+  ctx.fillStyle = '#ffffff'; ctx.globalAlpha = 0.55; ctx.fill();
   ctx.restore();
+  ctx.beginPath(); ctx.ellipse(x, y, rx * 0.92, ry * 0.92, 0, Math.PI * 0.02, Math.PI * 0.52);
+  ctx.save(); ctx.lineWidth = 1.2; ctx.strokeStyle = shade(col, -0.32); ctx.globalAlpha = 0.35; ctx.stroke(); ctx.restore();
 }
 function playEye(ctx, x, y, rx, ry) {
   ctx.beginPath(); ctx.ellipse(x, y, rx, ry, 0, 0, 7); ctx.fillStyle = '#fffdf8'; ctx.fill();
-  ctx.beginPath(); ctx.ellipse(x + rx * 0.15, y + ry * 0.1, rx * 0.46, ry * 0.5, 0, 0, 7); ctx.fillStyle = '#2a1c24'; ctx.fill();
-  ctx.beginPath(); ctx.arc(x - rx * 0.22, y - ry * 0.28, Math.max(0.6, rx * 0.2), 0, 7); ctx.fillStyle = '#ffffff'; ctx.fill();
+  ctx.beginPath(); ctx.ellipse(x + rx * 0.12, y + ry * 0.08, rx * 0.55, ry * 0.55, 0, 0, 7); ctx.fillStyle = '#1a1218'; ctx.fill();
+  ctx.beginPath(); ctx.arc(x - rx * 0.22, y - ry * 0.28, Math.max(0.55, rx * 0.18), 0, 7); ctx.fillStyle = '#ffffff'; ctx.fill();
 }
 function softBlob(ctx, x, y, rx, ry, col, lw = ALW, gloss = 1) {
   if (_play) { playSegment(ctx, x, y, rx, ry, col); return; }
@@ -228,7 +231,7 @@ function cheek(ctx, x, y, r = 2.8) { ctx.beginPath(); ctx.ellipse(x, y, r, r * 0
 function leg(ctx, x0, y0, x1, y1, col) { // v0.8.0 mitten foot. v0.8.4 play: 2 px body colour, 1.6 px foot, no INK underlay.
   ctx.lineCap = 'round';
   ctx.beginPath(); ctx.moveTo(x0, y0); ctx.quadraticCurveTo((x0 + x1) / 2 + 0.6, (y0 + y1) / 2 + 0.6, x1, y1);
-  if (_play) { ctx.lineWidth = 2; ctx.strokeStyle = col; ctx.stroke(); ctx.beginPath(); ctx.arc(x1, y1, 0.8, 0, 7); ctx.fillStyle = col; ctx.fill(); return; }
+  if (_play) { ctx.lineWidth = 2.2; ctx.strokeStyle = col; ctx.stroke(); ctx.beginPath(); ctx.arc(x1, y1, 0.8, 0, 7); ctx.fillStyle = col; ctx.fill(); return; }
   ctx.lineWidth = 5.6; ctx.strokeStyle = INK; ctx.stroke();
   ctx.lineWidth = 3.4; ctx.strokeStyle = col; ctx.stroke();
   ctx.beginPath(); ctx.ellipse(x1 + 0.7, y1 + 0.5, 2.7, 1.9, 0, 0, 7); ctx.fillStyle = col; ctx.fill(); ctx.lineWidth = 1.7; ctx.strokeStyle = INK; ctx.stroke();
@@ -257,10 +260,10 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
   const col = hue ? mixHex(col0, hue > 0 ? '#ffe0b0' : '#ffc0cc', Math.min(0.22, Math.abs(hue) / 28)) : col0;
   const legCol = shade(col, -0.18), farCol = shade(col, -0.32);
   const P = phase * Math.PI * 2;
-  const step = Math.sin(P) * (opt.play ? 0.85 : 1);
+  const step = Math.sin(P) * (opt.play ? 0.85 * 0.9 : 1); // play walk is 0.9 of the v0.8.4 play step
   const hop = Math.abs(Math.sin(P)) * (opt.play ? 0.75 : 1);
-  const drone = type === 'drone', syrupQueen = type === 'queen6', jamQueen = type === 'queen7';
-  const flying = type === 'flyer' || drone, queen = type === 'queen' || type === 'queen2' || type === 'queen3' || type === 'queen4' || type === 'queen5' || syrupQueen || jamQueen, swiftQueen = type === 'queen2';
+  const drone = type === 'drone', syrupQueen = type === 'queen6', jamQueen = type === 'queen7', frostQueen = type === 'queen8';
+  const flying = type === 'flyer' || drone, queen = type === 'queen' || type === 'queen2' || type === 'queen3' || type === 'queen4' || type === 'queen5' || syrupQueen || jamQueen || frostQueen, swiftQueen = type === 'queen2';
   const mama = type === 'mama', greasy = type === 'greasy', pieQueen = type === 'queen3'; // v0.7.7 world 3
   const nurse = type === 'nurse', sundaeQueen = type === 'queen4'; // v0.7.9 world 4
   const glazed = type === 'glazed', glazeQueen = type === 'queen5'; // v0.8.1 world 5 (W2 / M5)
@@ -282,7 +285,7 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
     ctx.strokeStyle = ss; ctx.globalAlpha = al; ctx.lineWidth = lw;
   };
   const endAnt = () => { ctx.stroke = _stroke; _play = null; ctx.restore(); };
-  if (opt.play) { if (!flying) shadow(ctx, 0, 9, 12, 3.2, 0.14); else shadow(ctx, 0, 16, 10, 2.8, 0.12); }
+  if (opt.play) { const bodyLen = queen ? 46 : big ? 42 : 36; if (!flying) shadow(ctx, 0, 8.5, 0.55 * bodyLen, 2.6, 0.20); else shadow(ctx, 0, 16, 0.42 * bodyLen, 2.4, 0.16); }
   else if (C.ART81) { if (!flying) shadow(ctx, 0, 10.5, 15 - hop * 2, 4, 0.22); else shadow(ctx, 0, 24, 11 * (1 - 0.1 * hop), 3.3 * (1 - 0.1 * hop), 0.15); }
   else if (!flying) shadow(ctx, 0, 10.5, 15 - hop * 2, 4, 0.2); else shadow(ctx, 0, 21, 10, 3, 0.13);
   // large ants: lower, heavier steps with a side-to-side waddle and a stomp puff (v0.4 item 14a: nicer large-ant animation)
@@ -323,13 +326,14 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
   if (queen) {
     const sw = Math.sin(P) * 1.5;
     ctx.beginPath(); ctx.moveTo(3, -8); ctx.quadraticCurveTo(-14, -12 + sw, -24, 7); ctx.quadraticCurveTo(-11, 11, 2, 5); ctx.closePath();
-    const g = ctx.createLinearGradient(0, -10, 0, 10); g.addColorStop(0, jamQueen ? '#e7a0ea' : syrupQueen ? '#f3b868' : glazeQueen ? '#9fe3e6' : sundaeQueen ? '#8fe0c8' : pieQueen ? '#7f9be6' : '#b597f0'); g.addColorStop(1, jamQueen ? '#8a3a96' : syrupQueen ? '#a85f1c' : glazeQueen ? '#4fb3bd' : sundaeQueen ? '#3fa88f' : pieQueen ? '#4f69b8' : '#8a68d8');
+    const g = ctx.createLinearGradient(0, -10, 0, 10); g.addColorStop(0, frostQueen ? '#d7f4ff' : jamQueen ? '#e7a0ea' : syrupQueen ? '#f3b868' : glazeQueen ? '#9fe3e6' : sundaeQueen ? '#8fe0c8' : pieQueen ? '#7f9be6' : '#b597f0'); g.addColorStop(1, frostQueen ? '#3a8fb8' : jamQueen ? '#8a3a96' : syrupQueen ? '#a85f1c' : glazeQueen ? '#4fb3bd' : sundaeQueen ? '#3fa88f' : pieQueen ? '#4f69b8' : '#8a68d8');
     ctx.fillStyle = g; ctx.fill(); ctx.lineWidth = LW; ctx.strokeStyle = INK; ctx.stroke();
     ctx.beginPath(); ctx.moveTo(-22, 6.5); ctx.quadraticCurveTo(-10, 10, 1.5, 4.5); ctx.lineWidth = _play ? 1.6 : 3.4; ctx.strokeStyle = _play ? 'rgba(255,255,255,0.55)' : '#ffffff'; ctx.stroke();
     ctx.fillStyle = INK; for (const [a, b] of [[-17, 6.8], [-10, 8], [-4, 6.6]]) { ctx.beginPath(); ctx.arc(a, b, 0.9, 0, 7); ctx.fill(); }
   }
   const legY = 4.2, footY = flying ? 8.2 : 10.4;
-  for (let i = 0; i < 3; i++) { const sw = (i % 2 ? -1 : 1) * step * 2.0; leg(ctx, -8 + i * 4.8, legY, -7 + i * 4.8 - sw, footY - 0.5, farCol); if (sprinter) sneaker(ctx, -7 + i * 4.8 - sw, footY - 0.5, true); }
+  const playLeg = shade(col, -0.2);
+  for (let i = 0; i < 3; i++) { const sw = (i % 2 ? -1 : 1) * step * 2.0; leg(ctx, -8 + i * 4.8, legY, -7 + i * 4.8 - sw, footY - 0.5, _play ? playLeg : farCol); if (sprinter) sneaker(ctx, -7 + i * 4.8 - sw, footY - 0.5, true); }
 
   // ---- body
   const abRx = queen ? 13 : big ? 12 : 11, abRy = queen ? 11 : big ? 10 : 9.5; // v0.8.0 chibi: one plump abdomen
@@ -341,9 +345,14 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
   ctx.restore();
   if (type === 'shieldbearer') {
     ctx.save(); ctx.translate(-15, -7); ctx.rotate(-0.35); ctx.scale(1.12, 1.12);
-    if (_play) playSegment(ctx, 0, 0, 7.4, 8.4, '#8b6ecf'); else softBlob(ctx, 0, 0, 7.4, 8.4, '#8b6ecf', 2);
+    if (_play) { ctx.scale(1.1, 1.1); playSegment(ctx, 0, 0, 7.4, 8.4, '#7b52dc'); } else softBlob(ctx, 0, 0, 7.4, 8.4, '#7b52dc', 2);
     ctx.beginPath(); ctx.moveTo(0, -4.2); ctx.lineTo(3.2, -1.2); ctx.lineTo(0.4, 3.4); ctx.lineTo(-2.6, -0.6); ctx.closePath(); ctx.fillStyle = 'rgba(255,255,255,0.9)'; ctx.fill();
     ctx.restore();
+  }
+  if (type === 'sugarcube') { // white sugar crust chips on the abdomen
+    for (const [cx, cy, rw, rh] of [[-16, -3.2, 3.4, 2.2], [-9, -6.2, 2.8, 2.2], [-12.5, 2.4, 3, 2]]) {
+      if (_play) playSegment(ctx, cx, cy, rw, rh, '#fffaf8'); else softBlob(ctx, cx, cy, rw, rh, '#fffaf8', 1.4);
+    }
   }
   if (mama) { // v0.7.7 Brood Ant: three little eggs on her back = the three babies she drops
     for (const [ex, ey, er] of [[-16.5, -2.2, 2.9], [-10.5, -4.6, 3.1], [-5.2, -1.4, 2.7]]) { ctx.beginPath(); ctx.ellipse(ex, ey, er, er * 1.2, 0.2, 0, 7); ctx.fillStyle = '#fffaf0'; ctx.fill(); ctx.lineWidth = 1.7; ctx.strokeStyle = INK; ctx.stroke(); ctx.beginPath(); ctx.arc(ex - 0.7, ey - 0.8, 0.8, 0, 7); ctx.fillStyle = '#f2a0b0'; ctx.fill(); }
@@ -356,10 +365,10 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
     if (heavy) { ctx.beginPath(); ctx.ellipse(-10, -2.5, abRx * 0.8, 1.4, 0, Math.PI * 1.1, Math.PI * 1.9); ctx.lineWidth = 1.6; ctx.strokeStyle = '#f4b632'; ctx.stroke(); }
     ctx.restore();
   }
-  softBlob(ctx, -1, 1.5, 6.5, 6, col, LW, 0);
+  softBlob(ctx, -1, 1.5, _play ? 6.5 * 0.85 : 6.5, _play ? 6 * 0.85 : 6, col, LW, 0); // play thorax stays its own sphere (overlap capped at 0.85)
   if (opt.carrying) { if (_play) { ctx.save(); ctx.translate(-10.5, -12.5); ctx.scale(0.75, 0.75); ctx.translate(10.5, 12.5); } crumbIcon(ctx, -10.5, -12.5, 1.4, true); if (_play) ctx.restore(); }
   // near legs (in front of the body)
-  for (let i = 0; i < 3; i++) { const sw = (i % 2 ? 1 : -1) * step * 2.2; if (cheer && i === 2) continue; leg(ctx, -6 + i * 4.8, legY + 1.2, -5 + i * 4.8 + sw, footY + 0.5, legCol); if (sprinter) sneaker(ctx, -5 + i * 4.8 + sw, footY + 0.5, false); }
+  for (let i = 0; i < 3; i++) { const sw = (i % 2 ? 1 : -1) * step * 2.2; if (cheer && i === 2) continue; leg(ctx, -6 + i * 4.8, legY + 1.2, -5 + i * 4.8 + sw, footY + 0.5, _play ? playLeg : legCol); if (sprinter) sneaker(ctx, -5 + i * 4.8 + sw, footY + 0.5, false); }
   if (cheer) { // two raised arms with round mitts (the front near leg is the right arm; one more comes from behind the thorax)
     const wv = Math.sin(P * 2) * 1.6;
     for (const [sx0, sy0, mx, my, c0] of [[-3, 0, -9 + wv, -25, farCol], [3, 0, 27 - wv, -20, legCol]]) {
@@ -388,7 +397,7 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
       const tx0 = hx - 4.5 + k * 10 + bob * (k ? 1 : -0.6), ty0 = hy - hr - 4.5 + k * 0.5 - Math.abs(bob) * 0.5;
       const tx = bx0 + (tx0 - bx0) * 1.2, ty = by0 + (ty0 - by0) * 1.2; // v0.8.1 F11: 20% longer, thinner (x0.7) with a 2 px tip bead - reads as an antenna, not a teddy ear
       ctx.beginPath(); ctx.moveTo(bx0, by0); ctx.quadraticCurveTo(bx0 + (k ? 3 : -2), ty + 3, tx, ty);
-      if (_play) { ctx.lineWidth = 1.4; ctx.strokeStyle = legCol; ctx.stroke(); blob(ctx, tx, ty, 0.8, 0.8, shade(col, 0.25), 0, 0, { gloss: 0.4 }); }
+      if (_play) { ctx.lineWidth = 1.5; ctx.strokeStyle = legCol; ctx.stroke(); blob(ctx, tx, ty, 1.8, 1.8, shade(col, 0.25), 0, 0, { gloss: 0.4 }); }
       else { ctx.lineWidth = 3.2; ctx.strokeStyle = INK; ctx.stroke(); ctx.lineWidth = 1.5; ctx.strokeStyle = legCol; ctx.stroke(); blob(ctx, tx, ty, 2, 2, shade(col, 0.25), 1.5, 0, { gloss: 0.6 }); }
     }
   }
@@ -411,8 +420,8 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
     ctx.fillStyle = '#7d8592'; for (const dx of [-1.8, 0.4, 2.6]) { ctx.beginPath(); ctx.arc(hx + 5 + dx, hy + 7.6, 0.8, 0, 7); ctx.fill(); }
     blob(ctx, hx + 10.5, hy + 9.2, 2.8, 3.1, '#7fd3ad', 2.2);
   } else if (_play && !blink && !mood) {
-    playEye(ctx, e1x, ey, 5.0, 5.8);
-    playEye(ctx, e2x, ey - 0.3, 4.6, 5.4);
+    playEye(ctx, e1x, ey, 4.0, 4.64); // sclera is 0.80 of the v0.8.4 play eye
+    playEye(ctx, e2x, ey - 0.3, 3.68, 4.32);
     cheek(ctx, hx - 4.2, hy + 7); cheek(ctx, hx + 12.2, hy + 6.6, 2.4);
     ctx.save(); ctx.beginPath(); ctx.ellipse(hx + 4.2, hy + 6.6, 1.5, 1.05, 0, 0, 7); ctx.fillStyle = shade(col, -0.35); ctx.globalAlpha = 0.55; ctx.fill(); ctx.restore();
   } else {
@@ -543,7 +552,13 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
       endAnt(); return;
     }
     if (jamQueen) {
-      blob(ctx, hx, cy - 6.2, 11, 6.4, '#f3c98b', 2.2); blob(ctx, hx, cy - 7.2, 8.2, 4.4, '#c45ad0', 1.8); blob(ctx, hx - 2.2, cy - 9.2, 2.4, 1.1, '#f7d0f4', 0.1);
+      blob(ctx, hx, cy - 6.2, 11, 6.4, '#f3c98b', 2.2); blob(ctx, hx, cy - 7.2, 8.2, 4.4, '#d046df', 1.8); blob(ctx, hx - 2.2, cy - 9.2, 2.4, 1.1, '#f7d0f4', 0.1);
+      endAnt(); return;
+    }
+    if (frostQueen) {
+      blob(ctx, hx, cy - 6.2, 11 * (_play ? 1.1 : 1), 6.4 * (_play ? 1.1 : 1), '#fff6ea', 2.2);
+      blob(ctx, hx, cy - 7.4, 8.4 * (_play ? 1.1 : 1), 4.6 * (_play ? 1.1 : 1), '#7ec8e8', 1.8);
+      blob(ctx, hx - 2.2, cy - 9.4, 2.6, 1.2, '#f4fbff', 0.1);
       endAnt(); return;
     }
     if (sundaeQueen) { // v0.7.9 Sundae Queen: a waffle cone worn point-down as a crown, with a pink scoop and a cherry on top
@@ -1373,7 +1388,13 @@ function tartBody(ctx, r, pct) {
   for (let k = 0; k < bites; k++) { const [bx, by] = bAt(k); ctx.moveTo(bx + 9, by); ctx.arc(bx, by, 9, 0, Math.PI * 2, true); }
   ctx.clip('evenodd'); ctx.beginPath(); ctx.arc(0, 0, r, 0, 7); ctx.lineWidth = 3; ctx.strokeStyle = INK; ctx.stroke(); ctx.restore();
 }
-export const TREAT_BODIES = { cookie: cookieBody, cake: cakeBody, pie: pieBody, sundae: sundaeBody, donut: donutBody, pancake: pancakeBody, tart: tartBody };
+function cupcakeBody(ctx, r) {
+  ctx.beginPath(); ctx.moveTo(-r * 0.72, r * 0.15); ctx.lineTo(-r * 0.55, r * 0.85); ctx.lineTo(r * 0.55, r * 0.85); ctx.lineTo(r * 0.72, r * 0.15); ctx.closePath();
+  const w = ctx.createLinearGradient(0, r * 0.1, 0, r * 0.9); w.addColorStop(0, '#f6d7b0'); w.addColorStop(1, '#e0a56a'); ctx.fillStyle = w; ctx.fill(); ctx.lineWidth = 2.4; ctx.strokeStyle = INK; ctx.stroke();
+  ctx.beginPath(); ctx.ellipse(0, r * 0.05, r * 0.78, r * 0.42, 0, 0, 7); const s = ctx.createRadialGradient(-r * 0.2, -r * 0.15, 2, 0, 0, r); s.addColorStop(0, '#f7fbff'); s.addColorStop(1, '#7ec8e8'); ctx.fillStyle = s; ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.arc(0, -r * 0.55, r * 0.16, 0, 7); ctx.fillStyle = '#ed5a89'; ctx.fill(); ctx.stroke();
+}
+export const TREAT_BODIES = { cookie: cookieBody, cake: cakeBody, pie: pieBody, sundae: sundaeBody, donut: donutBody, pancake: pancakeBody, tart: tartBody, cupcake: cupcakeBody };
 // The body moves with the reaction: a jump (surprised), a fast shiver (oy oy oy), sinking (sad), sobbing bounces (crying).
 function reactMotion(react, t) {
   if (!react) return { dx: 0, dy: 0, sx: 1, sy: 1 };
@@ -1687,6 +1708,7 @@ export const THEMES = [
   // v0.8.2 world 6 (Crumb Design palettes-W3-W10.json 'W6 maple'): warm maple planks. If the rendered A10b is < 1.6 on any W6 map, darken the pad by steps (see qa/v0.8.2 contrast-w6).
   { name: 'W6 maple', a: '#e6b98a', b: '#e1b27f', grain: 'rgba(120,70,20,0.15)', grout: 'rgba(130,80,30,0.28)', trail: '#fffaf0', edge: '#b98550', dot: '#c99660' },
   { name: 'W7 grape', a: '#d2b1e4', b: '#cca8e0', grout: 'rgba(120,70,150,0.22)', trail: '#fffaf5', edge: '#b48cc8', dot: '#e7c6f2' },
+  { name: 'W8 frosting', a: '#e8d4c4', b: '#e0c8b4', grout: 'rgba(160,110,80,0.24)', trail: '#fffaf5', edge: '#c9a07c', dot: '#7ec8e8' }, // proposal #f3e6d8/#ead7c4 measured A2 1.18; one step darker so the trail clears 1.30
 ];
 export function renderMapBackground(routes, theme, w, h, dpr, props = [], art = {}) { // art = the map's tuning.json "art" overrides: { chev: chevron alpha, plate: { dy, scale } } (v0.8.2, Crumbie's A1/A3r rulings)
   if (!Array.isArray(routes)) routes = [routes];
@@ -1882,7 +1904,7 @@ export function drawSwatter(ctx, x, y, ang = 0, sc = 1, flash = 0) {
 }
 
 // ---------------- v0.8.2 G9: the table around the board (oversize props; baked, nothing animated) ----------------
-export const TABLE_SETS = { 1: ['leaf', 'twig', 'leaf', 'pebble'], 2: ['pebble', 'pebble', 'twig', 'leaf'], 3: ['cup', 'cup', 'plate'], 4: ['plate', 'cutlery', 'plate', 'cup'], 5: ['donutbox', 'napkin', 'ring', 'donutbox'], 6: ['syrup', 'butter', 'berry', 'berry'], 7: ['berry', 'syrup', 'napkin', 'plate'] };
+export const TABLE_SETS = { 1: ['leaf', 'twig', 'leaf', 'pebble'], 2: ['pebble', 'pebble', 'twig', 'leaf'], 3: ['cup', 'cup', 'plate'], 4: ['plate', 'cutlery', 'plate', 'cup'], 5: ['donutbox', 'napkin', 'ring', 'donutbox'], 6: ['syrup', 'butter', 'berry', 'berry'], 7: ['berry', 'syrup', 'napkin', 'plate'], 8: ['cup', 'napkin', 'plate', 'berry'] };
 export function drawTableProp(g, kind, x, y, r, rot = 0, shadow = true) {
   g.save(); g.translate(x, y);
   if (shadow) { g.beginPath(); g.ellipse(r * 0.18, r * 0.62, r * 0.95, r * 0.32, 0, 0, 7); g.fillStyle = 'rgba(70,35,50,0.18)'; g.fill(); } // contact shadow (alpha .18)
