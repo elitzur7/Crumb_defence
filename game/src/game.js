@@ -6,7 +6,7 @@ import * as M from './meta.js';
 import * as A from './art.js';
 import { levelHeaderLine } from './uitext.js';
 import { initAudio, sfx, setMuted, setAudioSpeed } from './audio.js';
-import { STEP, advanceFrame, newClock, nextSpeed, startSpeed } from './loop.js';
+import { STEP, PACE, advanceFrame, newClock, nextSpeed, startSpeed } from './loop.js';
 import { smartBotStep } from './bot.js';
 import { addFloatText } from './fx.js';
 import * as Treat from './treat.js';
@@ -222,7 +222,7 @@ function startBattle(levelIndex = S.levelIndex, deck = S.prep.deck, bonuses = S.
     onBonusUsed: (type) => { M.consumeBonus(S.save, type); persist(); } }); // deducted immediately: Restart/Quit can't refund it
   S.battleStartStock = { ...S.save.bonusStock };
   capsReset(); S.queenIntro = null; S._bubbleShown = false; S.impactT = {}; S.crumbSprites = []; S.sparkles = []; // v0.8.1 J11: maxima since battle start
-  S.fx = []; S.swatQ = []; S.ui = []; S.result = null; setPaused(false); S.speed = startSpeed(S.speed, C.UI.speedMaxAtStart); clock.acc = 0; S.sel = null; S.info = null; S.mode = null; S.queenDown = null; S.modeHint = false; S.nurseTip = false; S.battle.rescueScale = S.speed;
+  S.fx = []; S.swatQ = []; S.ui = []; S.result = null; setPaused(false); S.speed = startSpeed(S.speed, C.UI.speedMaxAtStart); clock.acc = 0; S.sel = null; S.info = null; S.mode = null; S.queenDown = null; S.modeHint = false; S.nurseTip = false; S.battle.rescueScale = S.speed * PACE; // divisor matches the faster sim fill so the rescue window stays 3 s of wall time
   go('battle');
   S.guide = guideWanted(levelIndex) ? { step: 1 } : null; // v0.8.1 U1 (after go(), which clears it)
   S.specialBanner = null; // v0.8.2 U11: the awakening beat - the first W6 battle with a card at CL >= 5: a 2 s banner, once per tower (save.seenSpecial[type]); never on W1-W5 (the special sleeps there)
@@ -609,7 +609,7 @@ const clock = newClock();
 // swatter queue flushed after EVERY sub-step, so the slap lands within one STEP (1/60 s) of its battle time at any speed (it used to wait for the frame end).
 function battleStep(dt) {
   const b = S.battle;
-  b.rescueScale = S.speed; // a rescue piece lives its window in WALL time
+  b.rescueScale = S.speed * PACE; // wall window stays rescue.window seconds (sim seconds arrive at label * PACE per wall second). Audio still uses the label.
   b.update(dt);
   if (S.autoBot) smartBotStep(b);
   if (S.speed > 1 || b.result) { consumeEvents(); flushSwat(!!b.result); }

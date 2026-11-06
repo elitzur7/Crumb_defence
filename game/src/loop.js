@@ -4,6 +4,10 @@
 // Physics, cooldowns, spawns, projectiles and the swatter all see the same dt = 1/60 at every speed, so the sim result does not depend on the speed.
 export const STEP = 1 / 60;
 export const SPEEDS = [1, 2, 4];
+// v0.8.4 PACE1: labels stay 1 / 2 / 4. The accumulator fills 1.5x faster, so those labels
+// run at 1.5x / 3x / 6x of the vc28 sim rate. Entity speeds, spawn intervals and hpMul stay put.
+// Real-time systems (toasts, UI tweens, audio throttle) do not read PACE.
+export const PACE = 1.5;
 export const FRAME_BUDGET_MS = 10;   // per-frame guard: stop stepping once the loop has used this much wall time ...
 export const ACC_CAP_STEPS = 8;      // ... and drop the backlog beyond this many steps (a slow phone slows the game down instead of freezing)
 export const MAX_FRAME_DT = 0.1;     // a hitch frame counts as at most 0.1 s of real time (as before v0.7.4)
@@ -23,7 +27,7 @@ export function newClock() { return { acc: 0 }; }
  */
 export function advanceFrame(clk, dtReal, speed, stepFn, opts = {}) {
   const dt = Math.min(MAX_FRAME_DT, Math.max(0, dtReal));
-  clk.acc += dt * speed;
+  clk.acc += dt * speed * PACE;
   const t0 = opts.now ? opts.now() : 0, budget = opts.budgetMs ?? FRAME_BUDGET_MS;
   let n = 0;
   while (clk.acc >= STEP - 1e-9) {
