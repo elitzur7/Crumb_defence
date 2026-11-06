@@ -1889,7 +1889,7 @@ function drawAntObj(a, ghost = false) {
   const H = C.ANTS[a.type].heal, spent = !!H && (frozen || a.healCd > 0); // v0.7.9: a recharging / frozen nurse wears the grey cap
   const mood = spent ? 'g' : (a.hitFlash > 0.02 && !reducedMotion()) ? 'h' : a.stunT > 0 ? 'd' : ''; // v0.8.0: hurt face (> <) on a hit, dizzy face while stunned (baked lazily per type/frame)
   const droneFx = C.ART81 && a.type === 'drone' && !reducedMotion() && !still; // v0.8.3 PP3: a Drone's wings flutter between two poses at 14 Hz and it hovers +-2 px at 1.6 Hz (reduced motion: still pose)
-  const spr = A.antSprite(a.type, droneFx ? (Math.floor((b.time + a.id * 0.037) * 14) % 2 ? 3 : 9) : fr, a.carrying > 0, pxRatio, mood);
+  const spr = A.antSprite(a.type, droneFx ? (Math.floor((b.time + a.id * 0.037) * 14) % 2 ? 3 : 9) : fr, a.carrying > 0, pxRatio, mood, { play: true });
   const breathe = still ? 1 + Math.sin(S.t * 5 + a.id) * 0.035 : 1;
   // tiny lateral offset per id so crowds don't stack perfectly
   let lat = ((a.id * 37) % 9 - 4) * 1.2;
@@ -1919,7 +1919,7 @@ function drawAntObj(a, ghost = false) {
   if (a.charmT > 0) A.heart(ctx, x + Math.sin(S.t * 4 + a.id) * 4, y - 32 * a.size - Math.abs(Math.sin(S.t * 3)) * 4, 3, '#ff8fbf');
   if (a.shieldMax > 0 && !ghost) drawShield(a, x, y);
   if (a.hp < a.maxHp && !ghost) {
-    const w = a.type === 'queen' || a.type === 'queen3' || a.type === 'queen4' || a.type === 'queen5' || a.type === 'queen6' ? 60 : 22, hy = y - (a.flying ? 44 : 33) * a.size;
+    const w = a.type === 'queen' || a.type === 'queen3' || a.type === 'queen4' || a.type === 'queen5' || a.type === 'queen6' ? 60 : 22, hy = y - (a.flying ? 44 : 33) * a.size - 3;
     A.rr(ctx, x - w / 2 - 1, hy - 1, w + 2, 6, 3); ctx.fillStyle = A.INK; ctx.fill();
     const f = Math.max(0, a.hp / a.maxHp);
     A.rr(ctx, x - w / 2, hy, w * f, 4, 2); ctx.fillStyle = f > 0.5 ? '#8fe388' : f > 0.25 ? '#ffd45e' : '#ff7a7a'; ctx.fill();
@@ -1935,7 +1935,7 @@ function renderFx(dt) {
     ctx.save();
     switch (f.k) {
       case 'thrown': { // v0.6 item 6: an ant thrown off the trail by the Tractor - an arc with a spin, then a puff where it lands
-        const spr = A.antSprite(f.ant, 0, false, pxRatio);
+        const spr = A.antSprite(f.ant, 0, false, pxRatio, '', { play: true });
         const x = f.x0 + (f.x1 - f.x0) * k, y = f.y0 + (f.y1 - f.y0) * k - Math.sin(k * Math.PI) * f.h;
         ctx.globalAlpha = k > 0.8 ? (1 - k) / 0.2 : 1; ctx.translate(x, y); ctx.rotate(k * f.spin); const sc = 1 - k * 0.35; ctx.scale(sc, sc);
         ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h);
@@ -1944,7 +1944,7 @@ function renderFx(dt) {
       }
       case 'crumbFly': { const x = f.x0 + (f.x1 - f.x0) * k, y = f.y0 + (f.y1 - f.y0) * k - Math.sin(k * Math.PI) * 24; ctx.globalAlpha = k > 0.85 ? (1 - k) / 0.15 : 1; A.crumbIcon(ctx, x, y, 1.1 - k * 0.5, true); break; }
       case 'ko': {
-        const spr = A.antSprite(f.ant, 0, false, pxRatio);
+        const spr = A.antSprite(f.ant, 0, false, pxRatio, '', { play: true });
         // v0.7.6 V4: death = scale 1 -> 1.25 in 80 ms (first 25%), then -> 0 over 240 ms; life 0.32 s (was 0.2); reduced motion: a plain fade of the same length, no scale / spin
         const rmo = reducedMotion(), ds = rmo ? 1 : k < 0.25 ? 1 + 0.25 * (k / 0.25) : 1.25 * (1 - (k - 0.25) / 0.75);
         ctx.globalAlpha = rmo ? 1 - k : 1 - k * k; ctx.translate(f.x, f.y - (rmo ? 0 : f.fall ? -k * k * 20 + Math.sin(k * 14) * 3 : k * 24)); ctx.rotate(rmo ? 0 : Math.PI * k * (f.fall ? 2.2 : 0.4) * f.face); // v0.8.1 J2: a flyer spins and drops ctx.scale(f.face * ds, -ds);

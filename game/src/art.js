@@ -184,8 +184,24 @@ export function starShape(ctx, x, y, r, fill, lw = 2) { candyStar(ctx, x, y, r, 
 // Warm caramel palette, big heads, glossy eyes, thick clean outlines.
 export const ANT_COL = { small: '#f8c07e', worker: '#f0994d', big: '#d97a3f', gasmask: '#f0994d', armored: '#e48a47', flyer: '#f9b878', queen: '#f59b9b', queen2: '#c7a6f5', sprinter: '#f0994d', heavy: '#b95b34', greasy: '#ee9f45', mama: '#d9774a', queen3: '#e9b05c', nurse: '#f2b49b', queen4: '#f4b9c8', glazed: '#f1cf9a', queen5: '#e8789c', drone: '#e8a33d', queen6: '#c9772b' }; // v0.8.2 PP2/PP4: the Drone is honey-amber, the Syrup Queen syrup-amber // v0.7.5 C18: value ladder small > worker > big > heavy; v0.7.6 V1 (A5): small #fbc98a -> #f8c07e (>= 1.447 vs the trail on all 20 maps; ladder 1.37 / 1.38 / 1.48)
 const ALW = 2.4; // ant outline width (v0.3: thinner = softer)
-
-function softBlob(ctx, x, y, rx, ry, col, lw = ALW, gloss = 1) { drawGlossyBlob(ctx, x, y, rx, ry, col, { lw, gloss }); }
+export const PLAY_ANT_SCALE = 0.62; // v0.8.4 ANT1: play-field draw scale only. Book, prep and result stay full size.
+let _play = null;
+function playSegment(ctx, x, y, rx, ry, col) {
+  const g = ctx.createLinearGradient(x - rx, y - ry, x + rx * 0.35, y + ry);
+  g.addColorStop(0, shade(col, 0.18)); g.addColorStop(0.48, col); g.addColorStop(1, shade(col, -0.16));
+  ctx.beginPath(); ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill();
+  ctx.beginPath(); ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
+  ctx.save(); ctx.globalAlpha *= 0.5; ctx.lineWidth = 1; ctx.strokeStyle = shade(col, -0.22); ctx.stroke(); ctx.restore();
+  ctx.save(); ctx.translate(x, y);
+  ctx.beginPath(); ctx.ellipse(-rx * 0.28, -ry * 0.36, Math.max(1.2, rx * 0.30), Math.max(0.8, ry * 0.20), -0.5, 0, Math.PI * 2);
+  ctx.fillStyle = '#ffffff'; ctx.globalAlpha = 0.35; ctx.fill();
+  if (Math.min(rx, ry) >= 5) { ctx.beginPath(); ctx.arc(-rx * 0.46, -ry * 0.12, 1, 0, Math.PI * 2); ctx.globalAlpha = 0.5; ctx.fill(); }
+  ctx.restore();
+}
+function softBlob(ctx, x, y, rx, ry, col, lw = ALW, gloss = 1) {
+  if (_play) { playSegment(ctx, x, y, rx, ry, col); return; }
+  drawGlossyBlob(ctx, x, y, rx, ry, col, { lw, gloss });
+}
 // v0.8.0 bead eye: a tall dark oval, a big upper-left highlight + a small lower-right one. mood: '' | 'hurt' (> <) | 'dizzy' (spiral) | 'cheer' (^ ^)
 function glossyEye(ctx, x, y, rx, ry, blink, mood = '', side = 1) {
   if (mood === 'hurt') { ctx.beginPath(); ctx.moveTo(x - rx * 0.9 * side, y - ry * 0.55); ctx.lineTo(x + rx * 0.7 * side, y); ctx.lineTo(x - rx * 0.9 * side, y + ry * 0.55); ctx.lineWidth = 2.1; ctx.strokeStyle = INK; ctx.stroke(); return; }
@@ -201,10 +217,11 @@ function glossyEye(ctx, x, y, rx, ry, blink, mood = '', side = 1) {
   ctx.beginPath(); ctx.ellipse(x - rx * 0.26, y - ry * 0.36, rx * 0.48, ry * 0.3, -0.3, 0, 7); ctx.fillStyle = '#ffffff'; ctx.fill();
   ctx.beginPath(); ctx.arc(x + rx * 0.4, y + ry * 0.42, rx * 0.22, 0, 7); ctx.fillStyle = 'rgba(255,255,255,0.92)'; ctx.fill();
 }
-function cheek(ctx, x, y, r = 2.8) { ctx.beginPath(); ctx.ellipse(x, y, r, r * 0.66, 0, 0, 7); ctx.fillStyle = 'rgba(255,100,130,0.6)'; ctx.fill(); }
-function leg(ctx, x0, y0, x1, y1, col) { // v0.8.0: short, thick, with a round mitten foot
+function cheek(ctx, x, y, r = 2.8) { ctx.beginPath(); ctx.ellipse(x, y, r, r * 0.66, 0, 0, 7); ctx.fillStyle = _play ? 'rgba(255,100,130,0.55)' : 'rgba(255,100,130,0.6)'; ctx.fill(); }
+function leg(ctx, x0, y0, x1, y1, col) { // v0.8.0 mitten foot. v0.8.4 play: 2 px body colour, 1.6 px foot, no INK underlay.
   ctx.lineCap = 'round';
   ctx.beginPath(); ctx.moveTo(x0, y0); ctx.quadraticCurveTo((x0 + x1) / 2 + 0.6, (y0 + y1) / 2 + 0.6, x1, y1);
+  if (_play) { ctx.lineWidth = 2; ctx.strokeStyle = col; ctx.stroke(); ctx.beginPath(); ctx.arc(x1, y1, 0.8, 0, 7); ctx.fillStyle = col; ctx.fill(); return; }
   ctx.lineWidth = 5.6; ctx.strokeStyle = INK; ctx.stroke();
   ctx.lineWidth = 3.4; ctx.strokeStyle = col; ctx.stroke();
   ctx.beginPath(); ctx.ellipse(x1 + 0.7, y1 + 0.5, 2.7, 1.9, 0, 0, 7); ctx.fillStyle = col; ctx.fill(); ctx.lineWidth = 1.7; ctx.strokeStyle = INK; ctx.stroke();
@@ -228,11 +245,13 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
   const S = C.ANTS[type].size;
   const LW = Math.min(3, Math.max(1.8, 2.2 * S)) / S; // v0.8.1 F6: the ant outline is 1.8-3 px on screen at every ant size (was a fixed 2.4 in ant space)
   type = ANT_LOOK[type] || type;
-  const col = ANT_COL[type];
+  const hue = opt.hue || 0;
+  const col0 = ANT_COL[type];
+  const col = hue ? mixHex(col0, hue > 0 ? '#ffe0b0' : '#ffc0cc', Math.min(0.22, Math.abs(hue) / 28)) : col0;
   const legCol = shade(col, -0.18), farCol = shade(col, -0.32);
   const P = phase * Math.PI * 2;
-  const step = Math.sin(P);
-  const hop = Math.abs(Math.sin(P));
+  const step = Math.sin(P) * (opt.play ? 0.85 : 1);
+  const hop = Math.abs(Math.sin(P)) * (opt.play ? 0.75 : 1);
   const drone = type === 'drone', syrupQueen = type === 'queen6'; // v0.8.2 world 6 (PP2 / PP4)
   const flying = type === 'flyer' || drone, queen = type === 'queen' || type === 'queen2' || type === 'queen3' || type === 'queen4' || type === 'queen5' || syrupQueen, swiftQueen = type === 'queen2';
   const mama = type === 'mama', greasy = type === 'greasy', pieQueen = type === 'queen3'; // v0.7.7 world 3
@@ -244,8 +263,20 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
   const cheer = opt.pose === 'cheer'; // v0.8.0 hero pose (defeat screen + queen taunt only): both arms up, closed happy eyes, open mouth
   ctx.save();
   ctx.scale(S, S); ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  if (opt.play) ctx.scale(PLAY_ANT_SCALE, PLAY_ANT_SCALE);
   if (drone) ctx.scale(1.15, 1.15); // v0.8.2 PP2: 1.15x the flyer's body scale
-  if (C.ART81) { if (!flying) shadow(ctx, 0, 10.5, 15 - hop * 2, 4, 0.22); else shadow(ctx, 0, 24, 11 * (1 - 0.1 * hop), 3.3 * (1 - 0.1 * hop), 0.15); } // v0.8.2 G13: ground alpha .22; flyers a larger offset (+80 %), alpha .15, 10 % smaller at the top of the hover bob
+  _play = opt.play ? { col } : null;
+  const _stroke = ctx.stroke;
+  if (opt.play) ctx.stroke = function () {
+    const ss = ctx.strokeStyle;
+    if (ss !== INK && ss !== '#523c4b') { _stroke.call(ctx); return; }
+    const lw = ctx.lineWidth, al = ctx.globalAlpha;
+    ctx.strokeStyle = shade(col, -0.22); ctx.globalAlpha = al * 0.5; ctx.lineWidth = 1; _stroke.call(ctx);
+    ctx.strokeStyle = ss; ctx.globalAlpha = al; ctx.lineWidth = lw;
+  };
+  const endAnt = () => { ctx.stroke = _stroke; _play = null; ctx.restore(); };
+  if (opt.play) { if (!flying) shadow(ctx, 0, 8, 9, 2.4, 0.18); else shadow(ctx, 0, 16, 8, 2.2, 0.14); }
+  else if (C.ART81) { if (!flying) shadow(ctx, 0, 10.5, 15 - hop * 2, 4, 0.22); else shadow(ctx, 0, 24, 11 * (1 - 0.1 * hop), 3.3 * (1 - 0.1 * hop), 0.15); }
   else if (!flying) shadow(ctx, 0, 10.5, 15 - hop * 2, 4, 0.2); else shadow(ctx, 0, 21, 10, 3, 0.13);
   // large ants: lower, heavier steps with a side-to-side waddle and a stomp puff (v0.4 item 14a: nicer large-ant animation)
   const lift = flying ? 9 + Math.sin(P * 2) * 2 : big ? hop * 1.8 : hop * 3.2;
@@ -313,7 +344,7 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
     ctx.restore();
   }
   softBlob(ctx, -1, 1.5, 6.5, 6, col, LW, 0);
-  if (opt.carrying) crumbIcon(ctx, -10.5, -12.5, 1.4, true);
+  if (opt.carrying) crumbIcon(ctx, -10.5, -12.5, _play ? 1.05 : 1.4, true); // ANT2: carried crumb is 0.75 of today's, still outlined
   // near legs (in front of the body)
   for (let i = 0; i < 3; i++) { const sw = (i % 2 ? 1 : -1) * step * 2.2; if (cheer && i === 2) continue; leg(ctx, -6 + i * 4.8, legY + 1.2, -5 + i * 4.8 + sw, footY + 0.5, legCol); if (sprinter) sneaker(ctx, -5 + i * 4.8 + sw, footY + 0.5, false); }
   if (cheer) { // two raised arms with round mitts (the front near leg is the right arm; one more comes from behind the thorax)
@@ -344,8 +375,8 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
       const tx0 = hx - 4.5 + k * 10 + bob * (k ? 1 : -0.6), ty0 = hy - hr - 4.5 + k * 0.5 - Math.abs(bob) * 0.5;
       const tx = bx0 + (tx0 - bx0) * 1.2, ty = by0 + (ty0 - by0) * 1.2; // v0.8.1 F11: 20% longer, thinner (x0.7) with a 2 px tip bead - reads as an antenna, not a teddy ear
       ctx.beginPath(); ctx.moveTo(bx0, by0); ctx.quadraticCurveTo(bx0 + (k ? 3 : -2), ty + 3, tx, ty);
-      ctx.lineWidth = 3.2; ctx.strokeStyle = INK; ctx.stroke(); ctx.lineWidth = 1.5; ctx.strokeStyle = legCol; ctx.stroke();
-      blob(ctx, tx, ty, 2, 2, shade(col, 0.25), 1.5, 0, { gloss: 0.6 });
+      if (_play) { ctx.lineWidth = 1.4; ctx.strokeStyle = legCol; ctx.stroke(); blob(ctx, tx, ty, 0.8, 0.8, shade(col, 0.25), 0, 0, { gloss: 0.4 }); }
+      else { ctx.lineWidth = 3.2; ctx.strokeStyle = INK; ctx.stroke(); ctx.lineWidth = 1.5; ctx.strokeStyle = legCol; ctx.stroke(); blob(ctx, tx, ty, 2, 2, shade(col, 0.25), 1.5, 0, { gloss: 0.6 }); }
     }
   }
   softBlob(ctx, hx, hy, hr, hr * 0.92, col, LW);
@@ -479,7 +510,7 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
       blob(ctx, hx, cy - 6, 10.5, 6.6, '#f1cf9a', 2.4); blob(ctx, hx, cy - 7.4, 9, 5, '#ff9ec0', 2); blob(ctx, hx, cy - 7.4, 3.2, 1.9, '#f1cf9a', 1.6); blob(ctx, hx - 3, cy - 10, 2.6, 1.2, '#ffd9e6', 0.1);
       for (const [dx, dy, c2, rot] of [[-6, -6.6, '#6fd0e8', 0.4], [5.5, -7.6, '#fff3a8', -0.5], [-1, -11.2, '#8de0a8', 1], [7, -5, '#ffffff', 0.9]]) { ctx.save(); ctx.translate(hx + dx, cy + dy); ctx.rotate(rot); rr(ctx, -1.6, -0.6, 3.2, 1.2, 0.6); ctx.fillStyle = c2; ctx.fill(); ctx.restore(); }
       if (C.ART81) for (const [dx, dy, c2] of [[-6.6, -14, '#6fd0e8'], [0, -18, '#fff3a8'], [6.6, -14, '#8de0a8']]) { ctx.beginPath(); ctx.arc(hx + dx, cy + dy, 3.1, 0, 7); ctx.fillStyle = c2; ctx.fill(); ctx.lineWidth = 1.4; ctx.strokeStyle = INK; ctx.stroke(); } // v0.8.2 R9: three coloured dots above the donut crown
-      ctx.restore(); return;
+      endAnt(); return;
     }
     if (syrupQueen) { // v0.8.2 PP4 Syrup Queen: an amber syrup crown band with THREE drips hanging down the brow (distinct from the donut crown and the cone)
       blob(ctx, hx, cy - 6.5, 10.5, 4.4, '#e8a33d', 2.3);
@@ -490,7 +521,7 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
       }
       blob(ctx, hx - 3.2, cy - 8, 2.8, 1.2, '#fff2b8', 0.1);
       for (const dx of [-7, 0, 7]) { ctx.beginPath(); ctx.arc(hx + dx, cy - 11.6 - (dx ? 0 : 3), 3, 0, 7); ctx.fillStyle = '#fff2b8'; ctx.fill(); ctx.lineWidth = 1.5; ctx.strokeStyle = INK; ctx.stroke(); }
-      ctx.restore(); return;
+      endAnt(); return;
     }
     if (sundaeQueen) { // v0.7.9 Sundae Queen: a waffle cone worn point-down as a crown, with a pink scoop and a cherry on top
       ctx.beginPath(); ctx.moveTo(hx - 8.5, cy - 8.5); ctx.lineTo(hx + 8.5, cy - 8.5); ctx.lineTo(hx + 1.2, cy + 1); ctx.lineTo(hx - 1.2, cy + 1); ctx.closePath();
@@ -500,7 +531,7 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
       blob(ctx, hx, cy - 11, 8.2, 5.6, '#ff9ec0', 2.2); blob(ctx, hx - 1.6, cy - 12.6, 2.6, 1.4, '#ffd3e2', 0.1);
       ctx.beginPath(); ctx.moveTo(hx - 6.5, cy - 8.6); for (let k = 0; k < 4; k++) ctx.quadraticCurveTo(hx - 6.5 + k * 4.4 + 1.6, cy - 5.6, hx - 6.5 + (k + 1) * 4.4, cy - 8.6); ctx.lineWidth = 1.6; ctx.strokeStyle = INK; ctx.stroke();
       blob(ctx, hx + 1, cy - 17.4, 2.6, 2.6, '#e8304e', 1.6); ctx.beginPath(); ctx.moveTo(hx + 1, cy - 19.6); ctx.quadraticCurveTo(hx + 2.5, cy - 23, hx + 5, cy - 23.4); ctx.lineWidth = 1.6; ctx.strokeStyle = INK; ctx.stroke();
-      ctx.restore(); return;
+      endAnt(); return;
     }
     ctx.beginPath(); ctx.moveTo(hx - 7, cy); ctx.lineTo(hx - 8, cy - 9); ctx.lineTo(hx - 3.5, cy - 4.5); ctx.lineTo(hx, cy - 11); ctx.lineTo(hx + 3.5, cy - 4.5); ctx.lineTo(hx + 8, cy - 9); ctx.lineTo(hx + 7, cy); ctx.closePath();
     const g = ctx.createLinearGradient(0, cy - 11, 0, cy); g.addColorStop(0, pieQueen ? '#ff8aa0' : '#fff5ad'); g.addColorStop(1, pieQueen ? '#d93a5c' : '#f4b632'); ctx.fillStyle = g; ctx.fill(); // v0.7.7: the Pie Queen wears a cherry-red crown
@@ -508,14 +539,15 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
     blob(ctx, hx, cy - 2.6, 1.8, 1.8, '#ff6f91', 1.2); blob(ctx, hx - 5, cy - 2.2, 1.2, 1.2, '#7cc6f2', 1); blob(ctx, hx + 5, cy - 2.2, 1.2, 1.2, '#7cc6f2', 1);
     for (const [x, y] of [[hx - 8, cy - 9], [hx, cy - 11], [hx + 8, cy - 9]]) blob(ctx, x, y, 1.4, 1.4, '#fff5ad', 1.2);
   }
-  ctx.restore();
+  endAnt();
 }
 
 // Sprite cache: renders each ant type/frame/carrying once at device scale.
 const spriteCache = new Map();
 export const ANT_FRAMES = 12; // v0.3: smoother walk cycle
-export function antSprite(type, frame, carrying, dpr, variant = '') {
-  const key = type + frame + (carrying ? 'c' : '') + dpr + variant; // v0.7.9: variant 'g' = the Nurse's grey (recharging / frozen) cap
+export function antSprite(type, frame, carrying, dpr, variant = '', opt = {}) {
+  const play = !!(opt && opt.play), hue = (opt && opt.hue) || 0;
+  const key = type + frame + (carrying ? 'c' : '') + dpr + variant + (play ? 'P' : '') + (hue ? 'h' + hue : ''); // v0.7.9 grey cap; v0.8.4 P = soft play ant
   let s = spriteCache.get(key);
   if (s) return s;
   const S = C.ANTS[type].size;
@@ -523,7 +555,7 @@ export function antSprite(type, frame, carrying, dpr, variant = '') {
   const cv = makeCanvas(Math.ceil(w * dpr), Math.ceil(h * dpr));
   const g = cv.getContext('2d');
   g.scale(dpr, dpr); g.translate(w / 2, h * 0.66);
-  drawAnt(g, type, frame / ANT_FRAMES, { carrying, blink: frame === 7 && !C.isQueen(type), grey: variant === 'g', mood: variant === 'h' ? 'hurt' : variant === 'd' ? 'dizzy' : '', pose: variant === 'cheer' ? 'cheer' : '' }); // v0.8.0 variants: h = hurt face, d = dizzy face, cheer = the hero pose
+  drawAnt(g, type, frame / ANT_FRAMES, { carrying, blink: frame === 7 && !C.isQueen(type), grey: variant === 'g', mood: variant === 'h' ? 'hurt' : variant === 'd' ? 'dizzy' : '', pose: variant === 'cheer' ? 'cheer' : '', play, hue });
   s = { cv, w, h, ox: w / 2, oy: h * 0.66 };
   spriteCache.set(key, s);
   return s;

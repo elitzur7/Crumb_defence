@@ -6,6 +6,7 @@ import * as C from '../src/config.js';
 import { Battle } from '../src/sim.js';
 import { smartBotStep, chooseDeck, unlockedAt } from '../src/bot.js';
 import { STEP, SPEEDS, PACE, advanceFrame, newClock } from '../src/loop.js';
+import * as A from '../src/art.js';
 
 const src = (f) => readFileSync(new URL('../src/' + f, import.meta.url), 'utf8');
 
@@ -56,6 +57,16 @@ test('PACE1: cookiePause stays 0.5 sim-seconds and toasts stay real-time', () =>
   const before = a.waitT;
   b.update(0.2);
   assert.ok(Math.abs(before - 0.2 - a.waitT) < 0.02, 'cookie pause ticks in sim seconds');
+});
+
+test('ANT1/ANT2: play ants scale by 0.62 with the soft recipe; book art stays outlined', () => {
+  assert.equal(A.PLAY_ANT_SCALE, 0.62);
+  assert.match(src('art.js'), /if \(opt\.play\) ctx\.scale\(PLAY_ANT_SCALE, PLAY_ANT_SCALE\)/);
+  assert.match(src('art.js'), /if \(_play\) \{ playSegment/);
+  assert.match(src('art.js'), /if \(_play\) \{ ctx\.lineWidth = 2; ctx\.strokeStyle = col/);
+  assert.match(src('game.js'), /pxRatio, mood, \{ play: true \}/);
+  assert.equal(C.ANT_SIZES.regular, 1);
+  assert.equal(C.ANTS.worker.size, 1);
 });
 
 test('PACE1: advanceFrame at 1x/2x/4x matches a pure Battle.update loop (sample levels)', () => {
