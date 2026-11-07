@@ -21,7 +21,7 @@ test('F3: an old save that owns slingshot-2 still loads and shows it as owned (i
   const M = await import('../src/meta.js'); const s = M.newSave(); s.coins = 5000; assert.equal(M.buySkin(s, 'slingshot-2').ok, true);
   const t = JSON.parse(JSON.stringify(s)); assert.equal(M.buySkin(t, 'slingshot-2').reason, 'owned'); assert.equal(t.coins, s.coins);
 });
-test('F4: queen5 (Glaze Queen) body colour is #e8789c', () => { assert.equal(A.ANT_COL.queen5, '#e8789c'); });
+test('F4: queen5 (Glaze Queen) body colour is the vivid #ed5a89', () => { assert.equal(A.ANT_COL.queen5, '#ed5a89'); });
 test('F5: the rarity rule has exactly two named W6 exceptions (L57 R1, L58 R2); everything else, W7+ included, is strict', () => {
   const RARITY_EXCEPT = { 57: ['R1'], 58: ['R2'] }; const RANK = Object.fromEntries(C.RARITY_TIERS.map((t, i) => [t, i]));
   const report = (li) => { const seen = new Map(); S.generateWaves(li).forEach((w, wi) => { for (const e of w) if (!seen.has(e.type)) seen.set(e.type, wi); }); const types = [...seen.keys()], issues = [];
@@ -44,7 +44,7 @@ test('F8: Ant Book labels wrap at the space (no ellipsis), 12 px floor', () => {
 test('F10: the only art.plate override is an explicit hide; the plate lint passes and fails its negative control', async () => {
   const { spawnSync } = await import('node:child_process'); const run = (a) => spawnSync('node', [new URL('../tools/qa-v083/plate-lint.mjs', import.meta.url).pathname, ...a], { encoding: 'utf8' });
   assert.equal(run([]).status, 0); assert.equal(run(['--inject']).status, 1);
-  const o = Object.entries(tuning.maps).filter(([, m]) => m.art && m.art.plate); assert.deepEqual(o.map(([k, m]) => [k, m.art.plate]), [['w6_waffle_iron', { hide: true }], ['w7_press_plate', { hide: true }]]);
+  const o = Object.entries(tuning.maps).filter(([, m]) => m.art && m.art.plate); assert.deepEqual(o.map(([k, m]) => [k, m.art.plate]), [['w6_waffle_iron', { hide: true }], ['w7_press_plate', { hide: true }], ['w8_cupcake_tin', { hide: true }]]);
 });
 test('F3 lint: pad-distinct passes and fails its negative control', async () => {
   const { spawnSync } = await import('node:child_process'); const run = (a) => spawnSync('node', [new URL('../tools/qa-v083/pad-distinct.mjs', import.meta.url).pathname, ...a], { encoding: 'utf8' });

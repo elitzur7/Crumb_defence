@@ -1166,6 +1166,37 @@ var tuning_default = {
       queenTraits: [
         "slow"
       ]
+    },
+    sugarcube: {
+      hp: 55,
+      speed: 26,
+      armor: 4,
+      steal: 1.3,
+      weight: 1.5,
+      size: "regular",
+      crumbs: 7,
+      rarity: "rare",
+      slowResist: 0.35
+    },
+    queen8: {
+      hp: 3600,
+      speed: 13,
+      armor: 6,
+      weight: 0,
+      size: "queen",
+      crumbs: 260,
+      rarity: "boss",
+      slowResist: 0.6,
+      boss: !0,
+      spawn: {
+        type: "drone",
+        every: 13,
+        count: 1,
+        alt: "sugarcube"
+      },
+      queenTraits: [
+        "slow"
+      ]
     }
   },
   worlds: [
@@ -1256,6 +1287,19 @@ var tuning_default = {
       },
       cardLevelCap: 6,
       coinMul: 2.25
+    },
+    {
+      id: 8,
+      name: "Frosting Factory",
+      treat: "cupcake",
+      queen: "queen8",
+      levels: 10,
+      unlock: {
+        allLevelsWonInWorld: 7,
+        minStarsInWorld: 14
+      },
+      cardLevelCap: 7,
+      coinMul: 2.5
     }
   ],
   levels: [
@@ -9919,6 +9963,1566 @@ var tuning_default = {
           }
         ]
       ]
+    },
+    {
+      world: 8,
+      name: "Mixing Bowl",
+      map: "w8_mixing_bowl",
+      waveCount: 6,
+      hpMul: 6.5,
+      interval: 1,
+      waves: [
+        [
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 3,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          }
+        ],
+        [
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 1
+          },
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          }
+        ]
+      ]
+    },
+    {
+      world: 8,
+      name: "Sugar Sack",
+      map: "w8_sugar_sack",
+      waveCount: 6,
+      hpMul: 7.8,
+      interval: 1,
+      waves: [
+        [
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "sugarcube",
+            count: 2,
+            interval: 1.5,
+            delay: 2
+          },
+          {
+            type: "small",
+            count: 6,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "sugarcube",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "sugarcube",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "sugarcube",
+            count: 3,
+            interval: 1.4,
+            delay: 2
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "sugarcube",
+            count: 4,
+            interval: 1.3,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
+        ]
+      ]
+    },
+    {
+      world: 8,
+      name: "Icing Bag",
+      map: "w8_icing_bag",
+      waveCount: 7,
+      hpMul: 10.2,
+      interval: 1,
+      waves: [
+        [
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small_fly",
+            count: 8,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "sugarcube",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "sugarcube",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small_fly",
+            count: 10,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "sugarcube",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 6,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "sugarcube",
+            count: 4,
+            interval: 1.3,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small_fly",
+            count: 12,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 6,
+            interval: 0.75,
+            delay: 1
+          },
+          {
+            type: "sugarcube",
+            count: 4,
+            interval: 1.3,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 1
+          }
+        ]
+      ]
+    },
+    {
+      world: 8,
+      name: "Whisk Rack",
+      map: "w8_whisk_rack",
+      waveCount: 7,
+      hpMul: 11.4,
+      interval: 1,
+      waves: [
+        [
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small_armed",
+            count: 4,
+            interval: 0.6,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 6,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "sugarcube",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "sugarcube",
+            count: 3,
+            interval: 1.4,
+            delay: 0
+          },
+          {
+            type: "sugarcube",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "sugarcube",
+            count: 3,
+            interval: 1.4,
+            delay: 0
+          },
+          {
+            type: "sugarcube",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "small_armed",
+            count: 4,
+            interval: 0.6,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "sugarcube",
+            count: 4,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "sugarcube",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "sugarcube",
+            count: 4,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "sugarcube",
+            count: 4,
+            interval: 1.3,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
+        ]
+      ]
+    },
+    {
+      world: 8,
+      name: "Sprinkle Alley",
+      map: "w8_sprinkle_alley",
+      waveCount: 7,
+      hpMul: 5.2,
+      interval: 1,
+      waves: [
+        [
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "sugarcube",
+            count: 3,
+            interval: 1.1,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 0
+          },
+          {
+            type: "sugarcube",
+            count: 1,
+            interval: 1.6,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "sugarcube",
+            count: 1,
+            interval: 1.6,
+            delay: 1
+          },
+          {
+            type: "sugarcube",
+            count: 3,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "sugarcube",
+            count: 1,
+            interval: 1.6,
+            delay: 1
+          },
+          {
+            type: "sugarcube",
+            count: 3,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.2,
+            delay: 0
+          },
+          {
+            type: "sugarcube",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "sugarcube",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.2,
+            delay: 0
+          },
+          {
+            type: "sugarcube",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 1
+          }
+        ]
+      ]
+    },
+    {
+      world: 8,
+      name: "Oven Door",
+      map: "w8_oven_door",
+      waveCount: 6,
+      hpMul: 9.8,
+      interval: 1,
+      waves: [
+        [
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small_fly",
+            count: 8,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "sugarcube",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "sugarcube",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small_fly",
+            count: 10,
+            interval: 0.5,
+            delay: 0
+          },
+          {
+            type: "sugarcube",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 6,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "sugarcube",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 1
+          }
+        ]
+      ]
+    },
+    {
+      world: 8,
+      name: "Cooling Rack",
+      map: "w8_cooling_rack",
+      waveCount: 7,
+      hpMul: 4.6,
+      interval: 1,
+      waves: [
+        [
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small_gasmask",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "sugarcube",
+            count: 4,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small_gasmask",
+            count: 6,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "sugarcube",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small_gasmask",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "sugarcube",
+            count: 5,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small_gasmask",
+            count: 12,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "sugarcube",
+            count: 4,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "sugarcube",
+            count: 6,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 4,
+            interval: 1.3,
+            delay: 1
+          },
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small_gasmask",
+            count: 14,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "sugarcube",
+            count: 6,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "glazed",
+            count: 4,
+            interval: 1.3,
+            delay: 1
+          },
+          {
+            type: "flyer",
+            count: 5,
+            interval: 0.8,
+            delay: 1
+          }
+        ]
+      ]
+    },
+    {
+      world: 8,
+      name: "Cupcake Tin",
+      map: "w8_cupcake_tin",
+      waveCount: 8,
+      hpMul: 6.68,
+      interval: 1,
+      waves: [
+        [
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "nurse",
+            count: 3,
+            interval: 1.4,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "nurse",
+            count: 4,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "sugarcube",
+            count: 1,
+            interval: 1.7,
+            delay: 1
+          },
+          {
+            type: "nurse",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "sugarcube",
+            count: 1,
+            interval: 1.7,
+            delay: 0.5
+          },
+          {
+            type: "nurse",
+            count: 4,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "sugarcube",
+            count: 2,
+            interval: 1.7,
+            delay: 0.5
+          },
+          {
+            type: "nurse",
+            count: 4,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "flyer",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "sugarcube",
+            count: 3,
+            interval: 1.6,
+            delay: 0.5
+          },
+          {
+            type: "nurse",
+            count: 5,
+            interval: 1.2,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 4,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 12,
+            interval: 0.45,
+            delay: 1
+          }
+        ]
+      ]
+    },
+    {
+      world: 8,
+      name: "Frosting Cloth",
+      map: "w8_frosting_cloth",
+      waveCount: 7,
+      hpMul: 3.73,
+      interval: 1,
+      waves: [
+        [
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "sugarcube",
+            count: 4,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 0
+          },
+          {
+            type: "sugarcube",
+            count: 4,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "glazed",
+            count: 4,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "nurse",
+            count: 1,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          },
+          {
+            type: "sugarcube",
+            count: 4,
+            interval: 0.9,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "glazed",
+            count: 4,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "sugarcube",
+            count: 6,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "nurse",
+            count: 1,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "glazed",
+            count: 5,
+            interval: 1.2,
+            delay: 0
+          },
+          {
+            type: "nurse",
+            count: 2,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 14,
+            interval: 0.45,
+            delay: 1
+          },
+          {
+            type: "sugarcube",
+            count: 4,
+            interval: 0.9,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "glazed",
+            count: 5,
+            interval: 1.2,
+            delay: 0
+          },
+          {
+            type: "sugarcube",
+            count: 6,
+            interval: 0.85,
+            delay: 1
+          },
+          {
+            type: "nurse",
+            count: 2,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 1
+          }
+        ]
+      ]
+    },
+    {
+      world: 8,
+      name: "Cupcake Falls",
+      map: "w8_cupcake_falls",
+      waveCount: 9,
+      hpMul: 1.55,
+      interval: 1,
+      waves: [
+        [
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 0
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "drone",
+            count: 4,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 5,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 8,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "glazed",
+            count: 2,
+            interval: 1.5,
+            delay: 2
+          },
+          {
+            type: "worker",
+            count: 6,
+            interval: 1,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "drone",
+            count: 5,
+            interval: 0.8,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 2,
+            interval: 1.5,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 0
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "drone",
+            count: 4,
+            interval: 0.8,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small",
+            count: 14,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "drone",
+            count: 6,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "glazed",
+            count: 4,
+            interval: 1.3,
+            delay: 0
+          },
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "drone",
+            count: 6,
+            interval: 0.8,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "small",
+            count: 14,
+            interval: 0.45,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 4,
+            interval: 1.3,
+            delay: 1
+          },
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 1
+          },
+          {
+            type: "drone",
+            count: 5,
+            interval: 0.8,
+            delay: 1
+          }
+        ],
+        [
+          {
+            type: "worker",
+            count: 8,
+            interval: 0.9,
+            delay: 0
+          },
+          {
+            type: "glazed",
+            count: 3,
+            interval: 1.4,
+            delay: 1
+          },
+          {
+            type: "drone",
+            count: 5,
+            interval: 0.8,
+            delay: 1
+          },
+          {
+            type: "small",
+            count: 10,
+            interval: 0.45,
+            delay: 1
+          },
+          {
+            type: "queen8",
+            count: 1,
+            interval: 1,
+            delay: 4
+          }
+        ]
+      ]
     }
   ],
   maps: {
@@ -11179,6 +12783,191 @@ var tuning_default = {
         "....S...#.",
         "M.......C."
       ]
+    },
+    w8_mixing_bowl: {
+      name: "Mixing Bowl",
+      theme: 11,
+      grid: [
+        ".N..J.....",
+        ".#........",
+        ".########.",
+        "........#.",
+        "........#.",
+        ".########.",
+        ".#........",
+        ".#........",
+        ".#######..",
+        ".......#..",
+        ".....B.#..",
+        ".......#C."
+      ]
+    },
+    w8_sugar_sack: {
+      name: "Sugar Sack",
+      theme: 11,
+      grid: [
+        "S........N",
+        ".........#",
+        ".#########",
+        ".#........",
+        ".########.",
+        "........#.",
+        ".########.",
+        ".#..S.....",
+        ".#........",
+        ".#######..",
+        ".......#..",
+        "C#######.."
+      ]
+    },
+    w8_icing_bag: {
+      name: "Icing Bag",
+      theme: 11,
+      grid: [
+        ".......N..",
+        ".......#..",
+        ".#####.#..",
+        ".#...#.#..",
+        ".#...#.#..",
+        ".####+##..",
+        ".....#....",
+        "...M.#....",
+        ".....#...J",
+        "..####....",
+        "..#.......",
+        "..C......."
+      ]
+    },
+    w8_whisk_rack: {
+      name: "Whisk Rack",
+      theme: 11,
+      grid: [
+        "B........N",
+        ".........#",
+        ".#########",
+        ".#........",
+        ".########.",
+        "........#.",
+        ".########.",
+        ".#........",
+        ".########.",
+        "........#.",
+        "#########.",
+        "C...B....."
+      ]
+    },
+    w8_sprinkle_alley: {
+      name: "Sprinkle Alley",
+      theme: 11,
+      grid: [
+        ".N......N.",
+        ".#......#.",
+        ".#......#.",
+        ".#......#.",
+        ".#..#####.",
+        ".#..#.....",
+        ".####.....",
+        "....#.....",
+        "....#.P...",
+        "S...#.....",
+        "....#.....",
+        "....C....."
+      ]
+    },
+    w8_oven_door: {
+      name: "Oven Door",
+      theme: 11,
+      grid: [
+        "....J.....",
+        "..........",
+        ".########N",
+        ".#........",
+        ".#........",
+        ".########.",
+        "........#.",
+        "........#.",
+        ".....####.",
+        "J....#....",
+        ".....#....",
+        ".....C...."
+      ]
+    },
+    w8_cooling_rack: {
+      name: "Cooling Rack",
+      theme: 11,
+      grid: [
+        "....N.....",
+        "....#.....",
+        "....#.....",
+        ".########.",
+        ".#......#.",
+        ".#......#.",
+        ".#....M.#.",
+        ".####...#.",
+        "....#...#.",
+        "....#####.",
+        "M...#.....",
+        "....C....."
+      ]
+    },
+    w8_cupcake_tin: {
+      name: "Cupcake Tin",
+      art: {
+        plate: {
+          hide: !0
+        }
+      },
+      theme: 11,
+      grid: [
+        "N........S",
+        "#.........",
+        "#.#######.",
+        "#.#.....#.",
+        "#.#.....#.",
+        "#.#..B..#.",
+        "#.#.....#.",
+        "#.#.....#.",
+        "#.###C..#.",
+        "#.......#.",
+        "#########.",
+        ".........."
+      ]
+    },
+    w8_frosting_cloth: {
+      name: "Frosting Cloth",
+      theme: 11,
+      grid: [
+        ".N......N.",
+        ".#...P..#.",
+        ".#......#.",
+        ".#......#.",
+        ".#.######.",
+        ".#.#......",
+        ".#######..",
+        ".......#..",
+        ".......#..",
+        "..P....##.",
+        "........#.",
+        "........C."
+      ]
+    },
+    w8_cupcake_falls: {
+      name: "Cupcake Falls",
+      theme: 11,
+      grid: [
+        "..N.......",
+        "..#.......",
+        "..######..",
+        "....M..#..",
+        ".......#..",
+        ".#######..",
+        ".#........",
+        ".#........",
+        ".########.",
+        "........#.",
+        "....S...#.",
+        "M.......C."
+      ]
     }
   }
 };
@@ -11496,7 +13285,7 @@ var AIR_COUNTERS = ["laser", "zapper"], TARGET_MODE_TEXT = {
   lizard: { carrier: "Targets ants carrying food first, then fewest HP left; chews after kills.", healer: "Targets healer ants first, then fewest HP left; chews after kills.", strong: "Targets the toughest ant first; chews after kills. For queen levels." },
   laser: { carrier: "Aims at ants carrying food first, then fewest HP. Heat: +12% per hit on the same ant.", healer: "Aims at healer ants first, then fewest HP. Heat: +12% per hit on the same ant.", strong: "Aims at the toughest ant first. Heat: +12% per hit. For queen levels." },
   zapper: { carrier: "First zap: food carriers first, then fewest HP. Chains to the nearest flyers (60% each jump).", healer: "First zap: healer flyers first, then fewest HP. Chains to the nearest flyers (60% each jump).", strong: "First zap: the toughest flyer first. Chains to the nearest flyers. For queen levels." }
-}, HINT_OK = { healer: [35, 39, 49, 59], carrier: [40, 50, 59, 60], drone: [60] }, ART81 = !0, VERSION = "0.8.4", ANT_SIZES = { ...tuning_default.antSizes }, ANT_TEXT = {
+}, HINT_OK = { healer: [35, 39, 49, 59], carrier: [40, 50, 59, 60], drone: [60] }, ART81 = !0, VERSION = "0.8.5", ANT_SIZES = { ...tuning_default.antSizes }, ANT_TEXT = {
   small: { name: "Scout Ant", desc: "Tiny, fast, comes in swarms.", intro: "Tiny and fast. They come in swarms." },
   worker: { name: "Worker Ant", desc: "The regular. Hard hat included.", intro: "The regular ant. Easy to stop." },
   big: { name: "Big Ant", desc: "Slow, chunky, a bit of armor.", intro: "Slow and chunky, with a bit of armour." },
@@ -11526,6 +13315,8 @@ var AIR_COUNTERS = ["laser", "zapper"], TARGET_MODE_TEXT = {
   queen6: { name: "Syrup Queen", desc: "BOSS of world 6. Walks slowly and drips a Drone every 12 seconds. Takes 50 of the pancakes. Ignores most slowing.", intro: "Syrup Queen: a new Drone every 12 seconds." },
   shieldbearer: { name: "Shield Bearer", desc: "While alive, nearby ants gain +1 armor. Rare.", intro: "Shield Bearer: nearby ants gain armor." },
   queen7: { name: "Jam Queen", desc: "BOSS of world 7. Walks and calls a Worker, then a Drone, every 14 seconds. Takes 50 of the tart. Ignores most slowing.", intro: "Jam Queen: a Worker, then a Drone, every 14 seconds." },
+  sugarcube: { name: "Sugar Cube", desc: "Heavy sugar armor. Rare.", intro: "Sugar Cube: heavy sugar armor." },
+  queen8: { name: "Frosting Queen", desc: "BOSS of world 8. Walks and calls a Sugar Cube, then a Drone, every 13 seconds. Takes 50 of the cupcake.", intro: "Frosting Queen: Sugar Cube, then Drone, every 13 seconds." },
   queen4: { name: "Sundae Queen", desc: "BOSS of world 4. Calls a nurse every 9 seconds, and the nurses heal her. Takes 50 of the sundae.", intro: "BOSS. Calls nurses that heal her." }
 }, ANT_CARD = {
   glazed: "Glazed Ant \u2014 sweet armor. Its glaze soaks up damage, then grows back. Hit it hard and fast, or use Spray and Bombs.",
@@ -11536,8 +13327,10 @@ var AIR_COUNTERS = ["laser", "zapper"], TARGET_MODE_TEXT = {
   queen6: "Syrup Queen \u2014 she walks, and drips a Drone every 12 seconds. Keep an air tower ready.",
   // v0.8.2 PP5/PP9
   shieldbearer: "Shield Bearer \u2014 nearby ants gain +1 armor while it lives. Burn-through strips armor.",
-  queen7: "Jam Queen \u2014 she walks, and calls a Worker, then a Drone, every 14 seconds."
-}, W6_TIPS = { 50: "Pancakes first. Syrup is next.", 51: "Drones fly. Only air towers hit them.", 52: "A long, winding picnic path.", 53: "Syrup is sticky. So are queens.", 54: "Halfway through the picnic.", 55: "Heavy hitters on this table.", 56: "Fewer ant types, bigger crowds.", 57: "The cookie waits at the end.", 58: "Drones and nurses arrive together.", 59: "The Syrup Queen drips Drones." }, W7_TIPS = { 60: "Jam first. The tart is next.", 61: "A violet ant carries a shield.", 62: "Flyers cross the violet cloth.", 63: "Armor walks the toast rack.", 64: "The alley fills up fast.", 65: "A quiet basket between peaks.", 66: "Shields glow on the hill.", 67: "Heavy steps on the plate.", 68: "The cloth holds a hard mix.", 69: "The Jam Queen calls both." };
+  queen7: "Jam Queen \u2014 she walks, and calls a Worker, then a Drone, every 14 seconds.",
+  sugarcube: "Sugar Cube \u2014 heavy sugar armor. Burn-through and a wide hit strip it.",
+  queen8: "Frosting Queen \u2014 she walks, and calls a Sugar Cube, then a Drone, every 13 seconds."
+}, W6_TIPS = { 50: "Pancakes first. Syrup is next.", 51: "Drones fly. Only air towers hit them.", 52: "A long, winding picnic path.", 53: "Syrup is sticky. So are queens.", 54: "Halfway through the picnic.", 55: "Heavy hitters on this table.", 56: "Fewer ant types, bigger crowds.", 57: "The cookie waits at the end.", 58: "Drones and nurses arrive together.", 59: "The Syrup Queen drips Drones." }, W7_TIPS = { 60: "Jam first. The tart is next.", 61: "A violet ant carries a shield.", 62: "Flyers cross the violet cloth.", 63: "Armor walks the toast rack.", 64: "The alley fills up fast.", 65: "A quiet basket between peaks.", 66: "Shields glow on the hill.", 67: "Heavy steps on the plate.", 68: "The cloth holds a hard mix.", 69: "The Jam Queen calls both." }, W8_TIPS = { 70: "Cream first. The cupcake is next.", 71: "A white cube wears sugar armor.", 72: "Flyers cross the icing bag.", 73: "Armor walks the whisk rack.", 74: "Sprinkles fill the alley.", 75: "A quiet door between peaks.", 76: "Sugar cubes cool on the rack.", 77: "Heavy steps in the tin.", 78: "The cloth holds a hard mix.", 79: "The Frosting Queen calls both." };
 var L42_TIP = "Glaze grows back. Focus fire.", QUEEN_TRAITS = { ...tuning_default.queenTraitMods };
 function queenTake(traits = [], T = QUEEN_TRAITS) {
   return 50 + traits.reduce((s, t) => s + (T[t] || 0), 0);
@@ -11898,7 +13691,9 @@ var Path = class {
   drone: 0.8,
   queen6: 1,
   shieldbearer: 1.2,
-  queen7: 1
+  queen7: 1,
+  sugarcube: 1.25,
+  queen8: 1
 };
 function generateWaves(levelIndex, levels = LEVELS) {
   let L = levels[levelIndex];
@@ -13565,7 +15360,7 @@ function monthBox(ctx2, x, y, s, tier, t = 0, reached = !1) {
     starShape(ctx2, x + Math.cos(a) * 20 * s, y + bob + Math.sin(a) * 13 * s, (tier === 3 ? 3.4 : 2.4) * (0.75 + 0.25 * Math.sin(t * 5 + k)), "#fff7a8", 1);
   }
 }
-var NODE_COLS = ["#ffc38a", "#ffb3c1", "#b9e89a", "#9fd6ff", "#c9b6f2", "#ffd27a", "#ff9e9e", "#a8e6e0", "#f7b6e8", "#d7b8ff"], W5_NODE_COLS = ["#a9d8de", "#8fcbd5", "#b9e2e6", "#9ecfd6", "#c4e8ec"], W6_NODE_COLS = ["#f0c078", "#e8a33d", "#f6d49a", "#eab25a", "#f9dfae"], W7_NODE_COLS = ["#d2b1e4", "#c45ad0", "#e7c6f2", "#b48cc8", "#f3c9ef"], NODE_ORN = ["leaf", "crumb", "bubble", "wing", "shield", "cloud", "cone", "mask", "dots", "crown"];
+var NODE_COLS = ["#ffc38a", "#ffb3c1", "#b9e89a", "#9fd6ff", "#c9b6f2", "#ffd27a", "#ff9e9e", "#a8e6e0", "#f7b6e8", "#d7b8ff"], W5_NODE_COLS = ["#a9d8de", "#8fcbd5", "#b9e2e6", "#9ecfd6", "#c4e8ec"], W6_NODE_COLS = ["#f0c078", "#e8a33d", "#f6d49a", "#eab25a", "#f9dfae"], W7_NODE_COLS = ["#d2b1e4", "#c45ad0", "#e7c6f2", "#b48cc8", "#f3c9ef"], W8_NODE_COLS = ["#f3e6d8", "#7ec8e8", "#fff6ea", "#e7b89a", "#d7f4ff"], NODE_ORN = ["leaf", "crumb", "bubble", "wing", "shield", "cloud", "cone", "mask", "dots", "crown"];
 function miniCrown(ctx2, x, y, s, fill = "#ffe36e") {
   ctx2.save(), ctx2.translate(x, y), ctx2.scale(s, s), ctx2.beginPath(), ctx2.moveTo(-7, 3), ctx2.lineTo(-8, -5), ctx2.lineTo(-3.5, -1), ctx2.lineTo(0, -7), ctx2.lineTo(3.5, -1), ctx2.lineTo(8, -5), ctx2.lineTo(7, 3), ctx2.closePath(), ctx2.fillStyle = fill, ctx2.fill(), ctx2.lineWidth = 1.8, ctx2.strokeStyle = INK, ctx2.lineJoin = "round", ctx2.stroke(), ctx2.beginPath(), ctx2.arc(0, -0.5, 1.4, 0, 7), ctx2.fillStyle = "#ff6f91", ctx2.fill(), ctx2.restore();
 }
@@ -13628,7 +15423,7 @@ function nodeOrnament(ctx2, kind, x, y, t) {
   ctx2.restore();
 }
 function mapNode(ctx2, x, y, i, st, t = 0) {
-  let w5 = ART81 && worldOf(i) === 5, w6 = ART81 && worldOf(i) === 6, w7 = ART81 && worldOf(i) === 7, base = st.open ? w7 ? W7_NODE_COLS[i % W7_NODE_COLS.length] : w6 ? W6_NODE_COLS[i % W6_NODE_COLS.length] : w5 ? W5_NODE_COLS[i % W5_NODE_COLS.length] : NODE_COLS[i % NODE_COLS.length] : "#cfc6cf", R = st.boss ? 29 : 27, depth = 7;
+  let w5 = ART81 && worldOf(i) === 5, w6 = ART81 && worldOf(i) === 6, w7 = ART81 && worldOf(i) === 7, w8 = ART81 && worldOf(i) === 8, base = st.open ? w8 ? W8_NODE_COLS[i % W8_NODE_COLS.length] : w7 ? W7_NODE_COLS[i % W7_NODE_COLS.length] : w6 ? W6_NODE_COLS[i % W6_NODE_COLS.length] : w5 ? W5_NODE_COLS[i % W5_NODE_COLS.length] : NODE_COLS[i % NODE_COLS.length] : "#cfc6cf", R = st.boss ? 29 : 27, depth = 7;
   if (ctx2.save(), shadow(ctx2, x, y + 26, 30, 7, 0.28), st.next && (ctx2.beginPath(), ctx2.ellipse(x, y + 3, R + 7 + Math.sin(t * 4) * 2, R * 0.92 + 6, 0, 0, 7), ctx2.fillStyle = "rgba(255,212,94,0.35)", ctx2.fill()), ctx2.beginPath(), ctx2.ellipse(x, y + depth, R, R * 0.9, 0, 0, Math.PI), ctx2.lineTo(x - R, y), ctx2.ellipse(x, y, R, R * 0.9, 0, Math.PI, 0, !0), ctx2.closePath(), ctx2.fillStyle = shade(base, -0.3), ctx2.fill(), ctx2.lineWidth = 3, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), st.boss) {
     for (let k = 0; k <= 10; k++) {
       let a = Math.PI + k / 10 * Math.PI, rr2 = k % 2 ? R * 0.82 : R;
@@ -13642,13 +15437,13 @@ function mapNode(ctx2, x, y, i, st, t = 0) {
 function starShape(ctx2, x, y, r, fill, lw = 2) {
   candyStar(ctx2, x, y, r, fill, lw);
 }
-var ANT_COL = { small: "#f8c07e", worker: "#f0994d", big: "#d97a3f", gasmask: "#f0994d", armored: "#e48a47", flyer: "#f9b878", queen: "#f59b9b", queen2: "#c7a6f5", sprinter: "#f0994d", heavy: "#b95b34", greasy: "#ee9f45", mama: "#d9774a", queen3: "#e9b05c", nurse: "#f2b49b", queen4: "#f4b9c8", glazed: "#f1cf9a", queen5: "#e8789c", drone: "#e8a33d", queen6: "#c9772b", shieldbearer: "#8b6ecf", queen7: "#c45ad0" }, ALW = 2.4, PLAY_ANT_SCALE = 0.62, _play = null;
+var ANT_COL = { small: "#f8b05b", worker: "#f58f36", big: "#de6f2a", gasmask: "#f58f36", armored: "#e98031", flyer: "#f9a655", queen: "#fa7171", queen2: "#b17cfa", sprinter: "#f58f36", heavy: "#be5022", greasy: "#f3972e", mama: "#de6b36", queen3: "#eeaa46", nurse: "#f79872", queen4: "#f990ab", glazed: "#f6c271", queen5: "#ed5a89", drone: "#ed9f2b", queen6: "#ce7625", shieldbearer: "#7b52dc", queen7: "#d046df", sugarcube: "#efe6ff", queen8: "#7ec8e8" }, ALW = 2.4, PLAY_ANT_SCALE = 0.72, _play = null;
 function playSegment(ctx2, x, y, rx, ry, col) {
-  let g = ctx2.createLinearGradient(x - rx, y - ry, x + rx * 0.35, y + ry);
-  g.addColorStop(0, shade(col, 0.18)), g.addColorStop(0.48, col), g.addColorStop(1, shade(col, -0.16)), ctx2.beginPath(), ctx2.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2), ctx2.fillStyle = g, ctx2.fill(), ctx2.beginPath(), ctx2.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2), ctx2.save(), ctx2.globalAlpha *= 0.18, ctx2.lineWidth = 1, ctx2.strokeStyle = shade(col, -0.22), ctx2.stroke(), ctx2.restore(), ctx2.save(), ctx2.translate(x, y), ctx2.beginPath(), ctx2.ellipse(-rx * 0.32, -ry * 0.38, Math.max(1.4, rx * 0.42), Math.max(0.9, ry * 0.28), -0.5, 0, Math.PI * 2), ctx2.fillStyle = "#ffffff", ctx2.globalAlpha = 0.35, ctx2.fill(), ctx2.restore();
+  let g = ctx2.createRadialGradient(x - rx * 0.35, y - ry * 0.45, Math.max(0.4, Math.min(rx, ry) * 0.05), x, y, Math.max(rx, ry));
+  g.addColorStop(0, shade(col, 0.22)), g.addColorStop(0.45, col), g.addColorStop(0.78, shade(col, -0.14)), g.addColorStop(1, shade(col, -0.28)), ctx2.beginPath(), ctx2.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2), ctx2.fillStyle = g, ctx2.fill(), ctx2.beginPath(), ctx2.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2), ctx2.save(), ctx2.globalAlpha *= 0.22, ctx2.lineWidth = 1, ctx2.strokeStyle = shade(col, -0.22), ctx2.stroke(), ctx2.restore(), ctx2.save(), ctx2.translate(x, y), ctx2.beginPath(), ctx2.ellipse(-rx * 0.32, -ry * 0.4, Math.max(1.1, rx * 0.38), Math.max(0.7, ry * 0.22), -0.45, 0, Math.PI * 2), ctx2.fillStyle = "#ffffff", ctx2.globalAlpha = 0.55, ctx2.fill(), ctx2.restore(), ctx2.beginPath(), ctx2.ellipse(x, y, rx * 0.92, ry * 0.92, 0, Math.PI * 0.02, Math.PI * 0.52), ctx2.save(), ctx2.lineWidth = 1.2, ctx2.strokeStyle = shade(col, -0.32), ctx2.globalAlpha = 0.35, ctx2.stroke(), ctx2.restore();
 }
 function playEye(ctx2, x, y, rx, ry) {
-  ctx2.beginPath(), ctx2.ellipse(x, y, rx, ry, 0, 0, 7), ctx2.fillStyle = "#fffdf8", ctx2.fill(), ctx2.beginPath(), ctx2.ellipse(x + rx * 0.15, y + ry * 0.1, rx * 0.46, ry * 0.5, 0, 0, 7), ctx2.fillStyle = "#2a1c24", ctx2.fill(), ctx2.beginPath(), ctx2.arc(x - rx * 0.22, y - ry * 0.28, Math.max(0.6, rx * 0.2), 0, 7), ctx2.fillStyle = "#ffffff", ctx2.fill();
+  ctx2.beginPath(), ctx2.ellipse(x, y, rx, ry, 0, 0, 7), ctx2.fillStyle = "#fffdf8", ctx2.fill(), ctx2.beginPath(), ctx2.ellipse(x + rx * 0.12, y + ry * 0.08, rx * 0.55, ry * 0.55, 0, 0, 7), ctx2.fillStyle = "#1a1218", ctx2.fill(), ctx2.beginPath(), ctx2.arc(x - rx * 0.22, y - ry * 0.28, Math.max(0.55, rx * 0.18), 0, 7), ctx2.fillStyle = "#ffffff", ctx2.fill();
 }
 function softBlob(ctx2, x, y, rx, ry, col, lw = ALW, gloss = 1) {
   if (_play) {
@@ -13688,7 +15483,7 @@ function cheek(ctx2, x, y, r = 2.8) {
 }
 function leg(ctx2, x0, y0, x1, y1, col) {
   if (ctx2.lineCap = "round", ctx2.beginPath(), ctx2.moveTo(x0, y0), ctx2.quadraticCurveTo((x0 + x1) / 2 + 0.6, (y0 + y1) / 2 + 0.6, x1, y1), _play) {
-    ctx2.lineWidth = 2, ctx2.strokeStyle = col, ctx2.stroke(), ctx2.beginPath(), ctx2.arc(x1, y1, 0.8, 0, 7), ctx2.fillStyle = col, ctx2.fill();
+    ctx2.lineWidth = 2.2, ctx2.strokeStyle = col, ctx2.stroke(), ctx2.beginPath(), ctx2.arc(x1, y1, 0.8, 0, 7), ctx2.fillStyle = col, ctx2.fill();
     return;
   }
   ctx2.lineWidth = 5.6, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.lineWidth = 3.4, ctx2.strokeStyle = col, ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(x1 + 0.7, y1 + 0.5, 2.7, 1.9, 0, 0, 7), ctx2.fillStyle = col, ctx2.fill(), ctx2.lineWidth = 1.7, ctx2.strokeStyle = INK, ctx2.stroke();
@@ -13704,7 +15499,7 @@ function plusShape(ctx2, x, y, s, fill, lw = 1.5) {
 function drawAnt(ctx2, type, phase = 0, opt = {}) {
   let S2 = ANTS[type].size, LW = Math.min(3, Math.max(1.8, 2.2 * S2)) / S2;
   type = ANT_LOOK[type] || type;
-  let hue = opt.hue || 0, col0 = ANT_COL[type], col = hue ? mixHex(col0, hue > 0 ? "#ffe0b0" : "#ffc0cc", Math.min(0.22, Math.abs(hue) / 28)) : col0, legCol = shade(col, -0.18), farCol = shade(col, -0.32), P = phase * Math.PI * 2, step = Math.sin(P) * (opt.play ? 0.85 : 1), hop = Math.abs(Math.sin(P)) * (opt.play ? 0.75 : 1), drone = type === "drone", syrupQueen = type === "queen6", jamQueen = type === "queen7", flying = type === "flyer" || drone, queen = type === "queen" || type === "queen2" || type === "queen3" || type === "queen4" || type === "queen5" || syrupQueen || jamQueen, swiftQueen = type === "queen2", mama = type === "mama", greasy = type === "greasy", pieQueen = type === "queen3", nurse = type === "nurse", sundaeQueen = type === "queen4", glazed = type === "glazed", glazeQueen = type === "queen5", big = type === "big" || type === "heavy" || mama, shell = type === "armored" || type === "heavy" || type === "sprinter", sprinter = type === "sprinter", heavy = type === "heavy", cheer = opt.pose === "cheer";
+  let hue = opt.hue || 0, col0 = ANT_COL[type], col = hue ? mixHex(col0, hue > 0 ? "#ffe0b0" : "#ffc0cc", Math.min(0.22, Math.abs(hue) / 28)) : col0, legCol = shade(col, -0.18), farCol = shade(col, -0.32), P = phase * Math.PI * 2, step = Math.sin(P) * (opt.play ? 0.85 * 0.9 : 1), hop = Math.abs(Math.sin(P)) * (opt.play ? 0.75 : 1), drone = type === "drone", syrupQueen = type === "queen6", jamQueen = type === "queen7", frostQueen = type === "queen8", flying = type === "flyer" || drone, queen = type === "queen" || type === "queen2" || type === "queen3" || type === "queen4" || type === "queen5" || syrupQueen || jamQueen || frostQueen, swiftQueen = type === "queen2", mama = type === "mama", greasy = type === "greasy", pieQueen = type === "queen3", nurse = type === "nurse", sundaeQueen = type === "queen4", glazed = type === "glazed", glazeQueen = type === "queen5", big = type === "big" || type === "heavy" || mama, shell = type === "armored" || type === "heavy" || type === "sprinter", sprinter = type === "sprinter", heavy = type === "heavy", cheer = opt.pose === "cheer";
   ctx2.save(), ctx2.scale(S2, S2), ctx2.lineJoin = "round", ctx2.lineCap = "round", opt.play && ctx2.scale(PLAY_ANT_SCALE, PLAY_ANT_SCALE), drone && ctx2.scale(1.15, 1.15), _play = opt.play ? { col } : null;
   let _stroke = ctx2.stroke;
   opt.play && (ctx2.stroke = function() {
@@ -13719,7 +15514,10 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
   let endAnt = () => {
     ctx2.stroke = _stroke, _play = null, ctx2.restore();
   };
-  opt.play ? flying ? shadow(ctx2, 0, 16, 10, 2.8, 0.12) : shadow(ctx2, 0, 9, 12, 3.2, 0.14) : ART81 ? flying ? shadow(ctx2, 0, 24, 11 * (1 - 0.1 * hop), 3.3 * (1 - 0.1 * hop), 0.15) : shadow(ctx2, 0, 10.5, 15 - hop * 2, 4, 0.22) : flying ? shadow(ctx2, 0, 21, 10, 3, 0.13) : shadow(ctx2, 0, 10.5, 15 - hop * 2, 4, 0.2);
+  if (opt.play) {
+    let bodyLen = queen ? 46 : big ? 42 : 36;
+    flying ? shadow(ctx2, 0, 16, 0.42 * bodyLen, 2.4, 0.16) : shadow(ctx2, 0, 8.5, 0.55 * bodyLen, 2.6, 0.2);
+  } else ART81 ? flying ? shadow(ctx2, 0, 24, 11 * (1 - 0.1 * hop), 3.3 * (1 - 0.1 * hop), 0.15) : shadow(ctx2, 0, 10.5, 15 - hop * 2, 4, 0.22) : flying ? shadow(ctx2, 0, 21, 10, 3, 0.13) : shadow(ctx2, 0, 10.5, 15 - hop * 2, 4, 0.2);
   let lift = flying ? 9 + Math.sin(P * 2) * 2 : big ? hop * 1.8 : hop * 3.2;
   if (big && !flying && (ctx2.translate(0, 10), ctx2.rotate(Math.sin(P) * 0.06), ctx2.translate(0, -10), hop < 0.18)) {
     ctx2.save(), ctx2.globalAlpha = (0.18 - hop) * 3;
@@ -13750,20 +15548,23 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
     let sw = Math.sin(P) * 1.5;
     ctx2.beginPath(), ctx2.moveTo(3, -8), ctx2.quadraticCurveTo(-14, -12 + sw, -24, 7), ctx2.quadraticCurveTo(-11, 11, 2, 5), ctx2.closePath();
     let g = ctx2.createLinearGradient(0, -10, 0, 10);
-    g.addColorStop(0, jamQueen ? "#e7a0ea" : syrupQueen ? "#f3b868" : glazeQueen ? "#9fe3e6" : sundaeQueen ? "#8fe0c8" : pieQueen ? "#7f9be6" : "#b597f0"), g.addColorStop(1, jamQueen ? "#8a3a96" : syrupQueen ? "#a85f1c" : glazeQueen ? "#4fb3bd" : sundaeQueen ? "#3fa88f" : pieQueen ? "#4f69b8" : "#8a68d8"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = LW, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(-22, 6.5), ctx2.quadraticCurveTo(-10, 10, 1.5, 4.5), ctx2.lineWidth = _play ? 1.6 : 3.4, ctx2.strokeStyle = _play ? "rgba(255,255,255,0.55)" : "#ffffff", ctx2.stroke(), ctx2.fillStyle = INK;
+    g.addColorStop(0, frostQueen ? "#d7f4ff" : jamQueen ? "#e7a0ea" : syrupQueen ? "#f3b868" : glazeQueen ? "#9fe3e6" : sundaeQueen ? "#8fe0c8" : pieQueen ? "#7f9be6" : "#b597f0"), g.addColorStop(1, frostQueen ? "#3a8fb8" : jamQueen ? "#8a3a96" : syrupQueen ? "#a85f1c" : glazeQueen ? "#4fb3bd" : sundaeQueen ? "#3fa88f" : pieQueen ? "#4f69b8" : "#8a68d8"), ctx2.fillStyle = g, ctx2.fill(), ctx2.lineWidth = LW, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.moveTo(-22, 6.5), ctx2.quadraticCurveTo(-10, 10, 1.5, 4.5), ctx2.lineWidth = _play ? 1.6 : 3.4, ctx2.strokeStyle = _play ? "rgba(255,255,255,0.55)" : "#ffffff", ctx2.stroke(), ctx2.fillStyle = INK;
     for (let [a, b] of [[-17, 6.8], [-10, 8], [-4, 6.6]])
       ctx2.beginPath(), ctx2.arc(a, b, 0.9, 0, 7), ctx2.fill();
   }
-  let legY = 4.2, footY = flying ? 8.2 : 10.4;
+  let legY = 4.2, footY = flying ? 8.2 : 10.4, playLeg = shade(col, -0.2);
   for (let i = 0; i < 3; i++) {
     let sw = (i % 2 ? -1 : 1) * step * 2;
-    leg(ctx2, -8 + i * 4.8, legY, -7 + i * 4.8 - sw, footY - 0.5, farCol), sprinter && sneaker(ctx2, -7 + i * 4.8 - sw, footY - 0.5, !0);
+    leg(ctx2, -8 + i * 4.8, legY, -7 + i * 4.8 - sw, footY - 0.5, _play ? playLeg : farCol), sprinter && sneaker(ctx2, -7 + i * 4.8 - sw, footY - 0.5, !0);
   }
   let abRx = queen ? 13 : big ? 12 : 11, abRy = queen ? 11 : big ? 10 : 9.5;
   softBlob(ctx2, -10, 0.5, abRx, abRy, col, LW, 0.85), ctx2.save(), ctx2.beginPath(), ctx2.ellipse(-10, 0.5, abRx - 1, abRy - 1, 0, 0, 7), ctx2.clip(), ctx2.strokeStyle = drone ? INK : shade(col, -0.14), ctx2.lineWidth = _play ? 1 : drone ? 3.6 : 2, _play && (ctx2.globalAlpha *= 0.28);
   for (let sx of [-15, -10.5])
     ctx2.beginPath(), ctx2.ellipse(sx - (big ? 1.5 : 0), 0.5, 2, abRy + 2, 0, -1.3, 1.3), ctx2.stroke();
-  if (syrupQueen && (ctx2.beginPath(), ctx2.moveTo(-20.5, -5.2), ctx2.quadraticCurveTo(-11, -9.6, -1.5, -6.4), ctx2.lineWidth = 3, ctx2.strokeStyle = "rgba(255,248,224,0.72)", ctx2.stroke()), ctx2.restore(), type === "shieldbearer" && (ctx2.save(), ctx2.translate(-15, -7), ctx2.rotate(-0.35), ctx2.scale(1.12, 1.12), _play ? playSegment(ctx2, 0, 0, 7.4, 8.4, "#8b6ecf") : softBlob(ctx2, 0, 0, 7.4, 8.4, "#8b6ecf", 2), ctx2.beginPath(), ctx2.moveTo(0, -4.2), ctx2.lineTo(3.2, -1.2), ctx2.lineTo(0.4, 3.4), ctx2.lineTo(-2.6, -0.6), ctx2.closePath(), ctx2.fillStyle = "rgba(255,255,255,0.9)", ctx2.fill(), ctx2.restore()), mama)
+  if (syrupQueen && (ctx2.beginPath(), ctx2.moveTo(-20.5, -5.2), ctx2.quadraticCurveTo(-11, -9.6, -1.5, -6.4), ctx2.lineWidth = 3, ctx2.strokeStyle = "rgba(255,248,224,0.72)", ctx2.stroke()), ctx2.restore(), type === "shieldbearer" && (ctx2.save(), ctx2.translate(-15, -7), ctx2.rotate(-0.35), ctx2.scale(1.12, 1.12), _play ? (ctx2.scale(1.1, 1.1), playSegment(ctx2, 0, 0, 7.4, 8.4, "#7b52dc")) : softBlob(ctx2, 0, 0, 7.4, 8.4, "#7b52dc", 2), ctx2.beginPath(), ctx2.moveTo(0, -4.2), ctx2.lineTo(3.2, -1.2), ctx2.lineTo(0.4, 3.4), ctx2.lineTo(-2.6, -0.6), ctx2.closePath(), ctx2.fillStyle = "rgba(255,255,255,0.9)", ctx2.fill(), ctx2.restore()), type === "sugarcube")
+    for (let [cx, cy, rw, rh] of [[-16, -3.2, 3.4, 2.2], [-9, -6.2, 2.8, 2.2], [-12.5, 2.4, 3, 2]])
+      _play ? playSegment(ctx2, cx, cy, rw, rh, "#fffaf8") : softBlob(ctx2, cx, cy, rw, rh, "#fffaf8", 1.4);
+  if (mama)
     for (let [ex, ey2, er] of [[-16.5, -2.2, 2.9], [-10.5, -4.6, 3.1], [-5.2, -1.4, 2.7]])
       ctx2.beginPath(), ctx2.ellipse(ex, ey2, er, er * 1.2, 0.2, 0, 7), ctx2.fillStyle = "#fffaf0", ctx2.fill(), ctx2.lineWidth = 1.7, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.arc(ex - 0.7, ey2 - 0.8, 0.8, 0, 7), ctx2.fillStyle = "#f2a0b0", ctx2.fill();
   if (shell) {
@@ -13774,10 +15575,10 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
       ctx2.beginPath(), ctx2.arc(rx, -3, 1.1, 0, 7), ctx2.fill();
     heavy && (ctx2.beginPath(), ctx2.ellipse(-10, -2.5, abRx * 0.8, 1.4, 0, Math.PI * 1.1, Math.PI * 1.9), ctx2.lineWidth = 1.6, ctx2.strokeStyle = "#f4b632", ctx2.stroke()), ctx2.restore();
   }
-  softBlob(ctx2, -1, 1.5, 6.5, 6, col, LW, 0), opt.carrying && (_play && (ctx2.save(), ctx2.translate(-10.5, -12.5), ctx2.scale(0.75, 0.75), ctx2.translate(10.5, 12.5)), crumbIcon(ctx2, -10.5, -12.5, 1.4, !0), _play && ctx2.restore());
+  softBlob(ctx2, -1, 1.5, _play ? 6.5 * 0.85 : 6.5, _play ? 6 * 0.85 : 6, col, LW, 0), opt.carrying && (_play && (ctx2.save(), ctx2.translate(-10.5, -12.5), ctx2.scale(0.75, 0.75), ctx2.translate(10.5, 12.5)), crumbIcon(ctx2, -10.5, -12.5, 1.4, !0), _play && ctx2.restore());
   for (let i = 0; i < 3; i++) {
     let sw = (i % 2 ? 1 : -1) * step * 2.2;
-    cheer && i === 2 || (leg(ctx2, -6 + i * 4.8, legY + 1.2, -5 + i * 4.8 + sw, footY + 0.5, legCol), sprinter && sneaker(ctx2, -5 + i * 4.8 + sw, footY + 0.5, !1));
+    cheer && i === 2 || (leg(ctx2, -6 + i * 4.8, legY + 1.2, -5 + i * 4.8 + sw, footY + 0.5, _play ? playLeg : legCol), sprinter && sneaker(ctx2, -5 + i * 4.8 + sw, footY + 0.5, !1));
   }
   if (cheer) {
     let wv = Math.sin(P * 2) * 1.6;
@@ -13789,7 +15590,7 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
   if (type !== "armored" && type !== "heavy" && type !== "small")
     for (let k of [0, 1]) {
       let bx0 = hx2 - 3 + k * 6, by0 = hy - hr + 3, tx0 = hx2 - 4.5 + k * 10 + bob * (k ? 1 : -0.6), ty0 = hy - hr - 4.5 + k * 0.5 - Math.abs(bob) * 0.5, tx = bx0 + (tx0 - bx0) * 1.2, ty = by0 + (ty0 - by0) * 1.2;
-      ctx2.beginPath(), ctx2.moveTo(bx0, by0), ctx2.quadraticCurveTo(bx0 + (k ? 3 : -2), ty + 3, tx, ty), _play ? (ctx2.lineWidth = 1.4, ctx2.strokeStyle = legCol, ctx2.stroke(), blob(ctx2, tx, ty, 0.8, 0.8, shade(col, 0.25), 0, 0, { gloss: 0.4 })) : (ctx2.lineWidth = 3.2, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.lineWidth = 1.5, ctx2.strokeStyle = legCol, ctx2.stroke(), blob(ctx2, tx, ty, 2, 2, shade(col, 0.25), 1.5, 0, { gloss: 0.6 }));
+      ctx2.beginPath(), ctx2.moveTo(bx0, by0), ctx2.quadraticCurveTo(bx0 + (k ? 3 : -2), ty + 3, tx, ty), _play ? (ctx2.lineWidth = 1.5, ctx2.strokeStyle = legCol, ctx2.stroke(), blob(ctx2, tx, ty, 1.8, 1.8, shade(col, 0.25), 0, 0, { gloss: 0.4 })) : (ctx2.lineWidth = 3.2, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.lineWidth = 1.5, ctx2.strokeStyle = legCol, ctx2.stroke(), blob(ctx2, tx, ty, 2, 2, shade(col, 0.25), 1.5, 0, { gloss: 0.6 }));
     }
   softBlob(ctx2, hx2, hy, hr, hr * 0.92, col, LW), flying && ART81 && (ctx2.beginPath(), ctx2.ellipse(hx2 - 2, hy - 2, hr * 0.72, hr * 0.5, -0.4, Math.PI * 1.05, Math.PI * 1.7), ctx2.lineWidth = 1, ctx2.strokeStyle = "rgba(255,255,255,0.6)", ctx2.stroke());
   let e1x = hx2 + 0.2, e2x = hx2 + 8.6, ey = hy + 1.6, blink = opt.blink, mood = opt.mood || (cheer ? "cheer" : "");
@@ -13802,7 +15603,7 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
       ctx2.beginPath(), ctx2.arc(hx2 + 5 + dx, hy + 7.6, 0.8, 0, 7), ctx2.fill();
     blob(ctx2, hx2 + 10.5, hy + 9.2, 2.8, 3.1, "#7fd3ad", 2.2);
   } else if (_play && !blink && !mood)
-    playEye(ctx2, e1x, ey, 5, 5.8), playEye(ctx2, e2x, ey - 0.3, 4.6, 5.4), cheek(ctx2, hx2 - 4.2, hy + 7), cheek(ctx2, hx2 + 12.2, hy + 6.6, 2.4), ctx2.save(), ctx2.beginPath(), ctx2.ellipse(hx2 + 4.2, hy + 6.6, 1.5, 1.05, 0, 0, 7), ctx2.fillStyle = shade(col, -0.35), ctx2.globalAlpha = 0.55, ctx2.fill(), ctx2.restore();
+    playEye(ctx2, e1x, ey, 4, 4.64), playEye(ctx2, e2x, ey - 0.3, 3.68, 4.32), cheek(ctx2, hx2 - 4.2, hy + 7), cheek(ctx2, hx2 + 12.2, hy + 6.6, 2.4), ctx2.save(), ctx2.beginPath(), ctx2.ellipse(hx2 + 4.2, hy + 6.6, 1.5, 1.05, 0, 0, 7), ctx2.fillStyle = shade(col, -0.35), ctx2.globalAlpha = 0.55, ctx2.fill(), ctx2.restore();
   else {
     if (glossyEye(ctx2, e1x, ey, 3.3, 4.6, blink, mood, -1), glossyEye(ctx2, e2x, ey - 0.3, 3, 4.3, blink, mood, 1), cheek(ctx2, hx2 - 4.2, hy + 7), cheek(ctx2, hx2 + 12.2, hy + 6.6, 2.4), opt.carrying && !mood)
       for (let [bx, k] of [[e1x, -1], [e2x, 1]])
@@ -13907,7 +15708,11 @@ function drawAnt(ctx2, type, phase = 0, opt = {}) {
       return;
     }
     if (jamQueen) {
-      blob(ctx2, hx2, cy - 6.2, 11, 6.4, "#f3c98b", 2.2), blob(ctx2, hx2, cy - 7.2, 8.2, 4.4, "#c45ad0", 1.8), blob(ctx2, hx2 - 2.2, cy - 9.2, 2.4, 1.1, "#f7d0f4", 0.1), endAnt();
+      blob(ctx2, hx2, cy - 6.2, 11, 6.4, "#f3c98b", 2.2), blob(ctx2, hx2, cy - 7.2, 8.2, 4.4, "#d046df", 1.8), blob(ctx2, hx2 - 2.2, cy - 9.2, 2.4, 1.1, "#f7d0f4", 0.1), endAnt();
+      return;
+    }
+    if (frostQueen) {
+      blob(ctx2, hx2, cy - 6.2, 11 * (_play ? 1.1 : 1), 6.4 * (_play ? 1.1 : 1), "#fff6ea", 2.2), blob(ctx2, hx2, cy - 7.4, 8.4 * (_play ? 1.1 : 1), 4.6 * (_play ? 1.1 : 1), "#7ec8e8", 1.8), blob(ctx2, hx2 - 2.2, cy - 9.4, 2.6, 1.2, "#f4fbff", 0.1), endAnt();
       return;
     }
     if (sundaeQueen) {
@@ -14674,7 +16479,14 @@ function tartBody(ctx2, r, pct) {
   }
   ctx2.clip("evenodd"), ctx2.beginPath(), ctx2.arc(0, 0, r, 0, 7), ctx2.lineWidth = 3, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.restore();
 }
-var TREAT_BODIES = { cookie: cookieBody, cake: cakeBody, pie: pieBody, sundae: sundaeBody, donut: donutBody, pancake: pancakeBody, tart: tartBody };
+function cupcakeBody(ctx2, r) {
+  ctx2.beginPath(), ctx2.moveTo(-r * 0.72, r * 0.15), ctx2.lineTo(-r * 0.55, r * 0.85), ctx2.lineTo(r * 0.55, r * 0.85), ctx2.lineTo(r * 0.72, r * 0.15), ctx2.closePath();
+  let w = ctx2.createLinearGradient(0, r * 0.1, 0, r * 0.9);
+  w.addColorStop(0, "#f6d7b0"), w.addColorStop(1, "#e0a56a"), ctx2.fillStyle = w, ctx2.fill(), ctx2.lineWidth = 2.4, ctx2.strokeStyle = INK, ctx2.stroke(), ctx2.beginPath(), ctx2.ellipse(0, r * 0.05, r * 0.78, r * 0.42, 0, 0, 7);
+  let s = ctx2.createRadialGradient(-r * 0.2, -r * 0.15, 2, 0, 0, r);
+  s.addColorStop(0, "#f7fbff"), s.addColorStop(1, "#7ec8e8"), ctx2.fillStyle = s, ctx2.fill(), ctx2.stroke(), ctx2.beginPath(), ctx2.arc(0, -r * 0.55, r * 0.16, 0, 7), ctx2.fillStyle = "#ed5a89", ctx2.fill(), ctx2.stroke();
+}
+var TREAT_BODIES = { cookie: cookieBody, cake: cakeBody, pie: pieBody, sundae: sundaeBody, donut: donutBody, pancake: pancakeBody, tart: tartBody, cupcake: cupcakeBody };
 function reactMotion(react, t) {
   if (!react) return { dx: 0, dy: 0, sx: 1, sy: 1 };
   let a = react.age, e = Math.max(0, 1 - a / 1.6);
@@ -14990,7 +16802,9 @@ var THEMES = [
   { name: "W5 teal-diner", a: "#a9d8de", b: "#9ecfd6", check: "rgba(60,150,170,0.13)", grout: "rgba(60,130,150,0.22)", trail: "#fffdf5", edge: "#7fbcc6", dot: "#f7b6c8" },
   // v0.8.2 world 6 (Crumb Design palettes-W3-W10.json 'W6 maple'): warm maple planks. If the rendered A10b is < 1.6 on any W6 map, darken the pad by steps (see qa/v0.8.2 contrast-w6).
   { name: "W6 maple", a: "#e6b98a", b: "#e1b27f", grain: "rgba(120,70,20,0.15)", grout: "rgba(130,80,30,0.28)", trail: "#fffaf0", edge: "#b98550", dot: "#c99660" },
-  { name: "W7 grape", a: "#d2b1e4", b: "#cca8e0", grout: "rgba(120,70,150,0.22)", trail: "#fffaf5", edge: "#b48cc8", dot: "#e7c6f2" }
+  { name: "W7 grape", a: "#d2b1e4", b: "#cca8e0", grout: "rgba(120,70,150,0.22)", trail: "#fffaf5", edge: "#b48cc8", dot: "#e7c6f2" },
+  { name: "W8 frosting", a: "#e8d4c4", b: "#e0c8b4", grout: "rgba(160,110,80,0.24)", trail: "#fffaf5", edge: "#c9a07c", dot: "#7ec8e8" }
+  // proposal #f3e6d8/#ead7c4 measured A2 1.18; one step darker so the trail clears 1.30
 ];
 function renderMapBackground(routes, theme, w, h, dpr2, props = [], art = {}) {
   Array.isArray(routes) || (routes = [routes]);
@@ -15158,7 +16972,7 @@ function drawSwatter(ctx2, x, y, ang = 0, sc = 1, flash = 0) {
     ctx2.beginPath(), ctx2.moveTo(hx2 + 4, hy + 4 + k * 6), ctx2.lineTo(hx2 + hw - 4, hy + 4 + k * 6), ctx2.stroke();
   ctx2.restore(), ctx2.fillStyle = INK, ctx2.beginPath(), ctx2.arc(-4.6, hy + 20, 2.3, 0, 7), ctx2.arc(4.6, hy + 20, 2.3, 0, 7), ctx2.fill(), ctx2.fillStyle = "#fff", ctx2.beginPath(), ctx2.arc(-5.3, hy + 19.2, 0.8, 0, 7), ctx2.arc(3.9, hy + 19.2, 0.8, 0, 7), ctx2.fill(), ctx2.fillStyle = "rgba(255,111,145,0.45)", ctx2.beginPath(), ctx2.ellipse(-8.6, hy + 25, 2.6, 1.7, 0, 0, 7), ctx2.ellipse(8.6, hy + 25, 2.6, 1.7, 0, 0, 7), ctx2.fill(), flash > 0 && (rr(ctx2, hx2, hy, hw, hh, 12), ctx2.globalAlpha = flash * 0.7, ctx2.fillStyle = "#fff", ctx2.fill()), ctx2.restore();
 }
-var TABLE_SETS = { 1: ["leaf", "twig", "leaf", "pebble"], 2: ["pebble", "pebble", "twig", "leaf"], 3: ["cup", "cup", "plate"], 4: ["plate", "cutlery", "plate", "cup"], 5: ["donutbox", "napkin", "ring", "donutbox"], 6: ["syrup", "butter", "berry", "berry"], 7: ["berry", "syrup", "napkin", "plate"] };
+var TABLE_SETS = { 1: ["leaf", "twig", "leaf", "pebble"], 2: ["pebble", "pebble", "twig", "leaf"], 3: ["cup", "cup", "plate"], 4: ["plate", "cutlery", "plate", "cup"], 5: ["donutbox", "napkin", "ring", "donutbox"], 6: ["syrup", "butter", "berry", "berry"], 7: ["berry", "syrup", "napkin", "plate"], 8: ["cup", "napkin", "plate", "berry"] };
 function drawTableProp(g, kind, x, y, r, rot = 0, shadow2 = !0) {
   g.save(), g.translate(x, y), shadow2 && (g.beginPath(), g.ellipse(r * 0.18, r * 0.62, r * 0.95, r * 0.32, 0, 0, 7), g.fillStyle = "rgba(70,35,50,0.18)", g.fill()), g.rotate(rot), g.lineWidth = 2, g.strokeStyle = INK, g.lineJoin = "round", g.lineCap = "round";
   let fs = (col) => {
@@ -15387,7 +17201,7 @@ function sfx(name) {
 }
 
 // src/loop.js
-var STEP = 0.016666666666666666, SPEEDS = [1, 2, 4], PACE = 1.5, FRAME_BUDGET_MS = 10, ACC_CAP_STEPS = 8, MAX_FRAME_DT = 0.1, nextSpeed = (s) => SPEEDS[(Math.max(0, SPEEDS.indexOf(s)) + 1) % SPEEDS.length], startSpeed = (s, max = 2) => Math.min(SPEEDS.includes(s) ? s : 1, max);
+var STEP = 0.016666666666666666, SPEEDS = [1, 2, 4], PACE = 1.35, FRAME_BUDGET_MS = 10, ACC_CAP_STEPS = 8, MAX_FRAME_DT = 0.1, nextSpeed = (s) => SPEEDS[(Math.max(0, SPEEDS.indexOf(s)) + 1) % SPEEDS.length], startSpeed = (s, max = 2) => Math.min(SPEEDS.includes(s) ? s : 1, max);
 function newClock() {
   return { acc: 0 };
 }
@@ -15937,7 +17751,7 @@ function mapTap(p) {
   }
   S.info = tw ? { tower: tw, t: 0 } : null;
 }
-var W6_STORY = "Drones fly in. Bring a tower that hits flyers.", W5_STORY = "Glaze grows back: hit hard, hit fast!", TREAT_NAME = { cookie: "Cookie", cake: "Cake", pie: "Pie", sundae: "Sundae", donut: "Donut", pancake: "Pancakes", tart: "Tart" }, HINT_ANTS = /* @__PURE__ */ new Set(["armored", "big", "heavy", "queen", "queen2", "greasy", "mama", "queen3", "nurse", "queen4", "glazed", "queen5", "drone", "queen6", "shieldbearer", "queen7"]);
+var W6_STORY = "Drones fly in. Bring a tower that hits flyers.", W5_STORY = "Glaze grows back: hit hard, hit fast!", TREAT_NAME = { cookie: "Cookie", cake: "Cake", pie: "Pie", sundae: "Sundae", donut: "Donut", pancake: "Pancakes", tart: "Tart", cupcake: "Cupcake" }, HINT_ANTS = /* @__PURE__ */ new Set(["armored", "big", "heavy", "queen", "queen2", "greasy", "mama", "queen3", "nurse", "queen4", "glazed", "queen5", "drone", "queen6", "shieldbearer", "queen7", "sugarcube", "queen8"]);
 function maybeModeHint(b, e) {
   S.modeHint || S.paused || !e.ant || !HINT_ANTS.has(e.ant) || !(e.n > 0) || b.towers.some((q) => hasTargetModes(q.type)) && (S.modeHint = !0, toast("Tip: tap a tower, then pick who it shoots", "#ffe39a"), S.toast.hint = !0);
 }
@@ -16313,7 +18127,7 @@ function consumeEvents() {
         break;
       case "wave": {
         let lastW = e.n >= b.totalWaves, queen = lastW && isBossLevel(b.levelIndex);
-        addFx(ART81 ? { k: "banner", pill: !0, last: lastW, s: queen ? "Queen!" : lastW ? `Final wave ${e.n}/${b.totalWaves}` : `Wave ${e.n}/${b.totalWaves}`, life: 1.08, max: 1.08 } : { k: "banner", s: `Wave ${e.n}`, life: 1.4, max: 1.4 }), sfx("wave"), lastW && ART81 && setTimeout(() => sfx("wave"), 380), ART81 && b.levelIndex >= 50 && b.levelIndex <= 59 && e.n === 2 && W6_TIPS[b.levelIndex] && markAntSeen(S.save, "tip:w6-" + (b.levelIndex + 1)) && (persist(), toast(W6_TIPS[b.levelIndex], "#ffe39a"), S.toast.hint = !0), ART81 && b.levelIndex >= 60 && b.levelIndex <= 69 && e.n === 2 && W7_TIPS[b.levelIndex] && markAntSeen(S.save, "tip:w7-" + (b.levelIndex + 1)) && (persist(), toast(W7_TIPS[b.levelIndex], "#f3d0f6"), S.toast.hint = !0), ART81 && b.levelIndex === 41 && e.n === 2 && markAntSeen(S.save, "tip:glazed42") && (persist(), toast(L42_TIP, "#ffe39a"), S.toast.hint = !0), b.levelIndex === 31 && e.n === 2 && !S.nurseTip && (S.nurseTip = !0, toast("Nurse ants heal their friends. Pop them first!", "#ffe39a"), S.toast.hint = !0);
+        addFx(ART81 ? { k: "banner", pill: !0, last: lastW, s: queen ? "Queen!" : lastW ? `Final wave ${e.n}/${b.totalWaves}` : `Wave ${e.n}/${b.totalWaves}`, life: 1.08, max: 1.08 } : { k: "banner", s: `Wave ${e.n}`, life: 1.4, max: 1.4 }), sfx("wave"), lastW && ART81 && setTimeout(() => sfx("wave"), 380), ART81 && b.levelIndex >= 50 && b.levelIndex <= 59 && e.n === 2 && W6_TIPS[b.levelIndex] && markAntSeen(S.save, "tip:w6-" + (b.levelIndex + 1)) && (persist(), toast(W6_TIPS[b.levelIndex], "#ffe39a"), S.toast.hint = !0), ART81 && b.levelIndex >= 60 && b.levelIndex <= 69 && e.n === 2 && W7_TIPS[b.levelIndex] && markAntSeen(S.save, "tip:w7-" + (b.levelIndex + 1)) && (persist(), toast(W7_TIPS[b.levelIndex], "#f3d0f6"), S.toast.hint = !0), ART81 && b.levelIndex >= 70 && b.levelIndex <= 79 && e.n === 2 && W8_TIPS[b.levelIndex] && markAntSeen(S.save, "tip:w8-" + (b.levelIndex + 1)) && (persist(), toast(W8_TIPS[b.levelIndex], "#d7f4ff"), S.toast.hint = !0), ART81 && b.levelIndex === 41 && e.n === 2 && markAntSeen(S.save, "tip:glazed42") && (persist(), toast(L42_TIP, "#ffe39a"), S.toast.hint = !0), b.levelIndex === 31 && e.n === 2 && !S.nurseTip && (S.nurseTip = !0, toast("Nurse ants heal their friends. Pop them first!", "#ffe39a"), S.toast.hint = !0);
         break;
       }
       case "shieldBreak": {
@@ -17396,7 +19210,7 @@ function drawShield(a, x, y) {
 function drawAntObj(a, ghost = !1) {
   let b = S.battle, frozen = b.time < b.freezeUntil, p = b.route(a).at(a.d);
   Math.abs(p.dx) > 0.3 && (a._face = p.dx * (a.dir || 1) >= 0 ? 1 : -1);
-  let face = a._face ?? 1, speedK2 = a.type === "small" ? 2.2 : a.type === "sprinter" ? 2.4 : a.type === "queen" ? 0.6 : a.type === "big" ? 1 : a.type === "heavy" ? 0.9 : 1.5, still = frozen || a.stunT > 0, fr = still ? 0 : Math.floor((b.time + a.id * 0.37) * speedK2 * ANT_FRAMES) % ANT_FRAMES, H2 = ANTS[a.type].heal, mood = !!H2 && (frozen || a.healCd > 0) ? "g" : a.hitFlash > 0.02 && !reducedMotion() ? "h" : a.stunT > 0 ? "d" : "", droneFx = ART81 && a.type === "drone" && !reducedMotion() && !still, vary = a.type === "worker" || a.type === "small" || a.type === "flyer", hue = vary ? a.id * 17 % 13 - 6 : 0, jit = vary ? 0.97 + a.id * 13 % 6 * 0.02 : 1, spr = antSprite(a.type, droneFx ? Math.floor((b.time + a.id * 0.037) * 14) % 2 ? 3 : 9 : fr, a.carrying > 0, pxRatio, mood, { play: !0, hue }), breathe = still ? 1 + Math.sin(S.t * 5 + a.id) * 0.035 : 1, lat = (a.id * 37 % 9 - 4) * 1.2;
+  let face = a._face ?? 1, speedK2 = a.type === "small" ? 2.2 : a.type === "sprinter" ? 2.4 : a.type === "queen" ? 0.6 : a.type === "big" ? 1 : a.type === "heavy" ? 0.9 : 1.5, still = frozen || a.stunT > 0, fr = still ? 0 : Math.floor((b.time + a.id * 0.37) * speedK2 * ANT_FRAMES) % ANT_FRAMES, H2 = ANTS[a.type].heal, mood = !!H2 && (frozen || a.healCd > 0) ? "g" : a.hitFlash > 0.02 && !reducedMotion() ? "h" : a.stunT > 0 ? "d" : "", droneFx = ART81 && a.type === "drone" && !reducedMotion() && !still, vary = a.type === "worker" || a.type === "small" || a.type === "flyer", hue = vary ? a.id * 17 % 11 - 5 : 0, jit = vary ? 0.97 + a.id * 13 % 5 * 0.02 : 1, spr = antSprite(a.type, droneFx ? Math.floor((b.time + a.id * 0.037) * 14) % 2 ? 3 : 9 : fr, a.carrying > 0, pxRatio, mood, { play: !0, hue }), breathe = still ? 1 + Math.sin(S.t * 5 + a.id) * 0.035 : 1, lat = (a.id * 37 % 9 - 4) * 1.2;
   a.state === "back" && (lat = UI.carrierLane + lat * 0.4);
   let x = a.x + p.dy * lat, y = a.y - p.dx * lat, hopY = 0, hopS = 1;
   if (a._hopT && !reducedMotion()) {
@@ -17422,16 +19236,16 @@ function drawAntObj(a, ghost = !1) {
     let q = Math.min(1, a.hitFlash / 0.12), sq = 0.12 * q * q;
     ctx.scale(1 + sq, 1 - sq);
   }
-  if (ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h), a.hitFlash > 0.04 && (ctx.globalCompositeOperation = "lighter", ctx.globalAlpha = 0.6, ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h)), a._healFlash > S.t && !ghost && (ctx.globalCompositeOperation = "lighter", ctx.globalAlpha = reducedMotion() ? 0.35 : 0.55 * Math.min(1, (a._healFlash - S.t) / 0.2), ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h)), ctx.restore(), ART81 && (a.type === "queen6" || a.type === "queen7") && !ghost && !frozen && a.spawnT > 0 && a.spawnT <= 0.4) {
-    let jam = a.type === "queen7", q = 1 - a.spawnT / 0.4, q4 = reducedMotion() ? 1 : (Math.min(3, Math.floor(q * 4)) + 1) / 4, dx0 = x - 20 * a.size * face, dy0 = y + 10 + (reducedMotion() ? 6 : q4 * q4 * 26), rx = reducedMotion() ? 6 : 4.2 * (1 + q4 * 0.7) * 1.7, ry = reducedMotion() ? 6 : 5.6 * (1 + q4 * 0.7) * 1.7;
-    ctx.save(), ctx.beginPath(), ctx.ellipse(dx0, dy0, rx, ry, 0, 0, 7), ctx.fillStyle = jam ? "#c45ad0" : "#e8a33d", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = jam ? "#8a3a96" : "#b56a18", ctx.stroke(), ctx.restore();
+  if (ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h), a.hitFlash > 0.04 && (ctx.globalCompositeOperation = "lighter", ctx.globalAlpha = 0.6, ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h)), a._healFlash > S.t && !ghost && (ctx.globalCompositeOperation = "lighter", ctx.globalAlpha = reducedMotion() ? 0.35 : 0.55 * Math.min(1, (a._healFlash - S.t) / 0.2), ctx.drawImage(spr.cv, -spr.ox, -spr.oy, spr.w, spr.h)), ctx.restore(), ART81 && (a.type === "queen6" || a.type === "queen7" || a.type === "queen8") && !ghost && !frozen && a.spawnT > 0 && a.spawnT <= 0.4) {
+    let jam = a.type === "queen7", frost = a.type === "queen8", q = 1 - a.spawnT / 0.4, q4 = reducedMotion() ? 1 : (Math.min(3, Math.floor(q * 4)) + 1) / 4, dx0 = x - 20 * a.size * face, dy0 = y + 10 + (reducedMotion() ? 6 : q4 * q4 * 26), rx = reducedMotion() ? 8 : Math.max(8, 4.2 * (1 + q4 * 0.7) * 1.7), ry = reducedMotion() ? 8 : Math.max(8, 5.6 * (1 + q4 * 0.7) * 1.7);
+    ctx.save(), ctx.beginPath(), ctx.ellipse(dx0, dy0, rx, ry, 0, 0, 7), ctx.fillStyle = frost ? "#7ec8e8" : jam ? "#d046df" : "#e8a33d", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = frost ? "#3a8fb8" : jam ? "#8a3a96" : "#b56a18", ctx.stroke(), ctx.restore();
   }
   if (a._bubbleUntil > S.t && !ghost && !reducedMotion()) {
     let bx = x, by = y - 40 * a.size - Math.abs(Math.sin(S.t * 6)) * 2;
     ctx.save(), ctx.beginPath(), ctx.arc(bx, by, 7.5, 0, 7), ctx.fillStyle = "#fffdf0", ctx.fill(), ctx.lineWidth = 2, ctx.strokeStyle = INK, ctx.stroke(), ctx.beginPath(), ctx.moveTo(bx - 2.5, by + 6.5), ctx.lineTo(bx + 1, by + 12), ctx.lineTo(bx + 3, by + 6), ctx.fillStyle = "#fffdf0", ctx.fill(), drawChunkyText(ctx, "!", bx, by + 0.5, 12, { mode: "btn", fill: "#e0524f", outline: 2 }), ctx.restore();
   }
   if (H2 && !ghost && drawNurseHud(a, H2, x, y, frozen), frozen && (ctx.save(), ctx.globalAlpha = 0.55, rr(ctx, x - 17 * a.size, y - 24 * a.size, 34 * a.size, 32 * a.size, 7), ctx.fillStyle = "#d6f3ff", ctx.fill(), ctx.lineWidth = 1.5, ctx.strokeStyle = "#8fd0f5", ctx.stroke(), ctx.restore()), a.slow > 0.01 && !frozen && (ctx.fillStyle = "rgba(255,240,160,0.8)", ctx.beginPath(), ctx.ellipse(x, y + 8, 9 * a.size, 2.5, 0, 0, 7), ctx.fill()), a.stunT > 0 && !frozen && stunStars(ctx, x, y - 30 * a.size, S.t + a.id, a.size), a.charmT > 0 && heart(ctx, x + Math.sin(S.t * 4 + a.id) * 4, y - 32 * a.size - Math.abs(Math.sin(S.t * 3)) * 4, 3, "#ff8fbf"), a.shieldMax > 0 && !ghost && drawShield(a, x, y), a.hp < a.maxHp && !ghost) {
-    let w = a.type === "queen" || a.type === "queen3" || a.type === "queen4" || a.type === "queen5" || a.type === "queen6" ? 60 : 22, hy = y - (a.flying ? 44 : 33) * a.size - 3;
+    let w = a.type === "queen" || a.type === "queen3" || a.type === "queen4" || a.type === "queen5" || a.type === "queen6" || a.type === "queen7" || a.type === "queen8" ? 60 : 22, hy = y - (a.flying ? 44 : 33) * a.size - 3;
     rr(ctx, x - w / 2 - 1, hy - 1, w + 2, 6, 3), ctx.fillStyle = INK, ctx.fill();
     let f = Math.max(0, a.hp / a.maxHp);
     rr(ctx, x - w / 2, hy, w * f, 4, 2), ctx.fillStyle = f > 0.5 ? "#8fe388" : f > 0.25 ? "#ffd45e" : "#ff7a7a", ctx.fill();
@@ -18025,8 +19839,10 @@ function renderResult(dt) {
   drawButton(52, by, 92, 50, "Map", "#fff3e6"), button("rmap", 52, by - 3, 92, 56, () => {
     S.battle = null, go("map");
   }), drawButton(154, by, 92, 50, "Retry", "#ffd27a"), button("rretry", 154, by - 3, 92, 56, () => openPrep(S.levelIndex));
-  let hasNext = R.win && S.levelIndex + 1 < LEVELS.length, ow6 = ART81 && hasNext && S.levelIndex === 49 && out.firstClear && worldUnlocked(S.save, 6), ow7 = ART81 && hasNext && S.levelIndex === 59 && out.firstClear && worldUnlocked(S.save, 7);
-  drawButton(256, by, 92, 50, ow7 ? "Open World 7" : ow6 ? "Open World 6" : "Next", "#9fe0b5", ow6 || ow7 ? { disabled: !hasNext, size: 12 } : { disabled: !hasNext }), hasNext && button("rnext", 256, by - 3, 92, 56, ow7 ? () => {
+  let hasNext = R.win && S.levelIndex + 1 < LEVELS.length, ow6 = ART81 && hasNext && S.levelIndex === 49 && out.firstClear && worldUnlocked(S.save, 6), ow7 = ART81 && hasNext && S.levelIndex === 59 && out.firstClear && worldUnlocked(S.save, 7), ow8 = ART81 && hasNext && S.levelIndex === 69 && out.firstClear && worldUnlocked(S.save, 8);
+  drawButton(256, by, 92, 50, ow8 ? "Open World 8" : ow7 ? "Open World 7" : ow6 ? "Open World 6" : "Next", "#9fe0b5", ow6 || ow7 || ow8 ? { disabled: !hasNext, size: 12 } : { disabled: !hasNext }), hasNext && button("rnext", 256, by - 3, 92, 56, ow8 ? () => {
+    S.battle = null, go("map"), S.worldReveal = { i: 70, t0: S.t };
+  } : ow7 ? () => {
     S.battle = null, go("map"), S.worldReveal = { i: 60, t0: S.t };
   } : ow6 ? () => {
     S.battle = null, go("map"), S.worldReveal = { i: 50, t0: S.t };

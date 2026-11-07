@@ -1,0 +1,226 @@
+{
+  "note": "bot proxy, 36 trajectories x 15 seeds",
+  "report": [
+    {
+      "L": 61,
+      "hpMul": 6,
+      "win": 100,
+      "n": 540,
+      "target": 100,
+      "tol": 5,
+      "ok": true,
+      "slope": null,
+      "slopeOk": null
+    },
+    {
+      "L": 62,
+      "hpMul": 7.4,
+      "win": 100,
+      "n": 540,
+      "target": 100,
+      "tol": 5,
+      "ok": true,
+      "slope": null,
+      "slopeOk": null
+    },
+    {
+      "L": 63,
+      "hpMul": 9.6,
+      "win": 96.3,
+      "n": 540,
+      "target": 91.5,
+      "tol": 5,
+      "ok": true,
+      "slope": null,
+      "slopeOk": null
+    },
+    {
+      "L": 64,
+      "hpMul": 12,
+      "win": 92.2,
+      "n": 540,
+      "target": 93.5,
+      "tol": 5,
+      "ok": true,
+      "slope": null,
+      "slopeOk": null
+    },
+    {
+      "L": 65,
+      "hpMul": 5.42,
+      "win": 87.2,
+      "n": 540,
+      "target": 87,
+      "tol": 7,
+      "ok": true,
+      "slope": 11.3,
+      "slopeOk": true
+    },
+    {
+      "L": 66,
+      "hpMul": 9.5,
+      "win": 97,
+      "n": 540,
+      "target": 93,
+      "tol": 5,
+      "ok": true,
+      "slope": null,
+      "slopeOk": null
+    },
+    {
+      "L": 67,
+      "hpMul": 4.68,
+      "win": 87.4,
+      "n": 540,
+      "target": 84,
+      "tol": 5,
+      "ok": true,
+      "slope": 22.8,
+      "slopeOk": true
+    },
+    {
+      "L": 68,
+      "hpMul": 7.05,
+      "win": 85,
+      "n": 540,
+      "target": 84,
+      "tol": 5,
+      "ok": true,
+      "slope": 20,
+      "slopeOk": true
+    },
+    {
+      "L": 69,
+      "hpMul": 3.99,
+      "win": 93.7,
+      "n": 540,
+      "target": 88,
+      "tol": 7,
+      "ok": true,
+      "slope": 20,
+      "slopeOk": true
+    },
+    {
+      "L": 70,
+      "hpMul": 1.64,
+      "win": 58.1,
+      "n": 540,
+      "target": 58.5,
+      "tol": 5,
+      "ok": true,
+      "slope": 14.6,
+      "slopeOk": true
+    },
+    {
+      "L": 71,
+      "hpMul": 6.5,
+      "win": 100,
+      "n": 540,
+      "target": 100,
+      "tol": 5,
+      "ok": true,
+      "slope": null,
+      "slopeOk": null
+    },
+    {
+      "L": 72,
+      "hpMul": 7.8,
+      "win": 100,
+      "n": 540,
+      "target": 100,
+      "tol": 5,
+      "ok": true,
+      "slope": null,
+      "slopeOk": null
+    },
+    {
+      "L": 73,
+      "hpMul": 10.2,
+      "win": 95,
+      "n": 540,
+      "target": 91.5,
+      "tol": 5,
+      "ok": true,
+      "slope": null,
+      "slopeOk": null
+    },
+    {
+      "L": 74,
+      "hpMul": 11.4,
+      "win": 98,
+      "n": 540,
+      "target": 93.5,
+      "tol": 5,
+      "ok": true,
+      "slope": null,
+      "slopeOk": null
+    },
+    {
+      "L": 75,
+      "hpMul": 5.2,
+      "win": 83.5,
+      "n": 540,
+      "target": 87,
+      "tol": 7,
+      "ok": true,
+      "slope": 19.1,
+      "slopeOk": true
+    },
+    {
+      "L": 76,
+      "hpMul": 9.8,
+      "win": 96.5,
+      "n": 540,
+      "target": 93,
+      "tol": 5,
+      "ok": true,
+      "slope": null,
+      "slopeOk": null
+    },
+    {
+      "L": 77,
+      "hpMul": 4.6,
+      "win": 86.7,
+      "n": 540,
+      "target": 84,
+      "tol": 5,
+      "ok": true,
+      "slope": null,
+      "slopeOk": null
+    },
+    {
+      "L": 78,
+      "hpMul": 6.68,
+      "win": 86.1,
+      "n": 540,
+      "target": 84,
+      "tol": 5,
+      "ok": true,
+      "slope": 29.6,
+      "slopeOk": true
+    },
+    {
+      "L": 79,
+      "hpMul": 3.73,
+      "win": 93.5,
+      "n": 540,
+      "target": 88,
+      "tol": 7,
+      "ok": true,
+      "slope": 11.5,
+      "slopeOk": true
+    },
+    {
+      "L": 80,
+      "hpMul": 1.55,
+      "win": 59.1,
+      "n": 540,
+      "target": 58.5,
+      "tol": 5,
+      "ok": true,
+      "slope": 16.0,
+      "slopeOk": true,
+      "note": "re-measured with the calibrated summon order (alt Drone first)"
+    }
+  ]
+}

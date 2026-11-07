@@ -85,7 +85,7 @@ test('splitInto: a whole Mama level can be played by the bot to a result with ki
 test('W3 Pie Pantry: 10 levels (9 grid maps + 1 waypoint map), cap 5, coinMul 1.25 = 1 + 0.25 x (world - 2), queen last', () => {
   const w = C.WORLDS[2]; assert.equal(w.id, 3); assert.equal(w.levels, 10); assert.equal(w.name, 'Pie Pantry'); assert.equal(w.treat, 'pie'); assert.equal(w.queen, 'queen3');
   assert.equal(w.cardLevelCap, 5); assert.equal(w.coinMul, 1.25); assert.equal(C.WORLDS[2].coinMul, 1 + 0.25 * (w.id - 2));
-  assert.equal(C.LEVELS.length, 70); assert.equal(C.WORLD_START[3], W3_FIRST); assert.ok(C.isBossLevel(W3_QUEEN)); assert.ok(!C.isBossLevel(W3_QUEEN - 1));
+  assert.equal(C.LEVELS.length, 80); assert.equal(C.WORLD_START[3], W3_FIRST); assert.ok(C.isBossLevel(W3_QUEEN)); assert.ok(!C.isBossLevel(W3_QUEEN - 1));
   const lv = C.LEVELS.slice(W3_FIRST, W3_FIRST + 10); assert.equal(lv.length, 10); assert.ok(lv.every((L) => L.world === 3));
   const ms = lv.map((L) => MAPS[L.map] || tuning.maps[L.map]); assert.ok(ms.every(Boolean));
   assert.equal(lv.filter((L) => tuning.maps[L.map].grid).length, 9, '9 grid maps'); assert.equal(lv.filter((L) => tuning.maps[L.map].path).length, 1, '1 waypoint map');

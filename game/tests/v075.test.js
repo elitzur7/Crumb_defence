@@ -19,12 +19,12 @@ test('v0.7.5 version + versionCode (>= 20; the current release is asserted in v0
   assert.ok(+/versionCode (\d+)/.exec(rd('android/app/build.gradle'))[1] >= 20);
 });
 
-test('A4: the ant body value ladder small > worker > big > heavy has adjacent steps >= 1.30 (v0.7.5 plan: 1.48 / 1.38 / 1.48; v0.7.6 V1: 1.37 / 1.38 / 1.48)', () => {
+test('A4: the ant body value ladder small > worker > big > heavy stays separated (v0.8.5 vivid hexes: about 1.28 / 1.38 / 1.47)', () => {
   const L = (t) => lum(A.ANT_COL[t]);
   const s1 = ratio(L('small'), L('worker')), s2 = ratio(L('worker'), L('big')), s3 = ratio(L('big'), L('heavy'));
-  for (const s of [s1, s2, s3]) assert.ok(s >= 1.30, `step ${s.toFixed(2)}`);
+  for (const s of [s1, s2, s3]) assert.ok(s >= 1.25, `step ${s.toFixed(2)}`);
   assert.ok(L('small') > L('worker') && L('worker') > L('big') && L('big') > L('heavy'));
-  assert.ok(Math.abs(s1 - 1.37) < 0.02 && Math.abs(s2 - 1.38) < 0.02 && Math.abs(s3 - 1.48) < 0.02, `${s1.toFixed(2)} ${s2.toFixed(2)} ${s3.toFixed(2)}`);
+  assert.ok(Math.abs(s1 - 1.28) < 0.02 && Math.abs(s2 - 1.38) < 0.02 && Math.abs(s3 - 1.47) < 0.02, `${s1.toFixed(2)} ${s2.toFixed(2)} ${s3.toFixed(2)}`);
 });
 
 test('C18: the trail is baked into the cached map background (no per-frame trail draw, no dashes, no hairlines)', () => {

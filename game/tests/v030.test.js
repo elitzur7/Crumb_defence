@@ -112,7 +112,9 @@ test('cards are obtained by buying (Shop) or as prizes - never by clearing level
   for (let i = 0; i < C.LEVELS.length; i++) if (C.isBossLevel(i)) M.applyBattleResult(s, i, 'win', 3, { kills: 1, foodLeft: 50 });
   assert.equal(M.unlockedCards(s).length, C.STARTER_CARDS.length + C.WORLDS.length, 'one boss gift per world');
   const locked = M.lockedCards(s); assert.equal(locked.length, Math.max(0, C.ALL_CARDS.length - C.STARTER_CARDS.length - C.WORLDS.length));
-  const p = M.grantCardPrize(s, 2, () => 0); assert.ok(p.newCard); assert.ok(s.cards[p.id].unlocked); assert.ok(s.cards[p.id].level >= 2);
+  const p = M.grantCardPrize(s, 2, () => 0); assert.ok(s.cards[p.id].unlocked);
+  if (locked.length) { assert.ok(p.newCard); assert.ok(s.cards[p.id].level >= 2); }
+  else assert.equal(p.newCard, false); // eight boss gifts already unlocked the last card
   const shop = M.newSave(); shop.coins = 100000; const id = M.lockedCards(shop)[0]; const coins = shop.coins;
   assert.ok(M.buyCardUnlock(shop, id)); assert.ok(shop.cards[id].unlocked); assert.equal(shop.coins, coins - M.unlockPrice(id));
   assert.equal(M.buyCardUnlock(shop, id), false, 'already owned');

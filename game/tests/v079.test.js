@@ -21,7 +21,7 @@ test('version 0.7.9 or later (the current release, 0.8.0 / versionCode 25, is as
 test('W4 data: Ice-Cream Parlour, treat sundae, queen4, L31-L40, cap 6, coinMul 1.5, hpMul table, gate 14', () => {
   const w = C.WORLDS[3]; assert.equal(w.id, 4); assert.equal(w.name, 'Ice-Cream Parlour'); assert.equal(w.treat, 'sundae'); assert.equal(w.queen, 'queen4'); assert.equal(w.levels, 10);
   assert.equal(w.cardLevelCap, 6); assert.equal(w.coinMul, 1.5); assert.deepEqual(w.unlock, { allLevelsWonInWorld: 3, minStarsInWorld: 14 });
-  assert.equal(C.WORLDS.length, 7); assert.equal(C.LEVELS.length, 70); assert.equal(C.WORLD_START[4], 30); assert.ok(C.isBossLevel(39)); assert.ok(!C.isBossLevel(38));
+  assert.equal(C.WORLDS.length, 8); assert.equal(C.LEVELS.length, 80); assert.equal(C.WORLD_START[4], 30); assert.ok(C.isBossLevel(39)); assert.ok(!C.isBossLevel(38));
   assert.deepEqual(C.LEVELS.slice(30, 40).map((l) => l.hpMul), [3.9, 4.5, 7.4, 7.25, 6.65, 7.7, 5.9, 7.4, 5.35, 0.8] /* v0.7.10 retune: L35 6.6 -> 6.65, L37 5.85 -> 5.9, L39 5.45 -> 5.35 */);
   assert.ok(C.LEVELS.slice(30, 40).every((l) => l.world === 4));
   // W1-W3 untouched
@@ -43,7 +43,7 @@ test('W3 -> W4 gate: all W3 levels won AND 14 stars in W3 (encoded in v0.7.9)', 
   s.levels[29] = { stars: 0, cleared: false }; assert.equal(M.worldUnlocked(s, 4), false, 'a W3 level not won');
 });
 test('W4 -> W5 gate (12 stars in W4) is recorded in the config comments only: there is no World 5', () => {
-  assert.ok(/W4->W5 14/.test(rd('src/config.js'))); assert.equal(C.WORLDS.length, 7);
+  assert.ok(/W4->W5 14/.test(rd('src/config.js'))); assert.equal(C.WORLDS.length, 8);
 });
 
 test('ants: Nurse (rare, hp 60, speed 32, armor 0, heal 1.5 tiles / 20 % / 3 s / bossMul 0.1) and Sundae Queen (hp 2600, speed 16, armor 6, slow trait, spawns a nurse every 9 s)', () => {
@@ -114,7 +114,7 @@ test('rarity R1-R4 (Crumb Design checker): 0 violations on L21-L40', () => {
 
 // ---------- art + UI ----------
 test('art: THEMES[7] is the W4 mint palette; nurse / queen4 colours, sundae treat body, plus shape + grey-cap variant exist', () => {
-  assert.equal(A.THEMES.length, 11); assert.deepEqual(A.THEMES[7], { name: 'W4 mint', a: '#b6e4d6', b: '#abdccd', check: 'rgba(60,170,150,0.14)', grout: 'rgba(70,150,130,0.22)', trail: '#fffdf5', edge: '#80c3b0', dot: '#98d3c2' });
+  assert.equal(A.THEMES.length, 12); assert.deepEqual(A.THEMES[7], { name: 'W4 mint', a: '#b6e4d6', b: '#abdccd', check: 'rgba(60,170,150,0.14)', grout: 'rgba(70,150,130,0.22)', trail: '#fffdf5', edge: '#80c3b0', dot: '#98d3c2' });
   assert.ok(A.ANT_COL.nurse && A.ANT_COL.queen4); assert.equal(typeof A.TREAT_BODIES.sundae, 'function'); assert.equal(typeof A.plusShape, 'function');
   const g = rd('src/game.js');
   assert.ok(/case 'heal':/.test(g) && /healRing/.test(g) && /healPlus/.test(g) && /shown < 6/.test(g), 'heal fx + max 6 pluses per pulse');

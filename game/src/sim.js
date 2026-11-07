@@ -206,7 +206,7 @@ export class Path {
 export const SPLIT_BACK = 3, SPLIT_STEP = 7, MAX_SPLIT_DEPTH = 1;
 // ---------- waves ----------
 const SPACING = { small: 0.45, worker: 1, big: 1.6, gasmask: 1, armored: 1.5, flyer: 0.8, sprinter: 0.9, heavy: 1.7, queen: 1, queen2: 1,
-  small_gasmask: 0.45, small_armed: 0.6, small_fly: 0.5, greasy: 1.1, mama: 1.6, queen3: 1, nurse: 1.5, queen4: 1, drone: 0.8, queen6: 1, shieldbearer: 1.2, queen7: 1 }; // v0.8.4 W7 spacing (explicit waves; this table is only the random-mix generator)
+  small_gasmask: 0.45, small_armed: 0.6, small_fly: 0.5, greasy: 1.1, mama: 1.6, queen3: 1, nurse: 1.5, queen4: 1, drone: 0.8, queen6: 1, shieldbearer: 1.2, queen7: 1, sugarcube: 1.25, queen8: 1 }; // v0.8.5 W8 spacing (explicit waves; this table is only the random-mix generator)
 export function generateWaves(levelIndex, levels = C.LEVELS) {
   const L = levels[levelIndex];
   if (L.waves) return L.waves.map((groups) => expandGroups(groups, L.interval || 1));

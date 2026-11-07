@@ -54,7 +54,7 @@ test('R5b: the prize strip is skipped while k <= 0 (no negative-scale flip)', ()
 // ---- Pass 4: World 6 "Pancake Picnic" (PP1, PP2, PP4, PP6, PP7, PP11, M7g, U11) ----
 const W6_HP = [6, 7.2, 9.19, 9.5, 4.84, 9.57, 5.9, 5.29, 4.12, 1.7]; // v0.8.4 F11: mirrored L58/L59
 test('PP1: World 6 exists (id 6, pancake, queen6, 10 levels, gate 14 stars in W5 + all won, cap 6, coinMul 2.0)', () => {
-  const W = C.WORLDS.find((x) => x.id === 6); assert.ok(W); assert.equal(W.treat, 'pancake'); assert.equal(W.queen, 'queen6'); assert.equal(C.LEVELS.length, 70);
+  const W = C.WORLDS.find((x) => x.id === 6); assert.ok(W); assert.equal(W.treat, 'pancake'); assert.equal(W.queen, 'queen6'); assert.equal(C.LEVELS.length, 80);
   assert.equal(W.levels, 10); assert.equal(W.cardLevelCap, 6); assert.equal(W.coinMul, 2); assert.deepEqual(W.unlock, { allLevelsWonInWorld: 5, minStarsInWorld: 14 });
   assert.equal(C.LEVELS.filter((L) => L.world === 6).length, 10);
 });

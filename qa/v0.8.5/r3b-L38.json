@@ -1,0 +1,13 @@
+{
+  "n": 2400,
+  "p50": 1.7,
+  "p90": 2.7,
+  "p95": 3.2,
+  "p99": 6.4,
+  "max": 18.7,
+  "over22": 0,
+  "label": 4,
+  "level": 38,
+  "pace": 1.35,
+  "note": "yield once per frame, same method as v0.8.4 r3b-L38.md"
+}
