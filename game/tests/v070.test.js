@@ -84,16 +84,15 @@ test('Must 7: free pack (D-P0) after the first L2 win = 4 random owned (>= 1 dam
   assert.ok(/random \+ Zapper/.test(src('game.js')) && C.ECONOMY.shop.cardPackSize - 1 === 4, 'Shop label: 4 random + Zapper');
 });
 
-test('Should D-P2 / D-P3: the new tower comes from the cheapest locked tier; pity guarantees one by the 10th paid pack', () => {
-  assert.equal(C.ECONOMY.shop.packPity, 10);
+test('SH1: a special card is exactly 10 percent and pity never forces one', () => {
+  assert.equal(C.ECONOMY.shop.packPity, 0);
+  assert.equal(C.ECONOMY.shop.packNewTowerChance, 0.10);
   const s = M.newSave(); s.coins = 1e6; const tier = M.cheapestLockedTier(s); assert.deepEqual(tier.sort(), ['lava', 'pheromone', 'sound']);
-  for (let i = 0; i < 9; i++) assert.equal(M.buyPack(s, () => 0.99).newTower, null, `pack ${i + 1}`);
-  const p10 = M.buyPack(s, () => 0.99); assert.ok(p10.newTower, 'pity on pack 10'); assert.equal(p10.at(-1), p10.newTower); assert.ok(['lava', 'pheromone', 'sound'].includes(p10.newTower));
-  assert.equal(s.packsSinceNew, 0);
-  // once the 100c tier is all owned -> 200c tier
+  for (let i = 0; i < 12; i++) assert.equal(M.buyPack(s, () => 0.99).newTower, null, `pack ${i + 1} stays ordinary`);
+  const hit = M.buyPack(s, () => 0.05); assert.ok(['lava', 'pheromone', 'sound'].includes(hit.newTower)); assert.equal(hit.at(-1), hit.newTower);
   const t = M.newSave(); t.coins = 1e6; for (const id of ['lava', 'pheromone', 'sound']) M.unlockCard(t, id);
   const g = M.buyPack(t, seq(0, 0)); assert.ok(['lizard', 'gate', 'zapper'].includes(g.newTower), g.newTower);
-  assert.ok(/sure in/.test(src('game.js')), 'pity hint on the pack label');
+  assert.ok(!/sure in/.test(src('game.js')), 'no pity hint');
 });
 
 test('Must 9: World 2 gate = 18 stars', () => { assert.equal(TJ.worlds[1].unlock.minStarsInWorld, 18); });
@@ -110,15 +109,15 @@ test('Must 6: pack reveal for ALL packs (paid + free), skippable, no toast / NEW
 
 test('version label in game (0.7.x)', () => { assert.match(C.VERSION, /^0\.(7|8)\.\d+$/); assert.ok(/'v' \+ C\.VERSION/.test(src('game.js'))); });
 
-test('Should D-P4: per-world card-level cap in battle (W1 L4, W2 L5 since v0.7.6 E4); the prep screen says so', () => {
-  assert.equal(TJ.worlds[0].cardLevelCap, 4); assert.equal(TJ.worlds[1].cardLevelCap, 5);
+test('UC1: a battle uses the owned card level in every world', () => {
   const cl = { slingshot: 9, spray: 3 };
   const b1 = new Battle({ levelIndex: 0, deck: ['slingshot', 'spray'], cardLevels: cl, seed: 1 });
-  assert.deepEqual([b1.cardLevels.slingshot, b1.cardLevels.spray], [4, 3]);
+  assert.deepEqual([b1.cardLevels.slingshot, b1.cardLevels.spray], [9, 3]);
   const b2 = new Battle({ levelIndex: 12, deck: ['slingshot', 'spray'], cardLevels: cl, seed: 1 });
-  assert.deepEqual([b2.cardLevels.slingshot, b2.cardLevels.spray], [5, 3]);
+  assert.deepEqual([b2.cardLevels.slingshot, b2.cardLevels.spray], [9, 3]);
+  assert.equal(b1.cardLevelCap, null);
   assert.equal(cl.slingshot, 9, 'the save is not touched');
-  assert.ok(/acts as L\${capW} in this world/.test(src('game.js')));
+  assert.ok(!/acts as L\$\{capW\} in this world/.test(src('game.js')));
 });
 
 test('Should D-A6 (updated for the v0.7.3 C17 mixes): variants wired - small_gasmask from L2 (wave 3), small_fly from L3, small_armed from L5 (<= 5 ant types each)', async () => {

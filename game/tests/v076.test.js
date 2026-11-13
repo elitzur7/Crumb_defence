@@ -61,15 +61,15 @@ test('V5: the warning text is measured at the 12 px it is drawn at', () => {
   const g = src('game.js'); assert.match(g, /wrapLines\(warn, 324, 12\)/); assert.match(g, /ctx\.font = `bold 12px/);
 });
 test('E1: star coins are paid once, from the stored stars (no retroactive grant)', () => {
+  const inc = (i) => { const F = M.levelFactor(i); return [Math.round(20 * F), Math.round(20 * F), Math.round(80 * F)]; };
   const s = M.newSave();
-  let o = win(s, 0, 1); assert.equal(o.starCoins, 0);
-  o = win(s, 0, 3); assert.equal(o.starCoins, 90, '1 star -> 3 stars pays 15 + 75 (E-A5; the 3-star bonus is 75 since v0.7.10)');
-  o = win(s, 0, 3); assert.equal(o.starCoins, 0, '3 -> 3 pays 0 (E-A5)');
-  const t = M.newSave(); assert.equal(win(t, 1, 2).starCoins, 15); assert.equal(win(t, 1, 3).starCoins, 75); assert.equal(win(t, 1, 2).starCoins, 0);
-  const u = M.newSave(); assert.equal(win(u, 2, 3).starCoins, 90);
-  const c0 = s.coins; const l = M.newSave(); l.levels[0].stars = 3; l.levels[0].cleared = true; const c1 = l.coins; assert.equal(l.coins, c1);
-  assert.equal(M.applyBattleResult(l, 0, 'lose', 0, {}, () => 0).starCoins, 0); assert.ok(c0 >= 0);
-  assert.equal(C.ECONOMY.starBonus[2], 15); assert.equal(C.ECONOMY.starBonus[3], 75);
+  let o = win(s, 0, 1); assert.equal(o.starCoins, inc(0)[0]);
+  o = win(s, 0, 3); assert.equal(o.starCoins, inc(0)[1] + inc(0)[2], '1 star -> 3 stars pays the two new records');
+  o = win(s, 0, 3); assert.equal(o.starCoins, 0, '3 -> 3 pays 0');
+  const t = M.newSave(); assert.equal(win(t, 1, 2).starCoins, inc(1)[0] + inc(1)[1]); assert.equal(win(t, 1, 3).starCoins, inc(1)[2]); assert.equal(win(t, 1, 2).starCoins, 0);
+  const u = M.newSave(); assert.equal(win(u, 2, 3).starCoins, inc(2)[0] + inc(2)[1] + inc(2)[2]);
+  const l = M.newSave(); l.levels[0].stars = 3; l.levels[0].cleared = true;
+  assert.equal(M.applyBattleResult(l, 0, 'lose', 0, {}, () => 0).starCoins, 0);
 });
 test('E-A5: an existing save loads with the same coins, diamonds and stars (nothing is paid on load)', () => {
   const store = new Map(); const st = { getItem: (k) => store.get(k) ?? null, setItem: (k, v) => store.set(k, v) };
@@ -79,12 +79,10 @@ test('E-A5: an existing save loads with the same coins, diamonds and stars (noth
   // a replay of an already 3-star level pays no star coins
   const i3 = stars.findIndex((x) => x === 3); assert.equal(win(l, i3, 3).starCoins, 0);
 });
-test('E2: calendar coins [30,60,90,120] x (1 + 0.5 x (world - 1)), multiple of 5', () => {
-  assert.deepEqual([1, 2, 3, 4].map((k) => Cal.coinAmount(k, C.CALENDAR, 1)), [30, 60, 90, 120]);
-  assert.deepEqual([1, 2, 3, 4].map((k) => Cal.coinAmount(k, C.CALENDAR, 2)), [45, 90, 135, 180]);
-  assert.deepEqual([1, 2, 3, 4].map((k) => Cal.coinAmount(k, C.CALENDAR, 3)), [60, 120, 180, 240]);
-  for (let w = 1; w <= 6; w++) for (let k = 1; k <= 6; k++) assert.equal(Cal.coinAmount(k, C.CALENDAR, w) % 5, 0);
-  assert.equal(Cal.coinAmount(9, C.CALENDAR, 1), 120);
+test('EX1: calendar coin days are 36, 72, 108, 144 times 3.2 to the world', () => {
+  assert.deepEqual([1, 2, 3, 4].map((k) => Cal.coinAmount(k, C.CALENDAR, 1)), [36, 72, 108, 144]);
+  assert.deepEqual([1, 2, 3, 4].map((k) => Cal.coinAmount(k, C.CALENDAR, 2)), [115, 230, 346, 461]);
+  assert.equal(Cal.coinAmount(9, C.CALENDAR, 1), 144);
   assert.equal(M.highestWorld(M.newSave()), 1);
   const s = M.newSave(); for (let i = 0; i < 10; i++) win(s, i, 3); assert.equal(M.highestWorld(s), 2);
 });
@@ -92,36 +90,28 @@ test('E-A2: calendar-only W1 income = 180 c in 7 days and 1,500 c in 30 days; ge
   const DAY = 86400000, T0 = Date.UTC(2026, 9, 1, 12); let seed = 5; const rng = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296);
   const sv = M.newSave(); const at = {}; const count = () => C.ALL_CARDS.reduce((s, id) => s + Object.values(sv.cards[id].inv || {}).reduce((a, b) => a + b, 0), 0);
   const cards0 = count(); for (let d = 0; d < 30; d++) { Cal.touch(sv, T0 + d * DAY); Cal.claim(sv, T0 + d * DAY, rng); if (d === 6) at[7] = [sv.coins, sv.diamonds]; }
-  assert.equal(at[7][0], 180); assert.equal(sv.coins, 1500); assert.equal(sv.diamonds, 55); assert.equal(count() - cards0, 9);
+  assert.equal(at[7][0], 216); assert.equal(sv.coins, 1800); assert.equal(sv.diamonds, 55); assert.equal(count() - cards0, 9);
 });
-test('E3: +10 gems on a boss first clear, +5 on its first 3 stars; none on replay or normal levels', () => {
+test('DX1: first clear pays one diamond tier; a boss adds 10; later stars pay nothing', () => {
   assert.deepEqual([...Array(20).keys()].filter((i) => C.isBossLevel(i)), [9, 19]);
   const s = M.newSave(); const d0 = s.diamonds;
-  let o = win(s, 9, 2); assert.equal(o.gems, 10); assert.equal(s.diamonds, d0 + 10);
-  o = win(s, 9, 3); assert.equal(o.gems, 5); assert.equal(s.diamonds, d0 + 15);
+  let o = win(s, 9, 2); assert.equal(o.gems, 15); assert.equal(s.diamonds, d0 + 15);
   o = win(s, 9, 3); assert.equal(o.gems, 0); assert.equal(s.diamonds, d0 + 15);
-  const t = M.newSave(); assert.equal(win(t, 9, 3).gems, 15); assert.equal(win(t, 19, 3).gems, 15);
-  assert.equal(win(M.newSave(), 4, 3).gems, 0);
+  const t = M.newSave(); assert.equal(win(t, 9, 3).gems, 30); assert.equal(win(t, 19, 3).gems, 30);
+  assert.equal(win(M.newSave(), 4, 3).gems, 20);
+  assert.equal(win(M.newSave(), 4, 1).gems, 1);
   assert.equal(M.applyBattleResult(M.newSave(), 9, 'lose', 0, {}, () => 0).gems, 0);
-  assert.equal(C.ECONOMY.bossGems.firstClear, 10); assert.equal(C.ECONOMY.bossGems.firstThreeStars, 5);
+  assert.equal(C.ECONOMY.bossGems.firstClear, 10);
 });
-test('E4: W1 cap 4, W2 cap 5; the prep screen has the cap line (v0.7.7 P1-1: the per-card pill is gone, the badge shows the capped level)', () => {
-  assert.equal(C.WORLDS[0].cardLevelCap, 4); assert.equal(C.WORLDS[1].cardLevelCap, 5);
+test('UC1: the prep screen no longer tells the player a card acts as a lower level', () => {
   const g = src('game.js');
-  assert.match(g, /acts as L\$\{capW\} in this world/); assert.doesNotMatch(g, /acts as L\$\{opt\.capNote\}/);
+  assert.doesNotMatch(g, /acts as L\$\{capW\} in this world/);
 });
-test('E5: tuning.json carries the star bonus, calendar ladder, boss gems and worlds[].coinMul; coinMul scales win coins only', () => {
-  assert.deepEqual(tuning.economy.starBonus, { 2: 15, 3: 75 });
-  assert.deepEqual(tuning.economy.calendar.coinsByStreak, [30, 60, 90, 120]); assert.equal(tuning.economy.calendar.worldStep, 0.5);
-  assert.deepEqual(tuning.economy.bossGems, { firstClear: 10, firstThreeStars: 5 });
-  assert.ok(tuning.worlds.slice(0, 2).every((w) => w.coinMul === 1));
-  assert.ok(C.WORLDS.slice(0, 2).every((w) => w.coinMul === 1)); // v0.7.7: world 3 = 1.25 (v077.test.js)
-  const f = { kills: 20, foodLeft: 80, levelIndex: 4, firstClear: true, time: 100 };
-  const one = M.battleCoins('win', f), two = M.battleCoins('win', { ...f, coinMul: 2 });
-  assert.deepEqual(M.battleCoins('win', { ...f, coinMul: 1 }), one, 'coinMul 1 is the identity');
-  assert.equal(two.parts.firstClear, one.parts.firstClear, 'the first-clear bonus is not scaled');
-  for (const k of ['base', 'food', 'kills', 'level']) assert.equal(two.parts[k], one.parts[k] * 2, k);
-  assert.deepEqual(M.battleCoins('lose', { ...f, coinMul: 2 }), M.battleCoins('lose', f), 'loss coins are not scaled');
+test('EX1: win coins come from the level factor, not coinMul', () => {
+  const one = M.battleCoins('win', { levelIndex: 4, stars: 1, firstClear: true });
+  assert.equal(one.parts.replay, Math.round(M.replayBase(4)));
+  assert.equal(one.parts.firstClear, Math.round(30 * M.levelFactor(4)));
+  assert.equal(M.battleCoins('win', { levelIndex: 4, stars: 3 }).total, Math.round(M.replayBase(4) * 1.1));
 });
 test('unchanged: unlock prices (100 / 200 / 400 tiers) and the W2 gate (18 stars)', () => {
   const p = Object.fromEntries(C.ALL_CARDS.map((id) => [id, M.unlockPrice(id)]));

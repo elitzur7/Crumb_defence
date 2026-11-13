@@ -12,7 +12,7 @@ import { addFloatText } from './fx.js';
 import * as Treat from './treat.js';
 import { previewModel, waveGroups, stripRect, isTank, isFlyer, STRIP_H } from './preview.js';
 
-const W = 400, H = 720, MAP_Y = 68, MAP_W = C.GRID_COLS * C.TILE, MAP_H = C.GRID_ROWS * C.TILE, TRAY_Y = MAP_Y + MAP_H + 4;
+const W = 400, H = 800, MAP_Y = 68, MAP_W = C.GRID_COLS * C.TILE, MAP_H = C.GRID_ROWS * C.TILE, TRAY_Y = MAP_Y + MAP_H + 4; // v0.8.6 LY1: 400x800 so two extra rows fit without shrinking the tray
 const BG = '#fbe9dc';
 const canvas = document.getElementById('game');
 let ctx = canvas.getContext('2d'); // let: the v0.7 pack reveal pre-renders card faces by pointing ctx at an offscreen canvas for a moment
@@ -51,7 +51,7 @@ function setPaused(v) { S.paused = v; if (S.battle) S.battle.paused = v; if (v) 
 // bottom safe-area inset (env(safe-area-inset-bottom), read through a hidden probe element). Their design height is 660 instead of 720; every other
 // screen (prep, battle, results, overlays) keeps W x H = 400 x 720 over the full window.
 const META_SCREENS = ['map', 'cards', 'card', 'shop', 'cabinet', 'antbook'], BAR_H = 56, META_H = 660;
-let cw = 0, ch = 0, insetB = 0, insetProbe = null, insetOverride = null; // insetOverride: test hook only
+let cw = 0, ch = 0, insetB = 0, insetT = 0, insetProbe = null, insetTopProbe = null, insetOverride = null; // insetOverride: test hook only
 function readInset() {
   if (insetOverride != null) return insetOverride;
   try {
@@ -59,18 +59,25 @@ function readInset() {
     const v = parseFloat(getComputedStyle(insetProbe).paddingBottom); return isFinite(v) && v > 0 ? v : 0;
   } catch (e) { return 0; }
 }
+function readInsetTop() {
+  if (insetOverride != null) return 0;
+  try {
+    if (!insetTopProbe) { insetTopProbe = document.createElement('div'); insetTopProbe.style.cssText = 'position:fixed;left:0;top:0;width:0;height:0;visibility:hidden;pointer-events:none;padding-top:env(safe-area-inset-top,0px)'; document.body.appendChild(insetTopProbe); }
+    const v = parseFloat(getComputedStyle(insetTopProbe).paddingTop); return isFinite(v) && v > 0 ? v : 0;
+  } catch (e) { return 0; }
+}
 function isMeta() { return META_SCREENS.includes(S.screen); }
 function applyLayout() {
   if (isMeta()) {
     const availH = Math.max(100, ch - (BAR_H + insetB));
     scale = Math.min(cw / W, availH / META_H); offX = (cw - W * scale) / 2; offY = (availH - META_H * scale) / 2;
-  } else { const availH = Math.max(100, ch - insetB); scale = Math.min(cw / W, availH / H); offX = (cw - W * scale) / 2; offY = (availH - H * scale) / 2; } // v0.8.1 U8: prep / battle / results keep clear of the bottom gesture inset too (was the full window; no change when the inset is 0)
+  } else { const availH = Math.max(100, ch - insetB - insetT); scale = Math.min(cw / W, availH / H); offX = (cw - W * scale) / 2; offY = insetT + (availH - H * scale) / 2; } // v0.8.6 LY1: keep the board below the top inset. A 16:9 phone scales 800 into a shorter window, so tiles shrink.
   const px = Math.max(1, Math.round(dpr * scale * 2) / 2);
   if (px !== pxRatio) { pxRatio = px; S.bgCache = {}; A.clearTowerCache(); } // sprites are baked at the device scale
 }
 function resize() {
   dpr = Math.min(window.devicePixelRatio || 1, 3);
-  cw = window.innerWidth; ch = window.innerHeight; insetB = readInset();
+  cw = window.innerWidth; ch = window.innerHeight; insetB = readInset(); insetT = readInsetTop();
   canvas.width = Math.round(cw * dpr); canvas.height = Math.round(ch * dpr);
   canvas.style.width = cw + 'px'; canvas.style.height = ch + 'px';
   applyLayout();
@@ -626,6 +633,7 @@ function battleFrame(dt) {
   if (S.battle.result) finishBattle();
 }
 function frame(now) {
+  A.TEXT_SCALE = (S.save && S.save.settings && S.save.settings.textSize === 'large') ? 1.15 : 1;
   const dt = Math.min(0.1, (now - lastT) / 1000); lastT = now;
   S.t += dt;
   heartbeat(false);
@@ -771,13 +779,24 @@ function drawGearIcon(x, y, r) {
   ctx.beginPath(); ctx.arc(0, 0, r * 0.32, 0, 7); ctx.fillStyle = '#fff6ee'; ctx.fill(); ctx.stroke();
   ctx.restore();
 }
+function drawPrepStats() {
+  const y = 668, h = 56;
+  panel(26, y, 348, h, '#fff8ef', 12);
+  const id = S.prep && S.prep.statId;
+  if (!id || !C.TOWERS[id]) { plainText('Tap a card to see its stats', 200, y + 28, 14, '#7a5a6a', 'center', '600'); return; }
+  const cl = (S.save.cards[id] && S.save.cards[id].level) || 1;
+  plainText(C.TOWERS[id].name, 40, y + 16, 14, '#3d2a36', 'left', '800');
+  cardStatKeys(id).slice(0, 3).forEach((k, i) => {
+    plainText(`${statLabel(id, k)} ${formatStat(id, k, towerStat(id, k, 1, cl))}`, 40 + (i % 3) * 112, y + 38, 12, '#3d2a36', 'left', '600');
+  });
+}
 // v0.7.2 C16: Snd and Reset left the map's bottom row: a gear at the top right of the map header opens one small panel (Sound switch, Reset behind a two-step confirm).
 function renderSettings() {
   if (!S.settings) return;
   button('setBlock', -2000, -2000, W + 4000, H + 4000, () => {});
   ctx.save(); ctx.fillStyle = 'rgba(40,26,38,0.55)'; ctx.fillRect(-2000, -2000, W + 4000, H + 4000); ctx.restore();
   button('setBlock2', -2000, -2000, W + 4000, H + 4000, () => closeSettings());
-  const x = 70, y = 122, w = 260, h = 398; // v0.8.1 J12: five 68 px rows (Sound, Reduce motion, Haptics, Reset, Close)
+  const x = 70, y = 122, w = 260, h = 466; // v0.8.6 U1: Text size row added under Reset
   panel(x, y, w, h, '#fff6ee', 20); button('setPanel', x, y, w, h, () => {});
   A.text(ctx, 'Settings', 200, y + 28, 22, '#ffb3c1');
   const st = S.save.settings || {}; const muted = st.muted, rmv = st.reduceMotion || 'auto', hap = st.haptics !== false;
@@ -794,8 +813,11 @@ function renderSettings() {
     if (S.confirmReset > S.t) { const keepSet = S.save.settings; S.save = M.newSave(); if (keepSet) S.save.settings = keepSet; Cal.touch(S.save, now()); persist(); S.confirmReset = 0; S.cardsBlinkUntil = 0; closeSettings(); toast('Progress reset'); }
     else { S.confirmReset = S.t + 3; }
   });
-  drawButton(x + 24, y + 326, w - 48, 48, 'Close', '#fff3e6', { size: 17 });
-  button('setClose', x + 24, y + 322, w - 48, 56, () => closeSettings());
+  const bigText = st.textSize === 'large';
+  drawButton(x + 24, y + 326, w - 48, 52, bigText ? 'Text: Large' : 'Text: Normal', bigText ? '#9fe0b5' : '#fff3e6', { size: 16 });
+  button('setText', x + 24, y + 322, w - 48, 60, () => setS('textSize', bigText ? 'normal' : 'large'));
+  drawButton(x + 24, y + 394, w - 48, 48, 'Close', '#fff3e6', { size: 17 });
+  button('setClose', x + 24, y + 390, w - 48, 56, () => closeSettings());
 }
 // v0.7.5 C18: the backdrop (gradient + faint gingham tablecloth) is baked once into one offscreen canvas per layout (resolution capped at 2x) and blitted with a single
 // drawImage per frame; it is rebuilt only on a resize / DPR / layout change (S.bdCache is cleared in resize()). Only the 14 drifting bubbles are drawn live.
@@ -1270,8 +1292,7 @@ function renderPrep() {
   const unlocked = M.unlockedCards(S.save);
   A.text(ctx, `Your deck (${S.prep.deck.length}/${C.BATTLE.deckSize}) - tap to pick`, 30, 182, 14, '#7a5a6a', 'left', null);
   // v0.7 D-P4 / v0.7.6 E4: a card above the world's cap acts as the cap in this world - a pill on the card and one line under the grid
-  const capW = worldCardLevelCap(i); const overCap = (id) => !!capW && unlocked.includes(id) && S.save.cards[id].level > capW;
-  if (capW && unlocked.some(overCap)) plainText(`A card above L${capW} acts as L${capW} in this world`, 200, 488, 12, '#b0506a', 'center', '800'); // v0.7.7: the badge shows the capped level (pink + a marker); the pill is gone
+  const capW = 0; // v0.8.6 UC1: no world card cap
   const ownedIds = C.ALL_CARDS.filter((id) => unlocked.includes(id)), lockedIds = C.ALL_CARDS.filter((id) => !unlocked.includes(id)); // v0.8.2 R12: owned cards first (5 columns), the locked ones last as small tiles under a thin divider
   ownedIds.forEach((id, k) => { // v0.6: 13 cards -> 5 columns x 3 rows
     const col = k % 5, row = Math.floor(k / 5);
@@ -1282,6 +1303,7 @@ function renderPrep() {
     if (isU) button('deck' + id, x, y, w, h, () => {
       const d = S.prep.deck; const j = d.indexOf(id);
       if (j >= 0) d.splice(j, 1); else if (d.length < C.BATTLE.deckSize) d.push(id); else toast(`Deck is full (${C.BATTLE.deckSize}). Tap a card to remove it.`);
+      S.prep.statId = id; // v0.8.6 U2: the docked panel shows this card
       if (C.ART81 && C.TOWERS[id].special) S.prepTip = { tower: id, until: S.t + 3.4 }; // v0.8.2 M7g: the Special row (3 states) of the tapped card
       sfx('tap');
     });
@@ -1349,10 +1371,11 @@ function renderPrep() {
     ctx.font = `bold 12px ${A.FONT}`;
     S.layoutWarn = { box: { x: 26, y: 646 - hh - 2, w: 348, h: hh }, lines: lines.map((l) => ctx.measureText(l).width), maxW: 324 };
   }
-  drawButton(26, 652, 110, 48, 'Back', '#fff3e6'); button('back', 26, 650, 110, 54, () => go('map')); // v0.8.1 U8: the hit area is 54 tall (>= 44 dp on a 360x640 phone with a gesture inset)
+  drawPrepStats();
+  drawButton(26, 732, 110, 48, 'Back', '#fff3e6'); button('back', 26, 730, 110, 54, () => go('map')); // hit area stays 110 x 54
   const ready = S.prep.deck.length === Math.min(C.BATTLE.deckSize, unlocked.length);
-  drawButton(150, 652, 224, 48, 'Defend!', '#9fe0b5', { disabled: !ready, size: 22 });
-  button('start', 150, 650, 224, 54, () => {
+  drawButton(150, 732, 224, 48, 'Defend!', '#9fe0b5', { disabled: !ready, size: 22 });
+  button('start', 150, 730, 224, 54, () => {
     if (!ready) toast(`Pick ${C.BATTLE.deckSize} cards`);
     else startBattle(); // v0.3: a 0-stock booster is only a warning (it can be bought in battle with diamonds)
   });
@@ -1496,7 +1519,7 @@ function renderBattle(dt) {
   for (const tw of b.towers) drawList.push({ y: tw.y + (C.TOWERS[tw.type].place === 'path' ? -12 : 0), f: () => drawTowerObj(tw) });
   for (const a of b.ants) if (!a.flying) drawList.push({ y: a.y, f: () => drawAntObj(a) });
   for (const q of S.swatQ) if (q.ghost) drawList.push({ y: q.y, f: () => drawAntObj(q.ghost, true) }); // v0.7.3: the swatted ant stays until the slap lands
-  for (const m of b.balls) drawList.push({ y: m.y, f: () => A.marble(ctx, m.x, m.y - m.r * 0.6, m.r, m.rot) });
+  for (const m of b.balls) drawList.push({ y: m.y, f: () => A.marble(ctx, m.x, m.y - (m.drawR || m.r) * 0.6, m.drawR || m.r, m.rot) });
   drawList.push({ y: p1.y + 10, f: () => A.drawTreat(ctx, treatKind(b), p1.x, p1.y, b.foodStored / b.cfg.foodHP, t, { ouch: S.cookieOuch > S.t, react: Treat.reaction(S.treat, S.t) }) }); // v0.5 item 3: faces only
   if (b.cfg.swatter && b.cfg.swatter.on) drawList.push({ y: p1.y + 14, f: () => drawGuard(b, p1) }); // v0.7.2 C13: the cookie guard (fly swatter)
   drawList.sort((u, v) => u.y - v.y);
@@ -2429,13 +2452,13 @@ function renderResult(dt) {
 // ---------------- CARDS / MERGE ----------------
 // v0.5 item 1b: the bottom info panel (kept, a bit larger) shows the card's real stats at its level - range in tiles, power,
 // fire rate - plus a one-line description and what the NEXT card level changes (item 5b).
-function cardStatKeys(id) { return id === 'ball' ? ['power', 'rate', 'ballRadius'] : id === 'tractor' ? ['liftSize', 'rate', 'scoop'] : ['power', 'rate', 'range']; }
+function cardStatKeys(id) { return id === 'ball' ? ['power', 'rate'] : id === 'glue' ? ['power', 'stickTime'] : id === 'tractor' ? ['liftSize', 'rate', 'scoop'] : ['power', 'rate', 'range']; }
 // v0.8.2 M7g: the Special row. state: 'locked' (card level < 5) | 'asleep' (CL >= 5, world < 6) | 'active'. level = a LEVELS entry (prep / battle) or null (Cards / Shop: the highest unlocked world).
 function specialState(id, level, cl) {
   const T = C.TOWERS[id]; if (!T || !T.special) return null;
   if (!(cl >= C.SPECIAL_CARD_LEVEL)) return 'locked';
   const w = level ? level.world : M.highestWorld(S.save);
-  return w >= C.SPECIALS_FROM_WORLD && C.TUNING.specials !== false ? 'active' : 'asleep';
+  return C.TUNING.specials !== false ? 'active' : 'asleep';
 }
 function specialRow(id, st, x, cy, w) {
   const T = C.TOWERS[id], sp = T.special; ctx.save(); A.starShape ? A.starShape(ctx, x + 6, cy, 5.5, st === 'active' ? '#ffd24a' : '#d4cac2') : (ctx.beginPath(), ctx.arc(x + 6, cy, 4.5, 0, 7), ctx.fillStyle = st === 'active' ? '#ffd24a' : '#d4cac2', ctx.fill()); ctx.restore();
@@ -2584,10 +2607,10 @@ function renderCardView() {
   drawButton(22, 18, 66, 28, 'Back', '#fff3e6', { size: 13, r: 10 }); button('cvBack', 14, 8, 84, 48, () => go('cards')); // v0.7.2: small Back (the tab bar's Cards tab also returns to the list)
   drawCardPic(28, 58, 104, 136, id, { level: c.level, locked: !c.unlocked });
   const capNow = highestWorldCap(); // v0.7.7 S-1
-  plainText(c.unlocked ? `Fights as L${capNow ? Math.min(c.level, capNow) : c.level}` : 'Not unlocked yet', 146, 76, 15, INFO_INK, 'left', '800');
+  plainText(c.unlocked ? `Fights as L${c.level}` : 'Not unlocked yet', 146, 76, 15, INFO_INK, 'left', '800');
   plainText('3 cards of a level \u2192 1 of the next', 146, 98, 12, INFO_SOFT, 'left', '600');
   plainText('Your highest level fights.', 146, 114, 12, INFO_SOFT, 'left', '600');
-  if (c.unlocked) plainFit(worldCapLine(), 146, 130, 236, 12, INFO_SOFT, 'left', '700'); // v0.7.7 S-1: e.g. 'W1 acts as L4, W2 as L5'
+  if (c.unlocked) plainFit(`Fights at card level ${c.level} in every world`, 146, 130, 236, 12, INFO_SOFT, 'left', '700');
   plainText(`Cards held: ${M.totalCards(c)}`, 146, 146, 12, INFO_SOFT, 'left', '600');
   A.coinIcon(ctx, 158, 170, 1); A.text(ctx, String(S.save.coins), 190, 171, 15, '#ffd45e');
   const rows = M.mergeRows(S.save, id);
@@ -2683,7 +2706,7 @@ function renderShop() {
   } else {
     A.text(ctx, `Card pack: ${E.cardPackSize} random cards`, 112, 132, 13, '#7a4a5a', 'left', null);
     { const left = Math.max(1, (E.packPity || 0) - (S.save.packsSinceNew || 0)); // v0.6.2 item 13 + v0.7 D-P3 pity
-      plainFit(M.lockedCards(S.save).length ? `level 1, ${Math.round(E.packNewTowerChance * 100)}% NEW tower${E.packPity ? ` (sure in ${left})` : ''}` : 'level 1, any unlocked tower', 112, 152, 172, 12, '#a08090', 'left', '700'); }
+      plainFit(M.lockedCards(S.save).length ? `level 1, ${Math.round(E.packNewTowerChance * 100)}% new tower` : 'level 1 of a tower you own, or level 3-4', 112, 152, 172, 12, '#a08090', 'left', '700'); }
     drawButton(290, 122, 74, 40, `${E.cardPack}c`, '#9fe0b5', { size: 15, disabled: S.save.coins < E.cardPack });
     // v0.7: every pack opens the pack reveal (no toast, no separate NEW CARD reveal; a new tower is the last card)
     button('pack', 286, 119, 82, 46, () => { const got = M.buyPack(S.save); if (got) { persist(); shopBought('pack', 'pack', E.cardPack, 'coin'); openPackReveal(got, { source: 'paid', newTower: got.newTower }); } else toast('Not enough coins'); });

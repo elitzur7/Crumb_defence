@@ -56,11 +56,11 @@ test('F1/F12: HINT_OK matches the v0.8.3 mode evidence (L59 healer +7.5 / carrie
   assert.deepEqual(C.HINT_OK.drone, [60]); assert.ok(ev.drone['60'].air - ev.drone['60'].noair >= 5);
 });
 // ---- Pass 2 ----
-test('PP12: a first 3-star win in World 6 pays +30 (2 stars) and +150 (3 stars); queen6 pays boss gems 10 + 5 (verified, no new code)', async () => {
-  const M = await import('../src/meta.js'); const s = M.newSave(); const r = M.applyBattleResult(s, 55, 'win', 3, { kills: 10, foodLeft: 20, time: 60 });
-  assert.equal(r.starParts.s2, 30); assert.equal(r.starParts.s3, 150);
+test('DX1: a first 3-star win pays the star records, and a boss first clear pays the 3-star tier plus 10', async () => {
+  const M = await import('../src/meta.js'); const s = M.newSave(); const F = M.levelFactor(55); const r = M.applyBattleResult(s, 55, 'win', 3, { kills: 10, foodLeft: 20, time: 60 });
+  assert.equal(r.starParts.s2, Math.round(20 * F)); assert.equal(r.starParts.s3, Math.round(80 * F));
   const q = M.newSave(); const d0 = q.diamonds; const r2 = M.applyBattleResult(q, 59, 'win', 3, { kills: 10, foodLeft: 20, time: 60 });
-  assert.equal(r2.gems, 15); assert.equal(q.diamonds, d0 + 15); const r3 = M.applyBattleResult(q, 59, 'win', 3, { kills: 10, foodLeft: 20, time: 60 }); assert.equal(r3.gems, 0);
+  assert.equal(r2.gems, 30); assert.equal(q.diamonds, d0 + 30); const r3 = M.applyBattleResult(q, 59, 'win', 3, { kills: 10, foodLeft: 20, time: 60 }); assert.equal(r3.gems, 0);
 });
 test('U12: airFixPlan over L51-L60 - offers the Laser (else the Zapper), replaces the weakest card, never when an air tower is in the deck', async () => {
   const M = await import('../src/meta.js'); const lv = { slingshot: { level: 5 }, spray: { level: 2 }, fan: { level: 1 }, glue: { level: 4 }, laser: { level: 3 }, zapper: { level: 3 } };

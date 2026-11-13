@@ -10,7 +10,7 @@ export { TUNING };
 
 export const TILE = 40;
 export const GRID_COLS = 10;
-export const GRID_ROWS = 12;
+export const GRID_ROWS = 14; // v0.8.6 LY1: 10x14 board. Source maps stay 10x12 and are translated +1 row at load.
 
 // ---------------- Battle rules ----------------
 export const BATTLE = {
@@ -93,7 +93,7 @@ const TOWER_TEXT = {
   sound: { name: 'Boombox', short: 'Boombox', kind: 'tower', place: 'side', targets: 'ground', color: '#c9b6f2', powerLabel: 'Pulse dmg',
     desc: 'Hits all ants around it. Ignores armor.', ability: 'Hits all nearby ants + short stagger.' },
   ball: { name: 'Marble Roller', short: 'Marble', kind: 'tower', place: 'side', targets: 'ground', color: '#9fd3f2', directional: true, nearTrail: true,
-    powerLabel: 'Squash dmg', rangeLabel: 'Roll',
+    powerLabel: 'Damage', rangeLabel: 'Roll',
     desc: 'Rolls away from itself along the trail.', ability: 'Rolls down the straight trail beside it, away from the tower, until a turn.' },
   fan: { name: 'Desk Fan', short: 'Fan', kind: 'tower', place: 'side', targets: 'both', color: '#a8e6e0', directional: true, powerLabel: 'Push',
     desc: 'Blows along the trail, away from itself.', ability: 'Wind along the trail beside it, away from the fan.' },
@@ -139,15 +139,15 @@ for (const [id, sp] of Object.entries(SPECIAL_DEFS)) TOWERS[id].special = sp;
 export function specialActive(tower, level, cardLevel) {
   const type = typeof tower === 'string' ? tower : tower && tower.type;
   const cl = cardLevel != null ? cardLevel : (tower && tower.cardLevel) || 1;
-  return !!(TOWERS[type] && TOWERS[type].special && level && level.world >= SPECIALS_FROM_WORLD && cl >= SPECIAL_CARD_LEVEL);
+  return !!(TOWERS[type] && TOWERS[type].special && cl >= SPECIAL_CARD_LEVEL && !(level && level.specialsOff)); // v0.8.6 UC1: a level-5 special works in every world
 }
 // v0.6 item 6: Tractor lift sizes (size class of an ant = its tuning.json size name)
 export const LIFT_MAX = 3;
 export const SIZE_RANK = { small: 1, regular: 2, large: 3 };
 export const LIFT_NAMES = ['', 'Small', 'Small + regular', 'All sizes'];
 // labels for upgradeable keys in the info panel
-export const STAT_LABELS = { power: 'Power', rate: 'Rate', range: 'Range', cloudRadius: 'Cloud', ballRadius: 'Marble width', stagger: 'Stagger',
-  charmTime: 'Charm', slow: 'Slow', chewTime: 'Chew time', heatMax: 'Max heat', chain: 'Chain', stickTime: 'Stick', liftSize: 'Lifts' };
+export const STAT_LABELS = { power: 'Power', rate: 'Rate', range: 'Range', cloudRadius: 'Cloud', stagger: 'Stagger', stickTime: 'First-contact stick',
+  charmTime: 'Charm', slow: 'Slow', chewTime: 'Chew time', heatMax: 'Max heat', chain: 'Chain', liftSize: 'Lifts' };
 export const SLOW_CAP = 0.85;
 export const ALL_CARDS = Object.keys(TOWERS);
 export const STARTER_CARDS = ['slingshot', 'spray', 'glue', 'fan', 'ball'];
@@ -178,7 +178,8 @@ export const TARGET_MODE_TEXT = { // v0.8.1: Front retired (M3); Healer (M1, lev
 // v0.8.2 R4: levels (1-based) where a bot sim measured a >= +5 point gain from the mode named by the hint (M12 regenerates this list). flyer = any level (rule is deck based); drone = the Syrup Queen level.
 export const HINT_OK = { healer: [35, 39, 49, 59], carrier: [40, 50, 59, 60], drone: [60] }; // M12 (qa/v0.8.3/mode-evidence.json: v0.8.2 28 levels + L59 and drone L60 re-measured, 540 battles each): gain >= +5 points vs weak mode
 export const ART81 = !(typeof __TEST_HOOKS__ !== 'undefined' && __TEST_HOOKS__ && typeof location !== 'undefined' && /[?&]art81=0/.test(location.search)); // v0.8.1 RG1 kill-switch: every v0.8.1 art/UI/motion item is gated on it (the A13 identity batch runs with it on and off; test builds accept ?art81=0)
-export const VERSION = '0.8.5'; // keep in step with package.json and android versionName
+export const VERSION = '0.8.6'; // keep in step with package.json and android versionName
+export const MARBLE_R = 13; // v0.8.6 MB1: collision radius is fixed. It is not a player-facing stat.
 export const ANT_SIZES = { ...TUNING.antSizes };
 const ANT_TEXT = {
   small: { name: 'Scout Ant', desc: 'Tiny, fast, comes in swarms.', intro: 'Tiny and fast. They come in swarms.' },
@@ -318,9 +319,9 @@ export const ECONOMY = {
     { kind: 'bonus', id: 'decoy', count: 1, w: 1 },
   ],
   shop: {
-    cardL1: 12,                // v0.6 item 4: coins for one level-1 card of a tower you own (there are no "copies" any more)
-    cardPack: 40,              // coins for 5 random level-1 cards of towers you own
-    packPity: 10,              // v0.7 D-P3: while a tower is locked, every 10th paid pack without a new tower holds one
+    cardL1: 20,                // v0.8.6 EX1: one level-1 card of a tower you own
+    cardPack: 80,              // v0.8.6 EX1: five cards
+    packPity: 0,               // v0.8.6 SH1: pity is gone. packsSinceNew is historical only.
     cardPackSize: 5,
     // v0.4 item 10: boosters are bought with DIAMONDS at a FIXED price (all 4 boosters): 15 in the Shop, 20 in battle.
     boosterDiamonds: 15,       // diamonds per booster in the Shop (was 30 coins)
@@ -329,7 +330,7 @@ export const ECONOMY = {
     unlockPrice: { ...TUNING.shop.unlockPrice },
     unlockPriceDefault: TUNING.shop.unlockPriceDefault,
     // v0.6.2 item 13: chance that a card pack holds ONE new (locked) tower card (L1) as one of its cards (tuning.json shop)
-    packNewTowerChance: TUNING.shop.packNewTowerChance,
+    packNewTowerChance: 0.10,  // v0.8.6 SH1: exactly 10% special, every pack, no pity
   },
   // v0.3 items 8/12: diamonds (persistent, start 0, come from the Reward Calendar). The crumb price escalates and RESETS every battle.
   diamonds: {
@@ -408,7 +409,7 @@ export const TREATS = Object.fromEntries(WORLDS.map((w) => [w.id, w.treat]));
 // 3 cards of the same level -> 1 card of the next level, paying coinCost[next level] coins. (Merge costs as built in v0.5.)
 export const MERGE = {
   cardsPerMerge: 3,
-  coinCost: [0, 0, 10, 20, 40, 60, 90, 130, 180, 240, 320],
+  coinCost: [0, 0, 40, 130, 423, 1373, 4463, 14504, 47137, 153195, 497883], // v0.8.6 EX1: round(40*3.25^(L-2)) for L2..L10
 };
 export const MAX_CARD_LEVEL = 10;
 

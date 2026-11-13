@@ -65,9 +65,10 @@ test('PP1: the gate is locked at 13 stars and open at 14 stars (every W5 level w
   s.levels[41].stars = 2; assert.equal(M.worldStars(s, 5), 13); assert.equal(M.worldUnlocked(s, 6), false);
   s.levels[41].stars = 3; s.levels[49].cleared = false; assert.equal(M.worldUnlocked(s, 6), false, 'all W5 levels must be won');
 });
-test('PP1: the first 2-star / 3-star bonus in W6 is 30 / 150 coins (starBonus x coinMul 2.0)', () => {
+test('EX1: the first 3-star record in W6 pays 20F + 20F + 80F once', () => {
   const s = M.newSave(); for (let i = 0; i < 50; i++) { s.levels[i].cleared = true; s.levels[i].stars = 1; }
-  const r = M.applyBattleResult(s, 50, 'win', 3, { kills: 30, foodLeft: C.BATTLE.foodHP, time: 120 }); assert.equal(r.starCoins, 180, '30 + 150');
+  const F = M.levelFactor(50); const want = Math.round(20 * F) + Math.round(20 * F) + Math.round(80 * F);
+  const r = M.applyBattleResult(s, 50, 'win', 3, { kills: 30, foodLeft: C.BATTLE.foodHP, time: 120 }); assert.equal(r.starCoins, want);
   const r2 = M.applyBattleResult(s, 50, 'win', 3, { kills: 30, foodLeft: C.BATTLE.foodHP, time: 120 }); assert.equal(r2.starCoins, 0, 'paid once');
 });
 test('PP2/PP4: the Drone and the Syrup Queen data equal the plan table', () => {
@@ -109,15 +110,17 @@ test('M7g: the Special row has three states, texts >= 12 px; the ring and the ca
   const row = g.slice(g.indexOf('function specialRow'), g.indexOf('function cardInfoPanel')); assert.ok(!/\b(1[01]|[0-9])(\.\d)?, '#/.test(row.replace(/x \+ 6, cy, 5\.5/, '')) , 'no text below 12 px in the Special row');
   assert.match(g, /button\('open' \+ S\.cardsSel, 24, 590, 172, 58/);
 });
-test('M7g: the ring is a function of the tower special only - on W1-W5 specialActive is false for every tower at every card level', () => {
-  for (let i = 0; i < 50; i++) for (const id of Object.keys(C.TOWERS)) for (const cl of [1, 5, 10]) assert.equal(C.specialActive(id, C.LEVELS[i], cl), false);
-  assert.equal(C.specialActive('laser', C.LEVELS[50], 5), true); assert.equal(C.specialActive('laser', C.LEVELS[50], 4), false);
+test('M7g: the ring follows the special and the card level in every world', () => {
+  for (let i = 0; i < 80; i++) for (const id of Object.keys(C.TOWERS)) {
+    assert.equal(C.specialActive(id, C.LEVELS[i], 4), false);
+    assert.equal(C.specialActive(id, C.LEVELS[i], 5), !!C.TOWERS[id].special);
+  }
 });
 test('U11: seenSpecial is an object in every loaded save; the banner needs ART81, specials on, a new tower; no banner on W5', () => {
   const st = (() => { const m = {}; return { getItem: (k) => (k in m ? m[k] : null), setItem: (k, v) => { m[k] = String(v); } }; })();
   const s = M.newSave(); delete s.seenSpecial; M.writeSave(st, s); const l = M.loadSave(st); assert.deepEqual(l.seenSpecial, {});
   const g = src('game.js'); assert.match(g, /S\.battle\.specialsOn && !S\.guide/); assert.match(g, /C\.specialActive\(id, S\.battle\.level/); assert.match(g, /!seen\[id\]/); assert.match(g, /Picnic power!/);
-  const b = new Battle({ levelIndex: 49, deck: ['laser'], bonusTypes: [], seed: 1, cardLevels: { laser: 6 } }); assert.equal(b.specialsOn && C.specialActive('laser', b.level, b.cardLevels.laser), false, 'W5 even at CL6');
+  const b = new Battle({ levelIndex: 49, deck: ['laser'], bonusTypes: [], seed: 1, cardLevels: { laser: 6 } }); assert.equal(b.specialsOn && C.specialActive('laser', b.level, b.cardLevels.laser), true, 'UC1: W5 at CL6 is active');
   const b6 = new Battle({ levelIndex: 50, deck: ['laser'], bonusTypes: [], seed: 1, cardLevels: { laser: 6 } }); assert.equal(b6.specialsOn && C.specialActive('laser', b6.level, b6.cardLevels.laser), true);
 });
 
@@ -177,13 +180,11 @@ test('v0.8.2 EC5a: the skin purchase flow (no negative balance, no double charge
   assert.equal(M.equipSkin(s, 'laser', null), true); assert.deepEqual(M.skinPads(s), {}); assert.equal(M.equipSkin(s, 'laser', 'laser-1'), true);
   assert.equal(M.nextSkinPrice(s), 1500); assert.equal(M.skinState(M.newSave()).owned.length, 0);
 });
-test('v0.8.2 EC6: daily first-win bonus and the 10-world calendar table', () => {
-  assert.equal(M.dailyWinBonus(1), 50); assert.equal(M.dailyWinBonus(2), 100); assert.equal(M.dailyWinBonus(3), 100); assert.equal(M.dailyWinBonus(1.25), 65);
-  const t = M.calendarTable(); assert.equal(t.length, 10); assert.equal(t[0].daily, 50); assert.equal(t[5].daily, 100); assert.equal(t[6].daily, 100); assert.equal(t[5].coinMul, 2); assert.equal(t[6].star2, 35); assert.equal(t[6].star3, 170);
-  const s = M.newSave(); const a = M.applyBattleResult(s, 50, 'win', 1, { time: 100, kills: 10, foodLeft: 20, day: '2026-11-01' }, () => 0); assert.equal(a.dailyBonus, 100); assert.equal(a.parts.daily, 100);
-  const b = M.applyBattleResult(s, 50, 'win', 1, { time: 100, kills: 10, foodLeft: 20, day: '2026-11-01' }, () => 0); assert.equal(b.dailyBonus, undefined);
-  const c = M.applyBattleResult(s, 0, 'win', 1, { time: 100, kills: 10, foodLeft: 20, day: '2026-11-02' }, () => 0); assert.equal(c.dailyBonus, 50);
-  const d = M.applyBattleResult(M.newSave(), 0, 'win', 1, { time: 100, kills: 10, foodLeft: 20 }, () => 0); assert.equal(d.dailyBonus, undefined); // sims pass no day
+test('EX1: the daily first win pays 60 times 3.2 to the frontier world', () => {
+  const t = M.calendarTable(); assert.ok(t.length >= 8); assert.equal(t[0].daily, 60); assert.equal(t[5].daily, Math.round(60 * Math.pow(3.2, 5)));
+  const s = M.newSave(); const a = M.applyBattleResult(s, 0, 'win', 1, { time: 100, kills: 10, foodLeft: 20, day: '2026-11-01' }, () => 0); assert.equal(a.dailyBonus, 60);
+  const b = M.applyBattleResult(s, 0, 'win', 1, { time: 100, kills: 10, foodLeft: 20, day: '2026-11-01' }, () => 0); assert.equal(b.dailyBonus, undefined);
+  const d = M.applyBattleResult(M.newSave(), 0, 'win', 1, { time: 100, kills: 10, foodLeft: 20 }, () => 0); assert.equal(d.dailyBonus, undefined);
 });
 test('v0.8.2 G19: motes are capped at 12, gated on render cost and reduced motion', () => {
   const g = src('game.js'); assert.match(g, /MOTE_N = 12/); assert.match(g, /reducedMotion\(\) \|\| \(S\.renderMs \|\| 0\) >= 10/); assert.match(g, /S\.renderMs = S\.renderMs \?/);

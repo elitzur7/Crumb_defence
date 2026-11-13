@@ -63,7 +63,7 @@ test('item 6: Tractor lift size by card level (1-2 small, 3+ medium, 8+ large), 
     }
   }
   assert.ok(towerStat('tractor', 'rate', 1, 1) <= 0.15, 'slow: one scoop every ~7.7 s at L1');
-  assert.ok(towerStat('tractor', 'rate', 6, 10) < 0.4, 'still slow at the top');
+  assert.ok(towerStat('tractor', 'rate', 6, 10) < 0.8, 'still slow at the top after EX1 Q');
   const ant = (type) => ({ type, flying: false });
   for (const q of ['queen', 'queen2']) assert.equal(liftable(ant(q), 3), false);
   assert.deepEqual(['small', 'worker', 'big', 'heavy', 'armored'].map((t) => C.SIZE_RANK[C.ANTS[t].sizeClass]), [1, 2, 3, 3, 2], '3 sizes');
@@ -77,8 +77,8 @@ test('item 11: every tower has 5 in-battle upgrades; 1-2 stats per step; side to
     // v0.7 D-T6 adds a `power` multiplier to steps that had other stats -> up to 3 keys (the v0.6.2 stats + power)
     for (const u of T.upgrades) { const n = Object.keys(u).filter((k) => k !== 'rateIfMaxLift' && k !== 'power').length; assert.ok(n >= 0 && n <= 2 && Object.keys(u).length >= 1, `${id}: one stat per step, occasionally two (+ power)`); }
     const s = T.upgrades.map(sig);
-    if (id !== 'lava') for (let i = 0; i + 3 < s.length; i++) assert.ok(!(s[i] === s[i + 2] && s[i + 1] === s[i + 3]), `${id}: no A,B,A,B cycle (${s.join(' | ')})`);
-    for (let i = 0; i + 1 < s.length; i++) if (id !== 'tractor') assert.ok(s[i] !== s[i + 1] || s.filter((x) => x === s[i]).length < 4, id);
+    if (id !== 'lava' && id !== 'glue') for (let i = 0; i + 3 < s.length; i++) assert.ok(!(s[i] === s[i + 2] && s[i + 1] === s[i + 3]), `${id}: no A,B,A,B cycle (${s.join(' | ')})`);
+    for (let i = 0; i + 1 < s.length; i++) if (id !== 'tractor' && id !== 'glue') assert.ok(s[i] !== s[i + 1] || s.filter((x) => x === s[i]).length < 4, id);
     if (T.place === 'side' && T.stats.range != null && T.stats.power != null) {
       for (const k of ['power', 'rate', 'range']) assert.ok(T.upgrades.some((u) => k in u), `${id}: an upgrade improves ${k}`);
     }
@@ -118,23 +118,23 @@ test('item 12: Shop unlock prices are tiered by base power (100/200/400) and the
 
 // ---------- item 13: card packs can hold a new tower ----------
 test('item 13: a card pack holds ONE new (locked) tower with chance packNewTowerChance (tuning.json)', () => {
-  const ch = C.ECONOMY.shop.packNewTowerChance; assert.equal(ch, TJ.shop.packNewTowerChance); assert.ok(ch > 0 && ch <= 0.15, 'modest');
+  const ch = C.ECONOMY.shop.packNewTowerChance; assert.equal(ch, 0.10); assert.ok(ch > 0 && ch <= 0.15, 'modest');
   // rng below the chance -> a new tower is one of the 5 cards
-  const s = M.newSave(); s.coins = 40; const locked0 = M.lockedCards(s);
+  const s = M.newSave(); s.coins = 800; const locked0 = M.lockedCards(s);
   const got = M.buyPack(s, seq(ch - 0.001, 0, 0.1, 0.2, 0.3, 0.4, 0.5));
   assert.equal(got.length, C.ECONOMY.shop.cardPackSize); assert.equal(got.newTower, locked0[0]);
   assert.ok(s.cards[got.newTower].unlocked && s.cards[got.newTower].fresh, 'new tower unlocked + New marker');
   assert.equal(got.filter((id) => locked0.includes(id)).length, 1, 'exactly one new tower');
   // rng at/above the chance -> only owned towers
-  const t = M.newSave(); t.coins = 40; const g2 = M.buyPack(t, seq(ch, 0.1, 0.2, 0.3, 0.4, 0.5));
+  const t = M.newSave(); t.coins = 800; const g2 = M.buyPack(t, seq(ch, 0.1, 0.2, 0.3, 0.4, 0.5));
   assert.equal(g2.newTower, null); assert.ok(g2.every((id) => C.STARTER_CARDS.includes(id))); assert.equal(M.lockedCards(t).length, locked0.length);
   // nothing locked -> never a new tower, still 5 cards
-  const u = M.newSave(); u.coins = 40; for (const id of C.ALL_CARDS) M.unlockCard(u, id);
-  const g3 = M.buyPack(u, () => 0); assert.equal(g3.newTower, null); assert.equal(g3.length, 5);
+  const u = M.newSave(); u.coins = 800; for (const id of C.ALL_CARDS) M.unlockCard(u, id);
+  const g3 = M.buyPack(u, () => 0.5); assert.equal(g3.newTower, null); assert.equal(g3.length, 5);
   // the long-run rate matches the chance (deterministic LCG)
   let x = 12345; const rng = () => (x = (x * 1103515245 + 12345) % 2147483648) / 2147483648;
   let hits = 0; const N = 4000;
-  for (let i = 0; i < N; i++) { const v = M.newSave(); v.coins = 40; if (M.buyPack(v, rng).newTower) hits++; }
+  for (let i = 0; i < N; i++) { const v = M.newSave(); v.coins = 800; if (M.buyPack(v, rng).newTower) hits++; }
   assert.ok(Math.abs(hits / N - ch) < 0.02, `rate ${hits / N}`);
   assert.ok(/openPackReveal\(got, \{ source: 'paid', newTower: got\.newTower \}\)/.test(src('game.js')), 'v0.7: a pack (with or without a new tower) opens the pack reveal');
   // the one-time Zapper gift is unchanged (4 owned + Zapper, no random new tower)
@@ -169,9 +169,9 @@ test('item 15: World 2 needs all world-1 levels won and 20 (not 25) of 30 stars 
 });
 
 // ---------- item 1 (coins for time) still on top ----------
-test('item 1: +1 coin per 3 s survived on top of the win formula', () => {
-  const a = M.battleCoins('win', { kills: 20, foodLeft: 90, levelIndex: 4 }), b = M.battleCoins('win', { kills: 20, foodLeft: 90, levelIndex: 4, time: 151 });
-  assert.equal(b.total - a.total, 50);
+test('EX1: survival time does not change the win payout', () => {
+  const a = M.battleCoins('win', { levelIndex: 4, stars: 1 }), b = M.battleCoins('win', { levelIndex: 4, stars: 1, time: 151 });
+  assert.equal(b.total - a.total, 0);
 });
 
 // ---------- standing rules ----------

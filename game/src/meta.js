@@ -194,10 +194,17 @@ export function buyPack(save, rng = Math.random, E = C.ECONOMY.shop) {
   save.coins -= price;
   const got = [];
   let newTower = null;
-  const since = save.packsSinceNew || 0;
-  const pity = E.packPity && since >= E.packPity - 1;
-  if (tier.length && (rng() < (E.packNewTowerChance || 0) || pity)) newTower = tier[Math.floor(rng() * tier.length) % tier.length];
-  if (tier.length) save.packsSinceNew = newTower ? 0 : since + 1;
+  const special = rng() < (E.packNewTowerChance || 0); // SH1: exactly this chance. Pity does not force it.
+  save.packsSinceNew = (save.packsSinceNew || 0) + 1; // historical only
+  if (tier.length && special) newTower = tier[Math.floor(rng() * tier.length) % tier.length];
+  if (!tier.length && special && pool.length) {
+    const id = pool[Math.floor(rng() * pool.length) % pool.length];
+    const level = rng() < 0.75 ? 3 : 4;
+    const n = E.cardPackSize - 1;
+    for (let i = 0; i < n; i++) { const oid = pool[Math.floor(rng() * pool.length) % pool.length]; addCards(save, oid, 1, 1); got.push(oid); }
+    addCards(save, id, level, 1); got.push(id); got.newTower = null; got.high = { id, level };
+    return got;
+  }
   const n = E.cardPackSize - (newTower ? 1 : 0);
   for (let i = 0; i < n; i++) { const id = pool[Math.floor(rng() * pool.length) % pool.length]; addCards(save, id, 1, 1); got.push(id); }
   if (newTower) { addCards(save, newTower, 1, 1); save.cards[newTower].fresh = true; got.push(newTower); }
@@ -304,18 +311,25 @@ export function cardLevels(save) { const o = {}; for (const id of C.ALL_CARDS) o
 
 // Coins earned for a battle (pure). Win: food left + ants killed (+ level, first clear) + time survived.
 // v0.6 item 1: time = floor(battle seconds / 3), its own line. Loss: ants killed + time survived, capped TOGETHER at lossCap (15).
-export function timeCoins(time, E = C.ECONOMY) { return Math.max(0, Math.floor((time || 0) / E.secondsPerCoin)); }
-export function battleCoins(result, { kills = 0, foodLeft = 0, levelIndex = 0, firstClear = false, time = 0, coinMul = 1 } = {}, E = C.ECONOMY) {
+export function timeCoins(time, E = C.ECONOMY) { return 0; } // v0.8.6 EX1: time is not a coin line
+export function levelFactor(levelIndex) {
+  const w = C.worldOf(levelIndex);
+  const j = levelIndex - C.WORLD_START[w] + 1;
+  return Math.pow(3.2, w - 1) * Math.pow(1.12, j - 1);
+}
+export const TREF_S = 48; // frozen reference minutes are Tref/60. Uniform freeze so R = 90F is strictly rising.
+export function replayBase(levelIndex) { return 90 * levelFactor(levelIndex) * TREF_S; }
+export function battleCoins(result, { levelIndex = 0, firstClear = false, stars = 1, progress = 0 } = {}) {
+  const F = levelFactor(levelIndex), B = replayBase(levelIndex);
   if (result === 'win') {
-    // v0.7.6 E5: worlds[w].coinMul scales the win coins (each line, so the results rows still add up); the first-clear bonus is not scaled
-    const m = (v) => (coinMul === 1 ? v : Math.round(v * coinMul));
-    const parts = { base: m(E.winBase), food: m(Math.round(foodLeft * E.coinsPerFood)), kills: m(Math.round(kills * E.coinsPerKillWin)),
-      level: m(levelIndex * E.coinsPerLevel), firstClear: firstClear ? E.firstClearBonus : 0, time: m(timeCoins(time, E)) };
-    return { total: Object.values(parts).reduce((s, v) => s + v, 0), parts };
+    const mul = [1, 1.05, 1.10][Math.max(0, Math.min(2, (stars || 1) - 1))];
+    const replay = Math.round(B * mul);
+    const clear = firstClear ? Math.round(30 * F) : 0;
+    return { total: replay + clear, parts: { replay, firstClear: clear, base: replay } };
   }
-  const k = Math.min(E.lossCap, Math.floor(kills * E.coinsPerKillLoss));
-  const t = Math.min(E.lossCap - k, timeCoins(time, E));
-  return { total: k + t, parts: { kills: k, time: t } };
+  const p = Math.max(0, Math.min(1, progress || 0));
+  const loss = Math.round(B * p / 3.5);
+  return { total: loss, parts: { progress: loss } };
 }
 // Pick and grant a Perfect-level prize (cards or a booster). Only called for perfect wins.
 export function grantPerfectPrize(save, rng = Math.random, table = C.ECONOMY.perfectPrizes, { noBooster = false } = {}) {
@@ -342,9 +356,8 @@ export function grantBossGift(save, levelIndex) {
   const locked = lockedCards(save);
   if (locked.length) { const min = Math.min(...locked.map((x) => unlockPrice(x))); id = locked.find((x) => unlockPrice(x) === min); level = 1; }
   else {
-    const W = C.WORLDS.find((x) => x.id === C.worldOf(levelIndex)); const cap = (W && W.cardLevelCap) || C.MAX_CARD_LEVEL;
     let best = -1; for (const x of C.ALL_CARDS) { const n = totalCards(save.cards[x]); if (n > best) { best = n; id = x; } }
-    level = Math.min(C.MAX_CARD_LEVEL, Math.max(2, cap - (C.worldOf(levelIndex) >= 3 ? 1 : 2))); // v0.7.8 P2-5: from W3 on the gift is a cap-1 card (W3: L4); W1/W2 keep cap-2
+    level = [2, 3, 4, 5, 5, 5, 5, 6][C.worldOf(levelIndex) - 1] || 2; // v0.8.6 UC1: explicit gift levels, not a cap derivative
   }
   const got = addCards(save, id, level, 1); save.cards[id].fresh = true;
   return { kind: 'cards', id, level, count: 1, newCard: got.newType, newLevel: got.newLevel, reveal: got.newType || got.newLevel, boss: true };
@@ -358,20 +371,21 @@ export function applyBattleResult(save, levelIndex, result, stars, info = {}, rn
     const lv = save.levels[levelIndex];
     out.firstClear = !lv.cleared;
     const lvW = C.WORLDS.find((x) => x.id === C.worldOf(levelIndex));
-    const c = battleCoins('win', { kills: info.kills || 0, foodLeft: info.foodLeft ?? C.BATTLE.foodHP, levelIndex, firstClear: out.firstClear, time: info.time || 0, coinMul: (lvW && lvW.coinMul) ?? 1 });
+    const c = battleCoins('win', { levelIndex, firstClear: out.firstClear, stars });
     out.coins = c.total; out.parts = c.parts;
     // v0.7.6 E1: first-time star coins. The stored `stars` of an existing save count as already paid (no retroactive grant, nothing is paid on load).
     // A jump 1 -> 3 stars pays both steps; a repeat pays nothing.
     // v0.7.10 R1: the bonus is scaled by the world's coinMul (tuning economy.starBonusScale = 'coinMul'; anything else = flat) and rounded to 5.
-    const before = lv.stars || 0; const SB = E.starBonus; const sm = E.starBonusScale === 'coinMul' ? (((lvW && lvW.coinMul) ?? 1)) : 1; const sbv = (k) => Math.round(SB[k] * sm / 5) * 5;
-    out.starParts = { s2: before < 2 && stars >= 2 ? sbv(2) : 0, s3: before < 3 && stars >= 3 ? sbv(3) : 0 };
-    out.starCoins = out.starParts.s2 + out.starParts.s3;
+    const before = lv.stars || 0; const F = levelFactor(levelIndex); const inc = [Math.round(20 * F), Math.round(20 * F), Math.round(80 * F)];
+    out.starParts = { s1: before < 1 && stars >= 1 ? inc[0] : 0, s2: before < 2 && stars >= 2 ? inc[1] : 0, s3: before < 3 && stars >= 3 ? inc[2] : 0 };
+    out.starCoins = out.starParts.s1 + out.starParts.s2 + out.starParts.s3;
     if (out.starCoins) { out.coins += out.starCoins; out.parts.stars = out.starCoins; }
     // v0.8.2 EC6: the first win of each local day pays dailyWinBonus (info.day = 'YYYY-MM-DD' from the game; absent in sims = never paid)
-    if (info.day && save.dailyWin !== info.day) { save.dailyWin = info.day; out.dailyBonus = dailyWinBonus((lvW && lvW.coinMul) ?? 1); out.coins += out.dailyBonus; out.parts.daily = out.dailyBonus; }
+    if (info.day && save.dailyWin !== info.day) { save.dailyWin = info.day; out.dailyBonus = Math.round(60 * Math.pow(3.2, highestWorld(save) - 1)); out.coins += out.dailyBonus; out.parts.daily = out.dailyBonus; }
     // v0.7.6 E3: gems from play - the first clear of a world's boss level, and the first 3 stars there
     out.gems = 0;
-    if (C.isBossLevel(levelIndex)) out.gems = (out.firstClear ? E.bossGems.firstClear : 0) + (before < 3 && stars >= 3 ? E.bossGems.firstThreeStars : 0);
+    if (out.firstClear && !lv.diamondTierPaid) { out.gems += stars >= 3 ? 20 : stars >= 2 ? 5 : 1; lv.diamondTierPaid = true; } // DX1: one total tier, never again
+    if (C.isBossLevel(levelIndex) && out.firstClear) out.gems += E.bossGems.firstClear;
     if (out.gems) save.diamonds = (save.diamonds || 0) + out.gems;
     if (out.firstClear) {
       // v0.3 item 10: no card is unlocked by clearing a level any more.
@@ -389,7 +403,7 @@ export function applyBattleResult(save, levelIndex, result, stars, info = {}, rn
     save.onboard = save.onboard || newOnboardState();
     if (levelIndex === ZAPPER_STAGE && out.firstClear && save.onboard.zapperGift === 'none') { save.onboard.zapperGift = 'pending'; out.zapperGift = true; }
   } else {
-    const c = battleCoins('lose', { kills: info.kills || 0, time: info.time || 0 });
+    const c = battleCoins('lose', { levelIndex, progress: info.progress || 0 });
     out.coins = c.total; out.parts = c.parts;
   }
   save.coins += out.coins;
@@ -491,7 +505,7 @@ export function isReturningPlayer(save) { return !!save && Array.isArray(save.le
 
 // ---- v0.8.2 EC6: daily first-win bonus = 50 x coinMul of the level's world, capped at the W6 value (x2.0), rounded to 5
 export function dailyWinBonus(coinMul) { return Math.round(C.DAILY_WIN.base * Math.min(coinMul, C.DAILY_WIN.capMul) / 5) * 5; }
-export function calendarTable() { return C.COIN_MUL_SCHEDULE.map((m, i) => ({ world: i + 1, coinMul: m, daily: dailyWinBonus(m), star2: Math.round(C.ECONOMY.starBonus[2] * m / 5) * 5, star3: Math.round(C.ECONOMY.starBonus[3] * m / 5) * 5 })); }
+export function calendarTable() { return C.COIN_MUL_SCHEDULE.map((m, i) => { const F = Math.pow(3.2, i); return { world: i + 1, coinMul: m, daily: Math.round(60 * F), star2: Math.round(20 * F), star3: Math.round(80 * F) }; }); }
 // ---- v0.8.2 EC5a: cosmetic cabinet (coins only; a skin changes the pad colour and nothing else)
 export function skinState(save) { if (!save.skins || typeof save.skins !== 'object') save.skins = { owned: [], equipped: {} }; return save.skins; }
 export function skinOwned(save, id) { return skinState(save).owned.includes(id); }

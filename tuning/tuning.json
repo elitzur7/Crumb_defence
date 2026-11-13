@@ -255,15 +255,13 @@
       },
       "battleUpgrades": [
         {
-          "power": 2,
-          "ballRadius": 1.2
+          "power": 2
         },
         {
           "rate": 1.3,
           "power": 1.154
         },
         {
-          "ballRadius": 1.1,
           "power": 1.333
         },
         {
@@ -281,7 +279,7 @@
           "rate": 0.1
         },
         {
-          "ballRadius": 0.1
+          "power": 0.06
         },
         {
           "power": 0.12
@@ -293,7 +291,7 @@
           "power": 0.1
         },
         {
-          "ballRadius": 0.1
+          "rate": 0.06
         },
         {
           "rate": 0.1
@@ -612,10 +610,10 @@
           "stickTime": 2
         },
         {
-          "stickTime": 1.25
+          "stickTime": 1.5
         },
         {
-          "power": 1.1
+          "stickTime": 1.25
         },
         {
           "stickTime": 1.2
@@ -629,7 +627,7 @@
           "power": 0.08
         },
         {
-          "stickTime": 0.15
+          "stickTime": 0.6
         },
         {
           "power": 0.06
@@ -644,11 +642,10 @@
           "stickTime": 0.15
         },
         {
-          "power": 0.08
+          "stickTime": 0.15
         },
         {
-          "stickTime": 0.12,
-          "power": 0.05
+          "stickTime": 0.18
         }
       ]
     },

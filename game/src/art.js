@@ -36,9 +36,11 @@ export function shadow(ctx, x, y, rx, ry = rx * 0.35, a = 0.2) {
 export function rim(ctx, x, y, rx, ry, a = 0.7, from = Math.PI * 1.05, to = Math.PI * 1.55) {
   ctx.beginPath(); ctx.ellipse(x, y, rx * 0.86, ry * 0.86, 0, from, to); ctx.lineWidth = Math.max(1, Math.min(rx, ry) * 0.16); ctx.strokeStyle = `rgba(255,255,255,${a})`; ctx.lineCap = 'round'; ctx.stroke();
 }
+export let TEXT_SCALE = 1;
 export function text(ctx, s, x, y, size = 16, fill = '#fff', align = 'center', stroke = INK, weight = 'bold', display = false) {
-  ctx.font = `${weight} ${size}px ${display ? FONT_DISPLAY : FONT}`; ctx.textAlign = align; ctx.textBaseline = 'middle';
-  if (stroke) { ctx.lineJoin = 'round'; ctx.lineWidth = Math.max(2, size / 4.5); ctx.strokeStyle = stroke; ctx.strokeText(s, x, y); }
+  const sz = TEXT_SCALE > 1 ? Math.max(14, size * TEXT_SCALE) : size;
+  ctx.font = `${weight} ${sz}px ${display ? FONT_DISPLAY : FONT}`; ctx.textAlign = align; ctx.textBaseline = 'middle';
+  if (stroke) { ctx.lineJoin = 'round'; ctx.lineWidth = Math.max(2, sz / 4.5); ctx.strokeStyle = stroke; ctx.strokeText(s, x, y); }
   ctx.fillStyle = fill; ctx.fillText(s, x, y);
 }
 function eye(ctx, x, y, r, look = 0.5, blink = false) {
@@ -1149,7 +1151,11 @@ function levelParts(ctx, type, lvl, t, fx, aim) {
   }
   ctx.restore();
 }
-function towerSize(tw) { const T = C.TOWERS[tw.type]; let v = 1; for (let i = 0; i < (tw.lvl || 1) - 1; i++) if (T.upgrades[i] && T.upgrades[i].ballRadius) v *= T.upgrades[i].ballRadius; return v; }
+function towerSize(tw) {
+  if (!tw || tw.type !== 'ball') return 1;
+  const p = tw.stat ? tw.stat('power') : C.TOWERS.ball.power;
+  return Math.max(1, Math.min(1.35, Math.pow(p / C.TOWERS.ball.power, 0.25)));
+}
 export function arrow(ctx, x, y, ang, s, col) {
   ctx.save(); ctx.translate(x, y); ctx.rotate(ang);
   ctx.beginPath(); ctx.moveTo(s, 0); ctx.lineTo(-s * 0.6, -s * 0.8); ctx.lineTo(-s * 0.25, 0); ctx.lineTo(-s * 0.6, s * 0.8); ctx.closePath();

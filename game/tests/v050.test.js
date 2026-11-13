@@ -58,12 +58,13 @@ test('items 5/5b: each tower has its own hand-made 9-step sequence (L2..L10), on
     const keys = T.cardUpgrades.map((s) => Object.keys(s).sort().join('+')); seqs.add(keys.join('|'));
     assert.ok(T.cardUpgrades.every((s) => Object.keys(s).length >= 1 && Object.keys(s).length <= 2), id);
     assert.ok(T.cardUpgrades.filter((s) => Object.keys(s).length === 2).length <= 2, `${id}: two-stat steps are occasional`);
-    assert.ok(new Set(keys).size >= (id === 'tractor' ? 2 : 3), `${id}: varied`); // v0.6: the Tractor has only rate + lift size (uneven steps)
+    assert.ok(new Set(keys).size >= (id === 'tractor' || id === 'glue' ? 2 : 3), `${id}: varied`); // glue's card steps are stick and power (GL1)
     // not cyclic: the sequence is not a repetition of a shorter pattern
     for (let p = 1; p < 5; p++) assert.ok(keys.some((k, i) => i >= p && k !== keys[i - p]), `${id}: not a ${p}-cycle`);
     for (const s of T.cardUpgrades) for (const [k, v] of Object.entries(s)) {
       if (k === 'range') assert.ok(v >= 0.15 && v <= 0.2, `${id} range +${v} tiles`);
       else if (k === 'liftSize') assert.ok(id === 'tractor' && v === 1, 'v0.6: the Tractor card lifts one size more at L3 and L8');
+      else if (k === 'stickTime') assert.ok(v >= 0.05 && v <= 0.60, `${id} ${k} +${v}`); // v0.8.6 GL1: the L4 stick step is +0.60
       else assert.ok(v >= 0.05 && v <= 0.15, `${id} ${k} +${v}`);
     }
     if (T.stats.range != null && T.place !== 'path') assert.ok(T.cardUpgrades.some((s) => 'range' in s), `${id}: upgrades improve range`);
@@ -73,8 +74,10 @@ test('items 5/5b: each tower has its own hand-made 9-step sequence (L2..L10), on
 });
 test('items 5/5b: a card level changes only its own stat(s); the panel diff names the next upgrade', () => {
   // slingshot L1 -> L2 = range +0.2 tiles only
-  assert.equal(towerStat('slingshot', 'range', 1, 2), 1.7 * C.TILE); assert.equal(towerStat('slingshot', 'power', 1, 2), towerStat('slingshot', 'power', 1, 1));
-  assert.ok(Math.abs(towerStat('slingshot', 'power', 1, 3) - C.TOWERS.slingshot.stats.power * 1.1) < 1e-9);
+  assert.equal(towerStat('slingshot', 'range', 1, 2), 1.7 * C.TILE);
+  const q2 = Math.pow(1.08, 1), q3 = Math.pow(1.08, 2); // v0.8.6 EX1 Q(L) multiplies power even when the step itself is range
+  assert.ok(Math.abs(towerStat('slingshot', 'power', 1, 2) - C.TOWERS.slingshot.stats.power * q2) < 1e-9);
+  assert.ok(Math.abs(towerStat('slingshot', 'power', 1, 3) - C.TOWERS.slingshot.stats.power * 1.1 * q3) < 1e-9);
   const d = cardUpgradeDiff('slingshot', 1); assert.deepEqual(d.map((x) => x.key), ['range']); assert.ok(d[0].to > d[0].from);
   assert.deepEqual(cardUpgradeDiff('slingshot', 10), [], 'max level: nothing next');
   const g = src('game.js'); assert.ok(/cardUpgradeDiff\(/.test(g), 'the panel shows the next card upgrade');
@@ -116,19 +119,19 @@ test('item 17: redraw costs 3, 6, 9, 12 ... and the price resets every battle (v
 
 // ---------- items 11 + 12: move / swap ----------
 test('item 11: moving a tower in battle costs 1 diamond and obeys the placement rules', () => {
-  const s = M.newSave(); s.diamonds = 1; const b = mk(); const tw = b.addTower('slingshot', 0, 3);
-  assert.equal(M.moveTowerWithDiamond(s, b, tw, 2, 2).why, 'spot', 'cannot move a side tower onto the trail'); assert.equal(s.diamonds, 1);
-  const r = M.moveTowerWithDiamond(s, b, tw, 9, 3); assert.ok(r.ok); assert.equal(s.diamonds, 0); assert.deepEqual([tw.c, tw.r, tw.x], [9, 3, 9.5 * C.TILE]);
+  const s = M.newSave(); s.diamonds = 1; const b = mk(); const tw = b.addTower('slingshot', 0, 4);
+  assert.equal(M.moveTowerWithDiamond(s, b, tw, 2, 3).why, 'spot', 'cannot move a side tower onto the trail'); assert.equal(s.diamonds, 1);
+  const r = M.moveTowerWithDiamond(s, b, tw, 9, 4); assert.ok(r.ok); assert.equal(s.diamonds, 0); assert.deepEqual([tw.c, tw.r, tw.x], [9, 4, 9.5 * C.TILE]);
   assert.ok(b.events.some((e) => e.type === 'move'));
-  assert.equal(M.moveTowerWithDiamond(s, b, tw, 9, 4).why, 'diamonds', 'no diamonds -> no move');
+  assert.equal(M.moveTowerWithDiamond(s, b, tw, 9, 5).why, 'diamonds', 'no diamonds -> no move');
   // a moved marble / fan re-aims at its new spot
-  const m = b.addTower('ball', 0, 3); assert.equal(m.trailDir, null); s.diamonds = 1; assert.ok(M.moveTowerWithDiamond(s, b, m, 0, 1).ok); assert.ok(m.trailDir);
+  const m = b.addTower('ball', 0, 4); assert.equal(m.trailDir, null); s.diamonds = 1; assert.ok(M.moveTowerWithDiamond(s, b, m, 0, 2).ok); assert.ok(m.trailDir);
 });
 test('item 12: swapping two towers is free and only if both fit the other spot', () => {
   const b = mk(); const crumbs = b.crumbs;
-  const a = b.addTower('slingshot', 0, 3); const g = b.addTower('glue', 3, 2); const f = b.addTower('fan', 9, 2);
+  const a = b.addTower('slingshot', 0, 4); const g = b.addTower('glue', 3, 3); const f = b.addTower('fan', 9, 3);
   assert.equal(b.swapTowers(a, g), false, 'a side tower cannot go on the trail');
-  assert.ok(b.swapTowers(a, f)); assert.deepEqual([a.c, a.r, f.c, f.r], [9, 2, 0, 3]); assert.equal(b.crumbs, crumbs);
+  assert.ok(b.swapTowers(a, f)); assert.deepEqual([a.c, a.r, f.c, f.r], [9, 3, 0, 4]); assert.equal(b.crumbs, crumbs);
   assert.deepEqual([f.ax, f.ay, f.trailDir], [0, 0, null], 'fan re-aimed at its new spot (no trail beside it)');
   assert.ok(b.events.some((e) => e.type === 'swap'));
 });

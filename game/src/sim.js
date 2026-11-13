@@ -73,10 +73,12 @@ export function isDamageCard(id) {
 
 // ---------- tower stats (all numbers come from C.TOWERS) ----------
 export function towerStat(type, key, lvl = 1, cardLevel = 1) {
+  if (type === 'ball' && key === 'ballRadius') return C.MARBLE_R;
   const T = C.TOWERS[type];
   let v = T.stats && key in T.stats ? T.stats[key] : T[key];
   if (v == null || typeof v !== 'number') return v == null ? null : v;
   v = applyCardSteps(T, key, v, cardLevel);
+  if (key === coreStatKey(type)) v *= cardPowerQ(cardLevel); // v0.8.6 EX1: Q(L)=1.08^(L-1) on the useful core stat, before battle steps
   const ups = T.upgrades || [];
   // v0.6 item 6 (Tractor): an in-battle `liftSize` step ADDS a size class; if the card already lifts every size (card L8+),
   // that step raises the rate instead (`rateIfMaxLift`).
@@ -119,10 +121,15 @@ export function upgradeDiff(type, fromLvl, cardLevel = 1) {
 }
 export function statLabel(type, key) {
   const T = C.TOWERS[type];
+  if (type === 'ball' && key === 'power') return 'Damage';
+  if (type === 'ball' && key === 'rate') return 'Firing frequency';
   if (key === 'power') return T.powerLabel || 'Power';
   if (key === 'range') return T.rangeLabel || (T.place === 'path' ? 'Area' : 'Range');
   return C.STAT_LABELS[key] || key;
 }
+const CORE_KEY = { glue: 'stickTime', tractor: 'rate', fan: 'power' };
+export function coreStatKey(type) { return CORE_KEY[type] || 'power'; }
+export function cardPowerQ(cardLevel) { return Math.pow(1.08, Math.max(0, (cardLevel || 1) - 1)); }
 // v0.4.1: every range is shown as the radius of its on-screen circle in map cells (1 tile = C.TILE px), the same unit Yair measures in
 export function rangeTiles(type, px) {
   return px / C.TILE;
@@ -271,7 +278,9 @@ export class Battle {
     this.specialsOn = opts.specials !== undefined ? !!opts.specials : C.TUNING.specials !== false; // v0.8.2 M7a: tuning.json "specials" (default true); opts.specials overrides (tests, A13b)
     this.mapId = opts.mapId || this.level.map;
     this.map = C.MAPS[this.mapId];
-    const parsed = parseMap(this.map, C.GRID_COLS, C.GRID_ROWS);
+    const parsed0 = parseMap(this.map, C.GRID_COLS, 12); // source maps are the released 10x12
+    const shift = (rt) => rt.map(([c, r]) => [c, r + 1]); // LY1: translate resolved routes, including the 0.6-tile walk-in
+    const parsed = { routes: parsed0.routes.map(shift), props: (parsed0.props || []).map((p) => ({ ...p, r: p.r + 1 })) };
     this.routes = parsed.routes.map((r) => new Path(r));
     this.path = this.routes[0];
     this.props = parsed.props;
@@ -291,9 +300,8 @@ export class Battle {
     this.rng = mulberry32(opts.seed ?? 12345);
     this.deck = opts.deck.slice(0, this.cfg.deckSize);
     // v0.7 D-P4 (Should, S3 passed): per-world card-level cap - in battle a card acts as at most worlds[w].cardLevelCap (W1 4, W2 6)
-    this.cardLevelCap = opts.noCardLevelCap ? null : worldCardLevelCap(opts.levelIndex || 0);
+    this.cardLevelCap = null; // v0.8.6 UC1: owned card level applies in every world. No world cap.
     this.cardLevels = { ...(opts.cardLevels || {}) };
-    if (this.cardLevelCap) for (const k of Object.keys(this.cardLevels)) this.cardLevels[k] = Math.min(this.cardLevels[k], this.cardLevelCap);
     this.bonusTypes = (opts.bonusTypes || []).slice(0, this.cfg.bonusTypesToBring);
     this.bonusStock = { ...(opts.bonusStock || {}) };
     this.bonusUsesLeft = this.cfg.maxBonusUses;
@@ -657,7 +665,7 @@ export class Battle {
   rollFor(tw, lvl = tw.lvl) {
     const d = tw.trailDir;
     if (!d) return { len: 0, tiles: 0, stuck: true };
-    const rad = towerStat(tw.type, 'ballRadius', lvl, tw.cardLevel);
+    const rad = C.MARBLE_R; // MB1: width is not a stat; every level uses the base radius
     return { len: Math.max(0, d.run * C.TILE - Math.min(rad, C.TILE / 2)), tiles: d.run, stuck: false };
   }
   // wind effect of a fan blowing along (wx, wy) on ants near (x, y): >0 = pushes ants back (good), <0 = speeds them up (bad)
@@ -997,7 +1005,7 @@ export class Battle {
     const any = this.ants.some((a) => !a.dead && !a.flying && segDist(a.x, a.y, tw.lx, tw.ly, ex, ey) <= 24);
     if (!any) return;
     this.balls.push({ x: tw.lx, y: tw.ly, dx, dy, left: tw.runLen, stuck: 0, travel: 0,
-      r: tw.stat('ballRadius'), dmg: tw.stat('power'), speed: T.rollSpeed, hit: new Set(), src: tw, rot: 0 });
+      r: C.MARBLE_R, drawR: C.MARBLE_R * Math.max(1, Math.min(1.35, Math.pow(tw.stat('power') / C.TOWERS.ball.power, 0.25))), dmg: tw.stat('power'), speed: T.rollSpeed, hit: new Set(), src: tw, rot: 0 });
     tw.balls++;
     tw.cd = 1 / tw.stat('rate'); tw.fireFx = 0.3; this.emit({ type: 'roll', x: tw.x, y: tw.y });
   }
