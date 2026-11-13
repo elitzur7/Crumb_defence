@@ -33,7 +33,7 @@ test('W8: Frosting Factory hpMul table, cap 7, Drone then Sugar Cube', () => {
   assert.equal(w.coinMul, 2.5);
   assert.equal(w.cardLevelCap, 7);
   assert.deepEqual(w.unlock, { allLevelsWonInWorld: 7, minStarsInWorld: 14 });
-  assert.deepEqual(C.LEVELS.slice(70).map((L) => L.hpMul), [6.5, 7.8, 10.2, 11.4, 5.2, 9.8, 4.6, 6.68, 3.73, 1.55]);
+  assert.deepEqual(C.LEVELS.slice(70).map((L) => L.hpMul), [6.5, 7.8, 10.2, 16, 5.2, 14.6, 4.6, 6.68, 3.73, 1.55]);
   assert.equal(C.LEVELS[66].hpMul, 4.68);
   assert.equal(C.LEVELS[67].hpMul, 7.05);
   assert.equal(C.ANTS.sugarcube.armor, 4);

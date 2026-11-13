@@ -16,16 +16,16 @@ function towerNear(b, type, d, notD = null) {
 }
 const dFor = (b, d1, chord) => { const p = b.routes[0].at(d1); for (let d = d1 + 2; d < b.routes[0].length; d += 1) { const q = b.routes[0].at(d); if (Math.hypot(q.x - p.x, q.y - p.y) >= chord) return d; } return null; };
 
-test('M7a: specialActive - false on every W1-W5 level even at CL6; W6 needs CL5; five towers carry a special with text', () => {
-  assert.equal(C.SPECIALS_FROM_WORLD, 6); assert.equal(C.SPECIAL_CARD_LEVEL, 5);
-  for (const id of ['slingshot', 'laser', 'lizard', 'sound', 'zapper']) { const s = C.TOWERS[id].special; assert.ok(s && s.id && s.name && s.text && s.params, id); assert.ok(s.text.length <= 60, id + ' text length'); for (const w of [1, 2, 3, 4, 5]) assert.equal(C.specialActive(id, { world: w }, 6), false, `${id} W${w}`); assert.equal(C.specialActive(id, { world: 6 }, 4), false); assert.equal(C.specialActive(id, { world: 6 }, 5), true); assert.equal(C.specialActive(id, { world: 6 }, 6), true); }
+test('M7a: specialActive - card level 5 works in every world; five towers carry a special with text', () => {
+  assert.equal(C.SPECIAL_CARD_LEVEL, 5);
+  for (const id of ['slingshot', 'laser', 'lizard', 'sound', 'zapper']) { const s = C.TOWERS[id].special; assert.ok(s && s.id && s.name && s.text && s.params, id); assert.ok(s.text.length <= 60, id + ' text length'); for (const w of [1, 2, 3, 4, 5, 6, 7, 8]) assert.equal(C.specialActive(id, { world: w }, 6), true, `${id} W${w}`); assert.equal(C.specialActive(id, { world: 1 }, 4), false); assert.equal(C.specialActive(id, { world: 6 }, 5), true); assert.equal(C.specialActive(id, { world: 6 }, 6), true); }
   assert.equal(C.specialActive('spray', { world: 6 }, 6), false, 'towers without a special are never active');
   assert.equal(C.TUNING.specials, true, 'the tuning flag defaults to true');
 });
-test('M7a: the flag turns every special off; W<=5 spec() is null at CL6', () => {
-  const on = mk(6, 5), off = mk(6, 5, { specials: false }); const a = towerNear(on, 'slingshot', 100), z = towerNear(off, 'slingshot', 100);
+test('M7a: the flag turns every special off; card level 4 spec() is null', () => {
+  const on = mk(1, 5), off = mk(1, 5, { specials: false }); const a = towerNear(on, 'slingshot', 100), z = towerNear(off, 'slingshot', 100);
   assert.ok(on.spec(a)); assert.equal(off.spec(z), null);
-  const w5 = mk(5, 6); assert.equal(w5.spec(towerNear(w5, 'laser', 100)), null);
+  const w5 = mk(5, 6); assert.ok(w5.spec(towerNear(w5, 'laser', 100)), 'UC1: World 5 at card level 6 is active');
   const cl4 = mk(6, 4); assert.equal(cl4.spec(towerNear(cl4, 'laser', 100)), null);
 });
 test('M7b Ricochet: 40 px apart -> second ant takes max(1, power*0.5 - armor); 80 px apart no jump; flyer no jump', () => {
@@ -40,8 +40,8 @@ test('M7b Ricochet: 40 px apart -> second ant takes max(1, power*0.5 - armor); 8
   assert.equal(run(80).dealt, 0, '80 px: no jump'); assert.equal(run(40, 'flyer').dealt, 0, 'flyer: no jump');
   const f = run(40, 'worker', 99); assert.ok(Math.abs(f.dealt - 1) < 1e-6, 'armor floor 1');
 });
-test('M7b Ricochet is off at CL4, in W5 and with the flag off', () => {
-  for (const mkb of [() => mk(6, 4), () => mk(5, 6), () => mk(6, 5, { specials: false })]) {
+test('M7b Ricochet is off at CL4 and with the flag off', () => {
+  for (const mkb of [() => mk(6, 4), () => mk(1, 4), () => mk(6, 5, { specials: false })]) {
     const b = mkb(); const A = freeze(b.spawn('worker', 0, 0)), B = freeze(b.spawn('worker', 0, 0)); at(b, A, 200); at(b, B, dFor(b, 200, 40));
     const tw = towerNear(b, 'slingshot', 200); tw.cd = 999; const h0 = B.hp; b.projectiles.push({ x: A.x, y: A.y, target: A, dmg: 50, speed: 1e6, src: tw }); b.update(0.001); assert.equal(B.hp, h0);
   }
@@ -54,8 +54,8 @@ test('M7c Burn-through: armor-4 sprinter 5 hits -> 3, 10 -> 2, 20 -> 0; queens i
   assert.equal(applyArmor(10, 0), 10, 'armor shred feeds the shared armor rule');
   const b3 = mk(); const S = freeze(b3.spawn('sprinter', 0, 0)); S.armor = 2; const real = b3.damage(S, 10, { src: { type: 'bomb' } }); S.armor -= 1; const real2 = b3.damage(S, 10, { src: { type: 'bomb' } }); assert.equal(real - real2, -1, 'less armor -> more damage from any source');
 });
-test('M7c Burn-through off in W5 / at CL4 / flag off: no armor loss', () => {
-  for (const mkb of [() => mk(5, 6), () => mk(6, 4), () => mk(6, 5, { specials: false })]) { const b = mkb(); const A = freeze(b.spawn('sprinter', 0, 0)); A.armor = 4; at(b, A, 200); towerNear(b, 'laser', 200); for (let i = 0; i < 400; i++) b.update(0.05); assert.equal(A.armor, 4); assert.equal(A.burnHits, undefined); }
+test('M7c Burn-through off at CL4 / flag off: no armor loss', () => {
+  for (const mkb of [() => mk(1, 4), () => mk(6, 4), () => mk(6, 5, { specials: false })]) { const b = mkb(); const A = freeze(b.spawn('sprinter', 0, 0)); A.armor = 4; at(b, A, 200); towerNear(b, 'laser', 200); for (let i = 0; i < 400; i++) b.update(0.05); assert.equal(A.armor, 4); assert.equal(A.burnHits, undefined); }
 });
 test('M7d Pounce: fresh worker takes 2x then 1x; a glazed ant with its shield up takes 1x; healed back to full takes 2x again', () => {
   const b = mk(); const A = b.spawn('worker', 0, 0); A.speed = 0; at(b, A, 200); const tw = towerNear(b, 'lizard', 200); const P = tw.stat('power'); A.armor = 0; A.hp = A.maxHp = 1e6;
@@ -75,11 +75,9 @@ test('M7f Static: the Zapper chain is +1 with the special', () => {
   const count = (b) => { const ants = []; for (let i = 0; i < 8; i++) { const f = freeze(b.spawn('flyer', 0, 0)); ants.push(f); } const tw = towerNear(b, 'zapper', 200); const q = b.routes[0].at(200); ants.forEach((f, i) => { f.x = q.x + i * 8; f.y = q.y; f.d = 200; f.flying = true; }); b.events.length = 0; tw.cd = 0; b.update(0.001); return b.events.filter((e) => e.type === 'zap' && e.chain).length; };
   const on = mk(); const off = mk(6, 5, { specials: false }); const cOn = count(on), cOff = count(off); assert.equal(cOn, cOff + 1, `on ${cOn} off ${cOff}`);
 });
-test('M7i / A13b: W1-W5 sims are identical with specials on (default) and off, at card level 6 (every level, 4 seeds)', () => {
-  const L = C.LEVELS.length; let n = 0;
-  for (let i = 0; i < Math.min(50, L); i++) for (const seed of [1, 2, 3, 4]) {
-    const f = (sp) => { const r = playLevel(i, { bot: 'smart', unlocked: unlockedAt(i), cardLevel: 6, seed, specials: sp }); return [r.result, r.stars, r.food, r.time, r.towers, r.cards, r.crumbs, r.kills, r.spawned].join(','); };
-    assert.equal(f(true), f(false), `level ${i + 1} seed ${seed}`); n++;
-  }
-  assert.ok(n >= 200);
+test('UC1: card level 6 specials are active in World 1', () => {
+  const b = new Battle({ levelIndex: 0, deck: ['slingshot'], cardLevels: { slingshot: 6 }, seed: 1 });
+  assert.equal(b.specialsOn, true);
+  assert.equal(C.specialActive('slingshot', b.level, 6), true);
+  assert.equal(C.specialActive('slingshot', b.level, 4), false);
 });

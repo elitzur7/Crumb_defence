@@ -69,27 +69,27 @@ test('crumb pack: 50 crumbs for 10, 20, 40, 80 diamonds (doubles each purchase)'
   const save = M.newSave(); save.diamonds = 1000; const b = mk();
   const prices = []; const c0 = b.crumbs;
   for (let i = 0; i < 4; i++) { const r = M.buyCrumbsWithDiamonds(save, b); assert.ok(r.ok); prices.push(r.price); }
-  assert.deepEqual(prices, [10, 20, 40, 80]); assert.equal(b.crumbs - c0, 200); assert.equal(save.diamonds, 1000 - 150);
-  assert.equal(M.nextCrumbPrice(b), 160);
+  assert.deepEqual(prices, [15, 30, 60, 120]); assert.equal(b.crumbs - c0, 200); assert.equal(save.diamonds, 1000 - 225);
+  assert.equal(M.nextCrumbPrice(b), 240);
 });
 test('booster at 0 stock: buy for 20 - fixed price, no escalation (v0.4 item 9)', () => {
   const save = M.newSave(); save.diamonds = 1000;
   const b = mk({ bonusStock: { ...save.bonusStock }, onBonusUsed: (t) => M.consumeBonus(save, t) });
   assert.equal(b.canUseBonus('bomb'), false, '0 stock');
-  const p1 = M.buyBoosterWithDiamonds(save, b, 'bomb'); assert.ok(p1.ok); assert.equal(p1.price, 20);
+  const p1 = M.buyBoosterWithDiamonds(save, b, 'bomb'); assert.ok(p1.ok); assert.equal(p1.price, 25);
   assert.equal(b.bonusStock.bomb, 1); assert.equal(save.bonusStock.bomb, 1); assert.ok(b.canUseBonus('bomb'));
   assert.ok(b.useBonus('bomb', 100, 100)); assert.equal(save.bonusStock.bomb, 0);
-  assert.equal(M.nextBoosterPrice(b, 'freeze'), 20, 'fixed price for every booster');
-  const p2 = M.buyBoosterWithDiamonds(save, b, 'freeze'); assert.equal(p2.price, 20);
-  assert.equal(M.nextBoosterPrice(b, 'bomb'), 20);
-  assert.equal(save.diamonds, 1000 - 40);
+  assert.equal(M.nextBoosterPrice(b, 'freeze'), 25, 'fixed price for every booster');
+  const p2 = M.buyBoosterWithDiamonds(save, b, 'freeze'); assert.equal(p2.price, 25);
+  assert.equal(M.nextBoosterPrice(b, 'bomb'), 25);
+  assert.equal(save.diamonds, 1000 - 50);
   assert.equal(M.buyBoosterWithDiamonds(save, b, 'plane').why, 'notBrought');
 });
 test('diamond crumb escalation resets every battle; booster price stays 20', () => {
   const save = M.newSave(); save.diamonds = 1000;
   const b1 = mk(); M.buyCrumbsWithDiamonds(save, b1); M.buyCrumbsWithDiamonds(save, b1); M.buyBoosterWithDiamonds(save, b1, 'bomb');
-  assert.equal(M.nextCrumbPrice(b1), 40); assert.equal(M.nextBoosterPrice(b1, 'bomb'), 20);
-  const b2 = mk(); assert.equal(M.nextCrumbPrice(b2), 10); assert.equal(M.nextBoosterPrice(b2, 'bomb'), 20);
+  assert.equal(M.nextCrumbPrice(b1), 60); assert.equal(M.nextBoosterPrice(b1, 'bomb'), 25);
+  const b2 = mk(); assert.equal(M.nextCrumbPrice(b2), 15); assert.equal(M.nextBoosterPrice(b2, 'bomb'), 25);
 });
 test('cannot buy without enough diamonds, after the battle ended, or past the 2-use limit', () => {
   const save = M.newSave(); save.diamonds = 9; const b = mk();
@@ -216,27 +216,27 @@ test('calendar: coins rise 30, 60, 90, 120 in order (v0.7.6 E2: x6, was 5/10/15/
   for (let wd = 0; wd < 7; wd++) {
     const s = M.newSave(); const d1 = at(2026, 10, 18 + wd, 11); const coins = [];
     for (let d = 0; d < 21; d++) { const r = claimOn(s, d1 + d * DAY); if (r.prize.kind === 'coins') coins.push(r.prize.count); }
-    assert.deepEqual(coins, [30, 60, 90, 120, 120, 120, 120, 120, 120], `start wd ${wd}`);
+    assert.deepEqual(coins, [36, 72, 108, 144, 144, 144, 144, 144, 144], `start wd ${wd}`);
     // preview on the calendar matches what a claim gives
     const t = d1 + 21 * DAY; const st = visitOn(s, t); const r = Cal.claim(s, t, () => 0); assert.deepEqual(st.tiles[st.tile].prize.count, r.prize.count);
   }
   // claimed tiles show what was really received
   { const s = M.newSave(); const d1 = at(2026, 10, 20, 9); for (let d = 0; d < 4; d++) claimOn(s, d1 + d * DAY);
-    assert.deepEqual(visitOn(s, d1 + 4 * DAY).tiles.filter((x) => x.prize.kind === 'coins').map((x) => x.prize.count), [30, 60, 90]); }
+    assert.deepEqual(visitOn(s, d1 + 4 * DAY).tiles.filter((x) => x.prize.kind === 'coins').map((x) => x.prize.count), [36, 72, 108]); }
   // after a reset the coin steps start again at 30
   const s = M.newSave(); const d1 = at(2026, 10, 20, 9);
   for (let d = 0; d < 4; d++) claimOn(s, d1 + d * DAY);                    // tiles 1-4: coins 5, 10, -, 15
   const back = d1 + 9 * DAY; const st = visitOn(s, back); assert.equal(st.tile, 4); // tile 5 (card); streak restarts
   claimOn(s, back); claimOn(s, back + DAY); claimOn(s, back + 2 * DAY);       // tiles 5, 6, 7
-  assert.deepEqual(claimOn(s, back + 3 * DAY).prize, { kind: 'coins', count: 30 }, 'new cycle tile 1 = first coin day of the new streak');
+  assert.deepEqual(claimOn(s, back + 3 * DAY).prize, { kind: 'coins', count: 36 }, 'new cycle tile 1 = first coin day of the new streak');
   // preview: the calendar shows the coming coin tiles in order
-  const s2 = M.newSave(); const st2 = visitOn(s2, d1); assert.deepEqual(st2.tiles.filter((x) => x.prize.kind === 'coins').map((x) => x.prize.count), [30, 60, 90]);
+  const s2 = M.newSave(); const st2 = visitOn(s2, d1); assert.deepEqual(st2.tiles.filter((x) => x.prize.kind === 'coins').map((x) => x.prize.count), [36, 72, 108]);
 });
 test('calendar prizes: coins 30/60/90/120 (cap; v0.7.6 E2), diamonds 2-5, day 7 = level-2 card + 5 diamonds (v0.4), one booster max', () => {
   const K = C.CALENDAR; const kinds = K.week.map((e) => e.kind);
   assert.ok(kinds.every((k) => ['coins', 'diamonds', 'card', 'booster'].includes(k)));
   assert.deepEqual(K.week[6], { kind: 'card', level: 2, extra: { kind: 'diamonds', count: 5 } });
-  assert.deepEqual([1, 2, 3, 4, 5, 30].map((n) => Cal.prizeFor(0, n).count), [30, 60, 90, 120, 120, 120]);
+  assert.deepEqual([1, 2, 3, 4, 5, 30].map((n) => Cal.prizeFor(0, n).count), [36, 72, 108, 144, 144, 144]);
   const dia = []; for (let n = 1; n <= 30; n++) dia.push(Cal.prizeFor(2, n).count);
   assert.equal(Math.min(...dia), 2); assert.equal(Math.max(...dia), 5);
   for (const m of Object.values(K.monthMilestones)) if (m.kind === 'diamonds') assert.ok(m.count >= 2 && m.count <= 5);
@@ -259,7 +259,7 @@ test('calendar: old vc6 saves migrate (weekday fields ignored, a fresh cycle sta
 
 // ---------- item 1: centre aim ----------
 test('v0.5 items 2/10 (replaces v0.3 centre aim): directional towers point along the trail next to them, straight (axis-aligned)', () => {
-  const b = mk(); const f = b.addTower('fan', 2, 3); // directly below row 2 -> into the trail cell above it
+  const b = mk(); const f = b.addTower('fan', 2, 4); // directly below row 3 -> into the trail cell above it
   assert.deepEqual([f.trailDir.dx, f.trailDir.dy], [0, -1]); assert.deepEqual([f.ax, f.ay], [0, -1]);
 });
 
@@ -271,7 +271,7 @@ test('tower info text is regular weight, larger, dark on light (no Turn)', () =>
   assert.ok(/const INFO_INK = '#3d2a36'/.test(g));
 });
 test('no "bonus" in player-facing text: boosters are Bomb, Crop Duster, Freezer, Sugar Cube', () => {
-  assert.deepEqual(C.BONUS_TYPES.map((k) => C.BONUSES[k].name), ['Bomb', 'Crop Duster', 'Freezer', 'Sugar Cube']);
+  assert.deepEqual(C.BONUS_TYPES.map((k) => C.BONUSES[k].name), ['Bomb', 'Crop Duster', 'Freezer', 'Sugar Cube', 'Crumb Rush']);
   const g = src('game.js');
   const strings = [...g.matchAll(/(['`])((?:(?!\1)[^\\\n]|\\.)*)\1/g)].map((m) => m[2].replace(/\$\{[^}]*\}/g, ''));
   const ui = strings.filter((s) => /\bbonus(es)?\b/i.test(s) && /\s/.test(s) && !/^Star bonus$/.test(s)); // v0.7.6 E1: 'Star bonus' is the first-time star coins line, not a booster

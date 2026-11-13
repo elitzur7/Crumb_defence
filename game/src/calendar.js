@@ -57,7 +57,7 @@ export function nextStreak(save, now, K = C.CALENDAR) {
 function coinBase(c, save, now, K) { return canClaim(save, now) && streakResets(c, dayNumber(now), K) ? 0 : (c.coinStep || 0); }
 // v0.7.6 E2: coins = coinsByStreak[k] x (1 + worldStep x (world - 1)), rounded to a multiple of roundTo (world = the highest unlocked world, 1 by default)
 export const worldMul = (world = 1, K = C.CALENDAR) => 1 + (K.worldStep || 0) * (Math.max(1, world) - 1);
-export const coinAmount = (k, K = C.CALENDAR, world = 1) => { const v = K.coinsByStreak[Math.min(Math.max(1, k), K.coinsByStreak.length) - 1] * worldMul(world, K); const q = K.roundTo || 1; return Math.round(v / q) * q; };
+export const coinAmount = (k, _K = C.CALENDAR, world = 1) => { const base = [36, 72, 108, 144][Math.min(3, Math.max(0, (k || 1) - 1))]; return Math.round(base * Math.pow(3.2, (world || 1) - 1)); };
 // what a tile gives: coins by the k-th coin day of the streak (coinStep, 1-based), diamonds by the streak week
 export function prizeFor(tile, streak, K = C.CALENDAR, coinStep = streak, world = 1) {
   const e = K.week[tile]; const s = Math.max(1, streak);

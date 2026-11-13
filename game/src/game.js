@@ -5,14 +5,14 @@ import * as Cal from './calendar.js';
 import * as M from './meta.js';
 import * as A from './art.js';
 import { levelHeaderLine } from './uitext.js';
-import { initAudio, sfx, setMuted, setAudioSpeed } from './audio.js';
+import { initAudio, sfx, setMuted, setAudioSpeed, musicTick, setSfxGain, setMusicGain } from './audio.js';
 import { STEP, PACE, advanceFrame, newClock, nextSpeed, startSpeed } from './loop.js';
 import { smartBotStep } from './bot.js';
 import { addFloatText } from './fx.js';
 import * as Treat from './treat.js';
 import { previewModel, waveGroups, stripRect, isTank, isFlyer, STRIP_H } from './preview.js';
 
-const W = 400, H = 720, MAP_Y = 68, MAP_W = C.GRID_COLS * C.TILE, MAP_H = C.GRID_ROWS * C.TILE, TRAY_Y = MAP_Y + MAP_H + 4;
+const W = 400, H = 800, MAP_Y = 68, MAP_W = C.GRID_COLS * C.TILE, MAP_H = C.GRID_ROWS * C.TILE, TRAY_Y = MAP_Y + MAP_H + 4; // v0.8.6 LY1: 400x800 so two extra rows fit without shrinking the tray
 const BG = '#fbe9dc';
 const canvas = document.getElementById('game');
 let ctx = canvas.getContext('2d'); // let: the v0.7 pack reveal pre-renders card faces by pointing ctx at an offscreen canvas for a moment
@@ -51,7 +51,7 @@ function setPaused(v) { S.paused = v; if (S.battle) S.battle.paused = v; if (v) 
 // bottom safe-area inset (env(safe-area-inset-bottom), read through a hidden probe element). Their design height is 660 instead of 720; every other
 // screen (prep, battle, results, overlays) keeps W x H = 400 x 720 over the full window.
 const META_SCREENS = ['map', 'cards', 'card', 'shop', 'cabinet', 'antbook'], BAR_H = 56, META_H = 660;
-let cw = 0, ch = 0, insetB = 0, insetProbe = null, insetOverride = null; // insetOverride: test hook only
+let cw = 0, ch = 0, insetB = 0, insetT = 0, insetProbe = null, insetTopProbe = null, insetOverride = null; // insetOverride: test hook only
 function readInset() {
   if (insetOverride != null) return insetOverride;
   try {
@@ -59,18 +59,25 @@ function readInset() {
     const v = parseFloat(getComputedStyle(insetProbe).paddingBottom); return isFinite(v) && v > 0 ? v : 0;
   } catch (e) { return 0; }
 }
+function readInsetTop() {
+  if (insetOverride != null) return 0;
+  try {
+    if (!insetTopProbe) { insetTopProbe = document.createElement('div'); insetTopProbe.style.cssText = 'position:fixed;left:0;top:0;width:0;height:0;visibility:hidden;pointer-events:none;padding-top:env(safe-area-inset-top,0px)'; document.body.appendChild(insetTopProbe); }
+    const v = parseFloat(getComputedStyle(insetTopProbe).paddingTop); return isFinite(v) && v > 0 ? v : 0;
+  } catch (e) { return 0; }
+}
 function isMeta() { return META_SCREENS.includes(S.screen); }
 function applyLayout() {
   if (isMeta()) {
     const availH = Math.max(100, ch - (BAR_H + insetB));
     scale = Math.min(cw / W, availH / META_H); offX = (cw - W * scale) / 2; offY = (availH - META_H * scale) / 2;
-  } else { const availH = Math.max(100, ch - insetB); scale = Math.min(cw / W, availH / H); offX = (cw - W * scale) / 2; offY = (availH - H * scale) / 2; } // v0.8.1 U8: prep / battle / results keep clear of the bottom gesture inset too (was the full window; no change when the inset is 0)
+  } else { const availH = Math.max(100, ch - insetB - insetT); scale = Math.min(cw / W, availH / H); offX = (cw - W * scale) / 2; offY = insetT + (availH - H * scale) / 2; } // v0.8.6 LY1: keep the board below the top inset. A 16:9 phone scales 800 into a shorter window, so tiles shrink.
   const px = Math.max(1, Math.round(dpr * scale * 2) / 2);
   if (px !== pxRatio) { pxRatio = px; S.bgCache = {}; A.clearTowerCache(); } // sprites are baked at the device scale
 }
 function resize() {
   dpr = Math.min(window.devicePixelRatio || 1, 3);
-  cw = window.innerWidth; ch = window.innerHeight; insetB = readInset();
+  cw = window.innerWidth; ch = window.innerHeight; insetB = readInset(); insetT = readInsetTop();
   canvas.width = Math.round(cw * dpr); canvas.height = Math.round(ch * dpr);
   canvas.style.width = cw + 'px'; canvas.style.height = ch + 'px';
   applyLayout();
@@ -218,8 +225,11 @@ function startBattle(levelIndex = S.levelIndex, deck = S.prep.deck, bonuses = S.
   S.levelIndex = levelIndex;
   S.save.lastDeck = deck.slice(); S.save.lastBonuses = bonuses.slice(); persist();
   S.treat = Treat.newTreatState();
-  S.battle = new Battle({ levelIndex, deck, bonusTypes: bonuses, bonusStock: { ...S.save.bonusStock }, cardLevels: M.cardLevels(S.save), seed,
+  const stock = { ...S.save.bonusStock };
+  if (levelIndex === 29 && S.save.l30FreezerArmed && !S.save.l30FreezerUsed && bonuses.includes('freeze')) { stock.freeze = (stock.freeze || 0) + 1; S.save.l30FreezerUsed = true; S.save.l30FreezerArmed = false; }
+  S.battle = new Battle({ levelIndex, deck, bonusTypes: bonuses, bonusStock: stock, cardLevels: M.cardLevels(S.save), seed,
     onBonusUsed: (type) => { M.consumeBonus(S.save, type); persist(); } }); // deducted immediately: Restart/Quit can't refund it
+  S.battle.priceWorld = M.highestWorld(S.save);
   S.battleStartStock = { ...S.save.bonusStock };
   capsReset(); S.queenIntro = null; S._bubbleShown = false; S.impactT = {}; S.crumbSprites = []; S.sparkles = []; // v0.8.1 J11: maxima since battle start
   S.fx = []; S.swatQ = []; S.ui = []; S.result = null; setPaused(false); S.speed = startSpeed(S.speed, C.UI.speedMaxAtStart); clock.acc = 0; S.sel = null; S.info = null; S.mode = null; S.queenDown = null; S.modeHint = false; S.nurseTip = false; S.battle.rescueScale = S.speed * PACE; // divisor matches the faster sim fill so the rescue window stays 3 s of wall time
@@ -239,7 +249,8 @@ function localDay() { const d = new Date(); return `${d.getFullYear()}-${String(
 function finishBattle() {
   const b = S.battle; guideDone(); // v0.8.1 U1: the first finished battle always ends the guide
   // bonuses were already deducted from the save at the moment of use
-  const out = M.applyBattleResult(S.save, b.levelIndex, b.result, b.stars, { kills: b.stats.kills, foodLeft: b.foodStored, perfect: b.perfect, time: b.time, day: C.ART81 ? localDay() : undefined });
+  const out = M.applyBattleResult(S.save, b.levelIndex, b.result, b.stars, { kills: b.stats.kills, foodLeft: b.foodStored, perfect: b.perfect, time: b.time, progress: b.progress ? b.progress() : 0, day: C.ART81 ? localDay() : undefined });
+  if (b.levelIndex === 29 && b.result === 'lose') S.save.l30Fails = (S.save.l30Fails || 0) + 1;
   { const rc = b.upgradeReach(); S.save.debug = S.save.debug || { reach: [] }; S.save.debug.reach.push({ li: b.levelIndex, res: b.result, towers: rc.towers, l1: rc.l1, l2: rc.l2, l3p: rc.l3p, placed: rc.placed, upgrades: rc.upgrades, crumbsPlace: rc.crumbsPlace, crumbsUpgrade: rc.crumbsUpgrade }); if (S.save.debug.reach.length > 20) S.save.debug.reach.shift(); } // v0.8.1 M8
   const lossRun = M.noteLossRun(S.save, b.levelIndex, b.result === 'win'); // v0.8.1 U7: consecutive losses on this level
   if (b.result === 'win' && b.levelIndex === 0 && out.firstClear && C.ART81) M.armNextHint(S.save, 'l1'); // v0.8.1 U9: after the first L1 win the map points at level 2
@@ -335,7 +346,7 @@ function setMode(tw, m) { if (tw.mode === m) return; if (S.battle.setTargetMode(
 // v0.5 items 11/12: Move (1 diamond) / Swap (free) - started from the tower info panel, finished by tapping the map
 function startMode(kind, tw) {
   const b = S.battle; if (!b || b.result || S.paused) return;
-  if (kind === 'move' && (S.save.diamonds || 0) < C.ECONOMY.diamonds.moveTower) { toast(`Moving costs ${C.ECONOMY.diamonds.moveTower} diamond (you have ${S.save.diamonds || 0})`, '#ffd0d0'); return; }
+  if (kind === 'move' && (S.save.diamonds || 0) < M.diamondQuote('move', M.highestWorld(S.save))) { const mv = M.diamondQuote('move', M.highestWorld(S.save)); toast(`Moving costs ${mv} diamond (you have ${S.save.diamonds || 0})`, '#ffd0d0'); return; }
   if (kind === 'swap' && b.towers.length < 2) { toast('Place another tower first', '#ffd0d0'); return; }
   S.mode = { kind, tower: tw, t: S.t }; S.info = null; S.sel = null; sfx('tap');
 }
@@ -345,7 +356,7 @@ function modeTap(b, t) {
   if (m.kind === 'move') {
     const r = M.moveTowerWithDiamond(S.save, b, m.tower, t.c, t.r);
     if (r.ok) { persist(); S.mode = null; sfx('place'); addUi({ k: 'priceFloat', cur: 'diamond', n: r.price, x: 252, y: 58, life: 1.1, max: 1.1 }); }
-    else toast(r.why === 'diamonds' ? `Moving costs ${C.ECONOMY.diamonds.moveTower} diamond` : other ? 'Spot taken - use Swap' : "It can't stand there", '#ffd0d0');
+    else toast(r.why === 'diamonds' ? `Moving costs ${M.diamondQuote('move', M.highestWorld(S.save))} diamonds` : other ? 'Spot taken - use Swap' : "It can't stand there", '#ffd0d0');
     return;
   }
   if (!other) { toast('Tap another tower to swap with', '#ffd0d0'); return; }
@@ -466,7 +477,7 @@ function consumeEvents() {
   for (const e of ev) {
     switch (e.type) {
       case 'special': if (C.ART81) spCue(e); break;
-      case 'clang': if (C.ART81 && e.armor > 0) addFx({ k: 'spark', x: e.x, y: e.y - 6, col: '#d7e2ee', life: 0.12, max: 0.12 }); break;
+      case 'clang': if (e.armor > 0) { for (let i = 0; i < 3; i++) addFx({ k: 'spark', x: e.x + (i - 1) * 6, y: e.y - 8, col: '#d7e2ee', life: 0.22, max: 0.22 }); sfx('clang'); } break;
       case 'kill':
         if (e.src === 'swatter' && !reducedMotion() && b.swatFx > 0) { // v0.7.3: a swatter kill shows on the slap frame (ant ghost stays until then)
           S.swatQ.push({ at: swatHitTime(b), kill: e, ghost: e.ref, x: e.x, y: e.y }); break;
@@ -548,7 +559,7 @@ function consumeEvents() {
       case 'marbleBreak': for (let i = 0; i < 7; i++) addFx({ k: 'shard', x: e.x, y: e.y - 6, vx: (Math.random() - 0.5) * 110, vy: -30 - Math.random() * 70, life: 0.55, max: 0.55 }); break; // v0.5 item 2: breaks at the wall/turn
       case 'move': addFx({ k: 'pop', x: e.x, y: e.y, life: 0.35, max: 0.35 }); addFx({ k: 'ring2', x: e.x, y: e.y, life: 0.5, max: 0.5 }); addFloatText(S.fx, { key: 'placed', x: e.x, y: e.y - 34, n: 1, fmt: () => 'Moved!', col: '#fff', life: 0.9 }); break;
       case 'swap': for (const [x, y] of [[e.ax, e.ay], [e.bx, e.by]]) { addFx({ k: 'pop', x, y, life: 0.35, max: 0.35 }); addFx({ k: 'ring2', x, y, life: 0.5, max: 0.5 }); } addFloatText(S.fx, { key: 'placed', x: e.ax, y: e.ay - 34, n: 1, fmt: () => 'Swapped!', col: '#fff', life: 0.9 }); break;
-      case 'roll': addFx({ k: 'pop', x: e.x, y: e.y - 12, life: 0.2, max: 0.2 }); sfx('gust'); break;
+      case 'roll': addFx({ k: 'pop', x: e.x, y: e.y - 12, life: 0.2, max: 0.2 }); sfx('marble'); break;
       case 'bomb': addFx({ k: 'boom', x: e.x, y: e.y, r: e.r, life: 0.7, max: 0.7 }); sfx('boom'); break;
       case 'freeze': addFx({ k: 'flash', col: 'rgba(190,235,255,0.7)', life: 0.4, max: 0.4 }); sfx('freeze'); break;
       case 'plane': sfx('plane'); break;
@@ -626,6 +637,13 @@ function battleFrame(dt) {
   if (S.battle.result) finishBattle();
 }
 function frame(now) {
+  A.setTextScale((S.save && S.save.settings && S.save.settings.textSize === 'large') ? 1.15 : 1);
+  const stA = (S.save && S.save.settings) || {};
+  if (stA.sfxVol != null) setSfxGain(stA.sfxVol);
+  if (stA.musicVol != null) setMusicGain(stA.musicVol);
+  const queens = S.screen === 'battle' && S.battle ? S.battle.ants.filter((a) => !a.dead && C.isQueen(a.type)).length : 0;
+  const want = (S.result || S.screen !== 'battle') ? 'prep' : (queens ? 'queen' : 'battle');
+  musicTick(want, !!(S.paused || S.testGrant));
   const dt = Math.min(0.1, (now - lastT) / 1000); lastT = now;
   S.t += dt;
   heartbeat(false);
@@ -771,13 +789,55 @@ function drawGearIcon(x, y, r) {
   ctx.beginPath(); ctx.arc(0, 0, r * 0.32, 0, 7); ctx.fillStyle = '#fff6ee'; ctx.fill(); ctx.stroke();
   ctx.restore();
 }
+function applyTestGrant(n) {
+  const now = (typeof performance !== 'undefined' ? performance.now() : Date.now());
+  if (!S.testGrant || now - (S.testGrant.at || 0) < 300) return;
+  S.testGrant.at = now;
+  S.save.diamonds = (S.save.diamonds || 0) + n;
+  S.save.testGranted = (S.save.testGranted || 0) + n;
+  if (!Array.isArray(S.save.testGrantLog)) S.save.testGrantLog = [];
+  S.save.testGrantLog.push({ n, t: now });
+  persist();
+}
+function drawTestGrant() {
+  panel(60, 78, 280, 150, '#fff6ee', 16);
+  button('tgBlock', 60, 78, 280, 150, () => {});
+  A.text(ctx, 'Test grant (free)', 200, 104, 16, '#7fd3ff');
+  [[20, 78], [40, 164], [100, 250]].forEach(([n, x]) => {
+    drawButton(x, 124, 74, 40, '+' + n, '#e9f7ff', { size: 16 });
+    button('tg' + n, x, 124, 74, 44, () => applyTestGrant(n));
+  });
+  drawButton(120, 176, 160, 36, 'Close', '#fff3e6', { size: 15 });
+  button('tgClose', 120, 176, 160, 40, () => { S.testGrant = null; S.paused = false; });
+}
+function drawBattleRecords(b, x, y, w, h) {
+  if (!b || !b.bySource) return;
+  const rows = [];
+  for (const tw of b.towers) if (tw.rec && (tw.rec.dmg > 0 || tw.rec.kills > 0)) rows.push([C.TOWERS[tw.type].short || C.TOWERS[tw.type].name, tw.rec]);
+  for (const [k, name] of [['swatter', 'Cookie Swatter'], ['bomb', 'Bomb'], ['plane', 'Crop Duster'], ['other', 'Other']]) if (b.bySource[k] && (b.bySource[k].dmg > 0 || b.bySource[k].kills > 0)) rows.push([name, b.bySource[k]]);
+  if (!rows.length) return;
+  A.rr(ctx, x, y, w, h, 10); ctx.fillStyle = '#f6ece8'; ctx.fill();
+  A.text(ctx, 'Who did the work', x + 8, y + 12, 12, '#7a5a6a', 'left', null);
+  rows.slice(0, 4).forEach((r, i) => A.text(ctx, `${r[0]}  ${Math.round(r[1].dmg)} dmg  ${r[1].kills} kills`, x + 8, y + 28 + i * 14, 12, '#3d2a36', 'left', null));
+}
+function drawPrepStats() {
+  const y = 668, h = 56;
+  panel(26, y, 348, h, '#fff8ef', 12);
+  const id = S.prep && S.prep.statId;
+  if (!id || !C.TOWERS[id]) { plainText('Tap a card to see its stats', 200, y + 28, 14, '#7a5a6a', 'center', '600'); return; }
+  const cl = (S.save.cards[id] && S.save.cards[id].level) || 1;
+  plainText(C.TOWERS[id].name, 40, y + 16, 14, '#3d2a36', 'left', '800');
+  cardStatKeys(id).slice(0, 3).forEach((k, i) => {
+    plainText(`${statLabel(id, k)} ${formatStat(id, k, towerStat(id, k, 1, cl))}`, 40 + (i % 3) * 112, y + 38, 12, '#3d2a36', 'left', '600');
+  });
+}
 // v0.7.2 C16: Snd and Reset left the map's bottom row: a gear at the top right of the map header opens one small panel (Sound switch, Reset behind a two-step confirm).
 function renderSettings() {
   if (!S.settings) return;
   button('setBlock', -2000, -2000, W + 4000, H + 4000, () => {});
   ctx.save(); ctx.fillStyle = 'rgba(40,26,38,0.55)'; ctx.fillRect(-2000, -2000, W + 4000, H + 4000); ctx.restore();
   button('setBlock2', -2000, -2000, W + 4000, H + 4000, () => closeSettings());
-  const x = 70, y = 122, w = 260, h = 398; // v0.8.1 J12: five 68 px rows (Sound, Reduce motion, Haptics, Reset, Close)
+  const x = 70, y = 90, w = 260, h = 560; // v0.8.6 U1 + AU1 volume rows
   panel(x, y, w, h, '#fff6ee', 20); button('setPanel', x, y, w, h, () => {});
   A.text(ctx, 'Settings', 200, y + 28, 22, '#ffb3c1');
   const st = S.save.settings || {}; const muted = st.muted, rmv = st.reduceMotion || 'auto', hap = st.haptics !== false;
@@ -794,8 +854,16 @@ function renderSettings() {
     if (S.confirmReset > S.t) { const keepSet = S.save.settings; S.save = M.newSave(); if (keepSet) S.save.settings = keepSet; Cal.touch(S.save, now()); persist(); S.confirmReset = 0; S.cardsBlinkUntil = 0; closeSettings(); toast('Progress reset'); }
     else { S.confirmReset = S.t + 3; }
   });
-  drawButton(x + 24, y + 326, w - 48, 48, 'Close', '#fff3e6', { size: 17 });
-  button('setClose', x + 24, y + 322, w - 48, 56, () => closeSettings());
+  const bigText = st.textSize === 'large';
+  drawButton(x + 24, y + 326, w - 48, 52, bigText ? 'Text: Large' : 'Text: Normal', bigText ? '#9fe0b5' : '#fff3e6', { size: 16 });
+  button('setText', x + 24, y + 322, w - 48, 60, () => setS('textSize', bigText ? 'normal' : 'large'));
+  const sfxV = st.sfxVol == null ? 1 : st.sfxVol, musV = st.musicVol == null ? 0.35 : st.musicVol;
+  drawButton(x + 24, y + 394, w - 48, 44, `SFX ${Math.round(sfxV * 100)}%`, '#fff3e6', { size: 15 });
+  button('setSfx', x + 24, y + 390, w - 48, 52, () => setS('sfxVol', sfxV <= 0 ? 1 : Math.round((sfxV - 0.25) * 100) / 100));
+  drawButton(x + 24, y + 446, w - 48, 44, `Music ${Math.round(musV * 100)}%`, '#fff3e6', { size: 15 });
+  button('setMusic', x + 24, y + 442, w - 48, 52, () => setS('musicVol', musV <= 0 ? 0.35 : Math.round((musV - 0.25) * 100) / 100));
+  drawButton(x + 24, y + 498, w - 48, 44, 'Close', '#fff3e6', { size: 17 });
+  button('setClose', x + 24, y + 494, w - 48, 52, () => closeSettings());
 }
 // v0.7.5 C18: the backdrop (gradient + faint gingham tablecloth) is baked once into one offscreen canvas per layout (resolution capped at 2x) and blitted with a single
 // drawImage per frame; it is rebuilt only on a resize / DPR / layout change (S.bdCache is cleared in resize()). Only the 14 drifting bubbles are drawn live.
@@ -1270,8 +1338,7 @@ function renderPrep() {
   const unlocked = M.unlockedCards(S.save);
   A.text(ctx, `Your deck (${S.prep.deck.length}/${C.BATTLE.deckSize}) - tap to pick`, 30, 182, 14, '#7a5a6a', 'left', null);
   // v0.7 D-P4 / v0.7.6 E4: a card above the world's cap acts as the cap in this world - a pill on the card and one line under the grid
-  const capW = worldCardLevelCap(i); const overCap = (id) => !!capW && unlocked.includes(id) && S.save.cards[id].level > capW;
-  if (capW && unlocked.some(overCap)) plainText(`A card above L${capW} acts as L${capW} in this world`, 200, 488, 12, '#b0506a', 'center', '800'); // v0.7.7: the badge shows the capped level (pink + a marker); the pill is gone
+  const capW = 0; // v0.8.6 UC1: no world card cap
   const ownedIds = C.ALL_CARDS.filter((id) => unlocked.includes(id)), lockedIds = C.ALL_CARDS.filter((id) => !unlocked.includes(id)); // v0.8.2 R12: owned cards first (5 columns), the locked ones last as small tiles under a thin divider
   ownedIds.forEach((id, k) => { // v0.6: 13 cards -> 5 columns x 3 rows
     const col = k % 5, row = Math.floor(k / 5);
@@ -1282,6 +1349,7 @@ function renderPrep() {
     if (isU) button('deck' + id, x, y, w, h, () => {
       const d = S.prep.deck; const j = d.indexOf(id);
       if (j >= 0) d.splice(j, 1); else if (d.length < C.BATTLE.deckSize) d.push(id); else toast(`Deck is full (${C.BATTLE.deckSize}). Tap a card to remove it.`);
+      S.prep.statId = id; // v0.8.6 U2: the docked panel shows this card
       if (C.ART81 && C.TOWERS[id].special) S.prepTip = { tower: id, until: S.t + 3.4 }; // v0.8.2 M7g: the Special row (3 states) of the tapped card
       sfx('tap');
     });
@@ -1310,7 +1378,7 @@ function renderPrep() {
   const by = 510; // v0.7.7 P1-1: >= 8 px below the cap line (its text ends at y 494; the Boosters title starts at 503)
   A.text(ctx, `Boosters (bring ${C.BATTLE.bonusTypesToBring}, max ${C.BATTLE.maxBonusUses} uses)`, 30, by, 14, '#7a5a6a', 'left', null);
   C.BONUS_TYPES.forEach((bt, k) => {
-    const x = 26 + k * 88, y = by + 14, w = 80, h = 64;
+    const x = 12 + k * 76, y = by + 14, w = 72, h = 64;
     const sel = S.prep.bonuses.includes(bt);
     const stock = S.save.bonusStock[bt] || 0;
     A.rr(ctx, x, y, w, h, 14); ctx.fillStyle = sel ? A.shade(C.BONUSES[bt].color, 0.2) : '#f3ebee'; ctx.fill();
@@ -1328,10 +1396,11 @@ function renderPrep() {
   });
   // warnings
   let warn = null;
-  if (levelHasFlyers(i) && !S.prep.deck.some((d) => C.AIR_COUNTERS.includes(d))) warn = C.ART81 ? 'Flying ants ahead! Only the Laser and Bug Zapper can hit them.' : 'Flying ants ahead! Only Laser, Bug Zapper or the Crop Duster can hit them.';
+  if (i === 29) warn = 'Try Bomb + Freezer. Clear the escort near your towers; freeze the queen there before she bites.';
+  else if (levelHasFlyers(i) && !S.prep.deck.some((d) => C.AIR_COUNTERS.includes(d))) warn = C.ART81 ? 'Flying ants ahead! Only the Laser and Bug Zapper can hit them.' : 'Flying ants ahead! Only Laser, Bug Zapper or the Crop Duster can hit them.';
   else if (ants.includes('gasmask') && S.prep.deck.includes('spray') && S.prep.deck.filter((d) => d !== 'spray' && C.TOWERS[d].kind === 'tower' && d !== 'fan').length < 2) warn = 'Gas-mask ants ignore Bug Spray - bring other damage too.';
   // v0.8.2 R6: a 0-stock booster is never pre-selected and the 'buy one' text is a neutral hint shown only after the player taps the 0-stock booster (S.zeroHint)
-  if (S.zeroHint && S.t < S.zeroHint.until && S.prep.bonuses.includes(S.zeroHint.bt) && !(S.save.bonusStock[S.zeroHint.bt] > 0)) warn = `You have 0 ${C.BONUSES[S.zeroHint.bt].name}s. Buy one during battle for ${C.ECONOMY.diamonds.boosterPriceStart} diamonds, or in the Shop.`;
+  if (S.zeroHint && S.t < S.zeroHint.until && S.prep.bonuses.includes(S.zeroHint.bt) && !(S.save.bonusStock[S.zeroHint.bt] > 0)) warn = `You have 0 ${C.BONUSES[S.zeroHint.bt].name}s. Buy one during battle for ${M.diamondQuote('battle', M.highestWorld(S.save))} diamonds, or in the Shop.`;
   // warnings are word-wrapped inside an auto-height box (no overflow on narrow phones)
   S.layoutWarn = null;
   S.layoutAirFix = null;
@@ -1349,10 +1418,15 @@ function renderPrep() {
     ctx.font = `bold 12px ${A.FONT}`;
     S.layoutWarn = { box: { x: 26, y: 646 - hh - 2, w: 348, h: hh }, lines: lines.map((l) => ctx.measureText(l).width), maxW: 324 };
   }
-  drawButton(26, 652, 110, 48, 'Back', '#fff3e6'); button('back', 26, 650, 110, 54, () => go('map')); // v0.8.1 U8: the hit area is 54 tall (>= 44 dp on a 360x640 phone with a gesture inset)
+  if (i === 29 && S.save.l30Fails >= 2 && !S.save.l30FreezerUsed && !S.prep.bonuses.includes('freeze')) {
+    drawButton(26, 640, 348, 24, 'Free Freezer (one time)', '#c7ecff', { size: 13 });
+    button('l30free', 26, 636, 348, 32, () => { S.prep.bonuses = ['freeze', S.prep.bonuses.find((x) => x !== 'freeze')].filter(Boolean).slice(0, C.BATTLE.bonusTypesToBring); S.save.l30FreezerArmed = true; persist(); });
+  }
+  drawPrepStats();
+  drawButton(26, 732, 110, 48, 'Back', '#fff3e6'); button('back', 26, 730, 110, 54, () => go('map')); // hit area stays 110 x 54
   const ready = S.prep.deck.length === Math.min(C.BATTLE.deckSize, unlocked.length);
-  drawButton(150, 652, 224, 48, 'Defend!', '#9fe0b5', { disabled: !ready, size: 22 });
-  button('start', 150, 650, 224, 54, () => {
+  drawButton(150, 732, 224, 48, 'Defend!', '#9fe0b5', { disabled: !ready, size: 22 });
+  button('start', 150, 730, 224, 54, () => {
     if (!ready) toast(`Pick ${C.BATTLE.deckSize} cards`);
     else startBattle(); // v0.3: a 0-stock booster is only a warning (it can be bought in battle with diamonds)
   });
@@ -1397,7 +1471,7 @@ function renderStarCard() {
   rows.forEach((r, k) => plainFit(r.cleared ? `L${r.n}: ${r.stars} star${r.stars === 1 ? '' : 's'} - a ${r.stars + 1}${r.stars === 0 ? 'st' : r.stars === 1 ? 'nd' : 'rd'} star here adds +1` : `L${r.n}: not won yet - win it first`, 200, y0 + 108 + k * 26, w - 40, 13, '#3d2a36', 'center', '600'));
   drawButton(x0 + 84, y0 + h - 62, w - 168, 46, 'OK', '#9fe0b5', { size: 20 }); button('starCardOk', x0 + 80, y0 + h - 66, w - 160, 54, () => { S.starCard = null; sfx('tap'); });
 }
-function zeroBonusAlert(bt) { S.prepAlert = { msg: `0 ${C.BONUSES[bt].name}s left! In battle you can buy one for ${C.ECONOMY.diamonds.boosterPriceStart} diamonds (you have ${S.save.diamonds || 0}).`, t: 2.6, bonus: bt }; }
+function zeroBonusAlert(bt) { S.prepAlert = { msg: `0 ${C.BONUSES[bt].name}s left! In battle you can buy one for ${M.diamondQuote('battle', M.highestWorld(S.save))} diamonds (you have ${S.save.diamonds || 0}).`, t: 2.6, bonus: bt }; }
 function wrapLines(str, maxW, size) {
   ctx.font = `bold ${size}px ${A.FONT}`; const out = []; let line = '';
   for (const w of str.split(' ')) { const test = line ? line + ' ' + w : w; if (ctx.measureText(test).width > maxW && line) { out.push(line); line = w; } else line = test; }
@@ -1496,7 +1570,7 @@ function renderBattle(dt) {
   for (const tw of b.towers) drawList.push({ y: tw.y + (C.TOWERS[tw.type].place === 'path' ? -12 : 0), f: () => drawTowerObj(tw) });
   for (const a of b.ants) if (!a.flying) drawList.push({ y: a.y, f: () => drawAntObj(a) });
   for (const q of S.swatQ) if (q.ghost) drawList.push({ y: q.y, f: () => drawAntObj(q.ghost, true) }); // v0.7.3: the swatted ant stays until the slap lands
-  for (const m of b.balls) drawList.push({ y: m.y, f: () => A.marble(ctx, m.x, m.y - m.r * 0.6, m.r, m.rot) });
+  for (const m of b.balls) drawList.push({ y: m.y, f: () => A.marble(ctx, m.x, m.y - (m.drawR || m.r) * 0.6, m.drawR || m.r, m.rot) });
   drawList.push({ y: p1.y + 10, f: () => A.drawTreat(ctx, treatKind(b), p1.x, p1.y, b.foodStored / b.cfg.foodHP, t, { ouch: S.cookieOuch > S.t, react: Treat.reaction(S.treat, S.t) }) }); // v0.5 item 3: faces only
   if (b.cfg.swatter && b.cfg.swatter.on) drawList.push({ y: p1.y + 14, f: () => drawGuard(b, p1) }); // v0.7.2 C13: the cookie guard (fly swatter)
   drawList.sort((u, v) => u.y - v.y);
@@ -1543,7 +1617,7 @@ function renderBattle(dt) {
   if (S.info && S.info.tower) renderTowerInfo(b, S.info);
   if (S.mode && !S.result) {
     const m = S.mode; panel(30, MAP_Y + 6, 340, 34, '#5a4058', 16);
-    plainFit(m.kind === 'move' ? `Tap a free blue spot to move it (${C.ECONOMY.diamonds.moveTower} diamond)` : 'Tap the tower to swap with (free)', 182, MAP_Y + 23, 280, 12.5, '#ffffff', 'center', '700');
+    plainFit(m.kind === 'move' ? `Tap a free blue spot to move it (${M.diamondQuote('move', M.highestWorld(S.save))} diamonds)` : 'Tap the tower to swap with (free)', 182, MAP_Y + 23, 280, 12.5, '#ffffff', 'center', '700');
     A.blob(ctx, 350, MAP_Y + 23, 11, 11, '#ffb3b3', 1.8); A.text(ctx, 'x', 350, MAP_Y + 22.5, 12, '#fff');
     button('modeCancel', 300, MAP_Y + 2, 74, 42, () => { S.mode = null; });
   }
@@ -1764,9 +1838,9 @@ function renderTowerInfo(b, info) {
     });
   }
   // Move / Swap (on top of the panel's close area)
-  const canMove = (S.save.diamonds || 0) >= C.ECONOMY.diamonds.moveTower;
+  const canMove = (S.save.diamonds || 0) >= M.diamondQuote('move', M.highestWorld(S.save));
   drawButton(256, py + 5, 62, 24, '', '#9fd8ff', { r: 10, disabled: !canMove });
-  A.text(ctx, 'Move', 280, py + 17, 12); A.diamondIcon(ctx, 305, py + 17, 0.55); A.text(ctx, String(C.ECONOMY.diamonds.moveTower), 312, py + 17.5, 12);
+  A.text(ctx, 'Move', 280, py + 17, 12); A.diamondIcon(ctx, 305, py + 17, 0.55); A.text(ctx, String(M.diamondQuote('move', M.highestWorld(S.save))), 312, py + 17.5, 12);
   drawButton(322, py + 5, 58, 24, 'Swap', '#fff3e6', { r: 10, size: 12, disabled: b.towers.length < 2 });
   button('infoMove', 252, py - 2, 68, 44, () => startMode('move', tw));
   button('infoSwap', 320, py - 2, 64, 44, () => startMode('swap', tw));
@@ -1891,6 +1965,7 @@ function drawShield(a, x, y) {
 }
 function drawAntObj(a, ghost = false) {
   const b = S.battle;
+  if (a.crate) { ctx.save(); ctx.translate(a.x, a.y); A.rr(ctx, -12, -10, 24, 18, 4); ctx.fillStyle = '#e0a060'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = A.INK; ctx.stroke(); ctx.restore(); return; }
   const frozen = b.time < b.freezeUntil;
   const p = b.route(a).at(a.d);
   if (Math.abs(p.dx) > 0.3) a._face = (p.dx * (a.dir || 1)) >= 0 ? 1 : -1;
@@ -1910,6 +1985,7 @@ function drawAntObj(a, ghost = false) {
   // tiny lateral offset per id so crowds don't stack perfectly
   let lat = ((a.id * 37) % 9 - 4) * 1.2;
   if (a.state === 'back') lat = C.UI.carrierLane + lat * 0.4; // v0.7.4 P: returning carriers ride ~5 px to one side of the lane so they separate from inbound ants
+  if (a.dropper) lat = 0;
   const x = a.x + p.dy * lat, y = a.y - p.dx * lat;
   let hopY = 0, hopS = 1; if (a._hopT && !reducedMotion()) { const hk = (S.t - a._hopT) / 0.24; if (hk >= 0 && hk < 1) { hopY = -Math.sin(hk * Math.PI) * 4; hopS = 1 + 0.1 * Math.sin(hk * Math.PI * 2) * (1 - hk); } } // v0.7.10 cookie-pause hop
   let gsx = 1, gsy = 1; if (a._grabT && !reducedMotion()) { const gk = (S.t - a._grabT) / 0.08; if (gk >= 0 && gk < 1) { const q = Math.sin(gk * Math.PI); gsx = 1 + 0.12 * q; gsy = 1 - 0.12 * q; } } // v0.8.1 J3: grab squash 1.12 / .88 over 80 ms
@@ -2141,6 +2217,8 @@ function renderHud(b) {
   A.diamondIcon(ctx, -15, 0, 0.95);
   A.text(ctx, String(S.save.diamonds || 0), 8, 1, 16, '#7fd3ff', 'center', A.INK, 'bold', true);
   ctx.restore();
+  if (C.TEST_GRANTS) button('diaGrant', 221, 19, 62, 28, () => { S.testGrant = S.testGrant || { at: 0 }; S.paused = true; });
+  if (S.testGrant && C.TEST_GRANTS) drawTestGrant();
   // crumbs
   S.crumbShake = Math.max(0, S.crumbShake - 1 / 60); S.crumbPulse = Math.max(0, S.crumbPulse - 1 / 60);
   const cbump = S.crumbBump > 0 ? 0.08 * Math.sin(Math.PI * (1 - S.crumbBump / 0.12)) : 0; S.crumbBump = Math.max(0, S.crumbBump - 1 / 60); // v0.8.1 G4: 1 -> 1.08 -> 1 over 120 ms
@@ -2349,9 +2427,8 @@ function renderResult(dt) {
   // coin breakdown: win = food + kills (+ level, first clear) + time; loss = kills + time (capped together)
   // v0.6 item 1: "Time survived" = floor(battle seconds / 3) - its own line, on a win and on a loss
   const P = out.parts || {}; const rows = [];
-  if (R.win) { rows.push(['Victory', P.base]); rows.push(['Food left', P.food]); rows.push(['Ants beaten', P.kills]); if (P.level) rows.push(['Level reward', P.level]); if (P.firstClear) rows.push(['First clear', P.firstClear]); if (P.stars) rows.push(['Star bonus', P.stars]); if (P.daily) rows.push(['Daily first win', P.daily]); } // v0.7.6 E1: first-time 2 / 3 star coins
-  else rows.push(['Ants beaten', P.kills || 0]);
-  rows.push([R.win ? 'Time survived' : `Time survived${out.coins >= C.ECONOMY.lossCap ? ` (max ${C.ECONOMY.lossCap})` : ''}`, P.time || 0]);
+  if (R.win) { rows.push(['Victory', P.replay || P.base || 0]); if (P.firstClear) rows.push(['First clear', P.firstClear]); if (P.stars) rows.push(['Star records', P.stars]); if (P.daily) rows.push(['Daily first win', P.daily]); }
+  else rows.push(['Progress', P.progress || 0]);
   const RS = rows.length > 5 ? 14 : 16;
   A.rr(ctx, 70, 316, 260, 14 + rows.length * RS, 10); ctx.fillStyle = '#f6ece8'; ctx.fill();
   rows.forEach(([l, v], i) => { A.text(ctx, l, 84, 330 + i * RS, 12, '#7a5a6a', 'left', null); A.text(ctx, `+${v}`, 316, 330 + i * RS, 12, '#c9962a', 'right', null); });
@@ -2401,6 +2478,7 @@ function renderResult(dt) {
     const k = Math.min(1, (R.t - C.UI.perfectAnimTime) * 4); strip(yy + 12 + (out.prize ? 34 : 0), out.bossGift, cardLabel(out.bossGift, 'Boss gift'), k);
   }
   if (!(out.prize && !celebrating) && !gift && R.win && !R.perfect && S.battle.stats.stolen > 0) A.text(ctx, 'Tip: lose no food at all for a Perfect prize', 200, yy + 10, 12, '#a08090', 'center', null);
+  drawBattleRecords(S.battle, 52, 456, 296, 72);
   ctx.restore(); // bodyA
   ctx.restore();
   if (MO && rtM > -0.01 && rtM < MO.dur) drawStarMoment(MO, rtM, R.t); // the gold 3-star card (above everything in the panel)
@@ -2429,13 +2507,13 @@ function renderResult(dt) {
 // ---------------- CARDS / MERGE ----------------
 // v0.5 item 1b: the bottom info panel (kept, a bit larger) shows the card's real stats at its level - range in tiles, power,
 // fire rate - plus a one-line description and what the NEXT card level changes (item 5b).
-function cardStatKeys(id) { return id === 'ball' ? ['power', 'rate', 'ballRadius'] : id === 'tractor' ? ['liftSize', 'rate', 'scoop'] : ['power', 'rate', 'range']; }
+function cardStatKeys(id) { return id === 'ball' ? ['power', 'rate'] : id === 'glue' ? ['power', 'stickTime'] : id === 'tractor' ? ['liftSize', 'rate', 'scoop'] : ['power', 'rate', 'range']; }
 // v0.8.2 M7g: the Special row. state: 'locked' (card level < 5) | 'asleep' (CL >= 5, world < 6) | 'active'. level = a LEVELS entry (prep / battle) or null (Cards / Shop: the highest unlocked world).
 function specialState(id, level, cl) {
   const T = C.TOWERS[id]; if (!T || !T.special) return null;
   if (!(cl >= C.SPECIAL_CARD_LEVEL)) return 'locked';
   const w = level ? level.world : M.highestWorld(S.save);
-  return w >= C.SPECIALS_FROM_WORLD && C.TUNING.specials !== false ? 'active' : 'asleep';
+  return C.TUNING.specials !== false ? 'active' : 'asleep';
 }
 function specialRow(id, st, x, cy, w) {
   const T = C.TOWERS[id], sp = T.special; ctx.save(); A.starShape ? A.starShape(ctx, x + 6, cy, 5.5, st === 'active' ? '#ffd24a' : '#d4cac2') : (ctx.beginPath(), ctx.arc(x + 6, cy, 4.5, 0, 7), ctx.fillStyle = st === 'active' ? '#ffd24a' : '#d4cac2', ctx.fill()); ctx.restore();
@@ -2584,10 +2662,10 @@ function renderCardView() {
   drawButton(22, 18, 66, 28, 'Back', '#fff3e6', { size: 13, r: 10 }); button('cvBack', 14, 8, 84, 48, () => go('cards')); // v0.7.2: small Back (the tab bar's Cards tab also returns to the list)
   drawCardPic(28, 58, 104, 136, id, { level: c.level, locked: !c.unlocked });
   const capNow = highestWorldCap(); // v0.7.7 S-1
-  plainText(c.unlocked ? `Fights as L${capNow ? Math.min(c.level, capNow) : c.level}` : 'Not unlocked yet', 146, 76, 15, INFO_INK, 'left', '800');
+  plainText(c.unlocked ? `Fights as L${c.level}` : 'Not unlocked yet', 146, 76, 15, INFO_INK, 'left', '800');
   plainText('3 cards of a level \u2192 1 of the next', 146, 98, 12, INFO_SOFT, 'left', '600');
   plainText('Your highest level fights.', 146, 114, 12, INFO_SOFT, 'left', '600');
-  if (c.unlocked) plainFit(worldCapLine(), 146, 130, 236, 12, INFO_SOFT, 'left', '700'); // v0.7.7 S-1: e.g. 'W1 acts as L4, W2 as L5'
+  if (c.unlocked) plainFit(`Fights at card level ${c.level} in every world`, 146, 130, 236, 12, INFO_SOFT, 'left', '700');
   plainText(`Cards held: ${M.totalCards(c)}`, 146, 146, 12, INFO_SOFT, 'left', '600');
   A.coinIcon(ctx, 158, 170, 1); A.text(ctx, String(S.save.coins), 190, 171, 15, '#ffd45e');
   const rows = M.mergeRows(S.save, id);
@@ -2610,7 +2688,14 @@ function renderCardView() {
   });
   cardInfoPanel(id, 24, 497, 352, 97, {});
   const ready = M.mergeReady(S.save, id);
-  drawButton(24, 604, 352, 34, 'Merge all', ready ? '#9fe0b5' : '#e6dce2', { size: 15, r: 12, disabled: !M.anyMergeReady(S.save) }); button('cvMergeAll', 24, 604, 352, 44, doMergeAll);
+  drawButton(24, 604, 352, 34, 'Merge this tower', ready ? '#9fe0b5' : '#e6dce2', { size: 15, r: 12, disabled: !ready });
+  button('cvMergeAll', 24, 604, 352, 44, () => {
+    const done = M.mergeAllOf(S.save, id);
+    if (!done.length) { toast(ready ? 'Not enough coins' : 'Nothing to merge yet - 3 cards of a level make 1 of the next'); return; }
+    persist(); sfx('upgrade');
+    const top = done.reduce((a, d) => (d.to > a.to ? d : a), done[0]);
+    S.mergeAnim = { id: top.id, from: top.from, to: top.to, n: 3, t: 0, all: done.length };
+  });
   if (S.mergeAnim) renderMergeAnim();
 }
 // Merge animation: the 3 merged cards fly into one, flash, it grows and the level badge flips to the new level.
@@ -2683,7 +2768,7 @@ function renderShop() {
   } else {
     A.text(ctx, `Card pack: ${E.cardPackSize} random cards`, 112, 132, 13, '#7a4a5a', 'left', null);
     { const left = Math.max(1, (E.packPity || 0) - (S.save.packsSinceNew || 0)); // v0.6.2 item 13 + v0.7 D-P3 pity
-      plainFit(M.lockedCards(S.save).length ? `level 1, ${Math.round(E.packNewTowerChance * 100)}% NEW tower${E.packPity ? ` (sure in ${left})` : ''}` : 'level 1, any unlocked tower', 112, 152, 172, 12, '#a08090', 'left', '700'); }
+      plainFit(M.lockedCards(S.save).length ? `level 1, ${Math.round(E.packNewTowerChance * 100)}% new tower` : 'level 1 of a tower you own, or level 3-4', 112, 152, 172, 12, '#a08090', 'left', '700'); }
     drawButton(290, 122, 74, 40, `${E.cardPack}c`, '#9fe0b5', { size: 15, disabled: S.save.coins < E.cardPack });
     // v0.7: every pack opens the pack reveal (no toast, no separate NEW CARD reveal; a new tower is the last card)
     button('pack', 286, 119, 82, 46, () => { const got = M.buyPack(S.save); if (got) { persist(); shopBought('pack', 'pack', E.cardPack, 'coin'); openPackReveal(got, { source: 'paid', newTower: got.newTower }); } else toast('Not enough coins'); });
@@ -2712,7 +2797,7 @@ function renderShop() {
   });
   // boosters (v0.4 item 10: fixed price, paid in DIAMONDS)
   const by = 462;
-  { const bl = `Boosters - ${E.boosterDiamonds} diamonds each`; plainText(bl, 30, by, 12, '#7a5a6a', 'left', '700'); A.diamondIcon(ctx, 30 + ctx.measureText(bl).width + 12, by, 0.7); }
+  { const shopDia = M.diamondQuote('shop', M.highestWorld(S.save)); const bl = `Boosters - ${shopDia} diamonds each`; plainText(bl, 30, by, 12, '#7a5a6a', 'left', '700'); A.diamondIcon(ctx, 30 + ctx.measureText(bl).width + 12, by, 0.7); }
   C.BONUS_TYPES.forEach((bt, k) => {
     const x = 26 + k * 88, y = by + 10, w = 80, h = 56;
     const pk = shopPulse('booster', bt), cs = pk == null ? 1 : 1 + SHOP_FX.cardPulse * Math.sin(pk * Math.PI);
@@ -2722,7 +2807,7 @@ function renderShop() {
     fitText(C.BONUSES[bt].name, x + w / 2, y + 46, w - 8, 12, '#fff');
     ctx.restore();
     countBadge(x + w - 19, y + 15, S.save.bonusStock[bt] || 0, pk);
-    button('bbuy' + bt, x, y, w, h, () => { if (M.buyBonus(S.save, bt)) { persist(); sfx('tap'); shopBought('booster', bt, E.boosterDiamonds, 'diamond'); } else toast(`Need ${E.boosterDiamonds} diamonds`); });
+    button('bbuy' + bt, x, y, w, h, () => { const shopDia = M.diamondQuote('shop', M.highestWorld(S.save)); if (M.buyBonus(S.save, bt)) { persist(); sfx('tap'); shopBought('booster', bt, shopDia, 'diamond'); } else toast(`Need ${shopDia} diamonds`); });
   });
   cardInfoPanel(S.shopSel, 24, 534, 352, 108, { hint: 'Tap (i) under a card to see its stats.' });
   if (gift && !S.reveal.length && !S.pack) onboardSpot({ x: 286, y: 118, w: 82, h: 48, r: 14 }, 'gift', claimGift, 'Your free pack - tap it!');

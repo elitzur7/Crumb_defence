@@ -87,7 +87,7 @@ test('QA9: every world has the scaffold pieces, and dropping one W7 tip fails th
 
 test('W7: shield aura, alternating queen, and the calibrated hp table', () => {
   const hp = C.LEVELS.slice(60, 70).map((L) => L.hpMul);
-  assert.deepEqual(hp, [6, 7.4, 9.6, 12, 5.42, 9.5, 4.68, 7.05, 3.99, 1.64]);
+  assert.deepEqual(hp, [6, 7.4, 9.6, 12, 9.4, 9.5, 4.68, 7.05, 3.99, 1.64]);
   assert.equal(C.WORLDS[6].name, 'Jelly Jamboree');
   assert.equal(C.WORLDS[6].coinMul, 2.25);
   assert.equal(C.WORLDS[6].treat, 'tart');
@@ -141,7 +141,7 @@ test('ANT1/ANT2: play ants scale by 0.62 with the soft recipe; book art stays ou
   assert.equal(A.PLAY_ANT_SCALE, 0.72);
   assert.match(src('art.js'), /if \(opt\.play\) ctx\.scale\(PLAY_ANT_SCALE, PLAY_ANT_SCALE\)/);
   assert.match(src('art.js'), /if \(_play\) \{ playSegment/);
-  assert.match(src('art.js'), /if \(_play\) \{ ctx\.lineWidth = 2\.2; ctx\.strokeStyle = col/);
+  assert.match(src('art.js'), /ctx\.lineWidth = quiet \? 1\.35 : 2\.35/);
   assert.match(src('game.js'), /pxRatio, mood, \{ play: true/);
   assert.equal(C.ANT_SIZES.regular, 1);
   assert.equal(C.ANTS.worker.size, 1);

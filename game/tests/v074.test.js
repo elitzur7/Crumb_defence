@@ -157,7 +157,7 @@ test('M1 #1: with the default mode every tower picks exactly as before (Weakest 
 });
 test('M1 #5: the mode survives upgrade and Move / Swap, is per tower, and a new battle starts on Weakest (never saved)', () => {
   const b = mk(); b.hand = null;
-  const a = b.addTower('slingshot', 2, 2), c = b.addTower('laser', 6, 6);
+  const a = b.addTower('slingshot', 2, 4), c = b.addTower('laser', 6, 4);
   b.setTargetMode(a, 'carrier'); b.setTargetMode(c, 'front');
   a.lvl++; assert.equal(a.mode, 'carrier');                     // an upgrade keeps the same object
   const was = [a.c, a.r]; if (b.canMoveTower(a, 7, 7)) { assert.ok(b.moveTower(a, 7, 7)); assert.notDeepEqual([a.c, a.r], was); assert.equal(a.mode, 'carrier'); }

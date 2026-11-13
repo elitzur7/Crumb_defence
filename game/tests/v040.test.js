@@ -32,7 +32,7 @@ test('items 12+13: every stage has 30-50% fewer waves; stage count unchanged', (
 // Any change to a level's wave mix or count now has to update this table on purpose. Ratios to v0.3 for levels 1-10 stay in the message (about half, 0.46-0.62).
 const GOLDEN_ANTS = [53, 58, 100, 105, 102, 161, 151, 209, 290, 244, 126, 105, 128, 114, 179, 151, 181, 258, 302, 245,
   85, 111, 138, 123, 125, 103, 146, 149, 173, 191, // v0.7.7: world 3 (L21-L30)
-  89, 121, 128, 112, 110, 106, 155, 132, 192, 172]; // v0.7.9: world 4 (L31-L40)
+  89, 121, 99, 112, 110, 89, 155, 132, 192, 172]; // v0.8.6: L33 and L36 trade a flying-scout group for one drop carrier
 test('item 12 (golden table, v0.7.4 P2): the number of ants in each of the 40 levels is exactly the golden table', () => {
   assert.equal(C.LEVELS.length, 80); // v0.8.5: + World 8 (ant counts stay out of the v0.7.4 golden table)
   C.LEVELS.slice(0, 40).forEach((L, i) => {
@@ -135,14 +135,14 @@ test('item 5: no direction arrows are drawn in the game (fan, marble, board-cent
 
 // ---------- items 9 + 10: diamonds in battle, fixed booster prices ----------
 test('item 10: booster prices are fixed - Shop 15 diamonds, battle 20, no escalation, all 4 boosters', () => {
-  const s = M.newSave(); s.diamonds = 15 * 8;
-  for (const bt of C.BONUS_TYPES) for (let k = 0; k < 2; k++) { const d = s.diamonds; assert.ok(M.buyBonus(s, bt)); assert.equal(d - s.diamonds, 15); }
+  const s = M.newSave(); s.diamonds = 20 * C.BONUS_TYPES.length * 2;
+  for (const bt of C.BONUS_TYPES) for (let k = 0; k < 2; k++) { const d = s.diamonds; assert.ok(M.buyBonus(s, bt)); assert.equal(d - s.diamonds, 20); }
   const save = M.newSave(); save.diamonds = 1000;
   const b = mk({ bonusTypes: ['bomb', 'freeze'], bonusStock: { bomb: 0, freeze: 0 } });
-  for (const bt of C.BONUS_TYPES) assert.equal(M.nextBoosterPrice(b, bt), 20);
+  for (const bt of C.BONUS_TYPES) assert.equal(M.nextBoosterPrice(b, bt), 25);
   M.buyBoosterWithDiamonds(save, b, 'bomb'); M.buyBoosterWithDiamonds(save, b, 'freeze');
-  for (const bt of C.BONUS_TYPES) assert.equal(M.nextBoosterPrice(b, bt), 20, `${bt} after purchases`);
-  assert.equal(save.diamonds, 960);
+  for (const bt of C.BONUS_TYPES) assert.equal(M.nextBoosterPrice(b, bt), 25, `${bt} after purchases`);
+  assert.equal(save.diamonds, 950);
 });
 test('item 9: the battle HUD shows the diamonds in stock', () => {
   const g = src('game.js'); assert.ok(/renderHud[\s\S]{0,2500}diamondIcon[\s\S]{0,200}S\.save\.diamonds/.test(g));

@@ -73,10 +73,12 @@ export function isDamageCard(id) {
 
 // ---------- tower stats (all numbers come from C.TOWERS) ----------
 export function towerStat(type, key, lvl = 1, cardLevel = 1) {
+  if (type === 'ball' && key === 'ballRadius') return C.MARBLE_R;
   const T = C.TOWERS[type];
   let v = T.stats && key in T.stats ? T.stats[key] : T[key];
   if (v == null || typeof v !== 'number') return v == null ? null : v;
   v = applyCardSteps(T, key, v, cardLevel);
+  if (key === coreStatKey(type)) v *= cardPowerQ(cardLevel); // v0.8.6 EX1: Q(L)=1.08^(L-1) on the useful core stat, before battle steps
   const ups = T.upgrades || [];
   // v0.6 item 6 (Tractor): an in-battle `liftSize` step ADDS a size class; if the card already lifts every size (card L8+),
   // that step raises the rate instead (`rateIfMaxLift`).
@@ -119,10 +121,15 @@ export function upgradeDiff(type, fromLvl, cardLevel = 1) {
 }
 export function statLabel(type, key) {
   const T = C.TOWERS[type];
+  if (type === 'ball' && key === 'power') return 'Damage';
+  if (type === 'ball' && key === 'rate') return 'Firing frequency';
   if (key === 'power') return T.powerLabel || 'Power';
   if (key === 'range') return T.rangeLabel || (T.place === 'path' ? 'Area' : 'Range');
   return C.STAT_LABELS[key] || key;
 }
+const CORE_KEY = { glue: 'stickTime', tractor: 'rate', fan: 'power' };
+export function coreStatKey(type) { return CORE_KEY[type] || 'power'; }
+export function cardPowerQ(cardLevel) { return Math.pow(1.08, Math.max(0, (cardLevel || 1) - 1)); }
 // v0.4.1: every range is shown as the radius of its on-screen circle in map cells (1 tile = C.TILE px), the same unit Yair measures in
 export function rangeTiles(type, px) {
   return px / C.TILE;
@@ -271,7 +278,9 @@ export class Battle {
     this.specialsOn = opts.specials !== undefined ? !!opts.specials : C.TUNING.specials !== false; // v0.8.2 M7a: tuning.json "specials" (default true); opts.specials overrides (tests, A13b)
     this.mapId = opts.mapId || this.level.map;
     this.map = C.MAPS[this.mapId];
-    const parsed = parseMap(this.map, C.GRID_COLS, C.GRID_ROWS);
+    const parsed0 = parseMap(this.map, C.GRID_COLS, 12); // source maps are the released 10x12
+    const shift = (rt) => rt.map(([c, r]) => [c, r + 1]); // LY1: translate resolved routes, including the 0.6-tile walk-in
+    const parsed = { routes: parsed0.routes.map(shift), props: (parsed0.props || []).map((p) => ({ ...p, r: p.r + 1 })) };
     this.routes = parsed.routes.map((r) => new Path(r));
     this.path = this.routes[0];
     this.props = parsed.props;
@@ -291,9 +300,8 @@ export class Battle {
     this.rng = mulberry32(opts.seed ?? 12345);
     this.deck = opts.deck.slice(0, this.cfg.deckSize);
     // v0.7 D-P4 (Should, S3 passed): per-world card-level cap - in battle a card acts as at most worlds[w].cardLevelCap (W1 4, W2 6)
-    this.cardLevelCap = opts.noCardLevelCap ? null : worldCardLevelCap(opts.levelIndex || 0);
+    this.cardLevelCap = null; // v0.8.6 UC1: owned card level applies in every world. No world cap.
     this.cardLevels = { ...(opts.cardLevels || {}) };
-    if (this.cardLevelCap) for (const k of Object.keys(this.cardLevels)) this.cardLevels[k] = Math.min(this.cardLevels[k], this.cardLevelCap);
     this.bonusTypes = (opts.bonusTypes || []).slice(0, this.cfg.bonusTypesToBring);
     this.bonusStock = { ...(opts.bonusStock || {}) };
     this.bonusUsesLeft = this.cfg.maxBonusUses;
@@ -316,6 +324,9 @@ export class Battle {
     this.events = [];
     this.pieces = []; this.rescueScale = 1; this.pieceId = 1; // v0.7.4 M2: dropped crumbs; rescueScale = game speed, so a piece lives `window` seconds of WALL time at any speed
     this.stats = { kills: 0, spawned: 0, byType: {}, stolen: 0, returned: 0, lostOnWay: 0 };
+    const blank = () => ({ dmg: 0, kills: 0, overkill: 0 });
+    this.bySource = { swatter: blank(), bomb: blank(), plane: blank(), other: blank() };
+    this.rushT = 0; this.rushFrac = 0;
     this.result = null;            // 'win' | 'lose'
     this.paused = false;           // while paused, every player action and the clock are blocked
     this.onBonusUsed = opts.onBonusUsed || null;
@@ -388,19 +399,41 @@ export class Battle {
   }
   addCrumbs(n) { this.crumbs += n; this.crumbsEarned += n; }
 
-  spawn(type, d = 0, ri = null) {
+  spawn(type, d = 0, ri = null, opt = {}) {
+    if (type === 'dropcarrier') {
+      if (this.ants.some((q) => q.dropper && !q.dead) || this.time - (this.lastDrop ?? -99) < 12) return null;
+      this.lastDrop = this.time;
+    }
     const a = C.ANTS[type];
+    if (!a) return null;
     const hp = Math.round(a.hp * (this.level.hpMul || 1));
     if (ri == null) ri = this.routeCounter++ % this.routes.length;
     const ant = { id: NEXT_ID++, type, ri, hp, maxHp: hp, armor: a.armor, d, speed: a.speed, flying: !!a.flying,
       gasImmune: !!a.gasImmune, weight: a.weight, size: a.size, state: 'go', carrying: 0, trips: 0, waitT: 0, slow: 0, stunT: 0, charmT: 0, charmD: 0,
       plantSlow: 0, plantSlowT: 0, spawnT: a.spawn ? a.spawn.every : 0, healCd: 0, healFx: 0, shield: 0, shieldMax: 0, shieldT: 99, dead: false, x: 0, y: 0, born: this.time, hitFlash: 0, dir: 1 };
-    const p = this.routes[ri].at(d); ant.x = p.x; ant.y = p.y;
-    if (a.shield && a.shield.pts > 0) { ant.shieldMax = ant.shield = Math.round(a.shield.pts * (this.level.hpMul || 1)); } // v0.8.1 M4: the glaze shield scales with hpMul exactly like hp; 'always' (D6)
+    const p = this.routes[ri].at(Math.max(0, Math.min(d, this.routes[ri].length - 0.01))); ant.x = p.x; ant.y = p.y;
+    if (a.shield && a.shield.pts > 0) { ant.shieldMax = ant.shield = Math.round(a.shield.pts * (this.level.hpMul || 1)); }
+    if (opt.budget) { ant.budgeted = true; ant.hp0 = ant.hp + (ant.shield || 0); this.budgetHp = (this.budgetHp || 0) + ant.hp0; }
+    if (type === 'dropcarrier') this.armDropper(ant);
     this.ants.push(ant);
     this.stats.spawned++;
     return ant;
   }
+  armDropper(ant) {
+    const rt = this.routes[ant.ri];
+    const d = rt.length * (0.2 + this.rng() * 0.6);
+    const p = rt.at(d);
+    ant.dropper = true; ant.dropD = d; ant.dropX = p.x; ant.dropY = p.y;
+    ant.fx = p.x - 120; ant.fy = p.y - 30; ant.tx = p.x + 140; ant.ty = p.y - 30; ant.flight = 0; ant.dropped = false;
+    ant.x = ant.fx; ant.y = ant.fy;
+  }
+  spawnCrate(src) {
+    const hp = Math.round(C.ANTS.worker.hp * 2 * (this.level.hpMul || 1));
+    const c = { id: NEXT_ID++, type: 'crate', crate: true, flying: false, hp, maxHp: hp, armor: 0, dead: false, x: src.dropX, y: src.dropY, d: src.dropD, ri: src.ri, unpack: 0.8, speed: 0, state: 'go', size: 1, born: this.time, hitFlash: 0, stunT: 0, budgeted: true, hp0: hp, shield: 0 };
+    this.budgetHp = (this.budgetHp || 0) + hp;
+    this.ants.push(c);
+  }
+  progress() { return this.budgetHp ? Math.max(0, Math.min(1, (this.resolvedHp || 0) / this.budgetHp)) : 0; }
 
   // v0.8.2 M7a: the ONLY way sim.js reads a tower's special: the params when it is active (world >= 6, card level >= 5, flag on), else null
   spec(tw) { return this.specialsOn && tw && tw.stat && C.specialActive(tw, this.level) ? C.TOWERS[tw.type].special.params : null; }
@@ -409,6 +442,7 @@ export class Battle {
     if (ant.dead || dmg <= 0) return 0;
     if (opt.gas && ant.gasImmune) { if (opt.fx !== false && this.rng() < 0.05) this.emit({ type: 'immune', x: ant.x, y: ant.y }); return 0; }
     const armorNow = ant.armor || 0;
+    const hp0 = ant.hp, sh0 = ant.shield || 0;
     const real = applyArmor(dmg, ant.armor, opt.ignoreArmor);
     const armorBlocked = opt.ignoreArmor ? 0 : Math.max(0, dmg - real);
     let toHp = real;
@@ -420,15 +454,18 @@ export class Battle {
       }
     }
     ant.hitFlash = 0.12;
-    if (toHp > 1e-12) { ant.hp -= toHp; if (ant.hp <= 0) this.kill(ant, opt.src); }
+    if (toHp > 1e-12) { ant.hp -= toHp; if (ant.hp < 0) ant.hp = 0; if (ant.hp <= 0 && !ant.dead) this.kill(ant, opt.src); }
+    const removed = Math.max(0, hp0 - ant.hp) + Math.max(0, sh0 - (ant.shield || 0));
+    this.noteHit(opt.src, removed, ant, ant.dead ? Math.max(0, toHp - hp0) : 0);
     if (!opt.fx && armorNow > 0 && !opt.ignoreArmor) this.emit({ type: 'clang', x: ant.x, y: ant.y, armor: armorNow, armorBlocked, src: opt.src && opt.src.type });
     return real;
   }
   kill(ant, src) {
     ant.dead = true;
     // v0.7.7: a child dropped by a splitting ant (Brood Ant) pays 0 crumbs and is not an 'ant beaten' (no kills coin, no byType): anti-farming
-    const crumbs = ant.child ? 0 : C.crumbsFor(ant.type);
+    const crumbs = ant.child || ant.crate ? 0 : C.crumbsFor(ant.type);
     this.addCrumbs(crumbs);
+    if (this.rushT > 0 && crumbs > 0) { this.rushFrac = (this.rushFrac || 0) + crumbs * (C.BONUSES.rush.mul || 0.2); const extra = Math.floor(this.rushFrac); this.rushFrac -= extra; if (extra) this.addCrumbs(extra); }
     if (ant.child) this.stats.childKills = (this.stats.childKills || 0) + 1;
     else { this.stats.kills++; this.stats.byType[ant.type] = (this.stats.byType[ant.type] || 0) + 1; }
     if (ant.carrying > 0 && this.cfg.rescue && this.cfg.rescue.on) { // v0.7.4 M2: `auto` of the piece comes back at once, the rest (`tap - auto`) stays on the trail as a piece to tap
@@ -447,6 +484,13 @@ export class Battle {
     this.emit({ type: 'kill', x: ant.x, y: ant.y, ant: ant.type, crumbs, src: src && src.type, ...(src && src.type === 'swatter' ? { ref: ant } : {}) }); // ref: the view keeps the swatted ant visible until the slap frame (v0.7.3)
     if (src && src.type === 'lizard') src.chew = src.stat('chewTime');
     this.splitAnt(ant);
+  }
+  noteHit(src, removed, ant, over) {
+    if (!src || removed <= 0) return;
+    const bucket = src.rec || (src.type === 'swatter' ? this.bySource.swatter : src.type === 'bomb' ? this.bySource.bomb : src.type === 'plane' ? this.bySource.plane : this.bySource.other);
+    bucket.dmg += removed;
+    if (ant.dead && !ant.child && !ant.crate && !ant._credited) { ant._credited = true; bucket.kills++; bucket.overkill += over || 0; }
+    if (ant.budgeted) { const room = Math.max(0, (ant.hp0 || 0) - (ant.creditedHp || 0)); const add = Math.min(room, removed); ant.creditedHp = (ant.creditedHp || 0) + add; this.resolvedHp = (this.resolvedHp || 0) + add; }
   }
   // v0.7.7 splitInto (tuning.json ants[].splitInto = { type, count }): a dying ant drops `count` children of `type` on its own route, behind it
   // (d - 3 - 7k, k = 0..count-1; where that would fall off the nest end the child goes the same distance AHEAD instead, so no two children stack).
@@ -607,7 +651,7 @@ export class Battle {
     const x = (c + 0.5) * C.TILE, y = (r + 0.5) * C.TILE;
     const cl = this.cardLevels[type] || 1;
     const tower = { id: NEXT_ID++, type, c, r, x, y, lvl: 1, cardLevel: cl, cd: 0.3, chew: 0, anim: 0, aim: -Math.PI / 2, fireFx: 0, target: null, tick: 0,
-      heat: 0, heatTarget: null, mode: 'weak', dir: 0, stuckSet: new Set(), charmSet: new Set(), roastSet: new Set(), balls: 0,
+      heat: 0, heatTarget: null, mode: 'weak', dir: 0, stuckSet: new Set(), charmSet: new Set(), roastSet: new Set(), balls: 0, rec: { dmg: 0, kills: 0, overkill: 0 },
       stat(key) { return towerStat(this.type, key, this.lvl, this.cardLevel); } };
     this.setupTower(tower);
     this.towers.push(tower);
@@ -657,7 +701,7 @@ export class Battle {
   rollFor(tw, lvl = tw.lvl) {
     const d = tw.trailDir;
     if (!d) return { len: 0, tiles: 0, stuck: true };
-    const rad = towerStat(tw.type, 'ballRadius', lvl, tw.cardLevel);
+    const rad = C.MARBLE_R; // MB1: width is not a stat; every level uses the base radius
     return { len: Math.max(0, d.run * C.TILE - Math.min(rad, C.TILE / 2)), tiles: d.run, stuck: false };
   }
   // wind effect of a fan blowing along (wx, wy) on ants near (x, y): >0 = pushes ants back (good), <0 = speeds them up (bad)
@@ -686,6 +730,9 @@ export class Battle {
     } else if (type === 'freeze') {
       this.freezeUntil = this.time + B.time;
       this.emit({ type: 'freeze' });
+    } else if (type === 'rush') {
+      this.rushT = B.time; this.rushFrac = this.rushFrac || 0;
+      this.emit({ type: 'rush' });
     } else if (type === 'decoy') {
       const nd = this.nearestOnTrail(x, y); const p = this.routes[nd.ri].at(nd.d);
       this.decoy = { x: p.x, y: p.y, until: this.time + B.time, ds: this.routes.map((rt) => { const n = rt.nearestD(p.x, p.y); return n.dist < 50 ? n.d : null; }) };
@@ -699,11 +746,12 @@ export class Battle {
   update(dt) {
     if (this.result || this.paused) return;
     this.time += dt;
+    if (this.rushT > 0) { this.rushT -= dt; if (this.rushT <= 0) { this.rushT = 0; if ((this.rushFrac || 0) >= 0.5) this.addCrumbs(1); this.rushFrac = 0; } }
     const t = this.time;
     if (this.nextWave < this.waves.length && t >= this.nextWaveAt) this.startWave();
     if (this.pending.length) {
       const due = this.pending.filter((p) => p.t <= t);
-      if (due.length) { this.pending = this.pending.filter((p) => p.t > t); for (const p of due) this.spawn(p.type); }
+      if (due.length) { this.pending = this.pending.filter((p) => p.t > t); for (const p of due) this.spawn(p.type, 0, null, { budget: true }); }
     }
     const frozen = t < this.freezeUntil;
 
@@ -714,7 +762,7 @@ export class Battle {
       const bearers = au ? this.ants.filter((x) => !x.dead && x.type === 'shieldbearer') : [];
       if (au && (bearers.length || this.ants.some((a) => a.auraArmor))) {
         for (const a of this.ants) {
-          if (a.dead) continue;
+          if (a.dead || !C.ANTS[a.type]) continue;
           const base = (C.ANTS[a.type].armor || 0) - (a.shred || 0);
           let bonus = 0;
           if (!C.ANTS[a.type].boss && bearers.length) {
@@ -734,12 +782,13 @@ export class Battle {
     // a nurse that is ready and has at least one hurt ant in range pulses once: every hurt ant within `radius` tiles regains pct x its max hp (a queen: x bossMul).
     // She never heals herself or another nurse (no stacking). A frozen nurse (Freeze booster) neither pulses nor recharges. No hurt ant in range: she stays ready.
     for (const h of this.ants) {
+      if (!C.ANTS[h.type]) continue;
       const H = C.ANTS[h.type].heal; if (!H || h.dead) continue;
       h.healFx = Math.max(0, h.healFx - dt);
       if (frozen) continue;
       if (h.healCd > 0) { h.healCd = Math.max(0, h.healCd - dt); if (h.healCd > 0) continue; }
       const r2 = (H.radius * C.TILE) ** 2; const hit = [];
-      for (const o of this.ants) { if (o === h || o.dead || o.hp >= o.maxHp - 1e-6 || C.ANTS[o.type].heal) continue; const dx = o.x - h.x, dy = o.y - h.y; if (dx * dx + dy * dy <= r2) hit.push(o); }
+      for (const o of this.ants) { if (o === h || o.dead || !C.ANTS[o.type] || o.hp >= o.maxHp - 1e-6 || C.ANTS[o.type].heal) continue; const dx = o.x - h.x, dy = o.y - h.y; if (dx * dx + dy * dy <= r2) hit.push(o); }
       if (!hit.length) continue;
       let sum = 0; for (const o of hit) { const g = Math.min(o.maxHp - o.hp, o.maxHp * H.pct * (C.ANTS[o.type].boss ? (H.bossMul ?? 1) : 1)); o.hp += g; sum += g; }
       h.healCd = H.every; h.healFx = 0.5; this.stats.heals = (this.stats.heals || 0) + 1; this.stats.healed = (this.stats.healed || 0) + sum;
@@ -776,6 +825,26 @@ export class Battle {
     // move ants
     for (const a of this.ants) {
       if (a.dead) continue;
+      if (a.dropper) {
+        if (!frozen && a.stunT <= 0) a.flight += dt / 4;
+        const u = Math.max(0, Math.min(1, a.flight));
+        a.x = a.fx + (a.tx - a.fx) * u; a.y = a.fy + (a.ty - a.fy) * u;
+        if (!a.dropped && a.flight >= 0.42 && this.time - a.born >= 2) { a.dropped = true; this.spawnCrate(a); }
+        if (a.flight >= 1) { a.dead = true; a.exited = true; }
+        continue;
+      }
+      if (a.crate) {
+        if (!frozen) a.unpack -= dt;
+        if (a.hp <= 0) { a.dead = true; continue; }
+        if (a.unpack <= 0 && !a.opened) {
+          a.opened = true;
+          const living = this.ants.filter((q) => !q.dead && q.type === 'worker').length;
+          const n = Math.max(0, Math.min(4, 12 - living));
+          for (let k = 0; k < n; k++) this.spawn('worker', Math.max(0, a.d - 6 + k * 4), a.ri, { budget: true });
+          a.dead = true;
+        }
+        continue;
+      }
       const rt = this.route(a); const L = rt.length;
       a.hitFlash = Math.max(0, a.hitFlash - dt);
       if (a.shieldMax > 0) { a.shieldT += dt; const SH = C.ANTS[a.type].shield; if (a.shieldT >= SH.regenDelay && a.shield < a.shieldMax) { const was = a.shield; a.shield = Math.min(a.shieldMax, a.shield + a.shieldMax * SH.regenRate * dt); if (a.shield >= a.shieldMax) this.emit({ type: 'shieldFull', x: a.x, y: a.y, id: a.id }); if (was <= 0) this.emit({ type: 'shieldBack', x: a.x, y: a.y, id: a.id }); } } // v0.8.1 M4 regen
@@ -997,7 +1066,7 @@ export class Battle {
     const any = this.ants.some((a) => !a.dead && !a.flying && segDist(a.x, a.y, tw.lx, tw.ly, ex, ey) <= 24);
     if (!any) return;
     this.balls.push({ x: tw.lx, y: tw.ly, dx, dy, left: tw.runLen, stuck: 0, travel: 0,
-      r: tw.stat('ballRadius'), dmg: tw.stat('power'), speed: T.rollSpeed, hit: new Set(), src: tw, rot: 0 });
+      r: C.MARBLE_R, drawR: C.MARBLE_R * Math.max(1, Math.min(1.35, Math.pow(tw.stat('power') / C.TOWERS.ball.power, 0.25))), dmg: tw.stat('power'), speed: T.rollSpeed, hit: new Set(), src: tw, rot: 0 });
     tw.balls++;
     tw.cd = 1 / tw.stat('rate'); tw.fireFx = 0.3; this.emit({ type: 'roll', x: tw.x, y: tw.y });
   }

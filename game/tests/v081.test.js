@@ -14,7 +14,7 @@ test('J12: reducedMotion() reads the setting first; the settings panel has Reduc
   const g = src('game.js');
   assert.match(g, /function reducedMotion\(\) \{ const rmS = S\.save && S\.save\.settings && S\.save\.settings\.reduceMotion; if \(rmS === 'on'\) return true; if \(rmS === 'off'\) return false;/);
   assert.match(g, /'Reduce motion: '/); assert.match(g, /'Haptics: On'/); assert.match(g, /setReduce/); assert.match(g, /setHaptics/);
-  assert.match(g, /const x = 70, y = 122, w = 260, h = 398;/);
+  assert.match(g, /const x = 70, y = 90, w = 260, h = 560;/);
   for (const m of g.matchAll(/drawButton\(x \+ 24, y \+ \d+, w - 48, (\d+),/g)) assert.ok(+m[1] >= 44, 'settings row height >= 44');
 });
 test('J11: caps counters + overlay + window.__caps (test hooks only), reset per battle, long-press on the version text', () => {
@@ -235,7 +235,7 @@ test('J12: motion state is reset per frame and every new art path is behind ART8
 // ---------- Pass 5: World 5 "Donut Diner" (W1-W9, U2, U6, EC1, EC3, EC4) ----------
 import { generateWaves, levelAntTypes } from '../src/sim.js'; import * as A from '../src/art.js';
 test('W1: world 5 Donut Diner - W5 data inside 60 levels, 6 worlds, 52 maps, treat donut, queen5, cap 6, coinMul 1.75, gate 14 stars of W4', () => {
-  assert.equal(C.LEVELS.length, 80); assert.equal(C.WORLDS.length, 8); assert.equal(Object.keys(C.MAPS).length, 72);
+  assert.equal(C.LEVELS.length, 80); assert.equal(C.WORLDS.length, 8); assert.equal(Object.keys(C.MAPS).length, 81);
   const w = C.WORLDS[4]; assert.equal(w.id, 5); assert.equal(w.name, 'Donut Diner'); assert.equal(w.treat, 'donut'); assert.equal(w.queen, 'queen5'); assert.equal(w.levels, 10);
   assert.equal(w.cardLevelCap, 6); assert.equal(w.coinMul, 1.75); assert.deepEqual(w.unlock, { allLevelsWonInWorld: 4, minStarsInWorld: 14 });
   assert.equal(C.WORLD_START[5], 40); assert.ok(C.isBossLevel(49)); assert.ok(!C.isBossLevel(48)); assert.ok(C.LEVELS.slice(40, 50).every((L) => L.world === 5));
@@ -254,9 +254,10 @@ test('W3: hpMul table for L41-L50 is the final tuning (move hpMul, never waves);
   const { checkLevel } = await import('../tools/check-rarity.mjs'); for (let i = 40; i < 50; i++) assert.deepEqual(checkLevel(i).msgs, [], `L${i + 1}`);
 });
 test('U2: ant intro cards - glazed / queen5 / nurse only, once per save, never on a cleared level; an old save pre-marks the ants it has already met', () => {
-  assert.deepEqual(Object.keys(C.ANT_CARD).sort(), ['drone', 'glazed', 'nurse', 'queen5', 'queen6', 'queen7', 'queen8', 'shieldbearer', 'sugarcube']);
+  assert.deepEqual(Object.keys(C.ANT_CARD).sort(), ['drone', 'dropcarrier', 'glazed', 'nurse', 'queen5', 'queen6', 'queen7', 'queen8', 'shieldbearer', 'sugarcube']);
   assert.match(C.ANT_CARD.glazed, /\u2014/); assert.ok(C.ANT_CARD.glazed.length > 20);
-  const s = M.newSave(); assert.equal(M.nextAntCard(s, 0), null, 'L1: no card'); assert.equal(M.nextAntCard(s, 40), null, 'L41 has no glazed');
+  const s = M.newSave(); assert.equal(M.nextAntCard(s, 0), null, 'L1: no card'); assert.equal(M.nextAntCard(s, 40), 'dropcarrier', 'L41 introduces the carrier when it has not been seen');
+  M.markAntSeen(s, 'dropcarrier');
   assert.equal(M.nextAntCard(s, 41), 'glazed'); assert.equal(M.markAntSeen(s, 'glazed'), true); assert.equal(M.markAntSeen(s, 'glazed'), false); assert.equal(M.nextAntCard(s, 41), null);
   const s2 = M.newSave(); s2.levels[41] = { stars: 1, cleared: true }; assert.equal(M.nextAntCard(s2, 41), null, 'cleared level: never');
   const st = mem(); const old = M.newSave(); delete old.seenAnts; old.levels[31] = { stars: 1, cleared: true }; M.writeSave(st, old); const l = M.loadSave(st);
@@ -269,13 +270,13 @@ test('U6: lowestStarLevels lists the previous world levels that can still add st
   assert.equal(M.worldStars(s, 4), 4 * 1 + 5 * 3, 'meta count agrees'); assert.equal(M.worldUnlocked(s, 5), false);
   assert.match(src('game.js'), /button\('gate' \+ w/); assert.match(src('game.js'), /S\.starCard = \{ w \}/);
 });
-test('EC3: first-time star bonus per world = tuning x coinMul rounded to 5 (W1 15/75, W2 15/75, W3 20/95, W4 25/115, W5 25/130)', () => {
-  const want = [[15, 75], [15, 75], [20, 95], [25, 115], [25, 130]];
-  want.forEach(([b2, b3], k) => {
-    const lvl = k * 10; const s = M.newSave(); s.levels[lvl] = { stars: 1, cleared: true };
+test('EX1: improving 1 star to 3 pays the two new records, 20F and 80F', () => {
+  for (let k = 0; k < 5; k++) {
+    const lvl = k * 10; const F = M.levelFactor(lvl); const s = M.newSave(); s.levels[lvl] = { stars: 1, cleared: true, diamondTierPaid: true };
     const r = M.applyBattleResult(s, lvl, 'win', 3, { kills: 10, foodLeft: 10, time: 60 }, () => 0.5);
-    assert.deepEqual([r.starParts.s2, r.starParts.s3], [b2, b3], `W${k + 1}`);
-  });
+    assert.deepEqual([r.starParts.s2, r.starParts.s3], [Math.round(20 * F), Math.round(80 * F)], `W${k + 1}`);
+    assert.equal(r.gems, 0, 'a later star does not pay diamonds again');
+  }
 });
 test('W9: the L42 tip toast text exists, fires once on wave 2 of L42 via save.seenAnts, and W5 story line <= 60 chars', () => {
   assert.equal(C.L42_TIP, 'Glaze grows back. Focus fire.'); const g = src('game.js');

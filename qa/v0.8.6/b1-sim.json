@@ -1,0 +1,14 @@
+[
+  { "level": 10, "policy": "none", "win": 100, "crumbs": 674, "used": 0 },
+  { "level": 10, "policy": "freeze", "win": 100, "crumbs": 674, "used": 0 },
+  { "level": 10, "policy": "rush", "win": 100, "crumbs": 674, "used": 0 },
+  { "level": 38, "policy": "none", "win": 100, "crumbs": 211, "used": 0 },
+  { "level": 38, "policy": "freeze", "win": 100, "crumbs": 211, "used": 2 },
+  { "level": 38, "policy": "rush", "win": 100, "crumbs": 214, "used": 2 },
+  { "level": 67, "policy": "none", "win": 63, "crumbs": 254, "used": 0 },
+  { "level": 67, "policy": "freeze", "win": 75, "crumbs": 273, "used": 2 },
+  { "level": 67, "policy": "rush", "win": 63, "crumbs": 262, "used": 2 },
+  { "level": 75, "policy": "none", "win": 88, "crumbs": 247, "used": 0 },
+  { "level": 75, "policy": "freeze", "win": 75, "crumbs": 244, "used": 2 },
+  { "level": 75, "policy": "rush", "win": 88, "crumbs": 252, "used": 2 }
+]
