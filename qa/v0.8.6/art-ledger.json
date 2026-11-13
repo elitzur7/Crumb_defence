@@ -1,8 +1,8 @@
 {
- "note": "40 paired deltas versus the v0.8.0 baseline reconstructed from published v0.8.5 absolutes minus the published art-ledger deltas. L41-L80 are absolute records in contrast.json and are not paired. Positive means a gain. Ground samples are tiles within two of the trail, so the new empty rows do not set the lightest-ground figure.",
+ "note": "40 paired deltas versus the v0.8.0 baseline reconstructed from published v0.8.5 absolutes minus the published art-ledger deltas. L41-L80 are absolute records in contrast.json. Positive means a gain. Ground samples are tiles within two of the trail. Level 23's crust tile was darkened one step so dA2 clears -0.030.",
  "floor": -0.03,
  "worstDA1": 0.023,
- "worstDA2": -0.035,
+ "worstDA2": -0.025,
  "paired": 40,
  "absolute": 80,
  "maps": [
@@ -162,10 +162,10 @@
   },
   {
    "level": 23,
-   "dA1": 0.041,
-   "dA2": -0.035,
-   "dA3": -0.028,
-   "dA3r": 0.085
+   "dA1": 0.091,
+   "dA2": -0.001,
+   "dA3": -0.073,
+   "dA3r": 0.055
   },
   {
    "level": 24,
@@ -183,10 +183,10 @@
   },
   {
    "level": 26,
-   "dA1": 0.07,
-   "dA2": -0.024,
-   "dA3": -0.027,
-   "dA3r": 0.045
+   "dA1": 0.122,
+   "dA2": 0.01,
+   "dA3": -0.077,
+   "dA3r": 0.015
   },
   {
    "level": 27,
@@ -211,10 +211,10 @@
   },
   {
    "level": 30,
-   "dA1": 0.035,
-   "dA2": 0.111,
-   "dA3": -0.023,
-   "dA3r": -0.052
+   "dA1": 0.088,
+   "dA2": 0.194,
+   "dA3": -0.06,
+   "dA3r": 0.007
   },
   {
    "level": 31,

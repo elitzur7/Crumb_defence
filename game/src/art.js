@@ -1729,13 +1729,13 @@ export const THEMES = [
   // v0.7.7 world 3 (Crumb Design palettes-W3-W10.json, the first three): butter, blueberry, crust. Checked by the A1-A7/A10 contrast pass on every W3 map.
   { name: 'W3 butter', a: '#ecd37f', b: '#e5c974', grout: 'rgba(160,130,50,0.25)', trail: '#fffaf0', edge: '#c9a64f', dot: '#d9bb60' },
   { name: 'W3 blueberry', a: '#bcd5ef', b: '#b0cbea', check: 'rgba(90,130,200,0.14)', grout: 'rgba(90,120,170,0.22)', trail: '#fffaf2', edge: '#86a9d6', dot: '#9dbde4' },
-  { name: 'W3 crust', a: '#e4bf92', b: '#deb88a', grain: 'rgba(130,80,40,0.14)', grout: 'rgba(130,85,45,0.28)', trail: '#fffaf0', edge: '#b98a57', dot: '#c99c6a' },
+  { name: 'W3 crust', a: '#dfb686', b: '#deb88a', grain: 'rgba(130,80,40,0.14)', grout: 'rgba(130,85,45,0.28)', trail: '#fffaf0', edge: '#b98a57', dot: '#c99c6a' },
   // v0.7.9 world 4 (Crumb Design w4-paste.json artThemes_add index 7): mint. Contrast A1/A2/A3 on all ten W4 maps in qa/v0.7.9/contrast.
   { name: 'W4 mint', a: '#b6e4d6', b: '#abdccd', check: 'rgba(60,170,150,0.14)', grout: 'rgba(70,150,130,0.22)', trail: '#fffdf5', edge: '#80c3b0', dot: '#98d3c2' },
   // v0.8.1 world 5 (plan W4, Crumb Design palettes-W3-W10.json): teal diner, with a pink icing accent for the flowers/dots. A1/A2/A3/A5 measured on the G1 renderer over all ten W5 maps (qa/v0.8.1/contrast-w5.json).
   { name: 'W5 teal-diner', a: '#a9d8de', b: '#9ecfd6', check: 'rgba(60,150,170,0.13)', grout: 'rgba(60,130,150,0.22)', trail: '#fffdf5', edge: '#7fbcc6', dot: '#f7b6c8' },
   // v0.8.2 world 6 (Crumb Design palettes-W3-W10.json 'W6 maple'): warm maple planks. If the rendered A10b is < 1.6 on any W6 map, darken the pad by steps (see qa/v0.8.2 contrast-w6).
-  { name: 'W6 maple', a: '#e3b486', b: '#e1b27f', grain: 'rgba(120,70,20,0.15)', grout: 'rgba(130,80,30,0.28)', trail: '#fffaf0', edge: '#b98550', dot: '#c99660' },
+  { name: 'W6 maple', a: '#e6b98a', b: '#e1b27f', grain: 'rgba(120,70,20,0.15)', grout: 'rgba(130,80,30,0.28)', trail: '#fffaf0', edge: '#b98550', dot: '#c99660' },
   { name: 'W7 grape', a: '#d2b1e4', b: '#cca8e0', grout: 'rgba(120,70,150,0.22)', trail: '#fffaf5', edge: '#b48cc8', dot: '#e7c6f2' },
   { name: 'W8 frosting', a: '#e8d4c4', b: '#e0c8b4', grout: 'rgba(160,110,80,0.24)', trail: '#fffaf5', edge: '#c9a07c', dot: '#7ec8e8' }, // proposal #f3e6d8/#ead7c4 measured A2 1.18; one step darker so the trail clears 1.30
 ];

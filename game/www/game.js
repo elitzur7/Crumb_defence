@@ -381,7 +381,7 @@ var tuning_default = {
           charmTime: 1.2
         },
         {
-          slow: 1.15
+          slow: 1.4
         }
       ],
       cardUpgrades: [
@@ -389,7 +389,7 @@ var tuning_default = {
           power: 0.12
         },
         {
-          slow: 0.1
+          slow: 0.16
         },
         {
           charmTime: 0.1
@@ -398,7 +398,7 @@ var tuning_default = {
           power: 0.1
         },
         {
-          slow: 0.08
+          slow: 0.14
         },
         {
           power: 0.1
@@ -14818,21 +14818,22 @@ function grantBooster(save, id, count = 1) {
   let n = Math.min(count, ECONOMY.maxBoostersPerAward);
   return save.bonusStock[id] = (save.bonusStock[id] || 0) + n, { kind: "bonus", id, count: n };
 }
-function crumbPrice(n, D = ECONOMY.diamonds) {
-  return Math.round(D.crumbPriceStart * Math.pow(D.crumbPriceMul, n));
+var q5 = (x) => 5 * Math.ceil(x / 5 - 1e-9);
+function diamondQuote(kind, world = 1) {
+  let f = Math.pow(1.04, Math.max(1, world) - 1);
+  return kind === "battle" ? q5(25 * f) : kind === "shop" ? q5(20 * f) : kind === "crumbs" ? q5(15 * f) : Math.ceil(2 * f - 1e-9);
 }
-function boosterPrice(n, D = ECONOMY.diamonds) {
-  return D.boosterPriceStart + D.boosterPriceStep * n;
+function quoteWorld(battle, save) {
+  return save ? highestWorld(save) : battle && battle.priceWorld || 1;
 }
-function boosterBuys(battle, type) {
-  let D = ECONOMY.diamonds;
-  return battle.dia = battle.dia || { crumbs: 0, boosters: 0, per: {} }, D.perBooster ? battle.dia.per[type] || 0 : battle.dia.boosters;
+function crumbPrice(n, world = 1) {
+  return diamondQuote("crumbs", world) * Math.pow(2, n);
 }
-function nextCrumbPrice(battle) {
-  return battle.dia = battle.dia || { crumbs: 0, boosters: 0, per: {} }, crumbPrice(battle.dia.crumbs);
+function nextCrumbPrice(battle, save) {
+  return battle.dia = battle.dia || { crumbs: 0, boosters: 0, per: {} }, crumbPrice(battle.dia.crumbs, quoteWorld(battle, save));
 }
-function nextBoosterPrice(battle, type) {
-  return boosterPrice(boosterBuys(battle, type));
+function nextBoosterPrice(battle, _type, save) {
+  return diamondQuote("battle", quoteWorld(battle, save));
 }
 function buyCrumbsWithDiamonds(save, battle) {
   let price = nextCrumbPrice(battle);
@@ -14843,7 +14844,7 @@ function buyBoosterWithDiamonds(save, battle, type) {
   return battle.result ? { ok: !1, why: "over", price } : battle.bonusTypes.includes(type) ? battle.bonusUsesLeft <= 0 ? { ok: !1, why: "uses", price } : (save.diamonds || 0) < price ? { ok: !1, why: "diamonds", price } : (save.diamonds -= price, ECONOMY.diamonds.perBooster ? battle.dia.per[type] = (battle.dia.per[type] || 0) + 1 : battle.dia.boosters++, save.bonusStock[type] = (save.bonusStock[type] || 0) + 1, battle.bonusStock[type] = (battle.bonusStock[type] || 0) + 1, { ok: !0, price }) : { ok: !1, why: "notBrought", price };
 }
 function moveTowerWithDiamond(save, battle, tw, c, r) {
-  let price = ECONOMY.diamonds.moveTower;
+  let price = diamondQuote("move", highestWorld(save));
   return (save.diamonds || 0) < price ? { ok: !1, why: "diamonds", price } : battle.canMoveTower(tw, c, r) ? (battle.moveTower(tw, c, r), save.diamonds -= price, { ok: !0, price }) : { ok: !1, why: "spot", price };
 }
 function buyCard(save, id) {
@@ -14899,7 +14900,7 @@ function claimZapperGift(save, rng = Math.random) {
   return got.push("zapper"), save.cards.zapper.fresh = !0, save.onboard.zapperGift = "done", { got, zapper: z, zapperOwned };
 }
 function buyBonus(save, type) {
-  let price = ECONOMY.shop.boosterDiamonds;
+  let price = diamondQuote("shop", highestWorld(save));
   return (save.diamonds || 0) < price ? !1 : (save.diamonds -= price, save.bonusStock[type] = (save.bonusStock[type] || 0) + 1, !0);
 }
 function cheapestCardPrice(save, E = ECONOMY.shop) {
@@ -14979,9 +14980,12 @@ function levelFactor(levelIndex) {
   let w = worldOf(levelIndex), j = levelIndex - WORLD_START[w] + 1;
   return Math.pow(3.2, w - 1) * Math.pow(1.12, j - 1);
 }
-var TREF_S = 48;
+var TREF_S = 48, TREF = [87.5, 78.3, 90, 172.3, 186.5, 153.2, 258.7, 187.6, 198.5, 526.6, 129.7, 168.9, 129.8, 182.5, 157.5, 161.3, 262.1, 183.2, 265.2, 371.9, 129.2, 178, 176.4, 192.4, 259.8, 149, 227.7, 433, 305, 422.9, 130.6, 193.7, 179.4, 249.4, 184.6, 158.1, 209, 296.2, 257.3, 351.5, 136.1, 163, 238.8, 257.7, 173.1, 294.1, 197.4, 286.1, 192.2, 302, 140.9, 174.5, 196.4, 273.1, 181, 169.9, 203.4, 286.1, 190.2, 354.3, 131.9, 177, 203.3, 217.6, 168.9, 180.1, 170, 250.9, 192.9, 344, 138.8, 169.4, 216.8, 309.2, 167, 206, 201.5, 309.3, 198.4, 336.9];
+function trefSeconds(levelIndex) {
+  return TREF[levelIndex] || TREF_S;
+}
 function replayBase(levelIndex) {
-  return 90 * levelFactor(levelIndex) * TREF_S;
+  return 90 * levelFactor(levelIndex) * (trefSeconds(levelIndex) / (1.35 * 60));
 }
 function battleCoins(result, { levelIndex = 0, firstClear = !1, stars = 1, progress = 0 } = {}) {
   let F = levelFactor(levelIndex), B = replayBase(levelIndex);
@@ -16970,13 +16974,13 @@ var THEMES = [
   // v0.7.7 world 3 (Crumb Design palettes-W3-W10.json, the first three): butter, blueberry, crust. Checked by the A1-A7/A10 contrast pass on every W3 map.
   { name: "W3 butter", a: "#ecd37f", b: "#e5c974", grout: "rgba(160,130,50,0.25)", trail: "#fffaf0", edge: "#c9a64f", dot: "#d9bb60" },
   { name: "W3 blueberry", a: "#bcd5ef", b: "#b0cbea", check: "rgba(90,130,200,0.14)", grout: "rgba(90,120,170,0.22)", trail: "#fffaf2", edge: "#86a9d6", dot: "#9dbde4" },
-  { name: "W3 crust", a: "#e4bf92", b: "#deb88a", grain: "rgba(130,80,40,0.14)", grout: "rgba(130,85,45,0.28)", trail: "#fffaf0", edge: "#b98a57", dot: "#c99c6a" },
+  { name: "W3 crust", a: "#dfb686", b: "#deb88a", grain: "rgba(130,80,40,0.14)", grout: "rgba(130,85,45,0.28)", trail: "#fffaf0", edge: "#b98a57", dot: "#c99c6a" },
   // v0.7.9 world 4 (Crumb Design w4-paste.json artThemes_add index 7): mint. Contrast A1/A2/A3 on all ten W4 maps in qa/v0.7.9/contrast.
   { name: "W4 mint", a: "#b6e4d6", b: "#abdccd", check: "rgba(60,170,150,0.14)", grout: "rgba(70,150,130,0.22)", trail: "#fffdf5", edge: "#80c3b0", dot: "#98d3c2" },
   // v0.8.1 world 5 (plan W4, Crumb Design palettes-W3-W10.json): teal diner, with a pink icing accent for the flowers/dots. A1/A2/A3/A5 measured on the G1 renderer over all ten W5 maps (qa/v0.8.1/contrast-w5.json).
   { name: "W5 teal-diner", a: "#a9d8de", b: "#9ecfd6", check: "rgba(60,150,170,0.13)", grout: "rgba(60,130,150,0.22)", trail: "#fffdf5", edge: "#7fbcc6", dot: "#f7b6c8" },
   // v0.8.2 world 6 (Crumb Design palettes-W3-W10.json 'W6 maple'): warm maple planks. If the rendered A10b is < 1.6 on any W6 map, darken the pad by steps (see qa/v0.8.2 contrast-w6).
-  { name: "W6 maple", a: "#e3b486", b: "#e1b27f", grain: "rgba(120,70,20,0.15)", grout: "rgba(130,80,30,0.28)", trail: "#fffaf0", edge: "#b98550", dot: "#c99660" },
+  { name: "W6 maple", a: "#e6b98a", b: "#e1b27f", grain: "rgba(120,70,20,0.15)", grout: "rgba(130,80,30,0.28)", trail: "#fffaf0", edge: "#b98550", dot: "#c99660" },
   { name: "W7 grape", a: "#d2b1e4", b: "#cca8e0", grout: "rgba(120,70,150,0.22)", trail: "#fffaf5", edge: "#b48cc8", dot: "#e7c6f2" },
   { name: "W8 frosting", a: "#e8d4c4", b: "#e0c8b4", grout: "rgba(160,110,80,0.24)", trail: "#fffaf5", edge: "#c9a07c", dot: "#7ec8e8" }
   // proposal #f3e6d8/#ead7c4 measured A2 1.18; one step darker so the trail clears 1.30
@@ -17929,7 +17933,7 @@ function startBattle(levelIndex = S.levelIndex, deck = S.prep.deck, bonuses = S.
     onBonusUsed: (type) => {
       consumeBonus(S.save, type), persist();
     }
-  }), S.battleStartStock = { ...S.save.bonusStock }, capsReset(), S.queenIntro = null, S._bubbleShown = !1, S.impactT = {}, S.crumbSprites = [], S.sparkles = [], S.fx = [], S.swatQ = [], S.ui = [], S.result = null, setPaused(!1), S.speed = startSpeed(S.speed, UI.speedMaxAtStart), clock.acc = 0, S.sel = null, S.info = null, S.mode = null, S.queenDown = null, S.modeHint = !1, S.nurseTip = !1, S.battle.rescueScale = S.speed * PACE, go("battle"), S.guide = guideWanted(levelIndex) ? { step: 1 } : null, S.specialBanner = null, ART81 && S.battle.specialsOn && !S.guide) {
+  }), S.battle.priceWorld = highestWorld(S.save), S.battleStartStock = { ...S.save.bonusStock }, capsReset(), S.queenIntro = null, S._bubbleShown = !1, S.impactT = {}, S.crumbSprites = [], S.sparkles = [], S.fx = [], S.swatQ = [], S.ui = [], S.result = null, setPaused(!1), S.speed = startSpeed(S.speed, UI.speedMaxAtStart), clock.acc = 0, S.sel = null, S.info = null, S.mode = null, S.queenDown = null, S.modeHint = !1, S.nurseTip = !1, S.battle.rescueScale = S.speed * PACE, go("battle"), S.guide = guideWanted(levelIndex) ? { step: 1 } : null, S.specialBanner = null, ART81 && S.battle.specialsOn && !S.guide) {
     let seen = S.save.seenSpecial || (S.save.seenSpecial = {}), fresh = deck.filter((id) => specialActive(id, S.battle.level, S.battle.cardLevels ? S.battle.cardLevels[id] : 1) && !seen[id]);
     fresh.length && (fresh.forEach((id) => {
       seen[id] = !0;
@@ -18031,8 +18035,9 @@ function setMode(tw, m) {
 function startMode(kind, tw) {
   let b = S.battle;
   if (!(!b || b.result || S.paused)) {
-    if (kind === "move" && (S.save.diamonds || 0) < ECONOMY.diamonds.moveTower) {
-      toast(`Moving costs ${ECONOMY.diamonds.moveTower} diamond (you have ${S.save.diamonds || 0})`, "#ffd0d0");
+    if (kind === "move" && (S.save.diamonds || 0) < diamondQuote("move", highestWorld(S.save))) {
+      let mv = diamondQuote("move", highestWorld(S.save));
+      toast(`Moving costs ${mv} diamond (you have ${S.save.diamonds || 0})`, "#ffd0d0");
       return;
     }
     if (kind === "swap" && b.towers.length < 2) {
@@ -18050,7 +18055,7 @@ function modeTap(b, t) {
   }
   if (m.kind === "move") {
     let r = moveTowerWithDiamond(S.save, b, m.tower, t.c, t.r);
-    r.ok ? (persist(), S.mode = null, sfx("place"), addUi({ k: "priceFloat", cur: "diamond", n: r.price, x: 252, y: 58, life: 1.1, max: 1.1 })) : toast(r.why === "diamonds" ? `Moving costs ${ECONOMY.diamonds.moveTower} diamond` : other ? "Spot taken - use Swap" : "It can't stand there", "#ffd0d0");
+    r.ok ? (persist(), S.mode = null, sfx("place"), addUi({ k: "priceFloat", cur: "diamond", n: r.price, x: 252, y: 58, life: 1.1, max: 1.1 })) : toast(r.why === "diamonds" ? `Moving costs ${diamondQuote("move", highestWorld(S.save))} diamonds` : other ? "Spot taken - use Swap" : "It can't stand there", "#ffd0d0");
     return;
   }
   if (!other) {
@@ -19043,7 +19048,7 @@ function renderPrep() {
     });
   });
   let warn = null;
-  i === 29 ? warn = "Try Bomb + Freezer. Clear the escort near your towers; freeze the queen there before she bites." : levelHasFlyers(i) && !S.prep.deck.some((d) => AIR_COUNTERS.includes(d)) ? warn = ART81 ? "Flying ants ahead! Only the Laser and Bug Zapper can hit them." : "Flying ants ahead! Only Laser, Bug Zapper or the Crop Duster can hit them." : ants.includes("gasmask") && S.prep.deck.includes("spray") && S.prep.deck.filter((d) => d !== "spray" && TOWERS[d].kind === "tower" && d !== "fan").length < 2 && (warn = "Gas-mask ants ignore Bug Spray - bring other damage too."), S.zeroHint && S.t < S.zeroHint.until && S.prep.bonuses.includes(S.zeroHint.bt) && !(S.save.bonusStock[S.zeroHint.bt] > 0) && (warn = `You have 0 ${BONUSES[S.zeroHint.bt].name}s. Buy one during battle for ${ECONOMY.diamonds.boosterPriceStart} diamonds, or in the Shop.`), S.layoutWarn = null, S.layoutAirFix = null;
+  i === 29 ? warn = "Try Bomb + Freezer. Clear the escort near your towers; freeze the queen there before she bites." : levelHasFlyers(i) && !S.prep.deck.some((d) => AIR_COUNTERS.includes(d)) ? warn = ART81 ? "Flying ants ahead! Only the Laser and Bug Zapper can hit them." : "Flying ants ahead! Only Laser, Bug Zapper or the Crop Duster can hit them." : ants.includes("gasmask") && S.prep.deck.includes("spray") && S.prep.deck.filter((d) => d !== "spray" && TOWERS[d].kind === "tower" && d !== "fan").length < 2 && (warn = "Gas-mask ants ignore Bug Spray - bring other damage too."), S.zeroHint && S.t < S.zeroHint.until && S.prep.bonuses.includes(S.zeroHint.bt) && !(S.save.bonusStock[S.zeroHint.bt] > 0) && (warn = `You have 0 ${BONUSES[S.zeroHint.bt].name}s. Buy one during battle for ${diamondQuote("battle", highestWorld(S.save))} diamonds, or in the Shop.`), S.layoutWarn = null, S.layoutAirFix = null;
   let airPlan = ART81 && warn && warn.startsWith("Flying ants ahead") ? airFixPlan(S.prep.deck, unlocked, S.save.cards, BATTLE.deckSize) : null;
   if (airPlan) {
     let lines = wrapLines(warn, 214, 12).slice(0, 3), hh = 54, y0 = 646 - hh - 2, nm = TOWERS[airPlan.add].short || TOWERS[airPlan.add].name;
@@ -19101,7 +19106,7 @@ function renderStarCard() {
   });
 }
 function zeroBonusAlert(bt) {
-  S.prepAlert = { msg: `0 ${BONUSES[bt].name}s left! In battle you can buy one for ${ECONOMY.diamonds.boosterPriceStart} diamonds (you have ${S.save.diamonds || 0}).`, t: 2.6, bonus: bt };
+  S.prepAlert = { msg: `0 ${BONUSES[bt].name}s left! In battle you can buy one for ${diamondQuote("battle", highestWorld(S.save))} diamonds (you have ${S.save.diamonds || 0}).`, t: 2.6, bonus: bt };
 }
 function wrapLines(str, maxW, size) {
   ctx.font = `bold ${size}px ${FONT}`;
@@ -19227,7 +19232,7 @@ function renderBattle(dt) {
   }
   if (drawWaveStrip(b), ctx.restore(), ctx.restore(), button("map", 0, MAP_Y, MAP_W, MAP_H, mapTap), S.info && S.info.tower && renderTowerInfo(b, S.info), S.mode && !S.result) {
     let m = S.mode;
-    panel(30, MAP_Y + 6, 340, 34, "#5a4058", 16), plainFit(m.kind === "move" ? `Tap a free blue spot to move it (${ECONOMY.diamonds.moveTower} diamond)` : "Tap the tower to swap with (free)", 182, MAP_Y + 23, 280, 12.5, "#ffffff", "center", "700"), blob(ctx, 350, MAP_Y + 23, 11, 11, "#ffb3b3", 1.8), text(ctx, "x", 350, MAP_Y + 22.5, 12, "#fff"), button("modeCancel", 300, MAP_Y + 2, 74, 42, () => {
+    panel(30, MAP_Y + 6, 340, 34, "#5a4058", 16), plainFit(m.kind === "move" ? `Tap a free blue spot to move it (${diamondQuote("move", highestWorld(S.save))} diamonds)` : "Tap the tower to swap with (free)", 182, MAP_Y + 23, 280, 12.5, "#ffffff", "center", "700"), blob(ctx, 350, MAP_Y + 23, 11, 11, "#ffb3b3", 1.8), text(ctx, "x", 350, MAP_Y + 22.5, 12, "#fff"), button("modeCancel", 300, MAP_Y + 2, 74, 42, () => {
       S.mode = null;
     });
   }
@@ -19408,8 +19413,8 @@ function renderTowerInfo(b, info) {
       ctx.save(), pop !== 1 && (ctx.translate(x + w / 2, y + h / 2), ctx.scale(pop, pop), ctx.translate(-(x + w / 2), -(y + h / 2))), rr(ctx, x, y, w, h, 11), ctx.fillStyle = on ? "#ffd27a" : "#f7efeb", ctx.fill(), ctx.lineWidth = on ? 2.6 : 1.5, ctx.strokeStyle = on ? INK : "#d9c5cc", ctx.stroke(), drawModeIcon(m, x + (n4 ? 14 : 18), y + h / 2, 1), plainFit(MODE_NAME[m], x + (n4 ? 28 : 34), y + h / 2 + 0.5, w - (n4 ? 32 : 40), 13, on ? INK : INFO_INK, "left", on ? "700" : "600"), ctx.restore(), button("mode_" + m, x - 2, y - 5.5, w + 4, h + 11, () => setMode(tw, m));
     });
   }
-  let canMove = (S.save.diamonds || 0) >= ECONOMY.diamonds.moveTower;
-  drawButton(256, py + 5, 62, 24, "", "#9fd8ff", { r: 10, disabled: !canMove }), text(ctx, "Move", 280, py + 17, 12), diamondIcon(ctx, 305, py + 17, 0.55), text(ctx, String(ECONOMY.diamonds.moveTower), 312, py + 17.5, 12), drawButton(322, py + 5, 58, 24, "Swap", "#fff3e6", { r: 10, size: 12, disabled: b.towers.length < 2 }), button("infoMove", 252, py - 2, 68, 44, () => startMode("move", tw)), button("infoSwap", 320, py - 2, 64, 44, () => startMode("swap", tw));
+  let canMove = (S.save.diamonds || 0) >= diamondQuote("move", highestWorld(S.save));
+  drawButton(256, py + 5, 62, 24, "", "#9fd8ff", { r: 10, disabled: !canMove }), text(ctx, "Move", 280, py + 17, 12), diamondIcon(ctx, 305, py + 17, 0.55), text(ctx, String(diamondQuote("move", highestWorld(S.save))), 312, py + 17.5, 12), drawButton(322, py + 5, 58, 24, "Swap", "#fff3e6", { r: 10, size: 12, disabled: b.towers.length < 2 }), button("infoMove", 252, py - 2, 68, 44, () => startMode("move", tw)), button("infoSwap", 320, py - 2, 64, 44, () => startMode("swap", tw));
 }
 function drawQueenCheer(age, world) {
   let k = Math.min(1, age / 0.35), fade = age > 3.8 ? Math.max(0, 1 - (age - 3.8) / 0.7) : 1, msg = world === 6 ? ["Way to go,", "you saved the pancakes!"] : world === 5 ? ["Way to go,", "you saved the donut!"] : world === 4 ? ["Way to go,", "you saved the sundae!"] : world === 3 ? ["Way to go,", "you saved the pie!"] : world === 2 ? ["Way to go,", "you saved the cake!"] : ["Way to go,", "you saved the cookies!"];
@@ -20422,13 +20427,14 @@ function renderShop() {
   });
   let by = 462;
   {
-    let bl = `Boosters - ${E.boosterDiamonds} diamonds each`;
+    let bl = `Boosters - ${diamondQuote("shop", highestWorld(S.save))} diamonds each`;
     plainText(bl, 30, by, 12, "#7a5a6a", "left", "700"), diamondIcon(ctx, 30 + ctx.measureText(bl).width + 12, by, 0.7);
   }
   BONUS_TYPES.forEach((bt, k) => {
     let x = 26 + k * 88, y = by + 10, w = 80, h = 56, pk = shopPulse("booster", bt), cs = pk == null ? 1 : 1 + SHOP_FX.cardPulse * Math.sin(pk * Math.PI);
     ctx.save(), ctx.translate(x + w / 2, y + h / 2), ctx.scale(cs, cs), ctx.translate(-(x + w / 2), -(y + h / 2)), rr(ctx, x, y, w, h, 14), ctx.fillStyle = shade(BONUSES[bt].color, 0.2), ctx.fill(), ctx.lineWidth = 2.5, ctx.strokeStyle = INK, ctx.stroke(), ctx.save(), ctx.translate(x + w / 2, y + 22), ctx.scale(1.05, 1.05), drawBonusIcon(ctx, bt, S.t), ctx.restore(), fitText(BONUSES[bt].name, x + w / 2, y + 46, w - 8, 12, "#fff"), ctx.restore(), countBadge(x + w - 19, y + 15, S.save.bonusStock[bt] || 0, pk), button("bbuy" + bt, x, y, w, h, () => {
-      buyBonus(S.save, bt) ? (persist(), sfx("tap"), shopBought("booster", bt, E.boosterDiamonds, "diamond")) : toast(`Need ${E.boosterDiamonds} diamonds`);
+      let shopDia = diamondQuote("shop", highestWorld(S.save));
+      buyBonus(S.save, bt) ? (persist(), sfx("tap"), shopBought("booster", bt, shopDia, "diamond")) : toast(`Need ${shopDia} diamonds`);
     });
   }), cardInfoPanel(S.shopSel, 24, 534, 352, 108, { hint: "Tap (i) under a card to see its stats." }), gift && !S.reveal.length && !S.pack ? onboardSpot({ x: 286, y: 118, w: 82, h: 48, r: 14 }, "gift", claimGift, "Your free pack - tap it!") : !S.pack && !S.reveal.length && S.save.onboard && S.save.onboard.cardsHint === "shop" && onboardSpot(tabRect(1), "tocards", () => {
     S.save.onboard.cardsHint = "cards", persist(), go("cards");
