@@ -69,27 +69,27 @@ test('crumb pack: 50 crumbs for 10, 20, 40, 80 diamonds (doubles each purchase)'
   const save = M.newSave(); save.diamonds = 1000; const b = mk();
   const prices = []; const c0 = b.crumbs;
   for (let i = 0; i < 4; i++) { const r = M.buyCrumbsWithDiamonds(save, b); assert.ok(r.ok); prices.push(r.price); }
-  assert.deepEqual(prices, [10, 20, 40, 80]); assert.equal(b.crumbs - c0, 200); assert.equal(save.diamonds, 1000 - 150);
-  assert.equal(M.nextCrumbPrice(b), 160);
+  assert.deepEqual(prices, [15, 30, 60, 120]); assert.equal(b.crumbs - c0, 200); assert.equal(save.diamonds, 1000 - 225);
+  assert.equal(M.nextCrumbPrice(b), 240);
 });
 test('booster at 0 stock: buy for 20 - fixed price, no escalation (v0.4 item 9)', () => {
   const save = M.newSave(); save.diamonds = 1000;
   const b = mk({ bonusStock: { ...save.bonusStock }, onBonusUsed: (t) => M.consumeBonus(save, t) });
   assert.equal(b.canUseBonus('bomb'), false, '0 stock');
-  const p1 = M.buyBoosterWithDiamonds(save, b, 'bomb'); assert.ok(p1.ok); assert.equal(p1.price, 20);
+  const p1 = M.buyBoosterWithDiamonds(save, b, 'bomb'); assert.ok(p1.ok); assert.equal(p1.price, 25);
   assert.equal(b.bonusStock.bomb, 1); assert.equal(save.bonusStock.bomb, 1); assert.ok(b.canUseBonus('bomb'));
   assert.ok(b.useBonus('bomb', 100, 100)); assert.equal(save.bonusStock.bomb, 0);
-  assert.equal(M.nextBoosterPrice(b, 'freeze'), 20, 'fixed price for every booster');
-  const p2 = M.buyBoosterWithDiamonds(save, b, 'freeze'); assert.equal(p2.price, 20);
-  assert.equal(M.nextBoosterPrice(b, 'bomb'), 20);
-  assert.equal(save.diamonds, 1000 - 40);
+  assert.equal(M.nextBoosterPrice(b, 'freeze'), 25, 'fixed price for every booster');
+  const p2 = M.buyBoosterWithDiamonds(save, b, 'freeze'); assert.equal(p2.price, 25);
+  assert.equal(M.nextBoosterPrice(b, 'bomb'), 25);
+  assert.equal(save.diamonds, 1000 - 50);
   assert.equal(M.buyBoosterWithDiamonds(save, b, 'plane').why, 'notBrought');
 });
 test('diamond crumb escalation resets every battle; booster price stays 20', () => {
   const save = M.newSave(); save.diamonds = 1000;
   const b1 = mk(); M.buyCrumbsWithDiamonds(save, b1); M.buyCrumbsWithDiamonds(save, b1); M.buyBoosterWithDiamonds(save, b1, 'bomb');
-  assert.equal(M.nextCrumbPrice(b1), 40); assert.equal(M.nextBoosterPrice(b1, 'bomb'), 20);
-  const b2 = mk(); assert.equal(M.nextCrumbPrice(b2), 10); assert.equal(M.nextBoosterPrice(b2, 'bomb'), 20);
+  assert.equal(M.nextCrumbPrice(b1), 60); assert.equal(M.nextBoosterPrice(b1, 'bomb'), 25);
+  const b2 = mk(); assert.equal(M.nextCrumbPrice(b2), 15); assert.equal(M.nextBoosterPrice(b2, 'bomb'), 25);
 });
 test('cannot buy without enough diamonds, after the battle ended, or past the 2-use limit', () => {
   const save = M.newSave(); save.diamonds = 9; const b = mk();

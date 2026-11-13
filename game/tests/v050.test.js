@@ -120,13 +120,13 @@ test('item 17: redraw costs 3, 6, 9, 12 ... and the price resets every battle (v
 
 // ---------- items 11 + 12: move / swap ----------
 test('item 11: moving a tower in battle costs 1 diamond and obeys the placement rules', () => {
-  const s = M.newSave(); s.diamonds = 1; const b = mk(); const tw = b.addTower('slingshot', 0, 4);
-  assert.equal(M.moveTowerWithDiamond(s, b, tw, 2, 3).why, 'spot', 'cannot move a side tower onto the trail'); assert.equal(s.diamonds, 1);
+  const s = M.newSave(); s.diamonds = 2; const b = mk(); const tw = b.addTower('slingshot', 0, 4);
+  assert.equal(M.moveTowerWithDiamond(s, b, tw, 2, 3).why, 'spot', 'cannot move a side tower onto the trail'); assert.equal(s.diamonds, 2);
   const r = M.moveTowerWithDiamond(s, b, tw, 9, 4); assert.ok(r.ok); assert.equal(s.diamonds, 0); assert.deepEqual([tw.c, tw.r, tw.x], [9, 4, 9.5 * C.TILE]);
   assert.ok(b.events.some((e) => e.type === 'move'));
   assert.equal(M.moveTowerWithDiamond(s, b, tw, 9, 5).why, 'diamonds', 'no diamonds -> no move');
   // a moved marble / fan re-aims at its new spot
-  const m = b.addTower('ball', 0, 4); assert.equal(m.trailDir, null); s.diamonds = 1; assert.ok(M.moveTowerWithDiamond(s, b, m, 0, 2).ok); assert.ok(m.trailDir);
+  const m = b.addTower('ball', 0, 4); assert.equal(m.trailDir, null); s.diamonds = 2; assert.ok(M.moveTowerWithDiamond(s, b, m, 0, 2).ok); assert.ok(m.trailDir);
 });
 test('item 12: swapping two towers is free and only if both fit the other spot', () => {
   const b = mk(); const crumbs = b.crumbs;

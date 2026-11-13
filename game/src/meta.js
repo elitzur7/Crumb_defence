@@ -137,12 +137,19 @@ export function grantBooster(save, id, count = 1) {
 }
 
 // ----- diamonds in battle (v0.3 items 8/12): escalating prices, counters live on the Battle so they reset every battle -----
-export function crumbPrice(n, D = C.ECONOMY.diamonds) { return Math.round(D.crumbPriceStart * Math.pow(D.crumbPriceMul, n)); }
-// v0.4 item 9: fixed price (20 diamonds) - boosterPriceStep is 0, so the price no longer climbs with each purchase.
-export function boosterPrice(n, D = C.ECONOMY.diamonds) { return D.boosterPriceStart + D.boosterPriceStep * n; }
-function boosterBuys(battle, type) { const D = C.ECONOMY.diamonds; battle.dia = battle.dia || { crumbs: 0, boosters: 0, per: {} }; return D.perBooster ? (battle.dia.per[type] || 0) : battle.dia.boosters; }
-export function nextCrumbPrice(battle) { battle.dia = battle.dia || { crumbs: 0, boosters: 0, per: {} }; return crumbPrice(battle.dia.crumbs); }
-export function nextBoosterPrice(battle, type) { return boosterPrice(boosterBuys(battle, type)); }
+const q5 = (x) => 5 * Math.ceil(x / 5 - 1e-9);
+export function diamondQuote(kind, world = 1) {
+  const f = Math.pow(1.04, Math.max(1, world) - 1);
+  if (kind === 'battle') return q5(25 * f);
+  if (kind === 'shop') return q5(20 * f);
+  if (kind === 'crumbs') return q5(15 * f);
+  return Math.ceil(2 * f - 1e-9);
+}
+function quoteWorld(battle, save) { return save ? highestWorld(save) : (battle && battle.priceWorld) || 1; }
+export function crumbPrice(n, world = 1) { return diamondQuote('crumbs', world) * Math.pow(2, n); }
+export function boosterPrice(_n, world = 1) { return diamondQuote('battle', world); }
+export function nextCrumbPrice(battle, save) { battle.dia = battle.dia || { crumbs: 0, boosters: 0, per: {} }; return crumbPrice(battle.dia.crumbs, quoteWorld(battle, save)); }
+export function nextBoosterPrice(battle, _type, save) { return diamondQuote('battle', quoteWorld(battle, save)); }
 export function buyCrumbsWithDiamonds(save, battle) {
   const price = nextCrumbPrice(battle);
   if (battle.result) return { ok: false, why: 'over', price };
@@ -166,7 +173,7 @@ export function buyBoosterWithDiamonds(save, battle, type) {
 // v0.5 item 11: move a placed tower to another free cell during battle for 1 diamond (C.ECONOMY.diamonds.moveTower).
 // Swapping two placed towers is free (Battle.swapTowers) and needs nothing from the save.
 export function moveTowerWithDiamond(save, battle, tw, c, r) {
-  const price = C.ECONOMY.diamonds.moveTower;
+  const price = diamondQuote('move', highestWorld(save));
   if ((save.diamonds || 0) < price) return { ok: false, why: 'diamonds', price };
   if (!battle.canMoveTower(tw, c, r)) return { ok: false, why: 'spot', price };
   battle.moveTower(tw, c, r); save.diamonds -= price;
@@ -240,7 +247,7 @@ export function claimZapperGift(save, rng = Math.random) {
 }
 // v0.4 item 9: every booster costs a fixed 15 diamonds in the shop (was 30 coins).
 export function buyBonus(save, type) {
-  const price = C.ECONOMY.shop.boosterDiamonds;
+  const price = diamondQuote('shop', highestWorld(save));
   if ((save.diamonds || 0) < price) return false;
   save.diamonds -= price; save.bonusStock[type] = (save.bonusStock[type] || 0) + 1;
   return true;

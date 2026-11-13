@@ -229,6 +229,7 @@ function startBattle(levelIndex = S.levelIndex, deck = S.prep.deck, bonuses = S.
   if (levelIndex === 29 && S.save.l30FreezerArmed && !S.save.l30FreezerUsed && bonuses.includes('freeze')) { stock.freeze = (stock.freeze || 0) + 1; S.save.l30FreezerUsed = true; S.save.l30FreezerArmed = false; }
   S.battle = new Battle({ levelIndex, deck, bonusTypes: bonuses, bonusStock: stock, cardLevels: M.cardLevels(S.save), seed,
     onBonusUsed: (type) => { M.consumeBonus(S.save, type); persist(); } }); // deducted immediately: Restart/Quit can't refund it
+  S.battle.priceWorld = M.highestWorld(S.save);
   S.battleStartStock = { ...S.save.bonusStock };
   capsReset(); S.queenIntro = null; S._bubbleShown = false; S.impactT = {}; S.crumbSprites = []; S.sparkles = []; // v0.8.1 J11: maxima since battle start
   S.fx = []; S.swatQ = []; S.ui = []; S.result = null; setPaused(false); S.speed = startSpeed(S.speed, C.UI.speedMaxAtStart); clock.acc = 0; S.sel = null; S.info = null; S.mode = null; S.queenDown = null; S.modeHint = false; S.nurseTip = false; S.battle.rescueScale = S.speed * PACE; // divisor matches the faster sim fill so the rescue window stays 3 s of wall time
@@ -345,7 +346,7 @@ function setMode(tw, m) { if (tw.mode === m) return; if (S.battle.setTargetMode(
 // v0.5 items 11/12: Move (1 diamond) / Swap (free) - started from the tower info panel, finished by tapping the map
 function startMode(kind, tw) {
   const b = S.battle; if (!b || b.result || S.paused) return;
-  if (kind === 'move' && (S.save.diamonds || 0) < C.ECONOMY.diamonds.moveTower) { toast(`Moving costs ${C.ECONOMY.diamonds.moveTower} diamond (you have ${S.save.diamonds || 0})`, '#ffd0d0'); return; }
+  if (kind === 'move' && (S.save.diamonds || 0) < M.diamondQuote('move', M.highestWorld(S.save))) { const mv = M.diamondQuote('move', M.highestWorld(S.save)); toast(`Moving costs ${mv} diamond (you have ${S.save.diamonds || 0})`, '#ffd0d0'); return; }
   if (kind === 'swap' && b.towers.length < 2) { toast('Place another tower first', '#ffd0d0'); return; }
   S.mode = { kind, tower: tw, t: S.t }; S.info = null; S.sel = null; sfx('tap');
 }
@@ -355,7 +356,7 @@ function modeTap(b, t) {
   if (m.kind === 'move') {
     const r = M.moveTowerWithDiamond(S.save, b, m.tower, t.c, t.r);
     if (r.ok) { persist(); S.mode = null; sfx('place'); addUi({ k: 'priceFloat', cur: 'diamond', n: r.price, x: 252, y: 58, life: 1.1, max: 1.1 }); }
-    else toast(r.why === 'diamonds' ? `Moving costs ${C.ECONOMY.diamonds.moveTower} diamond` : other ? 'Spot taken - use Swap' : "It can't stand there", '#ffd0d0');
+    else toast(r.why === 'diamonds' ? `Moving costs ${M.diamondQuote('move', M.highestWorld(S.save))} diamonds` : other ? 'Spot taken - use Swap' : "It can't stand there", '#ffd0d0');
     return;
   }
   if (!other) { toast('Tap another tower to swap with', '#ffd0d0'); return; }
@@ -1399,7 +1400,7 @@ function renderPrep() {
   else if (levelHasFlyers(i) && !S.prep.deck.some((d) => C.AIR_COUNTERS.includes(d))) warn = C.ART81 ? 'Flying ants ahead! Only the Laser and Bug Zapper can hit them.' : 'Flying ants ahead! Only Laser, Bug Zapper or the Crop Duster can hit them.';
   else if (ants.includes('gasmask') && S.prep.deck.includes('spray') && S.prep.deck.filter((d) => d !== 'spray' && C.TOWERS[d].kind === 'tower' && d !== 'fan').length < 2) warn = 'Gas-mask ants ignore Bug Spray - bring other damage too.';
   // v0.8.2 R6: a 0-stock booster is never pre-selected and the 'buy one' text is a neutral hint shown only after the player taps the 0-stock booster (S.zeroHint)
-  if (S.zeroHint && S.t < S.zeroHint.until && S.prep.bonuses.includes(S.zeroHint.bt) && !(S.save.bonusStock[S.zeroHint.bt] > 0)) warn = `You have 0 ${C.BONUSES[S.zeroHint.bt].name}s. Buy one during battle for ${C.ECONOMY.diamonds.boosterPriceStart} diamonds, or in the Shop.`;
+  if (S.zeroHint && S.t < S.zeroHint.until && S.prep.bonuses.includes(S.zeroHint.bt) && !(S.save.bonusStock[S.zeroHint.bt] > 0)) warn = `You have 0 ${C.BONUSES[S.zeroHint.bt].name}s. Buy one during battle for ${M.diamondQuote('battle', M.highestWorld(S.save))} diamonds, or in the Shop.`;
   // warnings are word-wrapped inside an auto-height box (no overflow on narrow phones)
   S.layoutWarn = null;
   S.layoutAirFix = null;
@@ -1470,7 +1471,7 @@ function renderStarCard() {
   rows.forEach((r, k) => plainFit(r.cleared ? `L${r.n}: ${r.stars} star${r.stars === 1 ? '' : 's'} - a ${r.stars + 1}${r.stars === 0 ? 'st' : r.stars === 1 ? 'nd' : 'rd'} star here adds +1` : `L${r.n}: not won yet - win it first`, 200, y0 + 108 + k * 26, w - 40, 13, '#3d2a36', 'center', '600'));
   drawButton(x0 + 84, y0 + h - 62, w - 168, 46, 'OK', '#9fe0b5', { size: 20 }); button('starCardOk', x0 + 80, y0 + h - 66, w - 160, 54, () => { S.starCard = null; sfx('tap'); });
 }
-function zeroBonusAlert(bt) { S.prepAlert = { msg: `0 ${C.BONUSES[bt].name}s left! In battle you can buy one for ${C.ECONOMY.diamonds.boosterPriceStart} diamonds (you have ${S.save.diamonds || 0}).`, t: 2.6, bonus: bt }; }
+function zeroBonusAlert(bt) { S.prepAlert = { msg: `0 ${C.BONUSES[bt].name}s left! In battle you can buy one for ${M.diamondQuote('battle', M.highestWorld(S.save))} diamonds (you have ${S.save.diamonds || 0}).`, t: 2.6, bonus: bt }; }
 function wrapLines(str, maxW, size) {
   ctx.font = `bold ${size}px ${A.FONT}`; const out = []; let line = '';
   for (const w of str.split(' ')) { const test = line ? line + ' ' + w : w; if (ctx.measureText(test).width > maxW && line) { out.push(line); line = w; } else line = test; }
@@ -1616,7 +1617,7 @@ function renderBattle(dt) {
   if (S.info && S.info.tower) renderTowerInfo(b, S.info);
   if (S.mode && !S.result) {
     const m = S.mode; panel(30, MAP_Y + 6, 340, 34, '#5a4058', 16);
-    plainFit(m.kind === 'move' ? `Tap a free blue spot to move it (${C.ECONOMY.diamonds.moveTower} diamond)` : 'Tap the tower to swap with (free)', 182, MAP_Y + 23, 280, 12.5, '#ffffff', 'center', '700');
+    plainFit(m.kind === 'move' ? `Tap a free blue spot to move it (${M.diamondQuote('move', M.highestWorld(S.save))} diamonds)` : 'Tap the tower to swap with (free)', 182, MAP_Y + 23, 280, 12.5, '#ffffff', 'center', '700');
     A.blob(ctx, 350, MAP_Y + 23, 11, 11, '#ffb3b3', 1.8); A.text(ctx, 'x', 350, MAP_Y + 22.5, 12, '#fff');
     button('modeCancel', 300, MAP_Y + 2, 74, 42, () => { S.mode = null; });
   }
@@ -1837,9 +1838,9 @@ function renderTowerInfo(b, info) {
     });
   }
   // Move / Swap (on top of the panel's close area)
-  const canMove = (S.save.diamonds || 0) >= C.ECONOMY.diamonds.moveTower;
+  const canMove = (S.save.diamonds || 0) >= M.diamondQuote('move', M.highestWorld(S.save));
   drawButton(256, py + 5, 62, 24, '', '#9fd8ff', { r: 10, disabled: !canMove });
-  A.text(ctx, 'Move', 280, py + 17, 12); A.diamondIcon(ctx, 305, py + 17, 0.55); A.text(ctx, String(C.ECONOMY.diamonds.moveTower), 312, py + 17.5, 12);
+  A.text(ctx, 'Move', 280, py + 17, 12); A.diamondIcon(ctx, 305, py + 17, 0.55); A.text(ctx, String(M.diamondQuote('move', M.highestWorld(S.save))), 312, py + 17.5, 12);
   drawButton(322, py + 5, 58, 24, 'Swap', '#fff3e6', { r: 10, size: 12, disabled: b.towers.length < 2 });
   button('infoMove', 252, py - 2, 68, 44, () => startMode('move', tw));
   button('infoSwap', 320, py - 2, 64, 44, () => startMode('swap', tw));
@@ -2796,7 +2797,7 @@ function renderShop() {
   });
   // boosters (v0.4 item 10: fixed price, paid in DIAMONDS)
   const by = 462;
-  { const bl = `Boosters - ${E.boosterDiamonds} diamonds each`; plainText(bl, 30, by, 12, '#7a5a6a', 'left', '700'); A.diamondIcon(ctx, 30 + ctx.measureText(bl).width + 12, by, 0.7); }
+  { const shopDia = M.diamondQuote('shop', M.highestWorld(S.save)); const bl = `Boosters - ${shopDia} diamonds each`; plainText(bl, 30, by, 12, '#7a5a6a', 'left', '700'); A.diamondIcon(ctx, 30 + ctx.measureText(bl).width + 12, by, 0.7); }
   C.BONUS_TYPES.forEach((bt, k) => {
     const x = 26 + k * 88, y = by + 10, w = 80, h = 56;
     const pk = shopPulse('booster', bt), cs = pk == null ? 1 : 1 + SHOP_FX.cardPulse * Math.sin(pk * Math.PI);
@@ -2806,7 +2807,7 @@ function renderShop() {
     fitText(C.BONUSES[bt].name, x + w / 2, y + 46, w - 8, 12, '#fff');
     ctx.restore();
     countBadge(x + w - 19, y + 15, S.save.bonusStock[bt] || 0, pk);
-    button('bbuy' + bt, x, y, w, h, () => { if (M.buyBonus(S.save, bt)) { persist(); sfx('tap'); shopBought('booster', bt, E.boosterDiamonds, 'diamond'); } else toast(`Need ${E.boosterDiamonds} diamonds`); });
+    button('bbuy' + bt, x, y, w, h, () => { const shopDia = M.diamondQuote('shop', M.highestWorld(S.save)); if (M.buyBonus(S.save, bt)) { persist(); sfx('tap'); shopBought('booster', bt, shopDia, 'diamond'); } else toast(`Need ${shopDia} diamonds`); });
   });
   cardInfoPanel(S.shopSel, 24, 534, 352, 108, { hint: 'Tap (i) under a card to see its stats.' });
   if (gift && !S.reveal.length && !S.pack) onboardSpot({ x: 286, y: 118, w: 82, h: 48, r: 14 }, 'gift', claimGift, 'Your free pack - tap it!');
