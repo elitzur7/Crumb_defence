@@ -37,12 +37,57 @@ test('EX1: card power Q is 1.08 to the level, and a world does not clamp the car
 
 test('version is 0.8.6', () => { assert.equal(C.VERSION, '0.8.6'); });
 
+test('DX1: diamond prices follow the world ladder', () => {
+  assert.deepEqual([1, 2, 3, 4, 5, 6, 7, 8].map((w) => M.diamondQuote('battle', w)), [25, 30, 30, 30, 30, 35, 35, 35]);
+  assert.deepEqual([1, 2, 3, 4, 5, 6, 7, 8].map((w) => M.diamondQuote('shop', w)), [20, 25, 25, 25, 25, 25, 30, 30]);
+  assert.deepEqual([1, 2, 3, 4, 5, 6, 7, 8].map((w) => M.diamondQuote('crumbs', w)), [15, 20, 20, 20, 20, 20, 20, 20]);
+  assert.deepEqual([1, 2, 3, 4, 5, 6, 7, 8].map((w) => M.diamondQuote('move', w)), [2, 3, 3, 3, 3, 3, 3, 3]);
+  assert.equal(M.crumbPrice(1, 1), 30);
+});
+
 test('EC2: merge all of one tower does not merge another', () => {
   const s = M.newSave(); s.coins = 1e7;
   M.addCards(s, 'slingshot', 1, 3); M.addCards(s, 'spray', 1, 3);
   const done = M.mergeAllOf(s, 'slingshot');
   assert.equal(done.length, 1);
   assert.equal(M.countAt(s.cards.spray, 1), 4);
+});
+
+test('EC1: World 8 pays the new formula, not coinMul 2.5, and a card level applies in full', () => {
+  assert.equal(C.WORLDS[7].coinMul, 2.5); // released baseline, not used by the payout
+  assert.equal(C.WORLDS[7].unlock.minStarsInWorld, 14);
+  assert.equal(C.ANTS.queen8.spawn.alt, 'drone');
+  const L80 = 79;
+  const F = M.levelFactor(L80);
+  const s = M.newSave();
+  for (const id of C.ALL_CARDS) M.unlockCard(s, id);
+  const first = M.applyBattleResult(s, L80, 'win', 3, {}, () => 0);
+  const replayCoins = Math.round(M.replayBase(L80) * 1.1);
+  const clear = Math.round(30 * F);
+  const stars = Math.round(20 * F) + Math.round(20 * F) + Math.round(80 * F);
+  assert.equal(first.parts.replay, replayCoins);
+  assert.equal(first.parts.firstClear, clear);
+  assert.equal(first.starCoins, stars);
+  assert.equal(first.coins, replayCoins + clear + stars);
+  assert.equal(first.gems, 30); // 3-star tier 20 plus boss 10, not the old +5
+  assert.equal(first.bossGift.level, 6);
+  const again = M.applyBattleResult(s, L80, 'win', 3, {}, () => 0);
+  assert.equal(again.gems, 0);
+  assert.equal(again.starCoins, 0);
+  assert.equal(again.coins, replayCoins);
+  assert.equal(again.bossGift, null);
+  const jump = M.newSave();
+  const one = M.applyBattleResult(jump, 70, 'win', 1, {}, () => 0);
+  assert.equal(one.gems, 1);
+  const up = M.applyBattleResult(jump, 70, 'win', 3, {}, () => 0);
+  assert.equal(up.gems, 0);
+  assert.equal(up.starCoins, Math.round(20 * M.levelFactor(70)) + Math.round(80 * M.levelFactor(70)));
+  const w1 = new Battle({ levelIndex: 0, deck: ['slingshot'], cardLevels: { slingshot: 10 }, seed: 1 });
+  const w8 = new Battle({ levelIndex: 79, deck: ['slingshot'], cardLevels: { slingshot: 10 }, seed: 1 });
+  assert.equal(w1.cardLevels.slingshot, 10);
+  assert.equal(w8.cardLevels.slingshot, 10);
+  assert.equal(w1.cardLevelCap, null);
+  assert.equal(towerStat('slingshot', 'power', 1, 10), towerStat('slingshot', 'power', 1, 10));
 });
 
 test('B1: Crumb Rush adds 20 percent of kill crumbs and pays a leftover half', () => {
