@@ -234,6 +234,7 @@ export const ANT_CARD = {
   queen7: 'Jam Queen \u2014 she walks, and calls a Worker, then a Drone, every 14 seconds.',
   sugarcube: 'Sugar Cube \u2014 heavy sugar armor. Burn-through and a wide hit strip it.',
   queen8: 'Frosting Queen \u2014 she walks, and calls a Drone, then a Sugar Cube, every 13 seconds.',
+  dropcarrier: 'Drop Carrier \u2014 flies over and drops a crate of workers. Shoot it down before the crate opens.',
 };
 // v0.8.3 PP9: one short flavour / fact line per World 6 level (index = level index), shown once per save on wave 2. <= 8 words, no advice on how to win.
 export const W6_TIPS = { 50: 'Pancakes first. Syrup is next.', 51: 'Drones fly. Only air towers hit them.', 52: 'A long, winding picnic path.', 53: 'Syrup is sticky. So are queens.', 54: 'Halfway through the picnic.', 55: 'Heavy hitters on this table.', 56: 'Fewer ant types, bigger crowds.', 57: 'The cookie waits at the end.', 58: 'Drones and nurses arrive together.', 59: 'The Syrup Queen drips Drones.' };

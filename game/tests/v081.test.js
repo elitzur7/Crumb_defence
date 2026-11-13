@@ -254,9 +254,10 @@ test('W3: hpMul table for L41-L50 is the final tuning (move hpMul, never waves);
   const { checkLevel } = await import('../tools/check-rarity.mjs'); for (let i = 40; i < 50; i++) assert.deepEqual(checkLevel(i).msgs, [], `L${i + 1}`);
 });
 test('U2: ant intro cards - glazed / queen5 / nurse only, once per save, never on a cleared level; an old save pre-marks the ants it has already met', () => {
-  assert.deepEqual(Object.keys(C.ANT_CARD).sort(), ['drone', 'glazed', 'nurse', 'queen5', 'queen6', 'queen7', 'queen8', 'shieldbearer', 'sugarcube']);
+  assert.deepEqual(Object.keys(C.ANT_CARD).sort(), ['drone', 'dropcarrier', 'glazed', 'nurse', 'queen5', 'queen6', 'queen7', 'queen8', 'shieldbearer', 'sugarcube']);
   assert.match(C.ANT_CARD.glazed, /\u2014/); assert.ok(C.ANT_CARD.glazed.length > 20);
-  const s = M.newSave(); assert.equal(M.nextAntCard(s, 0), null, 'L1: no card'); assert.equal(M.nextAntCard(s, 40), null, 'L41 has no glazed');
+  const s = M.newSave(); assert.equal(M.nextAntCard(s, 0), null, 'L1: no card'); assert.equal(M.nextAntCard(s, 40), 'dropcarrier', 'L41 introduces the carrier when it has not been seen');
+  M.markAntSeen(s, 'dropcarrier');
   assert.equal(M.nextAntCard(s, 41), 'glazed'); assert.equal(M.markAntSeen(s, 'glazed'), true); assert.equal(M.markAntSeen(s, 'glazed'), false); assert.equal(M.nextAntCard(s, 41), null);
   const s2 = M.newSave(); s2.levels[41] = { stars: 1, cleared: true }; assert.equal(M.nextAntCard(s2, 41), null, 'cleared level: never');
   const st = mem(); const old = M.newSave(); delete old.seenAnts; old.levels[31] = { stars: 1, cleared: true }; M.writeSave(st, old); const l = M.loadSave(st);

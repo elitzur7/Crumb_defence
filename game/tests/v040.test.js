@@ -32,7 +32,7 @@ test('items 12+13: every stage has 30-50% fewer waves; stage count unchanged', (
 // Any change to a level's wave mix or count now has to update this table on purpose. Ratios to v0.3 for levels 1-10 stay in the message (about half, 0.46-0.62).
 const GOLDEN_ANTS = [53, 58, 100, 105, 102, 161, 151, 209, 290, 244, 126, 105, 128, 114, 179, 151, 181, 258, 302, 245,
   85, 111, 138, 123, 125, 103, 146, 149, 173, 191, // v0.7.7: world 3 (L21-L30)
-  89, 121, 128, 112, 110, 106, 155, 132, 192, 172]; // v0.7.9: world 4 (L31-L40)
+  89, 121, 99, 112, 110, 89, 155, 132, 192, 172]; // v0.8.6: L33 and L36 trade a flying-scout group for one drop carrier
 test('item 12 (golden table, v0.7.4 P2): the number of ants in each of the 40 levels is exactly the golden table', () => {
   assert.equal(C.LEVELS.length, 80); // v0.8.5: + World 8 (ant counts stay out of the v0.7.4 golden table)
   C.LEVELS.slice(0, 40).forEach((L, i) => {

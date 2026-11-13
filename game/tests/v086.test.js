@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as C from '../src/config.js';
-import { Battle, towerStat, cardPowerQ } from '../src/sim.js';
+import { Battle, towerStat, cardPowerQ, levelAntTypes } from '../src/sim.js';
 import { parseMap } from '../src/maps.js';
 import * as M from '../src/meta.js';
 
@@ -88,6 +88,30 @@ test('EC1: World 8 pays the new formula, not coinMul 2.5, and a card level appli
   assert.equal(w8.cardLevels.slingshot, 10);
   assert.equal(w1.cardLevelCap, null);
   assert.equal(towerStat('slingshot', 'power', 1, 10), towerStat('slingshot', 'power', 1, 10));
+});
+
+test('AC1: a carrier on about one World 4-8 level in three, first at L33, same seed same drop', () => {
+  const hits = [];
+  C.LEVELS.forEach((_, i) => { if (levelAntTypes(i).includes('dropcarrier')) hits.push(i + 1); });
+  assert.deepEqual(hits, [33, 36, 41, 42, 43, 46, 51, 52, 53, 56, 62, 63, 66, 67, 71, 72, 73]);
+  for (const n of hits) assert.ok(levelAntTypes(n - 1).length <= 5, `L${n} types`);
+  const s = M.newSave();
+  for (let i = 0; i < 32; i++) for (const t of levelAntTypes(i)) M.markAntSeen(s, t);
+  assert.equal(M.nextAntCard(s, 32), 'dropcarrier');
+  const drop = (seed) => {
+    const b = new Battle({ levelIndex: 32, deck: ['slingshot'], seed });
+    b.nextWaveAt = 1e9;
+    b.spawn('dropcarrier', 0, 0);
+    let t = 0;
+    while (t < 8 && b.ants.filter((a) => a.type === 'worker' && a.budgeted).length < 4) { b.update(1 / 30); t += 1 / 30; }
+    const d = b.ants.find((a) => a.dropper);
+    const kids = b.ants.filter((a) => a.type === 'worker' && a.budgeted);
+    return { x: Math.round(d.dropX), y: Math.round(d.dropY), n: kids.length, go: kids.every((a) => a.state === 'go') };
+  };
+  const a = drop(7);
+  assert.equal(a.n, 4);
+  assert.equal(a.go, true);
+  assert.deepEqual(drop(7), a);
 });
 
 test('LV: no two levels in one world share a trail', () => {
