@@ -135,7 +135,7 @@ test('item 5: no direction arrows are drawn in the game (fan, marble, board-cent
 
 // ---------- items 9 + 10: diamonds in battle, fixed booster prices ----------
 test('item 10: booster prices are fixed - Shop 15 diamonds, battle 20, no escalation, all 4 boosters', () => {
-  const s = M.newSave(); s.diamonds = 15 * 8;
+  const s = M.newSave(); s.diamonds = 15 * C.BONUS_TYPES.length * 2;
   for (const bt of C.BONUS_TYPES) for (let k = 0; k < 2; k++) { const d = s.diamonds; assert.ok(M.buyBonus(s, bt)); assert.equal(d - s.diamonds, 15); }
   const save = M.newSave(); save.diamonds = 1000;
   const b = mk({ bonusTypes: ['bomb', 'freeze'], bonusStock: { bomb: 0, freeze: 0 } });

@@ -179,6 +179,7 @@ export const TARGET_MODE_TEXT = { // v0.8.1: Front retired (M3); Healer (M1, lev
 export const HINT_OK = { healer: [35, 39, 49, 59], carrier: [40, 50, 59, 60], drone: [60] }; // M12 (qa/v0.8.3/mode-evidence.json: v0.8.2 28 levels + L59 and drone L60 re-measured, 540 battles each): gain >= +5 points vs weak mode
 export const ART81 = !(typeof __TEST_HOOKS__ !== 'undefined' && __TEST_HOOKS__ && typeof location !== 'undefined' && /[?&]art81=0/.test(location.search)); // v0.8.1 RG1 kill-switch: every v0.8.1 art/UI/motion item is gated on it (the A13 identity batch runs with it on and off; test builds accept ?art81=0)
 export const VERSION = '0.8.6'; // keep in step with package.json and android versionName
+export const TEST_GRANTS = true; // v0.8.6 TG1: the battle diamond chip can grant test diamonds. Set this false for a public build.
 export const MARBLE_R = 13; // v0.8.6 MB1: collision radius is fixed. It is not a player-facing stat.
 export const ANT_SIZES = { ...TUNING.antSizes };
 const ANT_TEXT = {
@@ -287,6 +288,7 @@ export const BONUSES = {
   plane:   { name: 'Crop Duster', damage: 22, slow: 0.4, slowTime: 2, speed: 260, targetsAir: true, needsTarget: false, color: '#a0d8ef', desc: 'Sprays the whole trail. Hits flyers too.' },
   freeze:  { name: 'Freezer',     time: 4, needsTarget: false, color: '#c7ecff', desc: 'Freezes every ant for 4 seconds.' },
   decoy:   { name: 'Sugar Cube',  time: 6, needsTarget: true, color: '#fff7e6', desc: 'Ants rush to the sugar and munch on it.' },
+  rush:    { name: 'Crumb Rush', mul: 0.20, time: 20, needsTarget: false, color: '#ffd166', desc: 'Kills pay 20% more crumbs for 20 seconds.' },
 };
 export const BONUS_TYPES = Object.keys(BONUSES);
 
@@ -317,6 +319,7 @@ export const ECONOMY = {
     { kind: 'bonus', id: 'plane', count: 1, w: 1 },
     { kind: 'bonus', id: 'freeze', count: 1, w: 1 },
     { kind: 'bonus', id: 'decoy', count: 1, w: 1 },
+    { kind: 'bonus', id: 'rush', count: 1, w: 1 },
   ],
   shop: {
     cardL1: 20,                // v0.8.6 EX1: one level-1 card of a tower you own
@@ -369,7 +372,7 @@ export const CALENDAR = {
     { kind: 'coins' },
     { kind: 'diamonds' },
     { kind: 'coins' },
-    { kind: 'card', level: 1 },
+    { kind: 'card', level: 1, extra: { kind: 'booster', id: 'rush', count: 1 } }, // v0.8.6 B1: the L1 card stays; a Crumb Rush is added
     { kind: 'diamonds' },
     { kind: 'card', level: 2, extra: { kind: 'diamonds', count: 5 } }, // v0.4 item 2: day 7 = level-2 card + 5 diamonds
   ],

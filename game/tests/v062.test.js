@@ -113,7 +113,7 @@ test('item 12: Shop unlock prices are tiered by base power (100/200/400) and the
   const all = M.newSave(); for (const id of C.ALL_CARDS) all.cards[id] = M.newCard(); assert.equal(M.cheapestCardPrice(all), 100, 'cheapest unlock = 100c');
   const g = src('game.js'); assert.ok(/Unlock \$\{up\}c/.test(g) && /M\.unlockPrice\(id\)/.test(g), 'the shop shows each tower\'s own price');
   // the prize paths are unchanged
-  assert.ok(/zapperGift/.test(src('meta.js')) && C.ECONOMY.perfectPrizes.length === 5);
+  assert.ok(/zapperGift/.test(src('meta.js')) && C.ECONOMY.perfectPrizes.length === 6);
 });
 
 // ---------- item 13: card packs can hold a new tower ----------

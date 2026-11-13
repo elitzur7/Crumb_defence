@@ -101,6 +101,11 @@ export function mergeAll(save) {
   for (let L = 1; L < C.MAX_CARD_LEVEL; L++) for (const id of C.ALL_CARDS) { let r; while ((r = mergeAt(save, id, L))) done.push(r); }
   return done;
 }
+export function mergeAllOf(save, id) {
+  const done = [];
+  for (let L = 1; L < C.MAX_CARD_LEVEL; L++) { let r; while ((r = mergeAt(save, id, L))) done.push(r); }
+  return done;
+}
 
 // ----- obtaining tower cards (v0.3 item 10: no auto-unlock by level) -----
 export function lockedCards(save) { return C.ALL_CARDS.filter((id) => !save.cards[id].unlocked); }

@@ -271,7 +271,7 @@ test('tower info text is regular weight, larger, dark on light (no Turn)', () =>
   assert.ok(/const INFO_INK = '#3d2a36'/.test(g));
 });
 test('no "bonus" in player-facing text: boosters are Bomb, Crop Duster, Freezer, Sugar Cube', () => {
-  assert.deepEqual(C.BONUS_TYPES.map((k) => C.BONUSES[k].name), ['Bomb', 'Crop Duster', 'Freezer', 'Sugar Cube']);
+  assert.deepEqual(C.BONUS_TYPES.map((k) => C.BONUSES[k].name), ['Bomb', 'Crop Duster', 'Freezer', 'Sugar Cube', 'Crumb Rush']);
   const g = src('game.js');
   const strings = [...g.matchAll(/(['`])((?:(?!\1)[^\\\n]|\\.)*)\1/g)].map((m) => m[2].replace(/\$\{[^}]*\}/g, ''));
   const ui = strings.filter((s) => /\bbonus(es)?\b/i.test(s) && /\s/.test(s) && !/^Star bonus$/.test(s)); // v0.7.6 E1: 'Star bonus' is the first-time star coins line, not a booster

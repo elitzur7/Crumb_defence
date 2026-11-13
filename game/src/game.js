@@ -779,6 +779,37 @@ function drawGearIcon(x, y, r) {
   ctx.beginPath(); ctx.arc(0, 0, r * 0.32, 0, 7); ctx.fillStyle = '#fff6ee'; ctx.fill(); ctx.stroke();
   ctx.restore();
 }
+function applyTestGrant(n) {
+  const now = (typeof performance !== 'undefined' ? performance.now() : Date.now());
+  if (!S.testGrant || now - (S.testGrant.at || 0) < 300) return;
+  S.testGrant.at = now;
+  S.save.diamonds = (S.save.diamonds || 0) + n;
+  S.save.testGranted = (S.save.testGranted || 0) + n;
+  if (!Array.isArray(S.save.testGrantLog)) S.save.testGrantLog = [];
+  S.save.testGrantLog.push({ n, t: now });
+  persist();
+}
+function drawTestGrant() {
+  panel(60, 78, 280, 150, '#fff6ee', 16);
+  button('tgBlock', 60, 78, 280, 150, () => {});
+  A.text(ctx, 'Test grant (free)', 200, 104, 16, '#7fd3ff');
+  [[20, 78], [40, 164], [100, 250]].forEach(([n, x]) => {
+    drawButton(x, 124, 74, 40, '+' + n, '#e9f7ff', { size: 16 });
+    button('tg' + n, x, 124, 74, 44, () => applyTestGrant(n));
+  });
+  drawButton(120, 176, 160, 36, 'Close', '#fff3e6', { size: 15 });
+  button('tgClose', 120, 176, 160, 40, () => { S.testGrant = null; S.paused = false; });
+}
+function drawBattleRecords(b, x, y, w, h) {
+  if (!b || !b.bySource) return;
+  const rows = [];
+  for (const tw of b.towers) if (tw.rec && (tw.rec.dmg > 0 || tw.rec.kills > 0)) rows.push([C.TOWERS[tw.type].short || C.TOWERS[tw.type].name, tw.rec]);
+  for (const [k, name] of [['swatter', 'Cookie Swatter'], ['bomb', 'Bomb'], ['plane', 'Crop Duster'], ['other', 'Other']]) if (b.bySource[k] && (b.bySource[k].dmg > 0 || b.bySource[k].kills > 0)) rows.push([name, b.bySource[k]]);
+  if (!rows.length) return;
+  A.rr(ctx, x, y, w, h, 10); ctx.fillStyle = '#f6ece8'; ctx.fill();
+  A.text(ctx, 'Who did the work', x + 8, y + 12, 12, '#7a5a6a', 'left', null);
+  rows.slice(0, 4).forEach((r, i) => A.text(ctx, `${r[0]}  ${Math.round(r[1].dmg)} dmg  ${r[1].kills} kills`, x + 8, y + 28 + i * 14, 12, '#3d2a36', 'left', null));
+}
 function drawPrepStats() {
   const y = 668, h = 56;
   panel(26, y, 348, h, '#fff8ef', 12);
@@ -1332,7 +1363,7 @@ function renderPrep() {
   const by = 510; // v0.7.7 P1-1: >= 8 px below the cap line (its text ends at y 494; the Boosters title starts at 503)
   A.text(ctx, `Boosters (bring ${C.BATTLE.bonusTypesToBring}, max ${C.BATTLE.maxBonusUses} uses)`, 30, by, 14, '#7a5a6a', 'left', null);
   C.BONUS_TYPES.forEach((bt, k) => {
-    const x = 26 + k * 88, y = by + 14, w = 80, h = 64;
+    const x = 12 + k * 76, y = by + 14, w = 72, h = 64;
     const sel = S.prep.bonuses.includes(bt);
     const stock = S.save.bonusStock[bt] || 0;
     A.rr(ctx, x, y, w, h, 14); ctx.fillStyle = sel ? A.shade(C.BONUSES[bt].color, 0.2) : '#f3ebee'; ctx.fill();
@@ -2164,6 +2195,8 @@ function renderHud(b) {
   A.diamondIcon(ctx, -15, 0, 0.95);
   A.text(ctx, String(S.save.diamonds || 0), 8, 1, 16, '#7fd3ff', 'center', A.INK, 'bold', true);
   ctx.restore();
+  if (C.TEST_GRANTS) button('diaGrant', 221, 19, 62, 28, () => { S.testGrant = S.testGrant || { at: 0 }; S.paused = true; });
+  if (S.testGrant && C.TEST_GRANTS) drawTestGrant();
   // crumbs
   S.crumbShake = Math.max(0, S.crumbShake - 1 / 60); S.crumbPulse = Math.max(0, S.crumbPulse - 1 / 60);
   const cbump = S.crumbBump > 0 ? 0.08 * Math.sin(Math.PI * (1 - S.crumbBump / 0.12)) : 0; S.crumbBump = Math.max(0, S.crumbBump - 1 / 60); // v0.8.1 G4: 1 -> 1.08 -> 1 over 120 ms
@@ -2372,9 +2405,8 @@ function renderResult(dt) {
   // coin breakdown: win = food + kills (+ level, first clear) + time; loss = kills + time (capped together)
   // v0.6 item 1: "Time survived" = floor(battle seconds / 3) - its own line, on a win and on a loss
   const P = out.parts || {}; const rows = [];
-  if (R.win) { rows.push(['Victory', P.base]); rows.push(['Food left', P.food]); rows.push(['Ants beaten', P.kills]); if (P.level) rows.push(['Level reward', P.level]); if (P.firstClear) rows.push(['First clear', P.firstClear]); if (P.stars) rows.push(['Star bonus', P.stars]); if (P.daily) rows.push(['Daily first win', P.daily]); } // v0.7.6 E1: first-time 2 / 3 star coins
-  else rows.push(['Ants beaten', P.kills || 0]);
-  rows.push([R.win ? 'Time survived' : `Time survived${out.coins >= C.ECONOMY.lossCap ? ` (max ${C.ECONOMY.lossCap})` : ''}`, P.time || 0]);
+  if (R.win) { rows.push(['Victory', P.replay || P.base || 0]); if (P.firstClear) rows.push(['First clear', P.firstClear]); if (P.stars) rows.push(['Star records', P.stars]); if (P.daily) rows.push(['Daily first win', P.daily]); }
+  else rows.push(['Progress', P.progress || 0]);
   const RS = rows.length > 5 ? 14 : 16;
   A.rr(ctx, 70, 316, 260, 14 + rows.length * RS, 10); ctx.fillStyle = '#f6ece8'; ctx.fill();
   rows.forEach(([l, v], i) => { A.text(ctx, l, 84, 330 + i * RS, 12, '#7a5a6a', 'left', null); A.text(ctx, `+${v}`, 316, 330 + i * RS, 12, '#c9962a', 'right', null); });
@@ -2424,6 +2456,7 @@ function renderResult(dt) {
     const k = Math.min(1, (R.t - C.UI.perfectAnimTime) * 4); strip(yy + 12 + (out.prize ? 34 : 0), out.bossGift, cardLabel(out.bossGift, 'Boss gift'), k);
   }
   if (!(out.prize && !celebrating) && !gift && R.win && !R.perfect && S.battle.stats.stolen > 0) A.text(ctx, 'Tip: lose no food at all for a Perfect prize', 200, yy + 10, 12, '#a08090', 'center', null);
+  drawBattleRecords(S.battle, 52, 456, 296, 72);
   ctx.restore(); // bodyA
   ctx.restore();
   if (MO && rtM > -0.01 && rtM < MO.dur) drawStarMoment(MO, rtM, R.t); // the gold 3-star card (above everything in the panel)
@@ -2633,7 +2666,14 @@ function renderCardView() {
   });
   cardInfoPanel(id, 24, 497, 352, 97, {});
   const ready = M.mergeReady(S.save, id);
-  drawButton(24, 604, 352, 34, 'Merge all', ready ? '#9fe0b5' : '#e6dce2', { size: 15, r: 12, disabled: !M.anyMergeReady(S.save) }); button('cvMergeAll', 24, 604, 352, 44, doMergeAll);
+  drawButton(24, 604, 352, 34, 'Merge this tower', ready ? '#9fe0b5' : '#e6dce2', { size: 15, r: 12, disabled: !ready });
+  button('cvMergeAll', 24, 604, 352, 44, () => {
+    const done = M.mergeAllOf(S.save, id);
+    if (!done.length) { toast(ready ? 'Not enough coins' : 'Nothing to merge yet - 3 cards of a level make 1 of the next'); return; }
+    persist(); sfx('upgrade');
+    const top = done.reduce((a, d) => (d.to > a.to ? d : a), done[0]);
+    S.mergeAnim = { id: top.id, from: top.from, to: top.to, n: 3, t: 0, all: done.length };
+  });
   if (S.mergeAnim) renderMergeAnim();
 }
 // Merge animation: the 3 merged cards fly into one, flash, it grows and the level badge flips to the new level.

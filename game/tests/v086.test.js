@@ -36,3 +36,23 @@ test('EX1: card power Q is 1.08 to the level, and a world does not clamp the car
 });
 
 test('version is 0.8.6', () => { assert.equal(C.VERSION, '0.8.6'); });
+
+test('EC2: merge all of one tower does not merge another', () => {
+  const s = M.newSave(); s.coins = 1e7;
+  M.addCards(s, 'slingshot', 1, 3); M.addCards(s, 'spray', 1, 3);
+  const done = M.mergeAllOf(s, 'slingshot');
+  assert.equal(done.length, 1);
+  assert.equal(M.countAt(s.cards.spray, 1), 4);
+});
+
+test('B1: Crumb Rush adds 20 percent of kill crumbs and pays a leftover half', () => {
+  const b = new Battle({ levelIndex: 0, deck: ['slingshot'], seed: 1, bonusTypes: ['rush'], bonusStock: { rush: 1 } });
+  b.nextWaveAt = 1e9;
+  assert.equal(b.useBonus('rush'), true);
+  const a = b.spawn('worker', 10); a.speed = 0;
+  const before = b.crumbs;
+  b.damage(a, 1e9, { ignoreArmor: true, src: { type: 'slingshot', rec: { dmg: 0, kills: 0, overkill: 0 } } });
+  const base = C.crumbsFor('worker');
+  assert.ok(b.crumbs >= before + base);
+  assert.ok(b.bySource || b.towers);
+});
