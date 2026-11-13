@@ -5,7 +5,7 @@ import * as Cal from './calendar.js';
 import * as M from './meta.js';
 import * as A from './art.js';
 import { levelHeaderLine } from './uitext.js';
-import { initAudio, sfx, setMuted, setAudioSpeed } from './audio.js';
+import { initAudio, sfx, setMuted, setAudioSpeed, musicTick, setSfxGain, setMusicGain } from './audio.js';
 import { STEP, PACE, advanceFrame, newClock, nextSpeed, startSpeed } from './loop.js';
 import { smartBotStep } from './bot.js';
 import { addFloatText } from './fx.js';
@@ -225,7 +225,9 @@ function startBattle(levelIndex = S.levelIndex, deck = S.prep.deck, bonuses = S.
   S.levelIndex = levelIndex;
   S.save.lastDeck = deck.slice(); S.save.lastBonuses = bonuses.slice(); persist();
   S.treat = Treat.newTreatState();
-  S.battle = new Battle({ levelIndex, deck, bonusTypes: bonuses, bonusStock: { ...S.save.bonusStock }, cardLevels: M.cardLevels(S.save), seed,
+  const stock = { ...S.save.bonusStock };
+  if (levelIndex === 29 && S.save.l30FreezerArmed && !S.save.l30FreezerUsed && bonuses.includes('freeze')) { stock.freeze = (stock.freeze || 0) + 1; S.save.l30FreezerUsed = true; S.save.l30FreezerArmed = false; }
+  S.battle = new Battle({ levelIndex, deck, bonusTypes: bonuses, bonusStock: stock, cardLevels: M.cardLevels(S.save), seed,
     onBonusUsed: (type) => { M.consumeBonus(S.save, type); persist(); } }); // deducted immediately: Restart/Quit can't refund it
   S.battleStartStock = { ...S.save.bonusStock };
   capsReset(); S.queenIntro = null; S._bubbleShown = false; S.impactT = {}; S.crumbSprites = []; S.sparkles = []; // v0.8.1 J11: maxima since battle start
@@ -246,7 +248,8 @@ function localDay() { const d = new Date(); return `${d.getFullYear()}-${String(
 function finishBattle() {
   const b = S.battle; guideDone(); // v0.8.1 U1: the first finished battle always ends the guide
   // bonuses were already deducted from the save at the moment of use
-  const out = M.applyBattleResult(S.save, b.levelIndex, b.result, b.stars, { kills: b.stats.kills, foodLeft: b.foodStored, perfect: b.perfect, time: b.time, day: C.ART81 ? localDay() : undefined });
+  const out = M.applyBattleResult(S.save, b.levelIndex, b.result, b.stars, { kills: b.stats.kills, foodLeft: b.foodStored, perfect: b.perfect, time: b.time, progress: b.progress ? b.progress() : 0, day: C.ART81 ? localDay() : undefined });
+  if (b.levelIndex === 29 && b.result === 'lose') S.save.l30Fails = (S.save.l30Fails || 0) + 1;
   { const rc = b.upgradeReach(); S.save.debug = S.save.debug || { reach: [] }; S.save.debug.reach.push({ li: b.levelIndex, res: b.result, towers: rc.towers, l1: rc.l1, l2: rc.l2, l3p: rc.l3p, placed: rc.placed, upgrades: rc.upgrades, crumbsPlace: rc.crumbsPlace, crumbsUpgrade: rc.crumbsUpgrade }); if (S.save.debug.reach.length > 20) S.save.debug.reach.shift(); } // v0.8.1 M8
   const lossRun = M.noteLossRun(S.save, b.levelIndex, b.result === 'win'); // v0.8.1 U7: consecutive losses on this level
   if (b.result === 'win' && b.levelIndex === 0 && out.firstClear && C.ART81) M.armNextHint(S.save, 'l1'); // v0.8.1 U9: after the first L1 win the map points at level 2
@@ -473,7 +476,7 @@ function consumeEvents() {
   for (const e of ev) {
     switch (e.type) {
       case 'special': if (C.ART81) spCue(e); break;
-      case 'clang': if (C.ART81 && e.armor > 0) addFx({ k: 'spark', x: e.x, y: e.y - 6, col: '#d7e2ee', life: 0.12, max: 0.12 }); break;
+      case 'clang': if (e.armor > 0) { for (let i = 0; i < 3; i++) addFx({ k: 'spark', x: e.x + (i - 1) * 6, y: e.y - 8, col: '#d7e2ee', life: 0.22, max: 0.22 }); sfx('clang'); } break;
       case 'kill':
         if (e.src === 'swatter' && !reducedMotion() && b.swatFx > 0) { // v0.7.3: a swatter kill shows on the slap frame (ant ghost stays until then)
           S.swatQ.push({ at: swatHitTime(b), kill: e, ghost: e.ref, x: e.x, y: e.y }); break;
@@ -555,7 +558,7 @@ function consumeEvents() {
       case 'marbleBreak': for (let i = 0; i < 7; i++) addFx({ k: 'shard', x: e.x, y: e.y - 6, vx: (Math.random() - 0.5) * 110, vy: -30 - Math.random() * 70, life: 0.55, max: 0.55 }); break; // v0.5 item 2: breaks at the wall/turn
       case 'move': addFx({ k: 'pop', x: e.x, y: e.y, life: 0.35, max: 0.35 }); addFx({ k: 'ring2', x: e.x, y: e.y, life: 0.5, max: 0.5 }); addFloatText(S.fx, { key: 'placed', x: e.x, y: e.y - 34, n: 1, fmt: () => 'Moved!', col: '#fff', life: 0.9 }); break;
       case 'swap': for (const [x, y] of [[e.ax, e.ay], [e.bx, e.by]]) { addFx({ k: 'pop', x, y, life: 0.35, max: 0.35 }); addFx({ k: 'ring2', x, y, life: 0.5, max: 0.5 }); } addFloatText(S.fx, { key: 'placed', x: e.ax, y: e.ay - 34, n: 1, fmt: () => 'Swapped!', col: '#fff', life: 0.9 }); break;
-      case 'roll': addFx({ k: 'pop', x: e.x, y: e.y - 12, life: 0.2, max: 0.2 }); sfx('gust'); break;
+      case 'roll': addFx({ k: 'pop', x: e.x, y: e.y - 12, life: 0.2, max: 0.2 }); sfx('marble'); break;
       case 'bomb': addFx({ k: 'boom', x: e.x, y: e.y, r: e.r, life: 0.7, max: 0.7 }); sfx('boom'); break;
       case 'freeze': addFx({ k: 'flash', col: 'rgba(190,235,255,0.7)', life: 0.4, max: 0.4 }); sfx('freeze'); break;
       case 'plane': sfx('plane'); break;
@@ -633,7 +636,13 @@ function battleFrame(dt) {
   if (S.battle.result) finishBattle();
 }
 function frame(now) {
-  A.TEXT_SCALE = (S.save && S.save.settings && S.save.settings.textSize === 'large') ? 1.15 : 1;
+  A.setTextScale((S.save && S.save.settings && S.save.settings.textSize === 'large') ? 1.15 : 1);
+  const stA = (S.save && S.save.settings) || {};
+  if (stA.sfxVol != null) setSfxGain(stA.sfxVol);
+  if (stA.musicVol != null) setMusicGain(stA.musicVol);
+  const queens = S.screen === 'battle' && S.battle ? S.battle.ants.filter((a) => !a.dead && C.isQueen(a.type)).length : 0;
+  const want = (S.result || S.screen !== 'battle') ? 'prep' : (queens ? 'queen' : 'battle');
+  musicTick(want, !!(S.paused || S.testGrant));
   const dt = Math.min(0.1, (now - lastT) / 1000); lastT = now;
   S.t += dt;
   heartbeat(false);
@@ -827,7 +836,7 @@ function renderSettings() {
   button('setBlock', -2000, -2000, W + 4000, H + 4000, () => {});
   ctx.save(); ctx.fillStyle = 'rgba(40,26,38,0.55)'; ctx.fillRect(-2000, -2000, W + 4000, H + 4000); ctx.restore();
   button('setBlock2', -2000, -2000, W + 4000, H + 4000, () => closeSettings());
-  const x = 70, y = 122, w = 260, h = 466; // v0.8.6 U1: Text size row added under Reset
+  const x = 70, y = 90, w = 260, h = 560; // v0.8.6 U1 + AU1 volume rows
   panel(x, y, w, h, '#fff6ee', 20); button('setPanel', x, y, w, h, () => {});
   A.text(ctx, 'Settings', 200, y + 28, 22, '#ffb3c1');
   const st = S.save.settings || {}; const muted = st.muted, rmv = st.reduceMotion || 'auto', hap = st.haptics !== false;
@@ -847,8 +856,13 @@ function renderSettings() {
   const bigText = st.textSize === 'large';
   drawButton(x + 24, y + 326, w - 48, 52, bigText ? 'Text: Large' : 'Text: Normal', bigText ? '#9fe0b5' : '#fff3e6', { size: 16 });
   button('setText', x + 24, y + 322, w - 48, 60, () => setS('textSize', bigText ? 'normal' : 'large'));
-  drawButton(x + 24, y + 394, w - 48, 48, 'Close', '#fff3e6', { size: 17 });
-  button('setClose', x + 24, y + 390, w - 48, 56, () => closeSettings());
+  const sfxV = st.sfxVol == null ? 1 : st.sfxVol, musV = st.musicVol == null ? 0.35 : st.musicVol;
+  drawButton(x + 24, y + 394, w - 48, 44, `SFX ${Math.round(sfxV * 100)}%`, '#fff3e6', { size: 15 });
+  button('setSfx', x + 24, y + 390, w - 48, 52, () => setS('sfxVol', sfxV <= 0 ? 1 : Math.round((sfxV - 0.25) * 100) / 100));
+  drawButton(x + 24, y + 446, w - 48, 44, `Music ${Math.round(musV * 100)}%`, '#fff3e6', { size: 15 });
+  button('setMusic', x + 24, y + 442, w - 48, 52, () => setS('musicVol', musV <= 0 ? 0.35 : Math.round((musV - 0.25) * 100) / 100));
+  drawButton(x + 24, y + 498, w - 48, 44, 'Close', '#fff3e6', { size: 17 });
+  button('setClose', x + 24, y + 494, w - 48, 52, () => closeSettings());
 }
 // v0.7.5 C18: the backdrop (gradient + faint gingham tablecloth) is baked once into one offscreen canvas per layout (resolution capped at 2x) and blitted with a single
 // drawImage per frame; it is rebuilt only on a resize / DPR / layout change (S.bdCache is cleared in resize()). Only the 14 drifting bubbles are drawn live.
@@ -1381,7 +1395,8 @@ function renderPrep() {
   });
   // warnings
   let warn = null;
-  if (levelHasFlyers(i) && !S.prep.deck.some((d) => C.AIR_COUNTERS.includes(d))) warn = C.ART81 ? 'Flying ants ahead! Only the Laser and Bug Zapper can hit them.' : 'Flying ants ahead! Only Laser, Bug Zapper or the Crop Duster can hit them.';
+  if (i === 29) warn = 'Try Bomb + Freezer. Clear the escort near your towers; freeze the queen there before she bites.';
+  else if (levelHasFlyers(i) && !S.prep.deck.some((d) => C.AIR_COUNTERS.includes(d))) warn = C.ART81 ? 'Flying ants ahead! Only the Laser and Bug Zapper can hit them.' : 'Flying ants ahead! Only Laser, Bug Zapper or the Crop Duster can hit them.';
   else if (ants.includes('gasmask') && S.prep.deck.includes('spray') && S.prep.deck.filter((d) => d !== 'spray' && C.TOWERS[d].kind === 'tower' && d !== 'fan').length < 2) warn = 'Gas-mask ants ignore Bug Spray - bring other damage too.';
   // v0.8.2 R6: a 0-stock booster is never pre-selected and the 'buy one' text is a neutral hint shown only after the player taps the 0-stock booster (S.zeroHint)
   if (S.zeroHint && S.t < S.zeroHint.until && S.prep.bonuses.includes(S.zeroHint.bt) && !(S.save.bonusStock[S.zeroHint.bt] > 0)) warn = `You have 0 ${C.BONUSES[S.zeroHint.bt].name}s. Buy one during battle for ${C.ECONOMY.diamonds.boosterPriceStart} diamonds, or in the Shop.`;
@@ -1401,6 +1416,10 @@ function renderPrep() {
     lines.forEach((l, k) => A.text(ctx, l, 200, 646 - hh + 6 + k * 14 + 5, 12, '#b0602a', 'center', null));
     ctx.font = `bold 12px ${A.FONT}`;
     S.layoutWarn = { box: { x: 26, y: 646 - hh - 2, w: 348, h: hh }, lines: lines.map((l) => ctx.measureText(l).width), maxW: 324 };
+  }
+  if (i === 29 && S.save.l30Fails >= 2 && !S.save.l30FreezerUsed && !S.prep.bonuses.includes('freeze')) {
+    drawButton(26, 640, 348, 24, 'Free Freezer (one time)', '#c7ecff', { size: 13 });
+    button('l30free', 26, 636, 348, 32, () => { S.prep.bonuses = ['freeze', S.prep.bonuses.find((x) => x !== 'freeze')].filter(Boolean).slice(0, C.BATTLE.bonusTypesToBring); S.save.l30FreezerArmed = true; persist(); });
   }
   drawPrepStats();
   drawButton(26, 732, 110, 48, 'Back', '#fff3e6'); button('back', 26, 730, 110, 54, () => go('map')); // hit area stays 110 x 54
@@ -1945,6 +1964,7 @@ function drawShield(a, x, y) {
 }
 function drawAntObj(a, ghost = false) {
   const b = S.battle;
+  if (a.crate) { ctx.save(); ctx.translate(a.x, a.y); A.rr(ctx, -12, -10, 24, 18, 4); ctx.fillStyle = '#e0a060'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = A.INK; ctx.stroke(); ctx.restore(); return; }
   const frozen = b.time < b.freezeUntil;
   const p = b.route(a).at(a.d);
   if (Math.abs(p.dx) > 0.3) a._face = (p.dx * (a.dir || 1)) >= 0 ? 1 : -1;
@@ -1964,6 +1984,7 @@ function drawAntObj(a, ghost = false) {
   // tiny lateral offset per id so crowds don't stack perfectly
   let lat = ((a.id * 37) % 9 - 4) * 1.2;
   if (a.state === 'back') lat = C.UI.carrierLane + lat * 0.4; // v0.7.4 P: returning carriers ride ~5 px to one side of the lane so they separate from inbound ants
+  if (a.dropper) lat = 0;
   const x = a.x + p.dy * lat, y = a.y - p.dx * lat;
   let hopY = 0, hopS = 1; if (a._hopT && !reducedMotion()) { const hk = (S.t - a._hopT) / 0.24; if (hk >= 0 && hk < 1) { hopY = -Math.sin(hk * Math.PI) * 4; hopS = 1 + 0.1 * Math.sin(hk * Math.PI * 2) * (1 - hk); } } // v0.7.10 cookie-pause hop
   let gsx = 1, gsy = 1; if (a._grabT && !reducedMotion()) { const gk = (S.t - a._grabT) / 0.08; if (gk >= 0 && gk < 1) { const q = Math.sin(gk * Math.PI); gsx = 1 + 0.12 * q; gsy = 1 - 0.12 * q; } } // v0.8.1 J3: grab squash 1.12 / .88 over 80 ms

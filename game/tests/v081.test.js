@@ -14,7 +14,7 @@ test('J12: reducedMotion() reads the setting first; the settings panel has Reduc
   const g = src('game.js');
   assert.match(g, /function reducedMotion\(\) \{ const rmS = S\.save && S\.save\.settings && S\.save\.settings\.reduceMotion; if \(rmS === 'on'\) return true; if \(rmS === 'off'\) return false;/);
   assert.match(g, /'Reduce motion: '/); assert.match(g, /'Haptics: On'/); assert.match(g, /setReduce/); assert.match(g, /setHaptics/);
-  assert.match(g, /const x = 70, y = 122, w = 260, h = 466;/);
+  assert.match(g, /const x = 70, y = 90, w = 260, h = 560;/);
   for (const m of g.matchAll(/drawButton\(x \+ 24, y \+ \d+, w - 48, (\d+),/g)) assert.ok(+m[1] >= 44, 'settings row height >= 44');
 });
 test('J11: caps counters + overlay + window.__caps (test hooks only), reset per battle, long-press on the version text', () => {
@@ -235,7 +235,7 @@ test('J12: motion state is reset per frame and every new art path is behind ART8
 // ---------- Pass 5: World 5 "Donut Diner" (W1-W9, U2, U6, EC1, EC3, EC4) ----------
 import { generateWaves, levelAntTypes } from '../src/sim.js'; import * as A from '../src/art.js';
 test('W1: world 5 Donut Diner - W5 data inside 60 levels, 6 worlds, 52 maps, treat donut, queen5, cap 6, coinMul 1.75, gate 14 stars of W4', () => {
-  assert.equal(C.LEVELS.length, 80); assert.equal(C.WORLDS.length, 8); assert.equal(Object.keys(C.MAPS).length, 72);
+  assert.equal(C.LEVELS.length, 80); assert.equal(C.WORLDS.length, 8); assert.equal(Object.keys(C.MAPS).length, 75);
   const w = C.WORLDS[4]; assert.equal(w.id, 5); assert.equal(w.name, 'Donut Diner'); assert.equal(w.treat, 'donut'); assert.equal(w.queen, 'queen5'); assert.equal(w.levels, 10);
   assert.equal(w.cardLevelCap, 6); assert.equal(w.coinMul, 1.75); assert.deepEqual(w.unlock, { allLevelsWonInWorld: 4, minStarsInWorld: 14 });
   assert.equal(C.WORLD_START[5], 40); assert.ok(C.isBossLevel(49)); assert.ok(!C.isBossLevel(48)); assert.ok(C.LEVELS.slice(40, 50).every((L) => L.world === 5));

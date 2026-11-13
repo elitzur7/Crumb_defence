@@ -399,19 +399,41 @@ export class Battle {
   }
   addCrumbs(n) { this.crumbs += n; this.crumbsEarned += n; }
 
-  spawn(type, d = 0, ri = null) {
+  spawn(type, d = 0, ri = null, opt = {}) {
+    if (type === 'dropcarrier') {
+      if (this.ants.some((q) => q.dropper && !q.dead) || this.time - (this.lastDrop ?? -99) < 12) return null;
+      this.lastDrop = this.time;
+    }
     const a = C.ANTS[type];
+    if (!a) return null;
     const hp = Math.round(a.hp * (this.level.hpMul || 1));
     if (ri == null) ri = this.routeCounter++ % this.routes.length;
     const ant = { id: NEXT_ID++, type, ri, hp, maxHp: hp, armor: a.armor, d, speed: a.speed, flying: !!a.flying,
       gasImmune: !!a.gasImmune, weight: a.weight, size: a.size, state: 'go', carrying: 0, trips: 0, waitT: 0, slow: 0, stunT: 0, charmT: 0, charmD: 0,
       plantSlow: 0, plantSlowT: 0, spawnT: a.spawn ? a.spawn.every : 0, healCd: 0, healFx: 0, shield: 0, shieldMax: 0, shieldT: 99, dead: false, x: 0, y: 0, born: this.time, hitFlash: 0, dir: 1 };
-    const p = this.routes[ri].at(d); ant.x = p.x; ant.y = p.y;
-    if (a.shield && a.shield.pts > 0) { ant.shieldMax = ant.shield = Math.round(a.shield.pts * (this.level.hpMul || 1)); } // v0.8.1 M4: the glaze shield scales with hpMul exactly like hp; 'always' (D6)
+    const p = this.routes[ri].at(Math.max(0, Math.min(d, this.routes[ri].length - 0.01))); ant.x = p.x; ant.y = p.y;
+    if (a.shield && a.shield.pts > 0) { ant.shieldMax = ant.shield = Math.round(a.shield.pts * (this.level.hpMul || 1)); }
+    if (opt.budget) { ant.budgeted = true; ant.hp0 = ant.hp + (ant.shield || 0); this.budgetHp = (this.budgetHp || 0) + ant.hp0; }
+    if (type === 'dropcarrier') this.armDropper(ant);
     this.ants.push(ant);
     this.stats.spawned++;
     return ant;
   }
+  armDropper(ant) {
+    const rt = this.routes[ant.ri];
+    const d = rt.length * (0.2 + this.rng() * 0.6);
+    const p = rt.at(d);
+    ant.dropper = true; ant.dropD = d; ant.dropX = p.x; ant.dropY = p.y;
+    ant.fx = p.x - 120; ant.fy = p.y - 30; ant.tx = p.x + 140; ant.ty = p.y - 30; ant.flight = 0; ant.dropped = false;
+    ant.x = ant.fx; ant.y = ant.fy;
+  }
+  spawnCrate(src) {
+    const hp = Math.round(C.ANTS.worker.hp * 2 * (this.level.hpMul || 1));
+    const c = { id: NEXT_ID++, type: 'crate', crate: true, flying: false, hp, maxHp: hp, armor: 0, dead: false, x: src.dropX, y: src.dropY, d: src.dropD, ri: src.ri, unpack: 0.8, speed: 0, state: 'go', size: 1, born: this.time, hitFlash: 0, stunT: 0, budgeted: true, hp0: hp, shield: 0 };
+    this.budgetHp = (this.budgetHp || 0) + hp;
+    this.ants.push(c);
+  }
+  progress() { return this.budgetHp ? Math.max(0, Math.min(1, (this.resolvedHp || 0) / this.budgetHp)) : 0; }
 
   // v0.8.2 M7a: the ONLY way sim.js reads a tower's special: the params when it is active (world >= 6, card level >= 5, flag on), else null
   spec(tw) { return this.specialsOn && tw && tw.stat && C.specialActive(tw, this.level) ? C.TOWERS[tw.type].special.params : null; }
@@ -441,7 +463,7 @@ export class Battle {
   kill(ant, src) {
     ant.dead = true;
     // v0.7.7: a child dropped by a splitting ant (Brood Ant) pays 0 crumbs and is not an 'ant beaten' (no kills coin, no byType): anti-farming
-    const crumbs = ant.child ? 0 : C.crumbsFor(ant.type);
+    const crumbs = ant.child || ant.crate ? 0 : C.crumbsFor(ant.type);
     this.addCrumbs(crumbs);
     if (this.rushT > 0 && crumbs > 0) { this.rushFrac = (this.rushFrac || 0) + crumbs * (C.BONUSES.rush.mul || 0.2); const extra = Math.floor(this.rushFrac); this.rushFrac -= extra; if (extra) this.addCrumbs(extra); }
     if (ant.child) this.stats.childKills = (this.stats.childKills || 0) + 1;
@@ -467,7 +489,8 @@ export class Battle {
     if (!src || removed <= 0) return;
     const bucket = src.rec || (src.type === 'swatter' ? this.bySource.swatter : src.type === 'bomb' ? this.bySource.bomb : src.type === 'plane' ? this.bySource.plane : this.bySource.other);
     bucket.dmg += removed;
-    if (ant.dead && !ant.child && !ant._credited) { ant._credited = true; bucket.kills++; bucket.overkill += over || 0; }
+    if (ant.dead && !ant.child && !ant.crate && !ant._credited) { ant._credited = true; bucket.kills++; bucket.overkill += over || 0; }
+    if (ant.budgeted) { const room = Math.max(0, (ant.hp0 || 0) - (ant.creditedHp || 0)); const add = Math.min(room, removed); ant.creditedHp = (ant.creditedHp || 0) + add; this.resolvedHp = (this.resolvedHp || 0) + add; }
   }
   // v0.7.7 splitInto (tuning.json ants[].splitInto = { type, count }): a dying ant drops `count` children of `type` on its own route, behind it
   // (d - 3 - 7k, k = 0..count-1; where that would fall off the nest end the child goes the same distance AHEAD instead, so no two children stack).
@@ -728,7 +751,7 @@ export class Battle {
     if (this.nextWave < this.waves.length && t >= this.nextWaveAt) this.startWave();
     if (this.pending.length) {
       const due = this.pending.filter((p) => p.t <= t);
-      if (due.length) { this.pending = this.pending.filter((p) => p.t > t); for (const p of due) this.spawn(p.type); }
+      if (due.length) { this.pending = this.pending.filter((p) => p.t > t); for (const p of due) this.spawn(p.type, 0, null, { budget: true }); }
     }
     const frozen = t < this.freezeUntil;
 
@@ -739,7 +762,7 @@ export class Battle {
       const bearers = au ? this.ants.filter((x) => !x.dead && x.type === 'shieldbearer') : [];
       if (au && (bearers.length || this.ants.some((a) => a.auraArmor))) {
         for (const a of this.ants) {
-          if (a.dead) continue;
+          if (a.dead || !C.ANTS[a.type]) continue;
           const base = (C.ANTS[a.type].armor || 0) - (a.shred || 0);
           let bonus = 0;
           if (!C.ANTS[a.type].boss && bearers.length) {
@@ -759,12 +782,13 @@ export class Battle {
     // a nurse that is ready and has at least one hurt ant in range pulses once: every hurt ant within `radius` tiles regains pct x its max hp (a queen: x bossMul).
     // She never heals herself or another nurse (no stacking). A frozen nurse (Freeze booster) neither pulses nor recharges. No hurt ant in range: she stays ready.
     for (const h of this.ants) {
+      if (!C.ANTS[h.type]) continue;
       const H = C.ANTS[h.type].heal; if (!H || h.dead) continue;
       h.healFx = Math.max(0, h.healFx - dt);
       if (frozen) continue;
       if (h.healCd > 0) { h.healCd = Math.max(0, h.healCd - dt); if (h.healCd > 0) continue; }
       const r2 = (H.radius * C.TILE) ** 2; const hit = [];
-      for (const o of this.ants) { if (o === h || o.dead || o.hp >= o.maxHp - 1e-6 || C.ANTS[o.type].heal) continue; const dx = o.x - h.x, dy = o.y - h.y; if (dx * dx + dy * dy <= r2) hit.push(o); }
+      for (const o of this.ants) { if (o === h || o.dead || !C.ANTS[o.type] || o.hp >= o.maxHp - 1e-6 || C.ANTS[o.type].heal) continue; const dx = o.x - h.x, dy = o.y - h.y; if (dx * dx + dy * dy <= r2) hit.push(o); }
       if (!hit.length) continue;
       let sum = 0; for (const o of hit) { const g = Math.min(o.maxHp - o.hp, o.maxHp * H.pct * (C.ANTS[o.type].boss ? (H.bossMul ?? 1) : 1)); o.hp += g; sum += g; }
       h.healCd = H.every; h.healFx = 0.5; this.stats.heals = (this.stats.heals || 0) + 1; this.stats.healed = (this.stats.healed || 0) + sum;
@@ -801,6 +825,26 @@ export class Battle {
     // move ants
     for (const a of this.ants) {
       if (a.dead) continue;
+      if (a.dropper) {
+        if (!frozen && a.stunT <= 0) a.flight += dt / 4;
+        const u = Math.max(0, Math.min(1, a.flight));
+        a.x = a.fx + (a.tx - a.fx) * u; a.y = a.fy + (a.ty - a.fy) * u;
+        if (!a.dropped && a.flight >= 0.42 && this.time - a.born >= 2) { a.dropped = true; this.spawnCrate(a); }
+        if (a.flight >= 1) { a.dead = true; a.exited = true; }
+        continue;
+      }
+      if (a.crate) {
+        if (!frozen) a.unpack -= dt;
+        if (a.hp <= 0) { a.dead = true; continue; }
+        if (a.unpack <= 0 && !a.opened) {
+          a.opened = true;
+          const living = this.ants.filter((q) => !q.dead && q.type === 'worker').length;
+          const n = Math.max(0, Math.min(4, 12 - living));
+          for (let k = 0; k < n; k++) this.spawn('worker', Math.max(0, a.d - 6 + k * 4), a.ri, { budget: true });
+          a.dead = true;
+        }
+        continue;
+      }
       const rt = this.route(a); const L = rt.length;
       a.hitFlash = Math.max(0, a.hitFlash - dt);
       if (a.shieldMax > 0) { a.shieldT += dt; const SH = C.ANTS[a.type].shield; if (a.shieldT >= SH.regenDelay && a.shield < a.shieldMax) { const was = a.shield; a.shield = Math.min(a.shieldMax, a.shield + a.shieldMax * SH.regenRate * dt); if (a.shield >= a.shieldMax) this.emit({ type: 'shieldFull', x: a.x, y: a.y, id: a.id }); if (was <= 0) this.emit({ type: 'shieldBack', x: a.x, y: a.y, id: a.id }); } } // v0.8.1 M4 regen

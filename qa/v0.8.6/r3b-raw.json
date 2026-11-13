@@ -1,0 +1,19 @@
+{
+  "n": 2400,
+  "p50": 1.6,
+  "p90": 2.6,
+  "p95": 3.1,
+  "p99": 6.5,
+  "max": 19.8,
+  "over22": 0,
+  "caps": {
+    "fx": 11,
+    "ui": 1,
+    "crumbSprites": 0,
+    "sparkles": 5,
+    "confetti": 0,
+    "frameMax": 16.599999999999966,
+    "frameAvg": 0,
+    "frameWinMax": 0
+  }
+}

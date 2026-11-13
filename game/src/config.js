@@ -212,6 +212,8 @@ const ANT_TEXT = {
   queen7: { name: 'Jam Queen', desc: 'BOSS of world 7. Walks and calls a Worker, then a Drone, every 14 seconds. Takes 50 of the tart. Ignores most slowing.', intro: 'Jam Queen: a Worker, then a Drone, every 14 seconds.' },
   sugarcube: { name: 'Sugar Cube', desc: 'Heavy sugar armor. Rare.', intro: 'Sugar Cube: heavy sugar armor.' },
   queen8: { name: 'Frosting Queen', desc: 'BOSS of world 8. Walks and calls a Drone, then a Sugar Cube, every 13 seconds. Takes 50 of the cupcake.', intro: 'Frosting Queen: Drone, then Sugar Cube, every 13 seconds.' },
+  dropcarrier: { name: 'Drop Carrier', desc: 'Flies over the trail and drops a crate of workers. Laser or Zapper can stop it first.', intro: 'Drop Carrier: shoot it down before the crate opens.' },
+  crate: { name: 'Supply Crate', desc: 'A dropped crate. Break it before the workers climb out.', intro: 'Supply Crate: break it before the workers climb out.' },
   queen4: { name: 'Sundae Queen', desc: 'BOSS of world 4. Calls a nurse every 9 seconds, and the nurses heal her. Takes 50 of the sundae.', intro: 'BOSS. Calls nurses that heal her.' },
 };
 // ---------------- Queens (v0.4 item 19) ----------------

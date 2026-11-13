@@ -205,7 +205,7 @@ test('wave spawning is deterministic and follows the schedule', () => {
   assert.ok(b.nextWave >= 1);
 });
 test('all ant types exist with their traits (v0.4: + Sprint Knight, Heavy Knight; v0.7: + 3 small variants)', () => {
-  assert.deepEqual(Object.keys(C.ANTS).sort(), ['armored', 'big', 'drone', 'flyer', 'gasmask', 'glazed', 'greasy', 'heavy', 'mama', 'nurse', 'queen', 'queen2', 'queen3', 'queen4', 'queen5', 'queen6', 'queen7', 'queen8', 'shieldbearer', 'small', 'small_armed', 'small_fly', 'small_gasmask', 'sprinter', 'sugarcube', 'worker']);
+  assert.deepEqual(Object.keys(C.ANTS).sort(), ['armored', 'big', 'crate', 'drone', 'dropcarrier', 'flyer', 'gasmask', 'glazed', 'greasy', 'heavy', 'mama', 'nurse', 'queen', 'queen2', 'queen3', 'queen4', 'queen5', 'queen6', 'queen7', 'queen8', 'shieldbearer', 'small', 'small_armed', 'small_fly', 'small_gasmask', 'sprinter', 'sugarcube', 'worker']);
   assert.equal(C.ANTS.worker.hp, 20); // v0.7 (Yair ANT-STATS-v0.6.3)
   assert.ok(C.ANTS.small.speed > C.ANTS.worker.speed && C.ANTS.small.hp < C.ANTS.worker.hp);
   assert.ok(C.ANTS.big.speed < C.ANTS.worker.speed && C.ANTS.big.armor > 0);

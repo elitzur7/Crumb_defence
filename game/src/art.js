@@ -37,6 +37,7 @@ export function rim(ctx, x, y, rx, ry, a = 0.7, from = Math.PI * 1.05, to = Math
   ctx.beginPath(); ctx.ellipse(x, y, rx * 0.86, ry * 0.86, 0, from, to); ctx.lineWidth = Math.max(1, Math.min(rx, ry) * 0.16); ctx.strokeStyle = `rgba(255,255,255,${a})`; ctx.lineCap = 'round'; ctx.stroke();
 }
 export let TEXT_SCALE = 1;
+export function setTextScale(v) { TEXT_SCALE = v; }
 export function text(ctx, s, x, y, size = 16, fill = '#fff', align = 'center', stroke = INK, weight = 'bold', display = false) {
   const sz = TEXT_SCALE > 1 ? Math.max(14, size * TEXT_SCALE) : size;
   ctx.font = `${weight} ${sz}px ${display ? FONT_DISPLAY : FONT}`; ctx.textAlign = align; ctx.textBaseline = 'middle';
@@ -187,7 +188,7 @@ export function starShape(ctx, x, y, r, fill, lw = 2) { candyStar(ctx, x, y, r, 
 
 // ---------------- ANTS (chibi, side/3-4 view, facing right) ----------------
 // Warm caramel palette, big heads, glossy eyes, thick clean outlines.
-export const ANT_COL = { small: '#f8b05b', worker: '#f58f36', big: '#de6f2a', gasmask: '#f58f36', armored: '#e98031', flyer: '#f9a655', queen: '#fa7171', queen2: '#b17cfa', sprinter: '#f58f36', heavy: '#be5022', greasy: '#f3972e', mama: '#de6b36', queen3: '#eeaa46', nurse: '#f79872', queen4: '#f990ab', glazed: '#f6c271', queen5: '#ed5a89', drone: '#ed9f2b', queen6: '#ce7625', shieldbearer: '#7b52dc', queen7: '#d046df', sugarcube: '#efe6ff', queen8: '#7ec8e8' }; // v0.8.5 ANT5a vivid hexes
+export const ANT_COL = { small: '#f8b05b', worker: '#f58f36', big: '#de6f2a', gasmask: '#f58f36', armored: '#e98031', flyer: '#f9a655', queen: '#fa7171', queen2: '#b17cfa', sprinter: '#f58f36', heavy: '#be5022', greasy: '#f3972e', mama: '#de6b36', queen3: '#eeaa46', nurse: '#f79872', queen4: '#f990ab', glazed: '#f6c271', queen5: '#ed5a89', drone: '#ed9f2b', queen6: '#ce7625', shieldbearer: '#7b52dc', queen7: '#d046df', sugarcube: '#efe6ff', queen8: '#7ec8e8', dropcarrier: '#f0c36a', crate: '#e0a060' }; // v0.8.5 ANT5a vivid hexes
 const ALW = 2.4; // ant outline width (v0.3: thinner = softer)
 export const PLAY_ANT_SCALE = 0.72; // v0.8.5 ANT4: play-field draw scale only. Book, prep and result stay full size.
 let _play = null;
@@ -230,10 +231,17 @@ function glossyEye(ctx, x, y, rx, ry, blink, mood = '', side = 1) {
   ctx.beginPath(); ctx.arc(x + rx * 0.4, y + ry * 0.42, rx * 0.22, 0, 7); ctx.fillStyle = 'rgba(255,255,255,0.92)'; ctx.fill();
 }
 function cheek(ctx, x, y, r = 2.8) { ctx.beginPath(); ctx.ellipse(x, y, r, r * 0.66, 0, 0, 7); ctx.fillStyle = _play ? 'rgba(255,100,130,0.55)' : 'rgba(255,100,130,0.6)'; ctx.fill(); }
-function leg(ctx, x0, y0, x1, y1, col) { // v0.8.0 mitten foot. v0.8.4 play: 2 px body colour, 1.6 px foot, no INK underlay.
+function leg(ctx, x0, y0, x1, y1, col, knee) { // v0.8.0 mitten foot. v0.8.6 play: a bent knee, quieter far legs.
   ctx.lineCap = 'round';
-  ctx.beginPath(); ctx.moveTo(x0, y0); ctx.quadraticCurveTo((x0 + x1) / 2 + 0.6, (y0 + y1) / 2 + 0.6, x1, y1);
-  if (_play) { ctx.lineWidth = 2.2; ctx.strokeStyle = col; ctx.stroke(); ctx.beginPath(); ctx.arc(x1, y1, 0.8, 0, 7); ctx.fillStyle = col; ctx.fill(); return; }
+  ctx.beginPath(); ctx.moveTo(x0, y0);
+  if (knee) ctx.lineTo(knee[0], knee[1]);
+  else ctx.quadraticCurveTo((x0 + x1) / 2 + 0.6, (y0 + y1) / 2 + 0.6, x1, y1);
+  if (knee) ctx.lineTo(x1, y1);
+  if (_play) {
+    const quiet = knee && knee[2];
+    ctx.save(); ctx.globalAlpha *= quiet ? 0.45 : 1; ctx.lineWidth = quiet ? 1.35 : 2.35; ctx.strokeStyle = col; ctx.stroke();
+    ctx.beginPath(); ctx.arc(x1, y1, quiet ? 0.55 : 0.95, 0, 7); ctx.fillStyle = col; ctx.fill(); ctx.restore(); return;
+  }
   ctx.lineWidth = 5.6; ctx.strokeStyle = INK; ctx.stroke();
   ctx.lineWidth = 3.4; ctx.strokeStyle = col; ctx.stroke();
   ctx.beginPath(); ctx.ellipse(x1 + 0.7, y1 + 0.5, 2.7, 1.9, 0, 0, 7); ctx.fillStyle = col; ctx.fill(); ctx.lineWidth = 1.7; ctx.strokeStyle = INK; ctx.stroke();
@@ -265,7 +273,7 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
   const step = Math.sin(P) * (opt.play ? 0.85 * 0.9 : 1); // play walk is 0.9 of the v0.8.4 play step
   const hop = Math.abs(Math.sin(P)) * (opt.play ? 0.75 : 1);
   const drone = type === 'drone', syrupQueen = type === 'queen6', jamQueen = type === 'queen7', frostQueen = type === 'queen8';
-  const flying = type === 'flyer' || drone, queen = type === 'queen' || type === 'queen2' || type === 'queen3' || type === 'queen4' || type === 'queen5' || syrupQueen || jamQueen || frostQueen, swiftQueen = type === 'queen2';
+  const flying = type === 'flyer' || drone || type === 'dropcarrier', queen = type === 'queen' || type === 'queen2' || type === 'queen3' || type === 'queen4' || type === 'queen5' || syrupQueen || jamQueen || frostQueen, swiftQueen = type === 'queen2';
   const mama = type === 'mama', greasy = type === 'greasy', pieQueen = type === 'queen3'; // v0.7.7 world 3
   const nurse = type === 'nurse', sundaeQueen = type === 'queen4'; // v0.7.9 world 4
   const glazed = type === 'glazed', glazeQueen = type === 'queen5'; // v0.8.1 world 5 (W2 / M5)
@@ -276,6 +284,7 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
   ctx.save();
   ctx.scale(S, S); ctx.lineJoin = 'round'; ctx.lineCap = 'round';
   if (opt.play) ctx.scale(PLAY_ANT_SCALE, PLAY_ANT_SCALE);
+  if (type === 'dropcarrier') ctx.scale(1.6, 1.6);
   if (drone) ctx.scale(1.15, 1.15); // v0.8.2 PP2: 1.15x the flyer's body scale
   _play = opt.play ? { col } : null;
   const _stroke = ctx.stroke;
@@ -335,7 +344,14 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
   }
   const legY = 4.2, footY = flying ? 8.2 : 10.4;
   const playLeg = shade(col, -0.2);
-  for (let i = 0; i < 3; i++) { const sw = (i % 2 ? -1 : 1) * step * 2.0; leg(ctx, -8 + i * 4.8, legY, -7 + i * 4.8 - sw, footY - 0.5, _play ? playLeg : farCol); if (sprinter) sneaker(ctx, -7 + i * 4.8 - sw, footY - 0.5, true); }
+  const gait = (i, side) => Math.sin(P + (i === 1 ? Math.PI : 0) + side) * (opt.play ? 1.15 : 1);
+  for (let i = 0; i < 3; i++) {
+    const rootX = -14 + i * 7.2, sw = gait(i, 0) * 3.2;
+    const footX = rootX - 1.2 - sw, footYy = footY - 0.4;
+    const knee = _play ? [rootX - sw * 0.35, (legY + footYy) / 2 - 2.4, true] : null;
+    leg(ctx, rootX, legY - 1, footX, footYy, _play ? shade(col, -0.32) : farCol, knee);
+    if (sprinter) sneaker(ctx, footX, footYy, true);
+  }
 
   // ---- body
   const abRx = queen ? 13 : big ? 12 : 11, abRy = queen ? 11 : big ? 10 : 9.5; // v0.8.0 chibi: one plump abdomen
@@ -370,7 +386,14 @@ export function drawAnt(ctx, type, phase = 0, opt = {}) {
   softBlob(ctx, -1, 1.5, _play ? 6.5 * 0.85 : 6.5, _play ? 6 * 0.85 : 6, col, LW, 0); // play thorax stays its own sphere (overlap capped at 0.85)
   if (opt.carrying) { if (_play) { ctx.save(); ctx.translate(-10.5, -12.5); ctx.scale(0.75, 0.75); ctx.translate(10.5, 12.5); } crumbIcon(ctx, -10.5, -12.5, 1.4, true); if (_play) ctx.restore(); }
   // near legs (in front of the body)
-  for (let i = 0; i < 3; i++) { const sw = (i % 2 ? 1 : -1) * step * 2.2; if (cheer && i === 2) continue; leg(ctx, -6 + i * 4.8, legY + 1.2, -5 + i * 4.8 + sw, footY + 0.5, _play ? playLeg : legCol); if (sprinter) sneaker(ctx, -5 + i * 4.8 + sw, footY + 0.5, false); }
+  for (let i = 0; i < 3; i++) {
+    if (cheer && i === 2) continue;
+    const rootX = -12 + i * 7.4, sw = gait(i, Math.PI) * 3.6;
+    const footX = rootX + 2.4 + sw, footYy = footY + 1.6;
+    const knee = _play ? [rootX + sw * 0.85, footYy - 4.8, false] : null;
+    leg(ctx, rootX, legY + 1.6, footX, footYy, _play ? playLeg : legCol, knee);
+    if (sprinter) sneaker(ctx, footX, footYy, false);
+  }
   if (cheer) { // two raised arms with round mitts (the front near leg is the right arm; one more comes from behind the thorax)
     const wv = Math.sin(P * 2) * 1.6;
     for (const [sx0, sy0, mx, my, c0] of [[-3, 0, -9 + wv, -25, farCol], [3, 0, 27 - wv, -20, legCol]]) {
@@ -1712,7 +1735,7 @@ export const THEMES = [
   // v0.8.1 world 5 (plan W4, Crumb Design palettes-W3-W10.json): teal diner, with a pink icing accent for the flowers/dots. A1/A2/A3/A5 measured on the G1 renderer over all ten W5 maps (qa/v0.8.1/contrast-w5.json).
   { name: 'W5 teal-diner', a: '#a9d8de', b: '#9ecfd6', check: 'rgba(60,150,170,0.13)', grout: 'rgba(60,130,150,0.22)', trail: '#fffdf5', edge: '#7fbcc6', dot: '#f7b6c8' },
   // v0.8.2 world 6 (Crumb Design palettes-W3-W10.json 'W6 maple'): warm maple planks. If the rendered A10b is < 1.6 on any W6 map, darken the pad by steps (see qa/v0.8.2 contrast-w6).
-  { name: 'W6 maple', a: '#e6b98a', b: '#e1b27f', grain: 'rgba(120,70,20,0.15)', grout: 'rgba(130,80,30,0.28)', trail: '#fffaf0', edge: '#b98550', dot: '#c99660' },
+  { name: 'W6 maple', a: '#e3b486', b: '#e1b27f', grain: 'rgba(120,70,20,0.15)', grout: 'rgba(130,80,30,0.28)', trail: '#fffaf0', edge: '#b98550', dot: '#c99660' },
   { name: 'W7 grape', a: '#d2b1e4', b: '#cca8e0', grout: 'rgba(120,70,150,0.22)', trail: '#fffaf5', edge: '#b48cc8', dot: '#e7c6f2' },
   { name: 'W8 frosting', a: '#e8d4c4', b: '#e0c8b4', grout: 'rgba(160,110,80,0.24)', trail: '#fffaf5', edge: '#c9a07c', dot: '#7ec8e8' }, // proposal #f3e6d8/#ead7c4 measured A2 1.18; one step darker so the trail clears 1.30
 ];

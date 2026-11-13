@@ -322,8 +322,11 @@ export function levelFactor(levelIndex) {
   const j = levelIndex - C.WORLD_START[w] + 1;
   return Math.pow(3.2, w - 1) * Math.pow(1.12, j - 1);
 }
-export const TREF_S = 48; // frozen reference minutes are Tref/60. Uniform freeze so R = 90F is strictly rising.
-export function replayBase(levelIndex) { return 90 * levelFactor(levelIndex) * TREF_S; }
+export const TREF_S = 48; // fallback seconds when a level has no measured clear
+// One smart-bot clear per level (seed 1000+17*level, card level 2/4/6 by world). Level 3 did not win; it uses 90 s.
+export const TREF = [87.5,78.3,90,172.3,186.5,153.2,258.7,187.6,198.5,526.6,129.7,168.9,129.8,182.5,157.5,161.3,262.1,183.2,265.2,371.9,129.2,178,176.4,192.4,259.8,149,227.7,433,305,422.9,130.6,193.7,179.4,249.4,184.6,158.1,209,296.2,257.3,351.5,136.1,163,238.8,257.7,173.1,294.1,197.4,286.1,192.2,302,140.9,174.5,196.4,273.1,181,169.9,203.4,286.1,190.2,354.3,131.9,177,203.3,217.6,168.9,180.1,170,250.9,192.9,344,138.8,169.4,216.8,309.2,167,206,201.5,309.3,198.4,336.9];
+export function trefSeconds(levelIndex) { return TREF[levelIndex] || TREF_S; }
+export function replayBase(levelIndex) { return 90 * levelFactor(levelIndex) * (trefSeconds(levelIndex) / (1.35 * 60)); }
 export function battleCoins(result, { levelIndex = 0, firstClear = false, stars = 1, progress = 0 } = {}) {
   const F = levelFactor(levelIndex), B = replayBase(levelIndex);
   if (result === 'win') {
