@@ -1,6 +1,6 @@
 # Q2 — evidence manifest
 
-Branch `cursor/v086-feedback-economy-ffd4`. Tests: 451 pass, 0 fail, including the world diamond ladder. No APK. Web bundle `game/www/game.js`. No merge, no tag.
+Branch `cursor/v086-feedback-economy-ffd4`. Tests: 453 pass, 0 fail. No APK. Web bundle `game/www/game.js`. No merge, no tag.
 
 | File | What it is |
 |---|---|
@@ -15,8 +15,10 @@ Branch `cursor/v086-feedback-economy-ffd4`. Tests: 451 pass, 0 fail, including t
 | `tref-measured.json` | One bot clear per level. Level 3 is the 90 s stand-in |
 | `layout-16x9.png` through `layout-21x9.png` | Battle fit. 16:9 shrinks the 800 px board into 640 px |
 | `gait-sheet.png` | Six phases of worker, flyer, sugar cube, queen |
+| `lv-pair.json` | Levels 65, 74, 76. New trail vs old trail, 72 profile battles, inside the published bands |
+| `dq-curve.md`, `dq-curve.json` | World 1–4 sample and the World 3 queen. Booster gate not met. No retune kept |
 | `pass-1.md`, `pass-2.md`, `status.md` | Earlier pass notes. Superseded where this manifest disagrees |
 
 Not in this folder, still required from a person: device L38, a listening pass, and a play of the World 3 queen.
 
-Remaining, not started in the last run: new trails for levels 65, 74, and 76, and the shared World 1 and World 2 trails.
+Still open: a person's play of the World 3 queen, a listening pass, and device L38. The queen booster gate is recorded and was not retuned.

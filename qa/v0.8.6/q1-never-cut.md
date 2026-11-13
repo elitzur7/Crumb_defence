@@ -1,6 +1,6 @@
 # Q1 — never-cut regression matrix
 
-Head at the time of this table. `npm test` 451 pass, 0 fail, before this note. A FAIL here was left when the fix is the deferred trail work, not a one-line correction.
+Head `30ccd4f` plus this note. `npm test` 453 pass, 0 fail.
 
 | Item | Status | Evidence |
 |---|---|---|
@@ -14,12 +14,12 @@ Head at the time of this table. `npm test` 451 pass, 0 fail, before this note. A
 | SH1, 10% pack, no pity | PASS | `game/tests/v062.test.js`, `game/tests/v070.test.js`. Shop prices 20 and 80 |
 | EX1 payout and measured durations | PASS | `game/src/meta.js` `TREF`, `qa/v0.8.6/tref-measured.json`. Level 3 uses 90 s because that seed did not win |
 | DX1 tiers and world prices | PASS | `game/tests/v086.test.js` DX1 table and EC1 boss diamonds (30 once, replay 0) |
-| AC1 drop carrier | FAIL | Carrier, crate, and payload exist and are on levels 41, 62, 65, 71, 74 only. Not about one level in three, and the seeded-drop suite is not written. Not a one-line fix |
+| AC1 drop carrier | PASS | 17 of 50 World 4–8 levels, first at L33. Test `AC1`: same seed, same drop, four workers start toward the cookie |
 | AU1 marble and music | PASS for code | `game/src/audio.js`. Listening NOT RUN |
 | AU1 human listening | NOT RUN | Needs Yair, phone and speakers |
-| DQ earned boosters and queen | FAIL | Hint and one free Freezer are in. No human confirmation, no full queen curve table |
+| DQ earned boosters and queen | FAIL | `qa/v0.8.6/dq-curve.md`. Bomb then Freezer adds 0.2 food and no wins. A queen HP bump fell off a cliff and was not kept |
 | DQ human play | NOT RUN | Needs Yair |
-| LV variety and paired sims of changed trails | FAIL | Most World 7 and 8 trails are new. Levels 65, 74, 76 and the shared World 1–2 trails are not. Left for a later run, as requested |
+| LV variety and paired sims of changed trails | PASS | `qa/v0.8.6/lv-pair.json`. L65 88.9 (87±7), L74 91.7 (93.5±5), L76 91.7 (93±5). No world reuses a trail |
 | TG1 test grants | PASS | Battle diamond chip, 300 ms debounce, `testGranted` stored apart from earned diamonds. `TEST_GRANTS` is true and must be false for a public build |
 | E1 contrast | PASS | `qa/v0.8.6/art-ledger.json`. Worst paired dA1 +0.023, dA2 −0.025. Floor −0.030 |
 | M1 clock and rescue | PASS | Pace tests. Rescue uses `speed * PACE` so the wall window stays about 3 s |
