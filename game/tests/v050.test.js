@@ -65,6 +65,7 @@ test('items 5/5b: each tower has its own hand-made 9-step sequence (L2..L10), on
       if (k === 'range') assert.ok(v >= 0.15 && v <= 0.2, `${id} range +${v} tiles`);
       else if (k === 'liftSize') assert.ok(id === 'tractor' && v === 1, 'v0.6: the Tractor card lifts one size more at L3 and L8');
       else if (k === 'stickTime') assert.ok(v >= 0.05 && v <= 0.60, `${id} ${k} +${v}`); // v0.8.6 GL1: the L4 stick step is +0.60
+      else if (k === 'slow') assert.ok(v >= 0.05 && v <= 0.16, `${id} ${k} +${v}`); // perfume slow steps must move the crossing time
       else assert.ok(v >= 0.05 && v <= 0.15, `${id} ${k} +${v}`);
     }
     if (T.stats.range != null && T.place !== 'path') assert.ok(T.cardUpgrades.some((s) => 'range' in s), `${id}: upgrades improve range`);
