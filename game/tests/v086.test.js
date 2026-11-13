@@ -90,6 +90,16 @@ test('EC1: World 8 pays the new formula, not coinMul 2.5, and a card level appli
   assert.equal(towerStat('slingshot', 'power', 1, 10), towerStat('slingshot', 'power', 1, 10));
 });
 
+test('LV: no two levels in one world share a trail', () => {
+  for (let w = 1; w <= 8; w++) {
+    const maps = C.LEVELS.filter((L) => L.world === w).map((L) => L.map);
+    assert.equal(new Set(maps).size, maps.length, `world ${w}`);
+  }
+  assert.equal(C.LEVELS[64].map, 'w7_jelly_shelf');
+  assert.equal(C.LEVELS[73].map, 'w8_whisk_rail');
+  assert.equal(C.LEVELS[75].map, 'w8_oven_lip');
+});
+
 test('B1: Crumb Rush adds 20 percent of kill crumbs and pays a leftover half', () => {
   const b = new Battle({ levelIndex: 0, deck: ['slingshot'], seed: 1, bonusTypes: ['rush'], bonusStock: { rush: 1 } });
   b.nextWaveAt = 1e9;
