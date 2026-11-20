@@ -1003,7 +1003,7 @@
     },
     "queen3": {
       "hp": 2300,
-      "speed": 14,
+      "speed": 20,
       "armor": 6,
       "weight": 0,
       "size": "queen",
@@ -1952,7 +1952,7 @@
       "name": "Heavy Icing",
       "map": "snake",
       "waveCount": 8,
-      "hpMul": 2.856,
+      "hpMul": 3.5,
       "base": 11,
       "growth": 2.2,
       "interval": 0.9,

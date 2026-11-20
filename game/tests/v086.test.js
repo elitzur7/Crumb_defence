@@ -7,6 +7,12 @@ import { Battle, towerStat, cardPowerQ, levelAntTypes, marbleDrawScale, cardUpgr
 import { parseMap } from '../src/maps.js';
 import * as M from '../src/meta.js';
 
+test('L17 and the World 3 queen were retuned against the 100 percent clears', () => {
+  assert.equal(C.LEVELS[16].hpMul, 3.5);
+  assert.equal(C.ANTS.queen3.speed, 20);
+  assert.equal(C.ANTS.queen3.hp, 2300);
+});
+
 test('long labels are fitted to the pill, the toast, and the map node', () => {
   const g = readFileSync(new URL('../src/game.js', import.meta.url), 'utf8');
   assert.match(g, /fitText\(S\.toast\.msg/);

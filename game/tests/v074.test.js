@@ -25,7 +25,7 @@ test('v0.7.4 version + versionCode (>= 18; the hotfix v0.7.4.1 is asserted in v0
 
 // ---------------- M-1 ----------------
 test('M-1: hpMul L10 2.373 and L17 2.38 (all other levels as in v0.7.3); L20 stays 1.6; Sprinter HP stays 10', () => {
-  const want = [1, 1.56, 3.125, 6.6, 2.803, 4.321, 2.225, 3.72, 4.8, 2.373, 3.665, 4.064, 3.45, 4.32, 6.365, 5.056, 2.856, 4.268, 4.878, 1.92];
+  const want = [1, 1.56, 3.125, 6.6, 2.803, 4.321, 2.225, 3.72, 4.8, 2.373, 3.665, 4.064, 3.45, 4.32, 6.365, 5.056, 3.5, 4.268, 4.878, 1.92];
   C.LEVELS.slice(0, 20).forEach((L, i) => assert.equal(L.hpMul, want[i], `L${i + 1}`));
   assert.equal(C.ANTS.sprinter.hp, 10);
   const b = new Battle({ levelIndex: 9, deck: DECK, seed: 1 });

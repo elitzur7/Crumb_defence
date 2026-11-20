@@ -39,7 +39,7 @@ test('Must 4: D-T6 in-battle power multipliers -> cumulative x2..x6 (Laser 1.70/
 
 test('Must 5 (replaced in v0.7.3 by the C17 table; L10 2.373 and L17 2.38 since v0.7.4 M-1): hpMul per level', () => {
   const h = (n) => C.LEVELS[n - 1].hpMul;
-  const want = [1, 1.56, 3.125, 6.6, 2.803, 4.321, 2.225, 3.72, 4.8, 2.373, 3.665, 4.064, 3.45, 4.32, 6.365, 5.056, 2.856, 4.268, 4.878, 1.92]; // C17 (crumb-design paste-mix-v073.txt); W2 L11-L20 x1.2 in v0.7.8 (w2-optional-paste.json)
+  const want = [1, 1.56, 3.125, 6.6, 2.803, 4.321, 2.225, 3.72, 4.8, 2.373, 3.665, 4.064, 3.45, 4.32, 6.365, 5.056, 3.5, 4.268, 4.878, 1.92]; // C17 (crumb-design paste-mix-v073.txt); W2 L11-L20 x1.2 in v0.7.8 (w2-optional-paste.json)
   want.forEach((v, i) => assert.equal(h(i + 1), v, `L${i + 1}`));
 });
 
