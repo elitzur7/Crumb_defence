@@ -7,6 +7,13 @@ import { Battle, towerStat, cardPowerQ, levelAntTypes, marbleDrawScale, cardUpgr
 import { parseMap } from '../src/maps.js';
 import * as M from '../src/meta.js';
 
+test('no level path is a stub: every trail covers at least 16 tiles', () => {
+  for (let i = 0; i < C.LEVELS.length; i++) {
+    const b = new Battle({ levelIndex: i, deck: ['slingshot'], seed: 1 });
+    assert.ok(b.path.tiles.size >= 16, `L${i + 1} ${C.LEVELS[i].map} has ${b.path.tiles.size} tiles`);
+  }
+});
+
 test('L17 and the World 3 queen were retuned against the 100 percent clears', () => {
   assert.equal(C.LEVELS[16].hpMul, 3.5);
   assert.equal(C.ANTS.queen3.speed, 20);
