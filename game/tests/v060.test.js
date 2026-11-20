@@ -16,20 +16,15 @@ const centreD = (b, a, x, y) => { const rt = b.route(a); let best = null; for (l
 const freeze = (...as) => { for (const a of as) a.stunT = 99; };
 
 // ---------- item 1: coins for time survived ----------
-test('item 1: + floor(time / 3) coins on a win (own line) and on a loss (inside the loss cap)', () => {
-  assert.equal(C.ECONOMY.secondsPerCoin, 3);
-  assert.equal(M.timeCoins(0), 0); assert.equal(M.timeCoins(2.9), 0); assert.equal(M.timeCoins(3), 1); assert.equal(M.timeCoins(299.9), 99);
-  const w0 = M.battleCoins('win', { kills: 50, foodLeft: 80, levelIndex: 2 });
-  const w = M.battleCoins('win', { kills: 50, foodLeft: 80, levelIndex: 2, time: 200 });
-  assert.equal(w.parts.time, 66); assert.equal(w.total, w0.total + 66);
-  const l = M.battleCoins('lose', { kills: 40, time: 30 });
-  assert.deepEqual(l.parts, { kills: 4, time: 10 }); assert.equal(l.total, 14);
-  assert.equal(M.battleCoins('lose', { kills: 100, time: 300 }).total, C.ECONOMY.lossCap, 'cap covers kills + time together');
-  assert.equal(M.battleCoins('lose', { kills: 200, time: 300 }).parts.time, 0, 'kills first, time fills the rest');
+test('EX1: survival time is not a coin line; loss coins follow progress', () => {
+  assert.equal(M.timeCoins(299.9), 0);
+  const w0 = M.battleCoins('win', { levelIndex: 2, stars: 1 });
+  const w = M.battleCoins('win', { levelIndex: 2, stars: 1, time: 200 });
+  assert.equal(w.total, w0.total);
+  assert.equal(M.battleCoins('lose', { levelIndex: 0, progress: 1, kills: 100, time: 300 }).total, Math.round(M.replayBase(0) / 3.5));
   const s = M.newSave(); const c0 = s.coins;
-  const out = M.applyBattleResult(s, 0, 'win', 3, { kills: 10, foodLeft: 100, time: 90 }, () => 0);
-  assert.equal(out.parts.time, 30); assert.equal(s.coins - c0, out.coins);
-  const g = src('game.js'); assert.ok(/Time survived/.test(g), 'results show its own line'); assert.ok(/time: b\.time/.test(g));
+  const out = M.applyBattleResult(s, 0, 'win', 1, { time: 90 }, () => 0);
+  assert.equal(s.coins - c0, out.coins);
 });
 
 // ---------- item 2: fewest HP ----------
@@ -122,7 +117,7 @@ test('item 6: Tractor - scoops ONE trail tile beside it, lifts every liftable an
   // in a battle
   const b = mk({ cardLevels: { tractor: 3 } });
   let tw = null;
-  for (let r = 0; r < 12 && !tw; r++) for (let c = 0; c < 10 && !tw; c++) { const t = b.tileInfo(c, r); if (t.valid && !t.onPath && !t.tower && b.trailDirection(c, r)) tw = b.addTower('tractor', c, r); }
+  for (let r = 0; r < 14 && !tw; r++) for (let c = 0; c < 10 && !tw; c++) { const t = b.tileInfo(c, r); const dir = b.trailDirection(c, r); if (t.valid && !t.onPath && !t.tower && dir && dir.run >= 4) tw = b.addTower('tractor', c, r); }
   const d = tw.trailDir; const tx = (d.nc + 0.5) * C.TILE, ty = (d.nr + 0.5) * C.TILE;
   const w = b.spawn('worker', 0); w.d = centreD(b, w, tx, ty); const sm = b.spawn('small', w.d + 4); const big = b.spawn('big', w.d - 4); const far = b.spawn('worker', w.d + 120);
   freeze(w, sm, big, far); b.update(0.01);

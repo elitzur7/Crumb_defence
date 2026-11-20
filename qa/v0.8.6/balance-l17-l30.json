@@ -1,0 +1,8 @@
+{
+  "note": "10 historical profiles x 4 seeds. Level 17 target 85. Level 30 target 70, with Bomb then Freezer on the queen.",
+  "before": { "L17": { "hpMul": 2.856, "win": 100 }, "L30": { "queenSpeed": 14, "win": 100, "pairWin": 100, "food": 59.7, "pairFood": 59.9 } },
+  "after": {
+    "L17": { "hpMul": 3.5, "n": 40, "win": 85, "food": 15.9 },
+    "L30": { "queenSpeed": 20, "hpMul": 1.45, "n": 40, "win": 75, "food": 32.9, "pairWin": 77.5, "pairFood": 35.6 }
+  }
+}

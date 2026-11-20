@@ -71,16 +71,15 @@ test('L3: a run with no anti-air loses (v0.7.9 won 8/8 with ground-only towers; 
   assert.ok(C.TOWERS.fan.targets === 'both' && C.TOWERS.laser.targets === 'both' && C.TOWERS.zapper.targets === 'air', 'anti-air exists');
 });
 
-test('3-star bonus: 75 x coinMul rounded to 5 (W1 75, W2 75, W3 95, W4 115); 2-star 15/15/20/25; paid once; a 1->3 jump pays both', () => {
-  assert.deepEqual(TJ.economy.starBonus, { 2: 15, 3: 75 }); assert.equal(TJ.economy.starBonusScale, 'coinMul');
-  const per = [[0, 15, 75], [10, 15, 75], [20, 20, 95], [30, 25, 115]];
-  for (const [i, s2, s3] of per) {
+test('EX1: star records pay 20F, 20F and 80F once, including a 1-to-3 jump', () => {
+  for (const i of [0, 10, 20, 30]) {
+    const F = M.levelFactor(i); const s1 = Math.round(20 * F), s2 = Math.round(20 * F), s3 = Math.round(80 * F);
     const s = M.newSave(); const o = win(s, i, 3);
-    assert.equal(o.starParts.s3, s3, 'L' + (i + 1) + ' 3-star'); assert.equal(o.starParts.s2, s2, 'L' + (i + 1) + ' 2-star'); assert.equal(o.starCoins, s2 + s3);
+    assert.equal(o.starParts.s1, s1); assert.equal(o.starParts.s2, s2); assert.equal(o.starParts.s3, s3);
+    assert.equal(o.starCoins, s1 + s2 + s3);
     assert.equal(win(s, i, 3).starCoins, 0, 'repeat pays 0');
-    const t = M.newSave(); assert.equal(win(t, i, 2).starCoins, s2); assert.equal(win(t, i, 3).starCoins, s3);
+    const t = M.newSave(); assert.equal(win(t, i, 2).starCoins, s1 + s2); assert.equal(win(t, i, 3).starCoins, s3);
   }
-  assert.equal(win(M.newSave(), 0, 3).starCoins, 90); // jump 1 -> 3 in W1
 });
 
 test('prep header dedupe: when the map name equals the level name it is shown once (all 60 levels, never "X - X")', () => {

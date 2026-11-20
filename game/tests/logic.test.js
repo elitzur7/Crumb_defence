@@ -205,7 +205,7 @@ test('wave spawning is deterministic and follows the schedule', () => {
   assert.ok(b.nextWave >= 1);
 });
 test('all ant types exist with their traits (v0.4: + Sprint Knight, Heavy Knight; v0.7: + 3 small variants)', () => {
-  assert.deepEqual(Object.keys(C.ANTS).sort(), ['armored', 'big', 'drone', 'flyer', 'gasmask', 'glazed', 'greasy', 'heavy', 'mama', 'nurse', 'queen', 'queen2', 'queen3', 'queen4', 'queen5', 'queen6', 'queen7', 'queen8', 'shieldbearer', 'small', 'small_armed', 'small_fly', 'small_gasmask', 'sprinter', 'sugarcube', 'worker']);
+  assert.deepEqual(Object.keys(C.ANTS).sort(), ['armored', 'big', 'crate', 'drone', 'dropcarrier', 'flyer', 'gasmask', 'glazed', 'greasy', 'heavy', 'mama', 'nurse', 'queen', 'queen2', 'queen3', 'queen4', 'queen5', 'queen6', 'queen7', 'queen8', 'shieldbearer', 'small', 'small_armed', 'small_fly', 'small_gasmask', 'sprinter', 'sugarcube', 'worker']);
   assert.equal(C.ANTS.worker.hp, 20); // v0.7 (Yair ANT-STATS-v0.6.3)
   assert.ok(C.ANTS.small.speed > C.ANTS.worker.speed && C.ANTS.small.hp < C.ANTS.worker.hp);
   assert.ok(C.ANTS.big.speed < C.ANTS.worker.speed && C.ANTS.big.armor > 0);
@@ -269,7 +269,7 @@ test('v0.6 manual merge per level: 3 x Ln -> L(n+1) (+coins); highest level figh
   for (let L = 1; L < 10; L++) assert.equal(s.cards.spray.inv[L] || 0, 0);
 });
 test('shop: cards cost coins, boosters cost diamonds (v0.4 item 9; v0.6: a bought card is a level-1 card)', () => {
-  const s = M.newSave(); s.coins = 100; s.diamonds = 15;
+  const s = M.newSave(); s.coins = 100; s.diamonds = 20;
   assert.ok(M.buyCard(s, 'slingshot')); assert.equal(s.coins, 100 - C.ECONOMY.shop.cardL1); assert.equal(s.cards.slingshot.inv[1], 2);
   assert.equal(M.buyCard(s, 'laser'), false, 'locked cards cannot be bought');
   const coins = s.coins;

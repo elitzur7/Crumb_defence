@@ -1,0 +1,562 @@
+[
+ {
+  "level": 1,
+  "world": 1,
+  "hpMul": 1,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 2,
+  "world": 1,
+  "hpMul": 1.56,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 3,
+  "world": 1,
+  "hpMul": 3.125,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 4,
+  "world": 1,
+  "hpMul": 6.6,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 5,
+  "world": 1,
+  "hpMul": 2.803,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 6,
+  "world": 1,
+  "hpMul": 4.321,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 7,
+  "world": 1,
+  "hpMul": 2.225,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 8,
+  "world": 1,
+  "hpMul": 3.72,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 9,
+  "world": 1,
+  "hpMul": 4.8,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 10,
+  "world": 1,
+  "hpMul": 2.373,
+  "win": 95,
+  "n": 20
+ },
+ {
+  "level": 11,
+  "world": 2,
+  "hpMul": 3.665,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 12,
+  "world": 2,
+  "hpMul": 4.064,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 13,
+  "world": 2,
+  "hpMul": 3.45,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 14,
+  "world": 2,
+  "hpMul": 4.32,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 15,
+  "world": 2,
+  "hpMul": 6.365,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 16,
+  "world": 2,
+  "hpMul": 5.056,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 17,
+  "world": 2,
+  "hpMul": 2.856,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 18,
+  "world": 2,
+  "hpMul": 4.268,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 19,
+  "world": 2,
+  "hpMul": 4.878,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 20,
+  "world": 2,
+  "hpMul": 1.92,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 21,
+  "world": 3,
+  "hpMul": 3.3,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 22,
+  "world": 3,
+  "hpMul": 4.3,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 23,
+  "world": 3,
+  "hpMul": 5.2,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 24,
+  "world": 3,
+  "hpMul": 4.9,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 25,
+  "world": 3,
+  "hpMul": 8,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 26,
+  "world": 3,
+  "hpMul": 6,
+  "win": 95,
+  "n": 20
+ },
+ {
+  "level": 27,
+  "world": 3,
+  "hpMul": 8,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 28,
+  "world": 3,
+  "hpMul": 6,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 29,
+  "world": 3,
+  "hpMul": 8.7,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 30,
+  "world": 3,
+  "hpMul": 1.45,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 31,
+  "world": 4,
+  "hpMul": 3.9,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 32,
+  "world": 4,
+  "hpMul": 4.5,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 33,
+  "world": 4,
+  "hpMul": 7.4,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 34,
+  "world": 4,
+  "hpMul": 7.25,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 35,
+  "world": 4,
+  "hpMul": 6.65,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 36,
+  "world": 4,
+  "hpMul": 7.7,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 37,
+  "world": 4,
+  "hpMul": 5.9,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 38,
+  "world": 4,
+  "hpMul": 7.4,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 39,
+  "world": 4,
+  "hpMul": 5.35,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 40,
+  "world": 4,
+  "hpMul": 0.8,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 41,
+  "world": 5,
+  "hpMul": 4.2,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 42,
+  "world": 5,
+  "hpMul": 4.5,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 43,
+  "world": 5,
+  "hpMul": 9.3,
+  "win": 95,
+  "n": 20
+ },
+ {
+  "level": 44,
+  "world": 5,
+  "hpMul": 8.35,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 45,
+  "world": 5,
+  "hpMul": 5.4,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 46,
+  "world": 5,
+  "hpMul": 8.8,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 47,
+  "world": 5,
+  "hpMul": 6.25,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 48,
+  "world": 5,
+  "hpMul": 6.75,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 49,
+  "world": 5,
+  "hpMul": 5.45,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 50,
+  "world": 5,
+  "hpMul": 0.87,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 51,
+  "world": 6,
+  "hpMul": 6,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 52,
+  "world": 6,
+  "hpMul": 7.2,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 53,
+  "world": 6,
+  "hpMul": 9.19,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 54,
+  "world": 6,
+  "hpMul": 9.5,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 55,
+  "world": 6,
+  "hpMul": 4.84,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 56,
+  "world": 6,
+  "hpMul": 9.57,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 57,
+  "world": 6,
+  "hpMul": 5.9,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 58,
+  "world": 6,
+  "hpMul": 5.29,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 59,
+  "world": 6,
+  "hpMul": 4.12,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 60,
+  "world": 6,
+  "hpMul": 1.7,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 61,
+  "world": 7,
+  "hpMul": 6,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 62,
+  "world": 7,
+  "hpMul": 7.4,
+  "win": 90,
+  "n": 20
+ },
+ {
+  "level": 63,
+  "world": 7,
+  "hpMul": 9.6,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 64,
+  "world": 7,
+  "hpMul": 12,
+  "win": 85,
+  "n": 20
+ },
+ {
+  "level": 65,
+  "world": 7,
+  "hpMul": 5.42,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 66,
+  "world": 7,
+  "hpMul": 9.5,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 67,
+  "world": 7,
+  "hpMul": 4.68,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 68,
+  "world": 7,
+  "hpMul": 7.05,
+  "win": 95,
+  "n": 20
+ },
+ {
+  "level": 69,
+  "world": 7,
+  "hpMul": 3.99,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 70,
+  "world": 7,
+  "hpMul": 1.64,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 71,
+  "world": 8,
+  "hpMul": 6.5,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 72,
+  "world": 8,
+  "hpMul": 7.8,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 73,
+  "world": 8,
+  "hpMul": 10.2,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 74,
+  "world": 8,
+  "hpMul": 11.4,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 75,
+  "world": 8,
+  "hpMul": 5.2,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 76,
+  "world": 8,
+  "hpMul": 9.8,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 77,
+  "world": 8,
+  "hpMul": 4.6,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 78,
+  "world": 8,
+  "hpMul": 6.68,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 79,
+  "world": 8,
+  "hpMul": 3.73,
+  "win": 100,
+  "n": 20
+ },
+ {
+  "level": 80,
+  "world": 8,
+  "hpMul": 1.55,
+  "win": 100,
+  "n": 20
+ }
+]

@@ -125,13 +125,12 @@ test('typical profile covers L31-L40 (99 trajectories each) and the sim-typical 
   const P = JSON.parse(rd('tools/data/profiles-typical.json'));
   for (let L = 1; L <= 40; L++) { assert.ok(P[L].length >= 99, `L${L}`); assert.ok(P[L][0].owned.length >= 5 && P[L][0].cl); }
 });
-test('A-W4-8: the first-clear payout of L31 is the base payout x 1.5 (coinMul), through applyBattleResult', () => {
+test('EX1: the first-clear payout of L31 is replay plus 30F, through applyBattleResult', () => {
   const info = { kills: 60, foodLeft: 90, perfect: false, time: 200 };
-  const a = M.battleCoins('win', { ...info, levelIndex: 30, firstClear: true, coinMul: 1 }), b = M.battleCoins('win', { ...info, levelIndex: 30, firstClear: true, coinMul: 1.5 });
-  // the existing rule since v0.7.6 E5 (same as W2/W3): every win line is scaled by coinMul, the flat first-clear bonus is not
-  for (const k of ['base', 'food', 'kills', 'level', 'time']) assert.ok(Math.abs(b.parts[k] - a.parts[k] * 1.5) <= 0.5, `${k}: ${a.parts[k]} -> ${b.parts[k]}`);
-  assert.equal(b.parts.firstClear, a.parts.firstClear); assert.ok(b.parts.base === Math.round(C.ECONOMY.winBase * 1.5));
-  const s = M.newSave(); const out = M.applyBattleResult(s, 30, 'win', 1, info, () => 0); assert.equal(out.firstClear, true); assert.equal(out.coins, b.total, 'applyBattleResult uses the world coinMul 1.5');
-  // W4 boss gift: cap 6 -> a card gift of cap-1 = level 5 once all towers are unlocked, same rule as W3 (cap-1)
-  const lv = C.WORLDS[3].cardLevelCap; assert.equal(lv, 6);
+  const F = M.levelFactor(30);
+  const s = M.newSave(); const out = M.applyBattleResult(s, 30, 'win', 1, info, () => 0);
+  assert.equal(out.firstClear, true);
+  assert.equal(out.parts.replay, Math.round(M.replayBase(30)));
+  assert.equal(out.parts.firstClear, Math.round(30 * F));
+  assert.equal(out.starCoins, Math.round(20 * F));
 });

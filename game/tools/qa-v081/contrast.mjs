@@ -8,12 +8,14 @@ const FN = (li) => { const g = window.__game, A = g.A, C = g.C;
   const Lm = (r, gg, b) => 0.2126 * lin(r) + 0.7152 * lin(gg) + 0.0722 * lin(b); const ratio = (a, b) => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
   const cc = document.createElement('canvas').getContext('2d'); const hexL = (hh) => { cc.fillStyle = '#000'; cc.fillStyle = hh; const v = cc.fillStyle; const nn = parseInt(v.slice(1), 16); return Lm((nn >> 16) & 255, (nn >> 8) & 255, nn & 255); };
   const b = g.S.battle; const th = A.THEMES[b.map.theme];
-  const cv = A.renderMapBackground(b.routes, b.map.theme, 400, 480, 1, b.props, b.map.art); const ctx = cv.getContext('2d');
+  const cv = A.renderMapBackground(b.routes, b.map.theme, 400, 560, 1, b.props, b.map.art); const ctx = cv.getContext('2d');
   const px = (x, y) => { const d = ctx.getImageData(Math.round(x) - 1, Math.round(y) - 1, 3, 3).data; let r = 0, gg = 0, bb = 0; for (let i = 0; i < 9; i++) { r += d[i * 4]; gg += d[i * 4 + 1]; bb += d[i * 4 + 2]; } return [r / 9, gg / 9, bb / 9]; };
   const pts = []; for (const rt of b.routes) for (let d = 10; d < rt.length - 10; d += 8) pts.push(rt.at(d));
   const tr = pts.map((p) => px(p.x, p.y)); const avg = (a) => [0, 1, 2].map((k) => a.reduce((s, v) => s + v[k], 0) / a.length);
   const T = avg(tr); const gr = []; const gmap = {};
-  for (let c = 0; c < 10; c++) for (let r = 0; r < 12; r++) { const x = c * 40 + 20, y = r * 40 + 20; if (pts.some((p) => Math.hypot(p.x - x, p.y - y) < 34)) continue; if (b.blocked.has(c + ',' + r)) continue; const q = [c, r, px(x, y)]; gr.push(q); gmap[c + ',' + r] = q; }
+  const near = new Set();
+  for (const p of pts) { const pc = Math.floor(p.x / 40), pr = Math.floor(p.y / 40); for (let dc = -2; dc <= 2; dc++) for (let dr = -2; dr <= 2; dr++) near.add((pc + dc) + ',' + (pr + dr)); }
+  for (let c = 0; c < 10; c++) for (let r = 0; r < 14; r++) { const x = c * 40 + 20, y = r * 40 + 20; if (y < 2 || y > 558) continue; if (!near.has(c + ',' + r)) continue; if (pts.some((p) => Math.hypot(p.x - x, p.y - y) < 34)) continue; if (b.blocked.has(c + ',' + r)) continue; const q = [c, r, px(x, y)]; gr.push(q); gmap[c + ',' + r] = q; }
   const Lg = gr.map((q) => Lm(...q[2])); const Gm = avg(gr.map((q) => q[2]));
   const par = (k) => Lm(...avg(gr.filter((q) => (q[0] + q[1]) % 2 === k).map((q) => q[2])));
   const Lt = Lm(...T);

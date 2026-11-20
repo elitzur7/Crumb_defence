@@ -1,0 +1,8 @@
+{
+  "note": "18 trajectories x 4 seeds, dt 1/60, the same profile decks as the v0.8.5 band. Old row is the previous trail at its previous hpMul.",
+  "rows": [
+    { "L": 65, "map": "w7_jelly_shelf", "hp": 9.4, "win": 88.9, "n": 72, "target": 87, "tol": 7, "ok": true, "oldMap": "w7_jelly_alley", "oldHp": 5.42, "oldWin": 100, "slopeWin": 69.4, "slope": 19.5, "slopeOk": true },
+    { "L": 74, "map": "w8_whisk_rail", "hp": 16, "win": 91.7, "n": 72, "target": 93.5, "tol": 5, "ok": true, "oldMap": "w8_whisk_rack", "oldHp": 11.4, "oldWin": 100 },
+    { "L": 76, "map": "w8_oven_lip", "hp": 14.6, "win": 91.7, "n": 72, "target": 93, "tol": 5, "ok": true, "oldMap": "w8_oven_door", "oldHp": 9.8, "oldWin": 98.6 }
+  ]
+}

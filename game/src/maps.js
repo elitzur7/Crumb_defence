@@ -30,7 +30,7 @@ export function parseMap(m, cols = 10, rows = 12) {
     else if (PROP_KINDS[ch]) props.push({ k: PROP_KINDS[ch], c, r });
     else if (!'.#+'.includes(ch)) errors.push(`unknown char '${ch}' at ${c},${r}`);
   }
-  if (!nests.length) errors.push('no nest N'); if (nests.length > 2) errors.push('max 2 nests');
+  if (!nests.length) errors.push('no nest N'); if (nests.length > 3) errors.push('max 3 nests');
   if (!cookie) errors.push('no cookie C');
   const walk = (ch) => ch === '#' || ch === '+' || ch === 'C';
   const routes = [];

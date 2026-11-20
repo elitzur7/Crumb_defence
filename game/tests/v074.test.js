@@ -25,7 +25,7 @@ test('v0.7.4 version + versionCode (>= 18; the hotfix v0.7.4.1 is asserted in v0
 
 // ---------------- M-1 ----------------
 test('M-1: hpMul L10 2.373 and L17 2.38 (all other levels as in v0.7.3); L20 stays 1.6; Sprinter HP stays 10', () => {
-  const want = [1, 1.56, 3.125, 6.6, 2.803, 4.321, 2.225, 3.72, 4.8, 2.373, 3.665, 4.064, 3.45, 4.32, 6.365, 5.056, 2.856, 4.268, 4.878, 1.92];
+  const want = [1, 1.56, 3.125, 6.6, 2.803, 4.321, 2.225, 3.72, 4.8, 2.373, 3.665, 4.064, 3.45, 4.32, 6.365, 5.056, 3.5, 4.268, 4.878, 1.92];
   C.LEVELS.slice(0, 20).forEach((L, i) => assert.equal(L.hpMul, want[i], `L${i + 1}`));
   assert.equal(C.ANTS.sprinter.hp, 10);
   const b = new Battle({ levelIndex: 9, deck: DECK, seed: 1 });
@@ -157,7 +157,7 @@ test('M1 #1: with the default mode every tower picks exactly as before (Weakest 
 });
 test('M1 #5: the mode survives upgrade and Move / Swap, is per tower, and a new battle starts on Weakest (never saved)', () => {
   const b = mk(); b.hand = null;
-  const a = b.addTower('slingshot', 2, 2), c = b.addTower('laser', 6, 6);
+  const a = b.addTower('slingshot', 2, 4), c = b.addTower('laser', 6, 4);
   b.setTargetMode(a, 'carrier'); b.setTargetMode(c, 'front');
   a.lvl++; assert.equal(a.mode, 'carrier');                     // an upgrade keeps the same object
   const was = [a.c, a.r]; if (b.canMoveTower(a, 7, 7)) { assert.ok(b.moveTower(a, 7, 7)); assert.notDeepEqual([a.c, a.r], was); assert.equal(a.mode, 'carrier'); }

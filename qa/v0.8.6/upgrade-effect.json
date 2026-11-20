@@ -1,0 +1,1646 @@
+{
+ "n": 182,
+ "pass": 182,
+ "fail": 0,
+ "skip": 0,
+ "rows": [
+  {
+   "tower": "slingshot",
+   "step": "battle 1->2",
+   "before": 54,
+   "after": 108,
+   "pct": 1,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "slingshot",
+   "step": "battle 2->3",
+   "before": 108,
+   "after": 166.17599999159575,
+   "pct": 0.539,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "slingshot",
+   "step": "battle 3->4",
+   "before": 166.17599999159575,
+   "after": 221.51260799914598,
+   "pct": 0.333,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "slingshot",
+   "step": "battle 4->5",
+   "before": 221.51260799914598,
+   "after": 260.8495553005487,
+   "pct": 0.178,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "slingshot",
+   "step": "battle 5->6",
+   "before": 260.8495553005487,
+   "after": 313.01946637034416,
+   "pct": 0.2,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "slingshot",
+   "step": "card 1->2",
+   "before": 54,
+   "after": 58.32000000402331,
+   "pct": 0.08,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "slingshot",
+   "step": "card 2->3",
+   "before": 58.32000000402331,
+   "after": 69.28416000679135,
+   "pct": 0.188,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "slingshot",
+   "step": "card 3->4",
+   "before": 69.28416000679135,
+   "after": 74.82689280062914,
+   "pct": 0.08,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "slingshot",
+   "step": "card 4->5",
+   "before": 74.82689280062914,
+   "after": 89.79227136820555,
+   "pct": 0.2,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "slingshot",
+   "step": "card 5->6",
+   "before": 89.79227136820555,
+   "after": 106.67321838438511,
+   "pct": 0.188,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "slingshot",
+   "step": "card 6->7",
+   "before": 106.67321838438511,
+   "after": 129.0319249406457,
+   "pct": 0.21,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "slingshot",
+   "step": "card 7->8",
+   "before": 129.0319249406457,
+   "after": 153.28992683440447,
+   "pct": 0.188,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "slingshot",
+   "step": "card 8->9",
+   "before": 153.28992683440447,
+   "after": 165.55312098935246,
+   "pct": 0.08,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "slingshot",
+   "step": "card 9->10",
+   "before": 165.55312098935246,
+   "after": 196.6771077271551,
+   "pct": 0.188,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "spray",
+   "step": "battle 1->2",
+   "before": 51.59999980777502,
+   "after": 103.20000009611249,
+   "pct": 1,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "spray",
+   "step": "battle 2->3",
+   "before": 103.20000009611249,
+   "after": 151.86640001274645,
+   "pct": 0.472,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "spray",
+   "step": "battle 3->4",
+   "before": 151.86640001274645,
+   "after": 202.4379111379385,
+   "pct": 0.333,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "spray",
+   "step": "battle 4->5",
+   "before": 202.4379111379385,
+   "after": 253.04738892242312,
+   "pct": 0.25,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "spray",
+   "step": "battle 5->6",
+   "before": 253.04738892242312,
+   "after": 290.7352979108691,
+   "pct": 0.149,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "spray",
+   "step": "card 1->2",
+   "before": 51.59999980777502,
+   "after": 61.300800148397684,
+   "pct": 0.188,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "spray",
+   "step": "card 2->3",
+   "before": 61.300800148397684,
+   "after": 70.05398400686681,
+   "pct": 0.143,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "spray",
+   "step": "card 3->4",
+   "before": 70.05398400686681,
+   "after": 75.65830289013684,
+   "pct": 0.08,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "spray",
+   "step": "card 4->5",
+   "before": 75.65830289013684,
+   "after": 91.51628288626671,
+   "pct": 0.21,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "spray",
+   "step": "card 5->6",
+   "before": 91.51628288626671,
+   "after": 98.83758563920856,
+   "pct": 0.08,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "spray",
+   "step": "card 6->7",
+   "before": 98.83758563920856,
+   "after": 113.78269731625915,
+   "pct": 0.151,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "spray",
+   "step": "card 7->8",
+   "before": 113.78269731625915,
+   "after": 135.17384457215667,
+   "pct": 0.188,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "spray",
+   "step": "card 8->9",
+   "before": 135.17384457215667,
+   "after": 145.98775196447968,
+   "pct": 0.08,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "spray",
+   "step": "card 9->10",
+   "before": 145.98775196447968,
+   "after": 196.0811163894832,
+   "pct": 0.343,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "sound",
+   "step": "battle 1->2",
+   "before": 24,
+   "after": 48,
+   "pct": 1,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "sound",
+   "step": "battle 2->3",
+   "before": 48,
+   "after": 80,
+   "pct": 0.667,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "sound",
+   "step": "battle 3->4",
+   "before": 80,
+   "after": 106.64000000059605,
+   "pct": 0.333,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "sound",
+   "step": "battle 4->5",
+   "before": 106.64000000059605,
+   "after": 133.29999999701977,
+   "pct": 0.25,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "sound",
+   "step": "battle 5->6",
+   "before": 133.29999999701977,
+   "after": 156.4108875039965,
+   "pct": 0.173,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "sound",
+   "step": "card 1->2",
+   "before": 24,
+   "after": 30.240000002086163,
+   "pct": 0.26,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "sound",
+   "step": "card 2->3",
+   "before": 30.240000002086163,
+   "after": 32.65919999964535,
+   "pct": 0.08,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "sound",
+   "step": "card 3->4",
+   "before": 32.65919999964535,
+   "after": 38.79912959598005,
+   "pct": 0.188,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "sound",
+   "step": "card 4->5",
+   "before": 38.79912959598005,
+   "after": 50.04422590509057,
+   "pct": 0.29,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "sound",
+   "step": "card 5->6",
+   "before": 50.04422590509057,
+   "after": 54.0477639734745,
+   "pct": 0.08,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "sound",
+   "step": "card 6->7",
+   "before": 54.0477639734745,
+   "after": 66.0520568229258,
+   "pct": 0.222,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "sound",
+   "step": "card 7->8",
+   "before": 66.0520568229258,
+   "after": 71.33622135967016,
+   "pct": 0.08,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "sound",
+   "step": "card 8->9",
+   "before": 71.33622135967016,
+   "after": 86.28829336538911,
+   "pct": 0.21,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "sound",
+   "step": "card 9->10",
+   "before": 86.28829336538911,
+   "after": 93.19135683402419,
+   "pct": 0.08,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "ball",
+   "step": "battle 1->2",
+   "before": 80,
+   "after": 160,
+   "pct": 1,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "ball",
+   "step": "battle 2->3",
+   "before": 160,
+   "after": 258.49599999561906,
+   "pct": 0.616,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "ball",
+   "step": "battle 3->4",
+   "before": 258.49599999561906,
+   "after": 344.57516799867153,
+   "pct": 0.333,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "ball",
+   "step": "battle 4->5",
+   "before": 344.57516799867153,
+   "after": 430.7189599983394,
+   "pct": 0.25,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "ball",
+   "step": "battle 5->6",
+   "before": 430.7189599983394,
+   "after": 492.2502399981022,
+   "pct": 0.143,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "ball",
+   "step": "card 1->2",
+   "before": 80,
+   "after": 95.03999999724329,
+   "pct": 0.188,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "ball",
+   "step": "card 2->3",
+   "before": 95.03999999724329,
+   "after": 123.17184000089765,
+   "pct": 0.296,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "ball",
+   "step": "card 3->4",
+   "before": 123.17184000089765,
+   "after": 141.0071224272251,
+   "pct": 0.145,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "ball",
+   "step": "card 4->5",
+   "before": 141.0071224272251,
+   "after": 170.56221529841423,
+   "pct": 0.21,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "ball",
+   "step": "card 5->6",
+   "before": 170.56221529841423,
+   "after": 184.20719251781702,
+   "pct": 0.08,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "ball",
+   "step": "card 6->7",
+   "before": 184.20719251781702,
+   "after": 218.8381447121501,
+   "pct": 0.188,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "ball",
+   "step": "card 7->8",
+   "before": 218.8381447121501,
+   "after": 275.73606234043837,
+   "pct": 0.26,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "ball",
+   "step": "card 8->9",
+   "before": 275.73606234043837,
+   "after": 297.79494732245803,
+   "pct": 0.08,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "ball",
+   "step": "card 9->10",
+   "before": 297.79494732245803,
+   "after": 404.3204541951418,
+   "pct": 0.358,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "fan",
+   "step": "battle 1->2",
+   "before": 150,
+   "after": 195,
+   "pct": 0.3,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "fan",
+   "step": "battle 2->3",
+   "before": 195,
+   "after": 260,
+   "pct": 0.333,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "fan",
+   "step": "battle 3->4",
+   "before": 260,
+   "after": 299,
+   "pct": 0.15,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "fan",
+   "step": "battle 4->5",
+   "before": 0,
+   "after": 299,
+   "pct": 1,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "fan",
+   "step": "battle 5->6",
+   "before": 299,
+   "after": 373.75,
+   "pct": 0.25,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "fan",
+   "step": "card 1->2",
+   "before": 0,
+   "after": 162,
+   "pct": 1,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "fan",
+   "step": "card 2->3",
+   "before": 162,
+   "after": 233.27999999999997,
+   "pct": 0.44,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "fan",
+   "step": "card 3->4",
+   "before": 233.27999999999997,
+   "after": 277.13664000000017,
+   "pct": 0.188,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "fan",
+   "step": "card 4->5",
+   "before": 0,
+   "after": 299.3075712,
+   "pct": 1,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "fan",
+   "step": "card 5->6",
+   "before": 0,
+   "after": 323.25217689600004,
+   "pct": 1,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "fan",
+   "step": "card 6->7",
+   "before": 323.25217689600004,
+   "after": 384.02358615244816,
+   "pct": 0.188,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "fan",
+   "step": "card 7->8",
+   "before": 384.02358615244816,
+   "after": 414.7454730446441,
+   "pct": 0.08,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "fan",
+   "step": "card 8->9",
+   "before": 414.7454730446441,
+   "after": 501.67612419480156,
+   "pct": 0.21,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "fan",
+   "step": "card 9->10",
+   "before": 501.67612419480156,
+   "after": 541.8102141303857,
+   "pct": 0.08,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "pheromone",
+   "step": "battle 1->2",
+   "before": 20.000000149011612,
+   "after": 30,
+   "pct": 0.5,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "pheromone",
+   "step": "battle 2->3",
+   "before": 1.724999999999999,
+   "after": 2.524999999999995,
+   "pct": 0.464,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "pheromone",
+   "step": "battle 3->4",
+   "before": 30,
+   "after": 36.00000008940697,
+   "pct": 0.2,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "pheromone",
+   "step": "battle 4->5",
+   "before": 2.524999999999995,
+   "after": 2.9583333333333277,
+   "pct": 0.172,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "pheromone",
+   "step": "battle 5->6",
+   "before": 2.9583333333333277,
+   "after": 3.374999999999992,
+   "pct": 0.141,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "pheromone",
+   "step": "card 1->2",
+   "before": 20.000000149011612,
+   "after": 24.192000031471252,
+   "pct": 0.21,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "pheromone",
+   "step": "card 2->3",
+   "before": 1.724999999999999,
+   "after": 1.8166666666666649,
+   "pct": 0.053,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "pheromone",
+   "step": "card 3->4",
+   "before": 1.8166666666666649,
+   "after": 1.983333333333331,
+   "pct": 0.092,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "pheromone",
+   "step": "card 4->5",
+   "before": 28.217548727989197,
+   "after": 33.52244809269905,
+   "pct": 0.188,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "pheromone",
+   "step": "card 5->6",
+   "before": 1.983333333333331,
+   "after": 2.0666666666666638,
+   "pct": 0.042,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "pheromone",
+   "step": "card 6->7",
+   "before": 36.2042436003685,
+   "after": 43.010641783475876,
+   "pct": 0.188,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "pheromone",
+   "step": "card 7->8",
+   "before": 2.0666666666666638,
+   "after": 2.266666666666663,
+   "pct": 0.097,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "pheromone",
+   "step": "card 8->9",
+   "before": 2.266666666666663,
+   "after": 2.3833333333333293,
+   "pct": 0.051,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "pheromone",
+   "step": "card 9->10",
+   "before": 50.16761228442192,
+   "after": 59.59912374615669,
+   "pct": 0.188,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "lizard",
+   "step": "battle 1->2",
+   "before": 152,
+   "after": 304,
+   "pct": 1,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "lizard",
+   "step": "battle 2->3",
+   "before": 304,
+   "after": 456,
+   "pct": 0.5,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "lizard",
+   "step": "battle 3->4",
+   "before": 456,
+   "after": 506.61599999666214,
+   "pct": 0.111,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "lizard",
+   "step": "battle 4->5",
+   "before": 506.61599999666214,
+   "after": 633.2700000032783,
+   "pct": 0.25,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "lizard",
+   "step": "battle 5->6",
+   "before": 633.2700000032783,
+   "after": 759.9240000024438,
+   "pct": 0.2,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "lizard",
+   "step": "card 1->2",
+   "before": 152,
+   "after": 183.85920000076294,
+   "pct": 0.21,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "lizard",
+   "step": "card 2->3",
+   "before": 183.85920000076294,
+   "after": 198.56793600320816,
+   "pct": 0.08,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "lizard",
+   "step": "card 3->4",
+   "before": 198.56793600320816,
+   "after": 214.45337087661028,
+   "pct": 0.08,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "lizard",
+   "step": "card 4->5",
+   "before": 214.45337087661028,
+   "after": 318.4632557556033,
+   "pct": 0.485,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "lizard",
+   "step": "card 5->6",
+   "before": 318.4632557556033,
+   "after": 343.9403162151575,
+   "pct": 0.08,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "lizard",
+   "step": "card 6->7",
+   "before": 343.9403162151575,
+   "after": 371.4555415138602,
+   "pct": 0.08,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "lizard",
+   "step": "card 7->8",
+   "before": 371.4555415138602,
+   "after": 441.2891833204776,
+   "pct": 0.188,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "lizard",
+   "step": "card 8->9",
+   "before": 441.2891833204776,
+   "after": 533.7833961453289,
+   "pct": 0.21,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "lizard",
+   "step": "card 9->10",
+   "before": 533.7833961453289,
+   "after": 634.1346746198833,
+   "pct": 0.188,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "laser",
+   "step": "battle 1->2",
+   "before": 127.5,
+   "after": 216.74999998882413,
+   "pct": 0.7,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "laser",
+   "step": "battle 2->3",
+   "before": 216.74999998882413,
+   "after": 303.74579999037087,
+   "pct": 0.401,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "laser",
+   "step": "battle 3->4",
+   "before": 303.74579999037087,
+   "after": 392.4395736120641,
+   "pct": 0.292,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "laser",
+   "step": "battle 4->5",
+   "before": 392.4395736120641,
+   "after": 516.4423873182386,
+   "pct": 0.316,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "laser",
+   "step": "battle 5->6",
+   "before": 516.4423873182386,
+   "after": 774.6635809820145,
+   "pct": 0.5,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "laser",
+   "step": "card 1->2",
+   "before": 127.5,
+   "after": 157.14000000618398,
+   "pct": 0.232,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "laser",
+   "step": "card 2->3",
+   "before": 157.14000000618398,
+   "after": 186.6823200136423,
+   "pct": 0.188,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "laser",
+   "step": "card 3->4",
+   "before": 186.6823200136423,
+   "after": 201.61690560169518,
+   "pct": 0.08,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "laser",
+   "step": "card 4->5",
+   "before": 201.61690560169518,
+   "after": 244.6839394699782,
+   "pct": 0.214,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "laser",
+   "step": "card 5->6",
+   "before": 244.6839394699782,
+   "after": 290.68452008999884,
+   "pct": 0.188,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "laser",
+   "step": "card 6->7",
+   "before": 290.68452008999884,
+   "after": 313.9392816852778,
+   "pct": 0.08,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "laser",
+   "step": "card 7->8",
+   "before": 313.9392816852778,
+   "after": 379.740955112502,
+   "pct": 0.21,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "laser",
+   "step": "card 8->9",
+   "before": 379.740955112502,
+   "after": 410.12023153714836,
+   "pct": 0.08,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "laser",
+   "step": "card 9->10",
+   "before": 410.12023153714836,
+   "after": 576.6215203851461,
+   "pct": 0.406,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "zapper",
+   "step": "battle 1->2",
+   "before": 235.19999999552965,
+   "after": 470.3999999910593,
+   "pct": 1,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "zapper",
+   "step": "battle 2->3",
+   "before": 470.3999999910593,
+   "after": 705.6000000089407,
+   "pct": 0.5,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "zapper",
+   "step": "battle 3->4",
+   "before": 705.6000000089407,
+   "after": 979.9019999988377,
+   "pct": 0.389,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "zapper",
+   "step": "battle 4->5",
+   "before": 979.9019999988377,
+   "after": 1224.877500012517,
+   "pct": 0.25,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "zapper",
+   "step": "battle 5->6",
+   "before": 1224.877500012517,
+   "after": 1362.7170479893684,
+   "pct": 0.113,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "zapper",
+   "step": "card 1->2",
+   "before": 235.19999999552965,
+   "after": 254.01600001752377,
+   "pct": 0.08,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "zapper",
+   "step": "card 2->3",
+   "before": 254.01600001752377,
+   "after": 301.7710080072284,
+   "pct": 0.188,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "zapper",
+   "step": "card 3->4",
+   "before": 301.7710080072284,
+   "after": 353.07207935489714,
+   "pct": 0.17,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "zapper",
+   "step": "card 4->5",
+   "before": 353.07207935489714,
+   "after": 381.3178457226604,
+   "pct": 0.08,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "zapper",
+   "step": "card 5->6",
+   "before": 381.3178457226604,
+   "after": 461.24206617102027,
+   "pct": 0.21,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "zapper",
+   "step": "card 6->7",
+   "before": 461.24206617102027,
+   "after": 574.7785747982562,
+   "pct": 0.246,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "zapper",
+   "step": "card 7->8",
+   "before": 574.7785747982562,
+   "after": 682.8369468078017,
+   "pct": 0.188,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "zapper",
+   "step": "card 8->9",
+   "before": 682.8369468078017,
+   "after": 737.4639025703073,
+   "pct": 0.08,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "zapper",
+   "step": "card 9->10",
+   "before": 737.4639025703073,
+   "after": 876.1071162577718,
+   "pct": 0.188,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "glue",
+   "step": "battle 1->2",
+   "before": 1.4249999999999996,
+   "after": 1.766666666666665,
+   "pct": 0.24,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "glue",
+   "step": "battle 2->3",
+   "before": 1.766666666666665,
+   "after": 2.266666666666663,
+   "pct": 0.283,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "glue",
+   "step": "battle 3->4",
+   "before": 2.266666666666663,
+   "after": 2.733333333333328,
+   "pct": 0.206,
+   "need": 0.15,
+   "ok": "pass"
+  },
+  {
+   "tower": "glue",
+   "step": "battle 4->5",
+   "before": 2.733333333333328,
+   "after": 3.1333333333333266,
+   "pct": 0.146,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "glue",
+   "step": "battle 5->6",
+   "before": 3.1333333333333266,
+   "after": 3.499999999999992,
+   "pct": 0.117,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "glue",
+   "step": "card 1->2",
+   "before": 1.4249999999999996,
+   "after": 1.5249999999999988,
+   "pct": 0.07,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "glue",
+   "step": "card 2->3",
+   "before": 1.5249999999999988,
+   "after": 1.724999999999998,
+   "pct": 0.131,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "glue",
+   "step": "card 3->4",
+   "before": 1.724999999999998,
+   "after": 2.191666666666663,
+   "pct": 0.271,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "glue",
+   "step": "card 4->5",
+   "before": 2.191666666666663,
+   "after": 2.4583333333333295,
+   "pct": 0.122,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "glue",
+   "step": "card 5->6",
+   "before": 2.4583333333333295,
+   "after": 2.858333333333327,
+   "pct": 0.163,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "glue",
+   "step": "card 6->7",
+   "before": 2.858333333333327,
+   "after": 3.0916666666666606,
+   "pct": 0.082,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "glue",
+   "step": "card 7->8",
+   "before": 3.0916666666666606,
+   "after": 3.491666666666659,
+   "pct": 0.129,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "glue",
+   "step": "card 8->9",
+   "before": 3.491666666666659,
+   "after": 3.958333333333324,
+   "pct": 0.134,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "glue",
+   "step": "card 9->10",
+   "before": 3.958333333333324,
+   "after": 4.6249999999999885,
+   "pct": 0.168,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "gate",
+   "step": "battle 1->2",
+   "before": 99,
+   "after": 198,
+   "pct": 1,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "gate",
+   "step": "battle 2->3",
+   "before": 198,
+   "after": 280.4219999983907,
+   "pct": 0.416,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "gate",
+   "step": "battle 3->4",
+   "before": 280.4219999983907,
+   "after": 361.1212199740112,
+   "pct": 0.288,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "gate",
+   "step": "battle 4->5",
+   "before": 361.1212199740112,
+   "after": 451.4015250094235,
+   "pct": 0.25,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "gate",
+   "step": "battle 5->6",
+   "before": 451.4015250094235,
+   "after": 579.2986237816513,
+   "pct": 0.283,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "gate",
+   "step": "card 1->2",
+   "before": 99,
+   "after": 116.63999998569489,
+   "pct": 0.178,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "gate",
+   "step": "card 2->3",
+   "before": 116.63999998569489,
+   "after": 138.56831999123096,
+   "pct": 0.188,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "gate",
+   "step": "card 3->4",
+   "before": 138.56831999123096,
+   "after": 167.61223988234997,
+   "pct": 0.21,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "gate",
+   "step": "card 4->5",
+   "before": 167.61223988234997,
+   "after": 203.64887145906687,
+   "pct": 0.215,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "gate",
+   "step": "card 5->6",
+   "before": 203.64887145906687,
+   "after": 219.94078117981553,
+   "pct": 0.08,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "gate",
+   "step": "card 6->7",
+   "before": 219.94078117981553,
+   "after": 261.28964802995324,
+   "pct": 0.188,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "gate",
+   "step": "card 7->8",
+   "before": 261.28964802995324,
+   "after": 304.7682454325259,
+   "pct": 0.166,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "gate",
+   "step": "card 8->9",
+   "before": 304.7682454325259,
+   "after": 365.7218945212662,
+   "pct": 0.2,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "gate",
+   "step": "card 9->10",
+   "before": 365.7218945212662,
+   "after": 434.47761073708534,
+   "pct": 0.188,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "lava",
+   "step": "battle 1->2",
+   "before": 47.999999821186066,
+   "after": 96.00000008940697,
+   "pct": 1,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "lava",
+   "step": "battle 2->3",
+   "before": 96.00000008940697,
+   "after": 143.99999991059303,
+   "pct": 0.5,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "lava",
+   "step": "battle 3->4",
+   "before": 143.99999991059303,
+   "after": 191.95199981331825,
+   "pct": 0.333,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "lava",
+   "step": "battle 4->5",
+   "before": 191.95199981331825,
+   "after": 239.93999987840652,
+   "pct": 0.25,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "lava",
+   "step": "battle 5->6",
+   "before": 239.93999987840652,
+   "after": 287.9279999434948,
+   "pct": 0.2,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "lava",
+   "step": "card 1->2",
+   "before": 47.999999821186066,
+   "after": 57.02400013804436,
+   "pct": 0.188,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "lava",
+   "step": "card 2->3",
+   "before": 57.02400013804436,
+   "after": 61.58592000603676,
+   "pct": 0.08,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "lava",
+   "step": "card 3->4",
+   "before": 61.58592000603676,
+   "after": 73.16407307982445,
+   "pct": 0.188,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "lava",
+   "step": "card 4->5",
+   "before": 73.16407307982445,
+   "after": 79.01719897985458,
+   "pct": 0.08,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "lava",
+   "step": "card 5->6",
+   "before": 79.01719897985458,
+   "after": 92.16566070914268,
+   "pct": 0.166,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "lava",
+   "step": "card 6->7",
+   "before": 92.16566070914268,
+   "after": 111.48358315229416,
+   "pct": 0.21,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "lava",
+   "step": "card 7->8",
+   "before": 111.48358315229416,
+   "after": 120.40226966142654,
+   "pct": 0.08,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "lava",
+   "step": "card 8->9",
+   "before": 120.40226966142654,
+   "after": 143.03789645433426,
+   "pct": 0.188,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "lava",
+   "step": "card 9->10",
+   "before": 143.03789645433426,
+   "after": 169.92902129888535,
+   "pct": 0.188,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "tractor",
+   "step": "battle 1->2",
+   "before": 20,
+   "after": 22,
+   "pct": 0.1,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "tractor",
+   "step": "battle 2->3",
+   "before": 22,
+   "after": 24,
+   "pct": 0.091,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "tractor",
+   "step": "battle 3->4",
+   "before": 24,
+   "after": 27,
+   "pct": 0.125,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "tractor",
+   "step": "battle 4->5",
+   "before": 0,
+   "after": 27,
+   "pct": 1,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "tractor",
+   "step": "battle 5->6",
+   "before": 27,
+   "after": 30,
+   "pct": 0.111,
+   "need": 0.08,
+   "ok": "pass"
+  },
+  {
+   "tower": "tractor",
+   "step": "card 1->2",
+   "before": 20,
+   "after": 23,
+   "pct": 0.15,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "tractor",
+   "step": "card 2->3",
+   "before": 0,
+   "after": 24,
+   "pct": 1,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "tractor",
+   "step": "card 3->4",
+   "before": 24,
+   "after": 28,
+   "pct": 0.167,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "tractor",
+   "step": "card 4->5",
+   "before": 28,
+   "after": 31,
+   "pct": 0.107,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "tractor",
+   "step": "card 5->6",
+   "before": 31,
+   "after": 36,
+   "pct": 0.161,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "tractor",
+   "step": "card 6->7",
+   "before": 36,
+   "after": 41,
+   "pct": 0.139,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "tractor",
+   "step": "card 7->8",
+   "before": 41,
+   "after": 44,
+   "pct": 0.073,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "tractor",
+   "step": "card 8->9",
+   "before": 44,
+   "after": 50,
+   "pct": 0.136,
+   "need": 0.03,
+   "ok": "pass"
+  },
+  {
+   "tower": "tractor",
+   "step": "card 9->10",
+   "before": 50,
+   "after": 58,
+   "pct": 0.16,
+   "need": 0.03,
+   "ok": "pass"
+  }
+ ]
+}

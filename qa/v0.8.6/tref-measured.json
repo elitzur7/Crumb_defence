@@ -1,0 +1,482 @@
+[
+ {
+  "level": 1,
+  "result": "win",
+  "sim": 87.5,
+  "stars": 3
+ },
+ {
+  "level": 2,
+  "result": "win",
+  "sim": 78.3,
+  "stars": 3
+ },
+ {
+  "level": 3,
+  "result": "lose",
+  "sim": 378.9,
+  "stars": 0
+ },
+ {
+  "level": 4,
+  "result": "win",
+  "sim": 172.3,
+  "stars": 1
+ },
+ {
+  "level": 5,
+  "result": "win",
+  "sim": 186.5,
+  "stars": 2
+ },
+ {
+  "level": 6,
+  "result": "win",
+  "sim": 153.2,
+  "stars": 2
+ },
+ {
+  "level": 7,
+  "result": "win",
+  "sim": 258.7,
+  "stars": 1
+ },
+ {
+  "level": 8,
+  "result": "win",
+  "sim": 187.6,
+  "stars": 2
+ },
+ {
+  "level": 9,
+  "result": "win",
+  "sim": 198.5,
+  "stars": 2
+ },
+ {
+  "level": 10,
+  "result": "win",
+  "sim": 526.6,
+  "stars": 1
+ },
+ {
+  "level": 11,
+  "result": "win",
+  "sim": 129.7,
+  "stars": 3
+ },
+ {
+  "level": 12,
+  "result": "win",
+  "sim": 168.9,
+  "stars": 2
+ },
+ {
+  "level": 13,
+  "result": "win",
+  "sim": 129.8,
+  "stars": 3
+ },
+ {
+  "level": 14,
+  "result": "win",
+  "sim": 182.5,
+  "stars": 2
+ },
+ {
+  "level": 15,
+  "result": "win",
+  "sim": 157.5,
+  "stars": 2
+ },
+ {
+  "level": 16,
+  "result": "win",
+  "sim": 161.3,
+  "stars": 2
+ },
+ {
+  "level": 17,
+  "result": "win",
+  "sim": 262.1,
+  "stars": 2
+ },
+ {
+  "level": 18,
+  "result": "win",
+  "sim": 183.2,
+  "stars": 2
+ },
+ {
+  "level": 19,
+  "result": "win",
+  "sim": 265.2,
+  "stars": 2
+ },
+ {
+  "level": 20,
+  "result": "win",
+  "sim": 371.9,
+  "stars": 2
+ },
+ {
+  "level": 21,
+  "result": "win",
+  "sim": 129.2,
+  "stars": 3
+ },
+ {
+  "level": 22,
+  "result": "win",
+  "sim": 178,
+  "stars": 3
+ },
+ {
+  "level": 23,
+  "result": "win",
+  "sim": 176.4,
+  "stars": 2
+ },
+ {
+  "level": 24,
+  "result": "win",
+  "sim": 192.4,
+  "stars": 2
+ },
+ {
+  "level": 25,
+  "result": "win",
+  "sim": 259.8,
+  "stars": 1
+ },
+ {
+  "level": 26,
+  "result": "win",
+  "sim": 149,
+  "stars": 3
+ },
+ {
+  "level": 27,
+  "result": "win",
+  "sim": 227.7,
+  "stars": 2
+ },
+ {
+  "level": 28,
+  "result": "win",
+  "sim": 433,
+  "stars": 2
+ },
+ {
+  "level": 29,
+  "result": "win",
+  "sim": 305,
+  "stars": 1
+ },
+ {
+  "level": 30,
+  "result": "win",
+  "sim": 422.9,
+  "stars": 1
+ },
+ {
+  "level": 31,
+  "result": "win",
+  "sim": 130.6,
+  "stars": 3
+ },
+ {
+  "level": 32,
+  "result": "win",
+  "sim": 193.7,
+  "stars": 3
+ },
+ {
+  "level": 33,
+  "result": "win",
+  "sim": 179.4,
+  "stars": 3
+ },
+ {
+  "level": 34,
+  "result": "win",
+  "sim": 249.4,
+  "stars": 2
+ },
+ {
+  "level": 35,
+  "result": "win",
+  "sim": 184.6,
+  "stars": 2
+ },
+ {
+  "level": 36,
+  "result": "win",
+  "sim": 158.1,
+  "stars": 2
+ },
+ {
+  "level": 37,
+  "result": "win",
+  "sim": 209,
+  "stars": 3
+ },
+ {
+  "level": 38,
+  "result": "win",
+  "sim": 296.2,
+  "stars": 3
+ },
+ {
+  "level": 39,
+  "result": "win",
+  "sim": 257.3,
+  "stars": 3
+ },
+ {
+  "level": 40,
+  "result": "win",
+  "sim": 351.5,
+  "stars": 2
+ },
+ {
+  "level": 41,
+  "result": "win",
+  "sim": 136.1,
+  "stars": 3
+ },
+ {
+  "level": 42,
+  "result": "win",
+  "sim": 163,
+  "stars": 3
+ },
+ {
+  "level": 43,
+  "result": "win",
+  "sim": 238.8,
+  "stars": 2
+ },
+ {
+  "level": 44,
+  "result": "win",
+  "sim": 257.7,
+  "stars": 2
+ },
+ {
+  "level": 45,
+  "result": "win",
+  "sim": 173.1,
+  "stars": 2
+ },
+ {
+  "level": 46,
+  "result": "win",
+  "sim": 294.1,
+  "stars": 1
+ },
+ {
+  "level": 47,
+  "result": "win",
+  "sim": 197.4,
+  "stars": 2
+ },
+ {
+  "level": 48,
+  "result": "win",
+  "sim": 286.1,
+  "stars": 2
+ },
+ {
+  "level": 49,
+  "result": "win",
+  "sim": 192.2,
+  "stars": 3
+ },
+ {
+  "level": 50,
+  "result": "win",
+  "sim": 302,
+  "stars": 3
+ },
+ {
+  "level": 51,
+  "result": "win",
+  "sim": 140.9,
+  "stars": 3
+ },
+ {
+  "level": 52,
+  "result": "win",
+  "sim": 174.5,
+  "stars": 2
+ },
+ {
+  "level": 53,
+  "result": "win",
+  "sim": 196.4,
+  "stars": 2
+ },
+ {
+  "level": 54,
+  "result": "win",
+  "sim": 273.1,
+  "stars": 2
+ },
+ {
+  "level": 55,
+  "result": "win",
+  "sim": 181,
+  "stars": 2
+ },
+ {
+  "level": 56,
+  "result": "win",
+  "sim": 169.9,
+  "stars": 2
+ },
+ {
+  "level": 57,
+  "result": "win",
+  "sim": 203.4,
+  "stars": 2
+ },
+ {
+  "level": 58,
+  "result": "win",
+  "sim": 286.1,
+  "stars": 2
+ },
+ {
+  "level": 59,
+  "result": "win",
+  "sim": 190.2,
+  "stars": 2
+ },
+ {
+  "level": 60,
+  "result": "win",
+  "sim": 354.3,
+  "stars": 2
+ },
+ {
+  "level": 61,
+  "result": "win",
+  "sim": 131.9,
+  "stars": 3
+ },
+ {
+  "level": 62,
+  "result": "win",
+  "sim": 177,
+  "stars": 2
+ },
+ {
+  "level": 63,
+  "result": "win",
+  "sim": 203.3,
+  "stars": 2
+ },
+ {
+  "level": 64,
+  "result": "win",
+  "sim": 217.6,
+  "stars": 1
+ },
+ {
+  "level": 65,
+  "result": "win",
+  "sim": 168.9,
+  "stars": 2
+ },
+ {
+  "level": 66,
+  "result": "win",
+  "sim": 180.1,
+  "stars": 2
+ },
+ {
+  "level": 67,
+  "result": "win",
+  "sim": 170,
+  "stars": 2
+ },
+ {
+  "level": 68,
+  "result": "win",
+  "sim": 250.9,
+  "stars": 2
+ },
+ {
+  "level": 69,
+  "result": "win",
+  "sim": 192.9,
+  "stars": 2
+ },
+ {
+  "level": 70,
+  "result": "win",
+  "sim": 344,
+  "stars": 1
+ },
+ {
+  "level": 71,
+  "result": "win",
+  "sim": 138.8,
+  "stars": 3
+ },
+ {
+  "level": 72,
+  "result": "win",
+  "sim": 169.4,
+  "stars": 2
+ },
+ {
+  "level": 73,
+  "result": "win",
+  "sim": 216.8,
+  "stars": 2
+ },
+ {
+  "level": 74,
+  "result": "win",
+  "sim": 309.2,
+  "stars": 1
+ },
+ {
+  "level": 75,
+  "result": "win",
+  "sim": 167,
+  "stars": 2
+ },
+ {
+  "level": 76,
+  "result": "win",
+  "sim": 206,
+  "stars": 2
+ },
+ {
+  "level": 77,
+  "result": "win",
+  "sim": 201.5,
+  "stars": 2
+ },
+ {
+  "level": 78,
+  "result": "win",
+  "sim": 309.3,
+  "stars": 1
+ },
+ {
+  "level": 79,
+  "result": "win",
+  "sim": 198.4,
+  "stars": 2
+ },
+ {
+  "level": 80,
+  "result": "win",
+  "sim": 336.9,
+  "stars": 2
+ }
+]

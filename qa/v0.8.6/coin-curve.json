@@ -1,0 +1,111 @@
+{
+  "note": "First 3-star clear of each world opener, including star records. Before is growth 3.2. Test grants do not add coins.",
+  "before": {
+    "growth": 3.2,
+    "worlds": [
+      {
+        "world": 1,
+        "level": 1,
+        "first3StarClear": 257,
+        "daily": 60
+      },
+      {
+        "world": 2,
+        "level": 11,
+        "first3StarClear": 987,
+        "daily": 192
+      },
+      {
+        "world": 3,
+        "level": 21,
+        "first3StarClear": 3153,
+        "daily": 614
+      },
+      {
+        "world": 4,
+        "level": 31,
+        "first3StarClear": 10145,
+        "daily": 1966
+      },
+      {
+        "world": 5,
+        "level": 41,
+        "first3StarClear": 33171,
+        "daily": 6291
+      },
+      {
+        "world": 6,
+        "level": 51,
+        "first3StarClear": 108116,
+        "daily": 20133
+      },
+      {
+        "world": 7,
+        "level": 61,
+        "first3StarClear": 334160,
+        "daily": 64425
+      },
+      {
+        "world": 8,
+        "level": 71,
+        "first3StarClear": 1098289,
+        "daily": 206158
+      }
+    ],
+    "threeOpeningW7Clears": 1311419
+  },
+  "after": {
+    "growth": 1.55,
+    "worlds": [
+      {
+        "world": 1,
+        "level": 1,
+        "first3StarClear": 257,
+        "daily": 60
+      },
+      {
+        "world": 2,
+        "level": 11,
+        "first3StarClear": 479,
+        "daily": 93
+      },
+      {
+        "world": 3,
+        "level": 21,
+        "first3StarClear": 739,
+        "daily": 144
+      },
+      {
+        "world": 4,
+        "level": 31,
+        "first3StarClear": 1152,
+        "daily": 223
+      },
+      {
+        "world": 5,
+        "level": 41,
+        "first3StarClear": 1825,
+        "daily": 346
+      },
+      {
+        "world": 6,
+        "level": 51,
+        "first3StarClear": 2883,
+        "daily": 537
+      },
+      {
+        "world": 7,
+        "level": 61,
+        "first3StarClear": 4315,
+        "daily": 832
+      },
+      {
+        "world": 8,
+        "level": 71,
+        "first3StarClear": 6871,
+        "daily": 1290
+      }
+    ],
+    "threeOpeningW7Clears": 16938
+  }
+}

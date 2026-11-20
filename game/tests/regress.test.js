@@ -43,7 +43,7 @@ test('B2: a used bonus is deducted from the save immediately (Restart/Quit canno
 test('B2: game.js wires the deduction to the moment of use and no longer deducts at battle end', () => {
   const src = readFileSync(new URL('../src/game.js', import.meta.url), 'utf8');
   assert.match(src, /onBonusUsed: \(type\) => \{ M\.consumeBonus\(S\.save, type\); persist\(\); \}/);
-  assert.match(src, /applyBattleResult\(S\.save, b\.levelIndex, b\.result, b\.stars, \{ kills: b\.stats\.kills, foodLeft: b\.foodStored, perfect: b\.perfect, time: b\.time(, day: [^}]*)? \}\)/); // v0.8.2 EC6 adds an optional day
+  assert.match(src, /applyBattleResult\(S\.save, b\.levelIndex, b\.result, b\.stars, \{ kills: b\.stats\.kills, foodLeft: b\.foodStored, perfect: b\.perfect, time: b\.time, progress: b\.progress \? b\.progress\(\) : 0(, day: [^}]*)? \}\)/);
   assert.ok(!/usedBonuses|bonusStock\[b\] = Math\.max\(0/.test(readFileSync(new URL('../src/meta.js', import.meta.url), 'utf8')), 'meta no longer deducts bonuses at battle end');
 });
 

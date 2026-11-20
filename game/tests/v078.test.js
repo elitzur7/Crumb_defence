@@ -21,11 +21,12 @@ test('Must 1: World 3 hpMul = [3.3, 4.3, 5.2, 4.9, 8.0, 6.0, 8.0, 6.0, 8.8, 1.45
   assert.deepEqual(C.LEVELS.slice(20, 30).map((l) => l.hpMul), [3.3, 4.3, 5.2, 4.9, 8, 6, 8, 6, 8.7, 1.45]); // v0.7.10: L29 8.8 -> 8.7
   assert.equal(C.LEVELS.slice(20, 30).length, 10); assert.ok(C.LEVELS.slice(20, 30).every((l) => l.world === 3));
 });
-test('Must 2: World 2 hpMul = [3.665, 4.064, 3.45, 4.32, 6.365, 5.056, 2.856, 4.268, 4.878, 1.92] (L11-L20) = v0.7.7 x 1.2', () => {
+test('Must 2: World 2 hpMul = [3.665, 4.064, 3.45, 4.32, 6.365, 5.056, 3.5, 4.268, 4.878, 1.92] (L11-L20) = v0.7.7 x 1.2', () => {
   const now = TJ.levels.slice(10, 20).map((l) => l.hpMul);
-  assert.deepEqual(now, [3.665, 4.064, 3.45, 4.32, 6.365, 5.056, 2.856, 4.268, 4.878, 1.92]);
+  assert.deepEqual(now, [3.665, 4.064, 3.45, 4.32, 6.365, 5.056, 3.5, 4.268, 4.878, 1.92]);
   const old = [3.054, 3.387, 2.875, 3.6, 5.304, 4.213, 2.38, 3.557, 4.065, 1.6];
-  now.forEach((v, k) => assert.ok(Math.abs(v - old[k] * 1.2) < 0.0051, `L${11 + k}: ${v} vs ${old[k]} x 1.2`));
+  now.forEach((v, k) => { if (k === 6) return; assert.ok(Math.abs(v - old[k] * 1.2) < 0.0051, `L${11 + k}: ${v} vs ${old[k]} x 1.2`); });
+  assert.equal(now[6], 3.5); // v0.8.6.1: L17 was a 100% clear at 2.856
 });
 test('Must 2: World 1 hpMul untouched (L1-L10)', () => {
   assert.deepEqual(TJ.levels.slice(0, 10).map((l) => l.hpMul), [1, 1.56, 3.125, 6.6, 2.803, 4.321, 2.225, 3.72, 4.8, 2.373]); // v0.7.10: L3 3 -> 3.125
@@ -63,10 +64,11 @@ test('P2-5: with every tower unlocked the boss gift is cap-2 in W1/W2 (L2, L3) a
 });
 
 // ---------- UI fixes (P2-1, P2-2, P2-4) ----------
-test('P2-1: the Cards stats panel shows the effective (capped) numbers; at/above the cap there is no next-level preview', () => {
+test('P2-1: the Cards stats panel shows the owned level, and the next card step is never described as worthless', () => {
   const g = rd('src/game.js');
-  assert.match(g, /const Le = capCard \? Math\.min\(L, capCard\) : L;/); assert.match(g, /formatStat\(id, k, towerStat\(id, k, 1, Le\)\)/);
-  assert.match(g, /At the world cap \(L\$\{capCard\}\): higher cards add nothing yet/); assert.doesNotMatch(g, /towerStat\(id, k, 1, L\)\)/);
+  assert.match(g, /formatStat\(id, k, towerStat\(id, k, 1, Le\)\)/);
+  assert.doesNotMatch(g, /higher cards add nothing yet/);
+  assert.doesNotMatch(g, /fights as L\$\{capCard\}/);
 });
 test('P2-2: rarity pips have a tap tooltip with the dot legend', () => {
   const g = rd('src/game.js');

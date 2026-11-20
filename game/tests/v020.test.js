@@ -18,10 +18,10 @@ const run = (b, sec, dt = 1 / 60) => { for (let i = 0; i < sec / dt; i++) b.upda
 const CX = C.GRID_COLS * C.TILE / 2, CY = C.GRID_ROWS * C.TILE / 2;
 test('v0.5 item 10b: fan blows ALONG the trail next to it, away from the fan; effect = wind . trail direction', () => {
   const res = {};
-  // zigzag row 2 runs left -> right (cols 1..8). A fan at (0,2) blows +x along it (with the ants = bad spot);
-  // a fan at (9,2) blows -x along it (against the ants = good spot).
+  // zigzag row 3 (LY1 +1) runs left -> right (cols 1..8). A fan at (0,3) blows +x along it (with the ants = bad spot);
+  // a fan at (9,3) blows -x along it (against the ants = good spot).
   for (const [name, c, x] of [['left', 0, 80], ['right', 9, 320]]) {
-    const b = mk(); const fan = b.addTower('fan', c, 2); fan.cd = 0;
+    const b = mk(); const fan = b.addTower('fan', c, 3); fan.cd = 0;
     assert.ok(fan.trailDir && fan.trailDir.run === 8, `${name}: straight run of 8 tiles`);
     assert.deepEqual([fan.ax, fan.ay], name === 'left' ? [1, 0] : [-1, 0]);
     const a = still(b.spawn('worker', dAtX(x))); const d0 = a.d;
@@ -31,7 +31,7 @@ test('v0.5 item 10b: fan blows ALONG the trail next to it, away from the fan; ef
   assert.ok(res.right < -5, `right fan pushes row-2 ants back (${res.right})`);
   assert.ok(Math.abs(res.left + res.right) < 1e-6, 'mirror spots give mirror effects');
   // no trail cell right next to it (only diagonal) -> no direction, no wind
-  const b = mk(); const fan = b.addTower('fan', 0, 3); fan.cd = 0; assert.equal(fan.trailDir, null);
+  const b = mk(); const fan = b.addTower('fan', 0, 4); fan.cd = 0; assert.equal(fan.trailDir, null);
   const a = still(b.spawn('worker', dAtX(60))); const d0 = a.d; b.update(1 / 60); assert.equal(a.d, d0);
 });
 test('v0.5 items 2 + 10a: direction = from the tower into the trail cell next to it; longest straight run, then higher, then left', () => {
@@ -58,7 +58,7 @@ test('no Turn: the direction is fixed at placement and cannot be changed', () =>
   assert.ok(!/infoTurn|'Turn'|turnTower|setTowerDir/.test(g), 'no Turn button in the UI');
 });
 test('v0.5 item 2: the marble rolls away from the tower down the straight trail, breaks at the end (no extra damage)', () => {
-  const b = mk(); const m = b.addTower('ball', 0, 2); // left of row 2 -> rolls right along cols 1..8
+  const b = mk(); const m = b.addTower('ball', 0, 3); // left of row 3 -> rolls right along cols 1..8
   assert.ok(m.hasLaunch); assert.deepEqual([m.ax, m.ay], [1, 0]); assert.equal(m.trailDir.run, 8);
   const R = b.rollFor(m); assert.equal(R.len, m.runLen); assert.equal(R.tiles, 8); assert.equal(m.runLen, 8 * C.TILE - towerStat('ball', 'ballRadius', 1, 1));
   const a = still(b.spawn('worker', dAtX(220))); m.cd = 0;
@@ -69,7 +69,7 @@ test('v0.5 item 2: the marble rolls away from the tower down the straight trail,
   assert.equal(b.balls.length, 0); assert.ok(!b.events.some((e) => e.type === 'marbleStuck'));
 });
 test('v0.5 item 2: no trail right next to the marble (only diagonal) = it does not roll at all', () => {
-  const b = mk(); const m = b.addTower('ball', 0, 3); // touches row 2 only diagonally
+  const b = mk(); const m = b.addTower('ball', 0, 4); // touches row 3 only diagonally
   assert.equal(m.hasLaunch, false); assert.equal(m.runLen, 0); assert.equal(m.trailDir, null);
   const a = still(b.spawn('worker', dAtX(60))); m.cd = 0;
   run(b, 1.5);
@@ -78,24 +78,24 @@ test('v0.5 item 2: no trail right next to the marble (only diagonal) = it does n
 });
 test('marble must touch the trail, fires slowly (nerf) and keeps one marble at a time', () => {
   const b = mk(); b.addCrumbs(100); b.picks[0] = 'ball';
-  assert.equal(b.canPlay(0, 0, 10).why, 'needNearTrail');
-  assert.ok(b.canPlay(0, 4, 3).ok);
+  assert.equal(b.canPlay(0, 0, 13).why, 'needNearTrail');
+  assert.ok(b.canPlay(0, 4, 4).ok);
   assert.ok(C.TOWERS.ball.stats.rate <= 0.2, 'marble rate nerfed from 0.30/s');
   assert.equal(C.TOWERS.ball.maxBalls, 1);
 });
 
 // ---------- 1. every tower's own ability ----------
 test('boombox staggers, glue sticks once, perfume charms, laser heats up, zapper chains', () => {
-  let b = mk(); let tw = b.addTower('sound', 4, 3); tw.cd = 0; let a = still(b.spawn('worker', dAtX(180))); b.update(1 / 60); // v0.4.1: 1-tile radius = exactly the next cell's centre, so hold the ant there
+  let b = mk(); let tw = b.addTower('sound', 4, 4); tw.cd = 0; let a = still(b.spawn('worker', dAtX(180))); b.update(1 / 60); // v0.4.1: 1-tile radius = exactly the next cell's centre, so hold the ant there
   assert.ok(a.stunT > 0, 'boombox stagger');
-  b = mk(); const glue = b.addTower('glue', 4, 2); a = b.spawn('worker', dAtX(150)); run(b, 1.2);
+  b = mk(); const glue = b.addTower('glue', 4, 3); a = b.spawn('worker', dAtX(150)); run(b, 1.2);
   assert.ok(glue.stuckSet.has(a.id), 'glue stuck the ant'); assert.ok(b.events.some((e) => e.type === 'stick'));
-  b = mk(); const pf = b.addTower('pheromone', 4, 2); a = b.spawn('worker', dAtX(150)); run(b, 1.4);
+  b = mk(); const pf = b.addTower('pheromone', 4, 3); a = b.spawn('worker', dAtX(150)); run(b, 1.4);
   assert.ok(pf.charmSet.has(a.id), 'perfume charmed the ant'); assert.ok(Math.abs(a.d - pf.pathD) < 20, 'held near the perfume');
-  b = mk(); const ls = b.addTower('laser', 4, 3); const big = still(b.spawn('big', dAtX(180))); big.hp = big.maxHp = 1e6; big.armor = 0;
+  b = mk(); const ls = b.addTower('laser', 4, 4); const big = still(b.spawn('big', dAtX(180))); big.hp = big.maxHp = 1e6; big.armor = 0;
   const hits = []; let last = big.hp; for (let i = 0; i < 300; i++) { b.update(1 / 60); if (big.hp < last) { hits.push(last - big.hp); last = big.hp; } }
   assert.ok(hits.length > 5 && hits.at(-1) > hits[0] * 1.5, `laser heat ramps damage ${hits[0]} -> ${hits.at(-1)}`);
-  b = mk(); const z = b.addTower('zapper', 4, 3); z.cd = 0;
+  b = mk(); const z = b.addTower('zapper', 4, 4); z.cd = 0;
   const fl = [0, 30, 60].map((o) => still(b.spawn('flyer', dAtX(170 + o))));
   b.update(1 / 60);
   assert.equal(fl.filter((f) => f.hp < f.maxHp || f.dead).length, 3, 'zap chained to all 3 flyers');
@@ -125,15 +125,15 @@ test('the battle is lost the moment the cookie is gone', () => {
 });
 
 // ---------- 4/11. rewards & perfect ----------
-test('win coins = base + food left + ants killed (+ level, first clear); loss = few coins from kills only', () => {
-  const E = C.ECONOMY;
-  const w = M.battleCoins('win', { kills: 80, foodLeft: 90, levelIndex: 2, firstClear: false });
-  assert.equal(w.total, E.winBase + Math.round(90 * E.coinsPerFood) + Math.round(80 * E.coinsPerKillWin) + 2 * E.coinsPerLevel);
-  assert.ok(M.battleCoins('win', { kills: 80, foodLeft: 100 }).total > M.battleCoins('win', { kills: 80, foodLeft: 50 }).total, 'more food left = more coins');
-  assert.ok(M.battleCoins('win', { kills: 120, foodLeft: 80 }).total > M.battleCoins('win', { kills: 40, foodLeft: 80 }).total, 'more kills = more coins');
-  assert.equal(M.battleCoins('lose', { kills: 37 }).total, Math.floor(37 * E.coinsPerKillLoss));
-  assert.equal(M.battleCoins('lose', { kills: 100000 }).total, E.lossCap);
-  assert.ok(M.battleCoins('lose', { kills: 80 }).total < M.battleCoins('win', { kills: 80, foodLeft: 1 }).total);
+test('EX1: win coins follow the level factor; a loss pays progress and has no cap', () => {
+  const w1 = M.battleCoins('win', { levelIndex: 0, stars: 1 });
+  const w3 = M.battleCoins('win', { levelIndex: 0, stars: 3 });
+  assert.equal(w1.total, Math.round(M.replayBase(0)));
+  assert.equal(w3.total, Math.round(M.replayBase(0) * 1.1));
+  assert.equal(M.battleCoins('win', { levelIndex: 0, stars: 1, firstClear: true }).parts.firstClear, 30);
+  assert.equal(M.battleCoins('lose', { levelIndex: 0, progress: 1 }).total, Math.round(M.replayBase(0) / 3.5));
+  assert.ok(M.battleCoins('lose', { levelIndex: 0, progress: 1 }).total > M.battleCoins('lose', { levelIndex: 0, progress: 0.2 }).total);
+  assert.ok(M.replayBase(10) > M.replayBase(0));
 });
 test('a loss never grants cards, unlocks or prizes; a normal win grants no prize', () => {
   const s = M.newSave(); const cards0 = JSON.stringify(s.cards), stock0 = JSON.stringify(s.bonusStock);
@@ -177,8 +177,8 @@ test('every tower: core stats, per-stat upgrades in one config block, labels and
   assert.equal(formatStat('slingshot', 'range', 120), '3.0 tiles'); // v0.4.1: range = circle radius in map cells (40 px each)
 });
 test('an in-battle upgrade reports what changed (before -> after) in its event', () => {
-  const b = mk(); b.addCrumbs(100); b.picks[0] = 'slingshot'; b.playCard(0, 4, 3); b.picks[0] = 'slingshot';
-  const r = b.playCard(0, 4, 3);
+  const b = mk(); b.addCrumbs(100); b.picks[0] = 'slingshot'; b.playCard(0, 4, 4); b.picks[0] = 'slingshot';
+  const r = b.playCard(0, 4, 4);
   assert.ok(r.upgrade); assert.deepEqual(r.diff.map((d) => d.key), ['power']);
   const ev = b.events.find((e) => e.type === 'upgrade'); assert.ok(ev && ev.diff[0].to > ev.diff[0].from && ev.pick === 0 && ev.cost === 5);
   assert.ok(b.events.find((e) => e.type === 'place').pick === 0, 'place event carries the tray slot for the card-fly animation');

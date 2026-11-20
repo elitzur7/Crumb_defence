@@ -1,0 +1,19 @@
+{
+  "note": "8 historical profiles x 3 seeds, dt 1/30, no booster, except the queen rows which are 12 profiles x 4 seeds. Published percents are the v0.8.5 table in the plan.",
+  "curve": [
+    { "L": 10, "win": 87.5, "food": 33.4, "published": 85 },
+    { "L": 17, "win": 100, "food": 38.4, "published": 85 },
+    { "L": 22, "win": 100, "food": 82.9, "published": 100 },
+    { "L": 29, "win": 100, "food": 41.5, "published": 80 },
+    { "L": 30, "win": 100, "food": 59.8, "published": 70 },
+    { "L": 39, "win": 100, "food": 84.8, "published": 75 },
+    { "L": 40, "win": 100, "food": 59.5, "published": 60 }
+  ],
+  "queen": {
+    "none": { "n": 48, "win": 100, "food": 59.7, "star3": 0 },
+    "bombThenFreeze": { "n": 48, "win": 100, "food": 59.9, "star3": 0, "uses": 2 },
+    "uplift": { "win": 0, "food": 0.2, "star3": 0 },
+    "gate": "needs +10 win, or +10 three-star, or +5 food",
+    "met": false
+  }
+}
