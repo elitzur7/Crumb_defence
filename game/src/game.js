@@ -204,6 +204,7 @@ window.addEventListener('popstate', () => {
   S.battle = null; S.screen = 'map'; S.sel = null;
 });
 function openPrep(i) {
+  if (!M.levelUnlocked(S.save, i)) return;
   S.levelIndex = i;
   const unlocked = M.unlockedCards(S.save);
   let deck = (S.save.lastDeck || []).filter((id) => unlocked.includes(id));

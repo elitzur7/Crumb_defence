@@ -6,6 +6,19 @@ import { Battle, towerStat, cardPowerQ, levelAntTypes, marbleDrawScale, cardUpgr
 import { parseMap } from '../src/maps.js';
 import * as M from '../src/meta.js';
 
+test('a world stays locked until the previous queen is beaten, and a cleared level stays open', () => {
+  const s = M.newSave();
+  for (let i = 0; i < 9; i++) s.levels[i] = { stars: 3, cleared: true };
+  for (let i = 10; i < 20; i++) assert.equal(M.levelUnlocked(s, i), false, `L${i + 1} without the World 1 queen`);
+  s.levels[15] = { stars: 2, cleared: true };
+  assert.equal(M.levelUnlocked(s, 15), true);
+  assert.equal(M.levelUnlocked(s, 16), false);
+  assert.equal(M.levelUnlocked(s, 10), false);
+  s.levels[9] = { stars: 3, cleared: true };
+  assert.equal(M.levelUnlocked(s, 10), true);
+  assert.equal(M.levelUnlocked(s, 11), false);
+});
+
 test('card panel: every step through level 10 changes a stat, including above the old World 6 cap', () => {
   for (const id of C.ALL_CARDS) for (let L = 1; L < C.MAX_CARD_LEVEL; L++) {
     const d = cardUpgradeDiff(id, L);

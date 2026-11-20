@@ -316,7 +316,11 @@ export function worldUnlocked(save, w) {
 export function levelUnlocked(save, i) {
   if (i === 0) return true;
   const L = C.LEVELS[i]; if (!L) return false;
-  if (C.WORLD_START[L.world] === i) return worldUnlocked(save, L.world);
+  // A level the player has already beaten stays open, so an older save does not lose progress.
+  if (save.levels[i] && save.levels[i].cleared) return true;
+  // The whole world stays shut until the previous world, including its queen, is beaten.
+  if (L.world > 1 && !worldUnlocked(save, L.world)) return false;
+  if (C.WORLD_START[L.world] === i) return true;
   return !!(save.levels[i - 1] && save.levels[i - 1].cleared);
 }
 export function cardLevels(save) { const o = {}; for (const id of C.ALL_CARDS) o[id] = Math.max(1, save.cards[id].level); return o; }
