@@ -63,10 +63,11 @@ test('P2-5: with every tower unlocked the boss gift is cap-2 in W1/W2 (L2, L3) a
 });
 
 // ---------- UI fixes (P2-1, P2-2, P2-4) ----------
-test('P2-1: the Cards stats panel shows the effective (capped) numbers; at/above the cap there is no next-level preview', () => {
+test('P2-1: the Cards stats panel shows the owned level, and the next card step is never described as worthless', () => {
   const g = rd('src/game.js');
-  assert.match(g, /const Le = capCard \? Math\.min\(L, capCard\) : L;/); assert.match(g, /formatStat\(id, k, towerStat\(id, k, 1, Le\)\)/);
-  assert.match(g, /At the world cap \(L\$\{capCard\}\): higher cards add nothing yet/); assert.doesNotMatch(g, /towerStat\(id, k, 1, L\)\)/);
+  assert.match(g, /formatStat\(id, k, towerStat\(id, k, 1, Le\)\)/);
+  assert.doesNotMatch(g, /higher cards add nothing yet/);
+  assert.doesNotMatch(g, /fights as L\$\{capCard\}/);
 });
 test('P2-2: rarity pips have a tap tooltip with the dot legend', () => {
   const g = rd('src/game.js');

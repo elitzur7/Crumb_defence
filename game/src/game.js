@@ -2527,14 +2527,13 @@ function cardInfoPanel(id, x, y, w, h, opt = {}) {
   panel(x, y, w, h + (hasSp ? 14 : 0), '#ffffff', 14);
   S.layoutCardPanel = { x, y, w, h };
   if (!id) { plainText(opt.hint || 'Tap a card to see its stats.', x + w / 2, y + h / 2, 12.5, '#a08090', 'center', '600'); return; }
-  const T = C.TOWERS[id], c = S.save.cards[id], own = c.unlocked, L = Math.max(1, c.level), capCard = highestWorldCap();
+  const T = C.TOWERS[id], c = S.save.cards[id], own = c.unlocked, L = Math.max(1, c.level);
   fitText(T.name, x + 12 + Math.min(170, 9 * T.name.length) / 2, y + 16, 170, 14.5, '#ff8fab');
-  plainFit(own ? (capCard && capCard < c.level ? `Card L${c.level} - fights as L${capCard}` : `Card L${c.level} (used in battle)`) : 'Not owned yet', x + w - 12, y + 16, 150, 12, INFO_SOFT, 'right', '700');
+  plainFit(own ? `Card L${c.level} (used in battle)` : 'Not owned yet', x + w - 12, y + 16, 150, 12, INFO_SOFT, 'right', '700');
   const cmp = h < 108; // v0.7.2: the Cards / card screens give the panel less height (the tab bar took the bottom) -> a tighter layout
   plainFit(T.desc, x + 12, y + (cmp ? 33 : 37), w - 24, 12, INFO_INK, 'left', '500');
-  const Le = capCard ? Math.min(L, capCard) : L; // v0.7.8 P2-1: the stats are the EFFECTIVE (capped) numbers - what the card does in battle in the highest unlocked world
-  const atCap = !!(own && capCard && L >= capCard); // at/above the cap a further card level adds nothing yet -> no 'next level' preview or highlight
-  const next = atCap ? [] : cardUpgradeDiff(id, L); const nk = new Set(next.map((d) => d.key));
+  const Le = L; // v0.8.6 UC1: the battle uses the owned level in every world, so the panel shows that level
+  const next = L >= C.MAX_CARD_LEVEL ? [] : cardUpgradeDiff(id, L); const nk = new Set(next.map((d) => d.key));
   const keys = cardStatKeys(id), bw = (w - 24 - 12) / 3;
   keys.forEach((k, i) => {
     const bx = x + 12 + i * (bw + 6), by = y + (cmp ? 44 : 50), bh = cmp ? 36 : 38;
@@ -2542,9 +2541,9 @@ function cardInfoPanel(id, x, y, w, h, opt = {}) {
     plainFit(k === 'scoop' ? 'Scoops' : statLabel(id, k), bx + 7, by + (cmp ? 9.5 : 10), bw - 12, 12, INFO_SOFT, 'left', '600');
     plainFit(k === 'scoop' ? '1 trail tile' : formatStat(id, k, towerStat(id, k, 1, Le)), bx + bw / 2, by + (cmp ? 24.5 : 26), bw - 10, 13.5, INFO_INK, 'center', '700');
   });
-  const line = atCap ? `At the world cap (L${capCard}): higher cards add nothing yet` : next.length ? `Next card level L${L + 1}: ` + next.map((d) => diffText(id, d)).join(' + ') : 'Top card level (L10)!';
+  const line = L >= C.MAX_CARD_LEVEL ? 'Top card level (L10)!' : `Next card level L${L + 1}: ` + next.map((d) => diffText(id, d)).join(' + ');
   plainFit(line, x + w / 2, y + (cmp ? h - 9 : 102), w - 20, 12, next.length ? '#2f8a36' : '#c9962a', 'center', '700');
-  if (hasSp) { const capC = highestWorldCap(), Lc = capC ? Math.min(L, capC) : L; specialRow(id, specialState(id, null, own ? Lc : 0), x + 12, y + h + 7, w - 24); }
+  if (hasSp) specialRow(id, specialState(id, null, own ? L : 0), x + 12, y + h + 7, w - 24);
   if (h > 118 && !opt.noFoot) plainFit(opt.foot || (own ? 'Merge cards on its own screen to reach the next level.' : `Get it in the Shop (${M.unlockPrice(id)}c) or as a prize.`), x + w / 2, y + h - 13, w - 20, 12, '#a08090', 'center', '600');
 }
 // ---------------- v0.6 item 7: real card pictures (art window + name banner + level badge) ----------------
@@ -2653,15 +2652,13 @@ function openCardView(id) { S.cardView = id; S.cardsSel = id; const c = S.save.c
 // One card type's own screen (v0.6 items 4 + 7): a card picture for EACH level you hold (x count), and a Merge button under
 // every level: 3 cards of a level -> 1 card of the next level, at every level.
 // v0.7.7 S-1: the card-level cap of the highest world the player has unlocked, and the per-world line 'W1 acts as L4, W2 as L5' (worlds 1..max(2, highest unlocked))
-function highestWorldCap() { const W = C.WORLDS.find((x) => x.id === M.highestWorld(S.save)); return (W && W.cardLevelCap) || null; }
-function worldCapLine() { const top = Math.max(2, M.highestWorld(S.save)); return C.WORLDS.filter((W) => W.id <= top && W.cardLevelCap).map((W, k) => (k === 0 ? `W${W.id} acts as L${W.cardLevelCap}` : `W${W.id} as L${W.cardLevelCap}`)).join(', '); }
+function highestWorldCap() { return null; } // v0.8.6 UC1: tuning still records the old cap, but a card fights at its owned level in every world
 function renderCardView() {
   const id = S.cardView; const T = C.TOWERS[id]; const c = S.save.cards[id];
   panel(12, 12, 376, 636, '#fff6ee');
   A.text(ctx, T.name, 200, 36, 24, '#b5d8ff');
   drawButton(22, 18, 66, 28, 'Back', '#fff3e6', { size: 13, r: 10 }); button('cvBack', 14, 8, 84, 48, () => go('cards')); // v0.7.2: small Back (the tab bar's Cards tab also returns to the list)
   drawCardPic(28, 58, 104, 136, id, { level: c.level, locked: !c.unlocked });
-  const capNow = highestWorldCap(); // v0.7.7 S-1
   plainText(c.unlocked ? `Fights as L${c.level}` : 'Not unlocked yet', 146, 76, 15, INFO_INK, 'left', '800');
   plainText('3 cards of a level \u2192 1 of the next', 146, 98, 12, INFO_SOFT, 'left', '600');
   plainText('Your highest level fights.', 146, 114, 12, INFO_SOFT, 'left', '600');

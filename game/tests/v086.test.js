@@ -2,9 +2,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as C from '../src/config.js';
-import { Battle, towerStat, cardPowerQ, levelAntTypes, marbleDrawScale } from '../src/sim.js';
+import { Battle, towerStat, cardPowerQ, levelAntTypes, marbleDrawScale, cardUpgradeDiff } from '../src/sim.js';
 import { parseMap } from '../src/maps.js';
 import * as M from '../src/meta.js';
+
+test('card panel: every step through level 10 changes a stat, including above the old World 6 cap', () => {
+  for (const id of C.ALL_CARDS) for (let L = 1; L < C.MAX_CARD_LEVEL; L++) {
+    const d = cardUpgradeDiff(id, L);
+    assert.ok(d.some((x) => x.from !== x.to), `${id} L${L}`);
+  }
+});
 
 test('coins: three World 7 first clears stay in the thousands', () => {
   const s = M.newSave();
