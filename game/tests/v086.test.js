@@ -1,10 +1,18 @@
 // v0.8.6: board translation, marble radius, uncapped cards, economy factor.
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import * as C from '../src/config.js';
 import { Battle, towerStat, cardPowerQ, levelAntTypes, marbleDrawScale, cardUpgradeDiff } from '../src/sim.js';
 import { parseMap } from '../src/maps.js';
 import * as M from '../src/meta.js';
+
+test('long labels are fitted to the pill, the toast, and the map node', () => {
+  const g = readFileSync(new URL('../src/game.js', import.meta.url), 'utf8');
+  assert.match(g, /fitText\(S\.toast\.msg/);
+  assert.match(g, /fitText\(C\.LEVELS\[i\]\.name/);
+  assert.match(g, /if \(tw > max\) size = Math\.max\(11, size \* max \/ tw\)/);
+});
 
 test('a world stays locked until the previous queen is beaten, and a cleared level stays open', () => {
   const s = M.newSave();

@@ -107,10 +107,14 @@ function drawButton(x, y, w, h, label, col = '#ffb3c1', opt = {}) {
   }
   A.drawPillButton(ctx, x, y, w, h, opt.disabled ? 'dis' : col, { pressed: !!opt.pressed, disabled: !!opt.disabled, r: opt.r ?? Math.min(14, h / 2) });
   if (label) {
+    let size = opt.size || 17;
+    ctx.font = `${size}px ${A.FONT_DISPLAY}`;
+    const tw = ctx.measureText(label).width, max = Math.max(20, w - 18);
+    if (tw > max) size = Math.max(11, size * max / tw);
     const neutral = !opt.disabled && String(col).toLowerCase() === '#fff3e6'; // v0.8.1 F7: neutral secondary pills carry an INK label (no chunky white)
-    if (opt.disabled) { ctx.globalAlpha = 0.6; A.drawChunkyText(ctx, label, x + w / 2, y + h / 2 + press + 1, opt.size || 17, { mode: 'btn' }); } // v0.8.1 F14: disabled = flat ramp + 60% label
-    else if (neutral) { ctx.font = `${opt.size || 17}px ${A.FONT_DISPLAY}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = A.INK; ctx.fillText(label, x + w / 2, y + h / 2 + press + 1); }
-    else A.drawChunkyText(ctx, label, x + w / 2, y + h / 2 + press + 1, opt.size || 17, { mode: 'btn' });
+    if (opt.disabled) { ctx.globalAlpha = 0.6; A.drawChunkyText(ctx, label, x + w / 2, y + h / 2 + press + 1, size, { mode: 'btn' }); } // v0.8.1 F14: disabled = flat ramp + 60% label
+    else if (neutral) { ctx.font = `${size}px ${A.FONT_DISPLAY}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = A.INK; ctx.fillText(label, x + w / 2, y + h / 2 + press + 1); }
+    else A.drawChunkyText(ctx, label, x + w / 2, y + h / 2 + press + 1, size, { mode: 'btn' });
   }
   ctx.restore();
 }
@@ -702,14 +706,14 @@ function render(dt) {
     ctx.save(); ctx.globalAlpha = Math.min(1, S.toast.t * 5);
     if (S.toast.small) {
       // compact pill right above the tray: small, short, never over the middle of the map
-      ctx.font = `bold 12px ${A.FONT}`; const w = Math.min(300, ctx.measureText(S.toast.msg).width + 26);
+      ctx.font = `bold 12px ${A.FONT}`; const w = Math.min(360, Math.max(80, ctx.measureText(S.toast.msg).width + 26));
       const y = TRAY_Y - 30; S.layoutToast = { x: 200 - w / 2, y, w, h: 24 };
       A.rr(ctx, 200 - w / 2, y, w, 24, 12); ctx.fillStyle = 'rgba(74,52,66,0.88)'; ctx.fill();
-      A.text(ctx, S.toast.msg, 200, y + 12.5, 12, S.toast.col, 'center', null);
+      fitText(S.toast.msg, 200, y + 12.5, w - 16, 12, S.toast.col);
     } else {
-      ctx.font = `bold 14px ${A.FONT}`; const w = Math.min(340, ctx.measureText(S.toast.msg).width + 36);
+      ctx.font = `bold 14px ${A.FONT}`; const w = Math.min(368, Math.max(80, ctx.measureText(S.toast.msg).width + 36));
       S.layoutToast = { x: 200 - w / 2, y: 600, w, h: 34 };
-      panel(200 - w / 2, 600, w, 34, '#5a4058', 17); A.text(ctx, S.toast.msg, 200, 617, 14, S.toast.col, 'center', null);
+      panel(200 - w / 2, 600, w, 34, '#5a4058', 17); fitText(S.toast.msg, 200, 617, w - 20, 14, S.toast.col);
     }
     ctx.restore();
     if (S.toast.t <= 0) { S.toast = null; S.layoutToast = null; }
@@ -1058,7 +1062,7 @@ function renderMapScreen() {
     if (lifeOn && L.stars >= 3 && shines < 4 && p.y + sc > MAPVIEW.top && p.y + sc < MAPVIEW.bottom) { const ph = ((S.t + i * 1.3) % 4) / 0.6; if (ph < 1) { shines++; A.fxSparkle(ctx, p.x + 15, p.y - 15, 7, '#fff7a8', ph); } }
     if (lifeOn && i === lastCleared && i + 1 < C.LEVELS.length) { const wk = (S.t % 8) / 3; if (wk < 1) { const q = nodePos(i + 1), ax = p.x + (q.x - p.x) * (0.15 + 0.7 * wk), ay = p.y + (q.y - p.y) * (0.15 + 0.7 * wk); ctx.save(); ctx.translate(ax, ay + 4); ctx.scale((q.x >= p.x ? 1 : -1) * 0.34, 0.34); { const wsp = A.antSprite('worker', Math.floor(S.t * 9) % A.ANT_FRAMES, false, pxRatio); ctx.drawImage(wsp.cv, -wsp.ox, -wsp.oy, wsp.w, wsp.h); } ctx.restore(); } } // cached sprite (no per-frame vector ant)
     for (let s2 = 0; s2 < 3; s2++) A.starShape(ctx, p.x - 18 + s2 * 18, p.y + 32, 7, s2 < L.stars ? '#ffd45e' : '#e8dde4', 1.6);
-    A.text(ctx, C.LEVELS[i].name, p.x, p.y + 48, 12, '#7a5a6a', 'center', null);
+    fitText(C.LEVELS[i].name, p.x, p.y + 48, Math.max(48, Math.min(132, 2 * Math.min(p.x - 8, W - 8 - p.x))), 12, '#7a5a6a');
     const sy = p.y + sc; S.layoutNodes.push({ i, x: p.x, y: sy });
     if (open && sy > MAPVIEW.top + 10 && sy < MAPVIEW.bottom - 10) button('lvl' + i, p.x - 30, sy - 30, 60, 60, () => openPrep(i));
   }
@@ -2261,8 +2265,8 @@ function renderDialog() {
   ctx.restore();
   plainText(D.line, 200, 338, 14, '#3d2a36', 'center', '600');
   A.diamondIcon(ctx, 178, 364, 1.2); A.text(ctx, String(D.price), 212, 365, 22, '#7fd3ff', 'center', A.INK, 'bold', true);
-  plainText(afford ? `You have ${have} diamonds.` : `You have ${have} diamonds. Get diamonds from the Reward Calendar.`, 200, 392, 12, afford ? '#5a4652' : '#c0392b', 'center');
-  plainText(D.note, 200, 408, 12, '#7a6a76', 'center');
+  plainFit(afford ? `You have ${have} diamonds.` : `You have ${have} diamonds. Get diamonds from the Reward Calendar.`, 200, 392, 352, 12, afford ? '#5a4652' : '#c0392b', 'center');
+  plainFit(D.note || '', 200, 408, 352, 12, '#7a6a76', 'center');
   drawButton(64, 420, 128, 46, 'Cancel', '#fff3e6'); button('dlgCancel', 60, 418, 136, 52, () => { S.dialog = null; });
   drawButton(208, 420, 128, 46, 'Buy', '#9fe0ff', { disabled: !afford }); button('dlgBuy', 204, 418, 136, 52, () => { if (!afford) { toast('Not enough diamonds'); return; } const r = D.onBuy(); S.dialog = null; if (!r.ok) toast(r.why === 'uses' ? 'No booster uses left' : 'Not enough diamonds'); });
 }
