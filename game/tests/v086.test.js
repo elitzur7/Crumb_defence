@@ -6,6 +6,14 @@ import { Battle, towerStat, cardPowerQ, levelAntTypes, marbleDrawScale } from '.
 import { parseMap } from '../src/maps.js';
 import * as M from '../src/meta.js';
 
+test('coins: three World 7 first clears stay in the thousands', () => {
+  const s = M.newSave();
+  let sum = 0;
+  for (const i of [60, 61, 62]) sum += M.applyBattleResult(s, i, 'win', 3, { time: 100 }, () => 0).coins;
+  assert.ok(sum < 40000, `got ${sum}`);
+  assert.ok(sum > 3000, `got ${sum}`);
+});
+
 test('marble tower: draw radius stays finite, and a placed roller finishes several levels', () => {
   assert.equal(C.TOWERS.ball.power, undefined);
   assert.equal(marbleDrawScale(C.TOWERS.ball.stats.power), 1);

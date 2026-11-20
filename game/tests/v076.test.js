@@ -81,7 +81,7 @@ test('E-A5: an existing save loads with the same coins, diamonds and stars (noth
 });
 test('EX1: calendar coin days are 36, 72, 108, 144 times 3.2 to the world', () => {
   assert.deepEqual([1, 2, 3, 4].map((k) => Cal.coinAmount(k, C.CALENDAR, 1)), [36, 72, 108, 144]);
-  assert.deepEqual([1, 2, 3, 4].map((k) => Cal.coinAmount(k, C.CALENDAR, 2)), [115, 230, 346, 461]);
+  assert.deepEqual([1, 2, 3, 4].map((k) => Cal.coinAmount(k, C.CALENDAR, 2)), [56, 112, 167, 223]);
   assert.equal(Cal.coinAmount(9, C.CALENDAR, 1), 144);
   assert.equal(M.highestWorld(M.newSave()), 1);
   const s = M.newSave(); for (let i = 0; i < 10; i++) win(s, i, 3); assert.equal(M.highestWorld(s), 2);

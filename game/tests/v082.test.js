@@ -181,7 +181,7 @@ test('v0.8.2 EC5a: the skin purchase flow (no negative balance, no double charge
   assert.equal(M.nextSkinPrice(s), 1500); assert.equal(M.skinState(M.newSave()).owned.length, 0);
 });
 test('EX1: the daily first win pays 60 times 3.2 to the frontier world', () => {
-  const t = M.calendarTable(); assert.ok(t.length >= 8); assert.equal(t[0].daily, 60); assert.equal(t[5].daily, Math.round(60 * Math.pow(3.2, 5)));
+  const t = M.calendarTable(); assert.ok(t.length >= 8); assert.equal(t[0].daily, 60); assert.equal(t[5].daily, Math.round(60 * Math.pow(M.COIN_GROWTH, 5)));
   const s = M.newSave(); const a = M.applyBattleResult(s, 0, 'win', 1, { time: 100, kills: 10, foodLeft: 20, day: '2026-11-01' }, () => 0); assert.equal(a.dailyBonus, 60);
   const b = M.applyBattleResult(s, 0, 'win', 1, { time: 100, kills: 10, foodLeft: 20, day: '2026-11-01' }, () => 0); assert.equal(b.dailyBonus, undefined);
   const d = M.applyBattleResult(M.newSave(), 0, 'win', 1, { time: 100, kills: 10, foodLeft: 20 }, () => 0); assert.equal(d.dailyBonus, undefined);

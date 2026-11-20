@@ -324,10 +324,13 @@ export function cardLevels(save) { const o = {}; for (const id of C.ALL_CARDS) o
 // Coins earned for a battle (pure). Win: food left + ants killed (+ level, first clear) + time survived.
 // v0.6 item 1: time = floor(battle seconds / 3), its own line. Loss: ants killed + time survived, capped TOGETHER at lossCap (15).
 export function timeCoins(time, E = C.ECONOMY) { return 0; } // v0.8.6 EX1: time is not a coin line
+// v0.8.6.1: 3.2 made a World 7 clear pay about 300,000 coins (600,000 in two or three battles).
+// 1.55 keeps World 1 the same and brings a World 7 first clear down to a few thousand.
+export const COIN_GROWTH = 1.55;
 export function levelFactor(levelIndex) {
   const w = C.worldOf(levelIndex);
   const j = levelIndex - C.WORLD_START[w] + 1;
-  return Math.pow(3.2, w - 1) * Math.pow(1.12, j - 1);
+  return Math.pow(COIN_GROWTH, w - 1) * Math.pow(1.12, j - 1);
 }
 export const TREF_S = 48; // fallback seconds when a level has no measured clear
 // One smart-bot clear per level (seed 1000+17*level, card level 2/4/6 by world). Level 3 did not win; it uses 90 s.
@@ -396,7 +399,7 @@ export function applyBattleResult(save, levelIndex, result, stars, info = {}, rn
     out.starCoins = out.starParts.s1 + out.starParts.s2 + out.starParts.s3;
     if (out.starCoins) { out.coins += out.starCoins; out.parts.stars = out.starCoins; }
     // v0.8.2 EC6: the first win of each local day pays dailyWinBonus (info.day = 'YYYY-MM-DD' from the game; absent in sims = never paid)
-    if (info.day && save.dailyWin !== info.day) { save.dailyWin = info.day; out.dailyBonus = Math.round(60 * Math.pow(3.2, highestWorld(save) - 1)); out.coins += out.dailyBonus; out.parts.daily = out.dailyBonus; }
+    if (info.day && save.dailyWin !== info.day) { save.dailyWin = info.day; out.dailyBonus = Math.round(60 * Math.pow(COIN_GROWTH, highestWorld(save) - 1)); out.coins += out.dailyBonus; out.parts.daily = out.dailyBonus; }
     // v0.7.6 E3: gems from play - the first clear of a world's boss level, and the first 3 stars there
     out.gems = 0;
     if (out.firstClear && !lv.diamondTierPaid) { out.gems += stars >= 3 ? 20 : stars >= 2 ? 5 : 1; lv.diamondTierPaid = true; } // DX1: one total tier, never again
@@ -520,7 +523,7 @@ export function isReturningPlayer(save) { return !!save && Array.isArray(save.le
 
 // ---- v0.8.2 EC6: daily first-win bonus = 50 x coinMul of the level's world, capped at the W6 value (x2.0), rounded to 5
 export function dailyWinBonus(coinMul) { return Math.round(C.DAILY_WIN.base * Math.min(coinMul, C.DAILY_WIN.capMul) / 5) * 5; }
-export function calendarTable() { return C.COIN_MUL_SCHEDULE.map((m, i) => { const F = Math.pow(3.2, i); return { world: i + 1, coinMul: m, daily: Math.round(60 * F), star2: Math.round(20 * F), star3: Math.round(80 * F) }; }); }
+export function calendarTable() { return C.COIN_MUL_SCHEDULE.map((m, i) => { const F = Math.pow(COIN_GROWTH, i); return { world: i + 1, coinMul: m, daily: Math.round(60 * F), star2: Math.round(20 * F), star3: Math.round(80 * F) }; }); }
 // ---- v0.8.2 EC5a: cosmetic cabinet (coins only; a skin changes the pad colour and nothing else)
 export function skinState(save) { if (!save.skins || typeof save.skins !== 'object') save.skins = { owned: [], equipped: {} }; return save.skins; }
 export function skinOwned(save, id) { return skinState(save).owned.includes(id); }
