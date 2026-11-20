@@ -130,6 +130,12 @@ export function statLabel(type, key) {
 const CORE_KEY = { glue: 'stickTime', tractor: 'rate', fan: 'power' };
 export function coreStatKey(type) { return CORE_KEY[type] || 'power'; }
 export function cardPowerQ(cardLevel) { return Math.pow(1.08, Math.max(0, (cardLevel || 1) - 1)); }
+// How much bigger a rolling marble is drawn as its damage rises. The base lives in stats.power, not on the tower object.
+export function marbleDrawScale(power) {
+  const base = (C.TOWERS.ball.stats && C.TOWERS.ball.stats.power) || 16;
+  const p = Number.isFinite(power) ? power : base;
+  return Math.max(1, Math.min(1.35, Math.pow(Math.max(p, 0) / base, 0.25)));
+}
 // v0.4.1: every range is shown as the radius of its on-screen circle in map cells (1 tile = C.TILE px), the same unit Yair measures in
 export function rangeTiles(type, px) {
   return px / C.TILE;
@@ -1066,7 +1072,7 @@ export class Battle {
     const any = this.ants.some((a) => !a.dead && !a.flying && segDist(a.x, a.y, tw.lx, tw.ly, ex, ey) <= 24);
     if (!any) return;
     this.balls.push({ x: tw.lx, y: tw.ly, dx, dy, left: tw.runLen, stuck: 0, travel: 0,
-      r: C.MARBLE_R, drawR: C.MARBLE_R * Math.max(1, Math.min(1.35, Math.pow(tw.stat('power') / C.TOWERS.ball.power, 0.25))), dmg: tw.stat('power'), speed: T.rollSpeed, hit: new Set(), src: tw, rot: 0 });
+      r: C.MARBLE_R, drawR: C.MARBLE_R * marbleDrawScale(tw.stat('power')), dmg: tw.stat('power'), speed: T.rollSpeed, hit: new Set(), src: tw, rot: 0 });
     tw.balls++;
     tw.cd = 1 / tw.stat('rate'); tw.fireFx = 0.3; this.emit({ type: 'roll', x: tw.x, y: tw.y });
   }

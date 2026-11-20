@@ -2,9 +2,31 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as C from '../src/config.js';
-import { Battle, towerStat, cardPowerQ, levelAntTypes } from '../src/sim.js';
+import { Battle, towerStat, cardPowerQ, levelAntTypes, marbleDrawScale } from '../src/sim.js';
 import { parseMap } from '../src/maps.js';
 import * as M from '../src/meta.js';
+
+test('marble tower: draw radius stays finite, and a placed roller finishes several levels', () => {
+  assert.equal(C.TOWERS.ball.power, undefined);
+  assert.equal(marbleDrawScale(C.TOWERS.ball.stats.power), 1);
+  assert.ok(marbleDrawScale(40) > 1 && marbleDrawScale(40) <= 1.35);
+  for (const i of [0, 9, 16, 29, 40]) {
+    const b = new Battle({ levelIndex: i, deck: ['ball', 'slingshot'], seed: 3, cardLevels: { ball: 4 } });
+    let placed = null;
+    for (let r = 0; r < C.GRID_ROWS && !placed; r++) for (let c = 0; c < C.GRID_COLS && !placed; c++) {
+      b.picks[0] = 'ball'; b.crumbs = 999;
+      const res = b.playCard(0, c, r);
+      if (res.ok && !res.upgrade) placed = res.tower;
+    }
+    assert.ok(placed, `L${i + 1} accepts a marble`);
+    b.spawn('worker', 10);
+    for (let s = 0; s < 90 && !b.balls.length; s++) b.update(1 / 30);
+    if (b.balls.length) assert.ok(b.balls.every((m) => Number.isFinite(m.drawR) && m.drawR >= C.MARBLE_R));
+    let steps = 0;
+    while (!b.result && steps < 20000) { b.update(1 / 30); steps++; }
+    assert.ok(b.result, `L${i + 1} reached ${b.time.toFixed(1)}s without a result`);
+  }
+});
 
 test('LY1: every level path is the released route translated one row, and the new rows can hold a side tower', () => {
   assert.equal(C.GRID_ROWS, 14);

@@ -1,5 +1,6 @@
 // Procedural, soft & cute art. Everything is drawn with canvas paths - no external assets.
 import * as C from './config.js';
+import { marbleDrawScale } from './sim.js';
 import * as R8 from './recipes.js';
 import { INK, FONT_BODY, FONT_DISPLAY, mixHex, drawGlossyBlob, drawCoin, ramp, candyStar, bakedBox, sprStats, clearSprites } from './recipes.js';
 export * from './recipes.js'; // v0.8.0: the shared candy recipes (ramp, drawGlossyBlob, drawBeveledTile, drawPillButton, drawChunkyText, contactShadow, lightBurst, coin / pile, ...)
@@ -1176,8 +1177,7 @@ function levelParts(ctx, type, lvl, t, fx, aim) {
 }
 function towerSize(tw) {
   if (!tw || tw.type !== 'ball') return 1;
-  const p = tw.stat ? tw.stat('power') : C.TOWERS.ball.power;
-  return Math.max(1, Math.min(1.35, Math.pow(p / C.TOWERS.ball.power, 0.25)));
+  return marbleDrawScale(tw.stat ? tw.stat('power') : undefined);
 }
 export function arrow(ctx, x, y, ang, s, col) {
   ctx.save(); ctx.translate(x, y); ctx.rotate(ang);
@@ -1197,6 +1197,7 @@ export function lavaBorder(ctx, x, y, w, h, r, t) {
   ctx.restore();
 }
 export function marble(ctx, x, y, r, rot = 0) {
+  if (!Number.isFinite(r) || r <= 0) return;
   shadow(ctx, x, y + r * 0.9, r * 0.9, r * 0.3, 0.2);
   blob(ctx, x, y, r, r, '#7fc4f0', 2);
   ctx.save(); ctx.beginPath(); ctx.arc(x, y, r - 1, 0, 7); ctx.clip();
